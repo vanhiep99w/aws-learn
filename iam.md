@@ -223,14 +223,58 @@ Group: developers           Group: read-only-s3
 ✅ Credentials tự động rotate
 ```
 
+### Tại sao dùng Role thay vì User/Access Key?
+
+```
+❌ Cách sai: Lưu Access Key trong EC2
+   → Lộ key = hacker truy cập mãi mãi
+   → Phải tự rotate key thủ công
+
+✅ Cách đúng: Gắn Role vào EC2  
+   → Không cần lưu credentials trong code
+   → Credentials tự động rotate mỗi vài giờ
+   → An toàn hơn nhiều
+```
+
+### Các trường hợp phổ biến dùng Role
+
+| Tình huống | Ví dụ | Tại sao dùng Role |
+|------------|-------|-------------------|
+| **AWS Service → Service** | EC2 đọc S3, Lambda ghi DynamoDB | Service không thể đăng nhập bằng password |
+| **Cross-account access** | Account Dev truy cập Account Prod | An toàn hơn share credentials |
+| **Quyền cao tạm thời** | Developer cần Admin để deploy | Quyền tự hết hạn sau 1-12 giờ |
+| **Federated users (SSO)** | Nhân viên đăng nhập bằng Google/Okta | Không cần tạo IAM User cho từng người |
+
 ### Trust Policy vs Permissions Policy
 
 Mỗi Role có **2 loại policy**:
 
-| Policy | Mô tả |
-|--------|-------|
-| **Trust Policy** | **Ai** được phép assume role này |
-| **Permissions Policy** | **Làm gì** được khi assume role |
+```
+┌─────────────────────────────────────────────────────────┐
+│                      IAM ROLE                           │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  TRUST POLICY (Ai được mượn role?)                     │
+│  ─────────────────────────────────                      │
+│  "Cho phép EC2 service assume role này"                │
+│  "Cho phép Account B assume role này"                  │
+│  "Cho phép User X assume role này"                     │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  PERMISSIONS POLICY (Mượn role rồi được làm gì?)       │
+│  ───────────────────────────────────────────────        │
+│  "Được đọc S3 bucket ABC"                              │
+│  "Được ghi DynamoDB table XYZ"                         │
+│  "KHÔNG được xóa bất cứ thứ gì"                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+| Policy | Trả lời câu hỏi | Ví dụ |
+|--------|-----------------|-------|
+| **Trust Policy** | "Ai được assume role này?" | EC2, Lambda, Account B |
+| **Permissions Policy** | "Assume rồi được làm gì?" | s3:GetObject, dynamodb:PutItem |
 
 ```json
 // Trust Policy: EC2 service được assume role này
@@ -243,6 +287,158 @@ Mỗi Role có **2 loại policy**:
   }
 }
 ```
+
+### User Assume Role như thế nào?
+
+```
+User "John" bình thường chỉ có quyền đọc.
+Khi cần deploy, John assume role "DeployRole":
+
+┌──────────┐         ┌─────────────────┐         ┌──────────────┐
+│   John   │ ──────→ │  DeployRole     │ ──────→ │ Temporary    │
+│  (User)  │ assume  │  Trust: John ✅ │         │ Credentials  │
+└──────────┘         └─────────────────┘         │ (1-12 giờ)   │
+                                                  └──────────────┘
+
+# AWS CLI assume role
+aws sts assume-role --role-arn arn:aws:iam::123456:role/DeployRole
+
+# Trả về credentials tạm thời
+{
+  "AccessKeyId": "ASIA...",
+  "SecretAccessKey": "...",
+  "SessionToken": "...",
+  "Expiration": "2024-01-15T10:00:00Z"  ← Hết hạn tự động
+}
+```
+
+### So sánh: Gán Policy trực tiếp vs Assume Role
+
+```
+Gán Policy vào User:              Assume Role:
+────────────────────              ────────────
+User ←── Policy                   User ──→ Role ──→ Temp Credentials
+     (quyền cố định)                   (quyền tạm thời)
+
+• Quyền có mãi mãi                • Quyền hết hạn sau vài giờ
+• Không log khi dùng quyền        • Log được ai assume lúc nào  
+• Nguy hiểm nếu bị hack           • An toàn hơn
+```
+
+### Credentials hết hạn thì sao?
+
+| | EC2/Lambda Role | User Assume Role |
+|---|---|---|
+| **Refresh** | **Tự động** (SDK lo) | **Thủ công** (phải gọi lại) |
+| **Cơ chế** | SDK gọi Instance Metadata Service | User gọi `sts assume-role` |
+| **Hết hạn** | Không bao giờ mất quyền | Phải assume lại |
+
+**EC2 Role - Tự động refresh:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     EC2 Instance                        │
+│                                                         │
+│  App gọi: s3.getObject("file.txt")                     │
+│              │                                          │
+│              ▼                                          │
+│  AWS SDK tự động gọi Instance Metadata Service          │
+│  (http://169.254.169.254/latest/meta-data/iam/...)     │
+│              │                                          │
+│              ▼                                          │
+│  Nhận credentials mới (nếu cũ sắp hết hạn)             │
+│              │                                          │
+│              ▼                                          │
+│  Gọi S3 với credentials mới ✅                         │
+└─────────────────────────────────────────────────────────┘
+
+→ App không cần code xử lý, SDK lo hết
+```
+
+**User Assume Role - Phải refresh thủ công:**
+
+```
+aws sts assume-role --role-arn ...  (lần 1)
+         │
+         ▼
+Credentials có hạn 1-12 giờ
+         │
+         ▼
+    ⏰ HẾT HẠN
+         │
+         ▼
+aws sts assume-role --role-arn ...  (lần 2, phải gọi lại)
+```
+
+**Cách làm tự động hơn cho User:**
+
+```ini
+# ~/.aws/config - CLI tự động assume role
+[profile deploy]
+role_arn = arn:aws:iam::123456:role/DeployRole
+source_profile = default
+
+# Dùng:
+aws s3 ls --profile deploy
+# → CLI tự gọi assume-role khi cần
+```
+
+| Cách | Mô tả |
+|------|-------|
+| **AWS CLI profiles** | Config role_arn trong `~/.aws/config`, CLI tự assume |
+| **SDK credential providers** | Code tự refresh khi gần hết hạn |
+| **AWS SSO** | Đăng nhập 1 lần, tự động assume roles |
+
+### Local vs EC2: Credentials khác nhau, code giống nhau
+
+```
+LOCAL (máy dev):                  EC2 (production):
+────────────────                  ─────────────────
+Cần Access Key                    Không cần, dùng Role
+     │                                  │
+     ▼                                  ▼
+~/.aws/credentials                EC2 có Role gắn sẵn
+[default]                         → SDK tự lấy credentials
+aws_access_key_id=AKIA...         → Không cần config gì
+aws_secret_access_key=...
+```
+
+**Code không cần thay đổi:**
+
+```python
+import boto3
+
+s3 = boto3.client('s3')
+s3.upload_file('file.txt', 'my-bucket', 'file.txt')
+
+# Local: SDK dùng ~/.aws/credentials
+# EC2:   SDK tự lấy từ Instance Metadata (Role)
+# Lambda: SDK tự lấy từ Lambda Role
+```
+
+**Thứ tự AWS SDK tìm credentials (Credential Provider Chain):**
+
+```
+1. Environment variables
+   └── AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+
+2. ~/.aws/credentials file
+   └── [default] hoặc [profile-name]
+
+3. ~/.aws/config file
+   └── role_arn (assume role)
+
+4. EC2 Instance Metadata ← chỉ có khi chạy trên EC2
+   └── Role gắn vào EC2
+
+5. ECS Task Role ← chỉ có khi chạy trong ECS
+
+6. Lambda Execution Role ← chỉ có khi chạy trong Lambda
+```
+
+→ **Viết code 1 lần**, chạy được ở mọi nơi:
+- Local: dùng Access Key
+- EC2/ECS/Lambda: dùng Role (an toàn hơn)
 
 ---
 

@@ -4,6 +4,7 @@
 - [x] [AWS Overview](aws-overview.md) - Lịch sử AWS, Global Infrastructure (Regions, AZs, Edge Locations)
 - [x] [Cloud Computing Basics](cloud-computing-basics.md) - Traditional Server vs Cloud Computing, SLA
 - [x] [Shared Responsibility Model](shared-responsibility-model.md) - Trách nhiệm bảo mật AWS vs Khách hàng
+- [x] [AWS CLI](aws-cli.md) - Cài đặt, cấu hình, các lệnh thường dùng
 
 ## Compute
 - [ ] EC2
