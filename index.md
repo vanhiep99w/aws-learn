@@ -26,7 +26,7 @@
 - [ ] CloudFront
 
 ## Security
-- [ ] IAM
+- [x] [IAM](iam.md) - Users, Groups, Roles, Policies
 - [ ] KMS
 - [ ] Cognito
 
