@@ -22,12 +22,13 @@
 - [ ] ElastiCache
 
 ## Networking
-- [ ] VPC
+- [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, Internet Gateway, NAT Gateway
 - [ ] Route 53
 - [ ] CloudFront
 
 ## Security
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
+- [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [ ] KMS
 - [ ] Cognito
 
