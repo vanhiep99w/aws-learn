@@ -46,6 +46,53 @@
 
 ---
 
+## CIDR Notation trong VPC
+
+**CIDR (Classless Inter-Domain Routing)** là cách biểu diễn dải địa chỉ IP:
+
+```
+10 . 0 . 0 . 0 / 16
+│    │   │   │   │
+│    │   │   │   └─ Subnet mask (16 bits cố định cho network)
+│    │   │   └─ Octet 4 (Host)
+│    │   └─ Octet 3 (thường dùng phân biệt subnet)
+│    └─ Octet 2
+└─ Octet 1
+```
+
+### Ý nghĩa của /16, /24, /8
+
+| Subnet Mask | Octet cố định | Octet thay đổi | Số IP |
+|-------------|---------------|----------------|-------|
+| `/8` | 1 | 2, 3, 4 | 16,777,216 |
+| `/16` | 1, 2 | 3, 4 | 65,536 |
+| `/24` | 1, 2, 3 | 4 | 256 |
+
+**Với VPC /16 (phổ biến nhất):**
+- Octet 1, 2 cố định (ví dụ: `10.0`)
+- Octet 3 dùng để **phân biệt subnet** (`10.0.1.x`, `10.0.2.x`...)
+- Octet 4 dùng cho **host** trong subnet
+
+### Dải Private IP được phép dùng
+
+| Dải Private IP | CIDR phổ biến | Ghi chú |
+|----------------|---------------|---------|
+| `10.0.0.0/8` | `10.0.0.0/16`, `10.1.0.0/16`... | Phổ biến nhất |
+| `172.16.0.0/12` | `172.16.0.0/16`, `172.31.0.0/16`... | AWS default VPC |
+| `192.168.0.0/16` | `192.168.0.0/24` | Thường dùng cho mạng nhỏ |
+
+### Ví dụ quy hoạch CIDR cho nhiều VPC
+
+```
+VPC Dev:     10.0.0.0/16  → 10.0.x.x
+VPC Staging: 10.1.0.0/16  → 10.1.x.x  
+VPC Prod:    10.2.0.0/16  → 10.2.x.x
+```
+
+> ⚠️ **Lưu ý:** Nếu cần **VPC Peering** sau này, các CIDR không được trùng nhau!
+
+---
+
 ## Chi phí VPC
 
 ### Miễn phí
@@ -294,6 +341,54 @@ Internet ◄──────► Internet Gateway ◄──────► Publ
 
 ### 2. NAT Gateway
 
+#### NAT là gì?
+
+**NAT (Network Address Translation)** = Dịch địa chỉ IP private → public để ra internet.
+
+```
+Private Subnet                NAT Gateway              Internet
+┌─────────┐                  ┌─────────┐
+│   EC2   │  10.0.1.5  ───►  │   NAT   │  52.1.2.3  ───►  google.com
+│(private)│                  │(public) │
+└─────────┘                  └─────────┘
+     │                            │
+     └── Không có public IP       └── Có public IP, "đại diện" gửi request
+```
+
+**Tại sao cần NAT?**
+- EC2 trong **private subnet** không có public IP
+- Nhưng vẫn cần ra internet (cập nhật OS, gọi API, download package...)
+- NAT đứng giữa, dùng IP public của nó để gửi request thay
+
+| Chiều | Có thể? |
+|-------|---------|
+| Private → Internet | ✅ Được (qua NAT) |
+| Internet → Private | ❌ Không được |
+
+> ⚠️ **Lưu ý:** NAT chỉ cần cho traffic **ra internet**. EC2 trong private subnet **vẫn kết nối bình thường** với các resources khác trong VPC (qua local route):
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         VPC (10.0.0.0/16)                   │
+│                                                             │
+│   ┌─────────────────┐         ┌─────────────────┐          │
+│   │ Public Subnet   │         │ Private Subnet  │          │
+│   │                 │   ✅    │                 │          │
+│   │  ┌───────────┐  │ Kết nối │  ┌───────────┐  │          │
+│   │  │ EC2 Web   │◄─┼─────────┼─►│ EC2 App   │  │          │
+│   │  └───────────┘  │  OK!    │  └─────┬─────┘  │          │
+│   └─────────────────┘         │   ✅   ▼        │          │
+│                               │  ┌───────────┐  │          │
+│                               │  │    RDS    │  │          │
+│                               │  └───────────┘  │          │
+│                               └─────────────────┘          │
+└─────────────────────────────────────────────────────────────┘
+
+Route Table: 10.0.0.0/16 → local (traffic trong VPC không cần NAT)
+```
+
+#### NAT Gateway trong AWS
+
 **Tác dụng:** Cho phép Private Subnet gọi **ra** internet, nhưng internet **không thể gọi vào**.
 
 ```
@@ -329,7 +424,29 @@ Internet ◄──────► Internet Gateway ◄──────► Publ
 
 ### 3. Route Table
 
-**Tác dụng:** Quyết định traffic đi đâu dựa trên destination IP.
+**Tác dụng:** Quyết định traffic **đi ra (outbound)** đi đâu dựa trên destination IP.
+
+> ⚠️ **Lưu ý quan trọng:** Route Table chỉ kiểm soát **outbound traffic**, không kiểm soát inbound.
+
+```
+EC2 gửi request đến google.com:
+
+1. OUTBOUND: Route Table quyết định đi đường nào
+   EC2 → Route Table kiểm tra → NAT Gateway → Internet → google.com
+        "0.0.0.0/0 → nat-xxx"
+
+2. RESPONSE: Tự động quay về theo đường cũ
+   google.com → Internet → NAT Gateway → EC2
+        (không cần route riêng)
+```
+
+| Loại traffic | Route Table quyết định? |
+|--------------|------------------------|
+| Outbound (gửi đi) | ✅ Có |
+| Response (trả về) | ❌ Không (tự động) |
+| Inbound từ bên ngoài | ❌ Không (Security Group/NACL kiểm soát) |
+
+**Ví dụ Route Table:**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

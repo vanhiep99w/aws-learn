@@ -10,14 +10,16 @@
 ## Compute
 
 - [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
+- [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
 - [ ] Lambda
 - [ ] ECS/EKS
 
 ## Storage
 
 - [ ] S3
-- [ ] EBS
-- [ ] EFS
+- [x] [EBS](ebs.md) - Elastic Block Store, Volume Types, Snapshots, Encryption
+- [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
+- [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
 
 ## Database
 
