@@ -11,6 +11,9 @@
 
 - [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
 - [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
+- [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
+- [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks
+- [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
 - [ ] Lambda
 - [ ] ECS/EKS
 
