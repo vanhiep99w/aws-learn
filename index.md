@@ -19,10 +19,11 @@
 
 ## Storage
 
-- [ ] S3
+- [x] [S3](s3.md) - Simple Storage Service, Storage Classes, Lifecycle, Security
 - [x] [EBS](ebs.md) - Elastic Block Store, Volume Types, Snapshots, Encryption
 - [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
+- [x] [Snow Family](snow-family.md) - Snowcone, Snowball Edge, Physical Data Transfer
 
 ## Database
 
