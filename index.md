@@ -24,6 +24,7 @@
 - [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
 - [x] [Snow Family](snow-family.md) - Snowcone, Snowball Edge, Physical Data Transfer
+- [x] [AWS Storage Deep Dive](aws-storage-deep-dive.md) - So sánh chi tiết các loại Block, File, Object, Hybrid, Edge
 
 ## Database
 
