@@ -14,7 +14,8 @@
 - [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
 - [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks
 - [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
-- [ ] Lambda
+- [x] [Lambda](lambda.md) - Serverless Functions, Triggers, Cold Start, Pricing
+- [x] [API Gateway](api-gateway.md) - REST/HTTP/WebSocket APIs, Lambda Integration
 - [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
 - [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
 
