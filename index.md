@@ -15,7 +15,8 @@
 - [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks
 - [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
 - [ ] Lambda
-- [ ] ECS/EKS
+- [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
+- [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
 
 ## Storage
 
@@ -28,7 +29,7 @@
 
 ## Database
 
-- [ ] RDS
+- [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
 - [ ] DynamoDB
 - [ ] ElastiCache
 
