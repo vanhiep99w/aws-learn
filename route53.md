@@ -379,117 +379,129 @@ dig NS example.com      # Query NS record
 dig ANY example.com     # Query tất cả records
 ```
 
-### A Record vs CNAME
+### Giải thích dễ hiểu: A Record vs CNAME
+*(Ví dụ danh bạ điện thoại)*
 
-```
-A Record (trực tiếp):
-┌─────────────────┐         ┌─────────────────┐
-│ www.example.com │ ──────▶ │   54.231.12.45  │
-└─────────────────┘         └─────────────────┘
-        1 DNS lookup = nhanh
+**1️⃣ A Record (Address Record)**
+> Giống như **lưu số điện thoại** trong danh bạ.
 
-CNAME Record (gián tiếp):
-┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
-│ www.example.com │ ──────▶ │   example.com   │ ──────▶ │   54.231.12.45  │
-└─────────────────┘         └─────────────────┘         └─────────────────┘
-        2 DNS lookups = chậm hơn
-```
+*   **Tên:** Anh Hiệp (`example.com`)
+*   **Số ĐT:** 0901.234.567 (`1.2.3.4`)
+*   **Hành động:** Gọi -> Bấm số luôn.
+*   **Đặc điểm:** Đi thẳng đến đích (IP), tốc độ nhanh nhất.
 
-### Hạn chế của CNAME
+**2️⃣ CNAME Record (Canonical Name Record)**
+> Giống như **ghi chú Alias/Biệt danh** ("Hãy gọi cho...").
 
-**CNAME không thể dùng cho zone apex (root domain)**:
+*   **Tên:** Sếp Hiệp (`www.example.com`)
+*   **Ghi chú:** *"Hãy gọi vào số của **Anh Hiệp**"*
+*   **Hành động:** Tìm "Sếp Hiệp" -> Thấy ghi chú -> Tìm "Anh Hiệp" -> Ra số -> Gọi.
+*   **Đặc điểm:** Đi lòng vòng 2 bước (Hỏi tên giả -> Ra tên thật -> Mới ra IP).
 
-```
-✓ CNAME cho subdomain:
-  www.example.com → myapp.elb.amazonaws.com
+### Hạn chế chí mạng của CNAME
 
-✗ CNAME cho zone apex:
-  example.com → myapp.elb.amazonaws.com  ← KHÔNG THỂ!
-```
+> **Nguyên tắc:** Nếu một cái tên là **CNAME**, nó **KHÔNG ĐƯỢC** làm gì khác nữa (không được chứa MX, TXT, NS...).
+
+**Zone Apex (Root Domain) `example.com`:**
+*   Bắt buộc phải chứa `NS` (Name Server) và `SOA` records.
+*   👉 **Xung đột:** Không thể gán CNAME cho Root Domain vì nó sẽ đá bay NS/SOA records.
+*   **Giải pháp:** Dùng **A Record** hoặc **Alias Record**.
 
 ---
 
 ## Alias Records (Route 53 Exclusive)
 
-**Alias Record** là tính năng riêng của Route 53, giải quyết hạn chế của CNAME.
+**Alias Record** là tính năng **"Vũ khí bí mật"** của Route 53 để lách luật "Cấm dùng CNAME cho Root Domain".
+
+### Alias hoạt động như thế nào? (CNAME trá hình)
+
+1.  **Với thế giới bên ngoài:** Alias nói dối là **A Record** (trả về IP trực tiếp). -> **Hợp lệ** để đứng chung với NS/SOA tại Root Domain.
+2.  **Với nội bộ AWS:** Alias hoạt động giống CNAME, trỏ đến AWS Resource (ELB, CloudFront...). Route 53 sẽ tự động check IP của resource đó và trả về cho client.
 
 ### So sánh Alias vs CNAME
 
-| Tiêu chí | CNAME | Alias |
+| Tiêu chí | CNAME | Alias (Nên dùng) |
 |----------|-------|-------|
-| Zone apex (root domain) | ❌ Không hỗ trợ | ✅ Hỗ trợ |
-| DNS lookup | 2 lookups | 1 lookup (trả về IP trực tiếp) |
-| Chi phí query | Tính phí | **Miễn phí** (cho AWS resources) |
-| Custom TTL | ✅ Có thể set | ❌ Tự động theo resource |
-| Target | Bất kỳ DNS name | Chỉ AWS resources |
+| **Zone Apex** (`example.com`) | ❌ CẤM | ✅ **ĐƯỢC** |
+| **Cơ chế** | Trỏ đến tên khác (2 lookups) | Trả về IP (1 lookup - nhanh hơn) |
+| **Chi phí** | Tính phí query | **Miễn phí** (với AWS Resources) |
+| **Cập nhật IP** | Tự động | Tự động (Real-time) |
+| **Target** | Bất kỳ đâu (AWS, GitHub...) | Chỉ AWS Resources (ELB, S3, CloudFront...) |
 
-### Các AWS resources hỗ trợ Alias
+### Khi nào dùng cái nào?
 
-```
-Alias Record có thể trỏ đến:
-┌─────────────────────────────────────────────────────────────────┐
-│  ✓ Elastic Load Balancer (ALB, NLB, CLB)                        │
-│  ✓ CloudFront Distribution                                      │
-│  ✓ API Gateway                                                   │
-│  ✓ Elastic Beanstalk                                            │
-│  ✓ S3 Website                                                   │
-│  ✓ VPC Interface Endpoint                                       │
-│  ✓ Global Accelerator                                           │
-│  ✓ Route 53 record (cùng hosted zone)                           │
-└─────────────────────────────────────────────────────────────────┘
-
-Alias Record KHÔNG thể trỏ đến:
-┌─────────────────────────────────────────────────────────────────┐
-│  ✗ EC2 DNS name                                                 │
-│  ✗ RDS DNS name                                                 │
-│  ✗ ECS DNS name                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Ví dụ Alias Record
-
-```
-Sử dụng Alias cho zone apex:
-
-example.com (A record, Alias = Yes)
-    │
-    └──▶ dualstack.myapp-123456.us-east-1.elb.amazonaws.com
-              │
-              └──▶ IP: 54.231.12.45
-
-→ Client query example.com → Nhận trực tiếp IP 54.231.12.45
-→ 1 lookup, MIỄN PHÍ!
-```
+| Trường hợp | Dùng loại gì? | Ví dụ |
+| :--- | :--- | :--- |
+| **Root Domain** (`example.com`) trỏ vào AWS Resource | **Alias** (Bắt buộc) | `example.com` → ALB |
+| **Subdomain** (`www`) trỏ vào AWS Resource | **Alias** (Nên dùng) | `www` → CloudFront (Free & Nhanh) |
+| Trỏ domain sang dịch vụ **NGOÀI AWS** (Heroku, GitHub) | **CNAME** | `blog` → `github.io` |
+| Trỏ vào **IP tĩnh** cụ thể | **A Record** | `server` → `1.2.3.4` |
 
 ---
 
 ## TTL (Time To Live)
 
-**TTL** xác định thời gian DNS resolvers cache record trước khi query lại.
+**TTL** = "Thời hạn sử dụng" của một DNS record (tính bằng giây).
+
+> **Ví dụ:** Route 53 trả về: *"`example.com` = `1.2.3.4`, TTL = 300"*. Nghĩa là: *"Nhớ địa chỉ này trong 300 giây nhé, sau đó hỏi lại tao."*
+
+### Ai cache? (Quan trọng!)
+
+**Route 53 KHÔNG cache.** Route 53 là **nguồn gốc** (Authoritative DNS), nó giữ thông tin chính thức. Người cache là các **trạm trung gian**:
 
 ```
-TTL = 300s (5 phút):
+┌────────────────────────────────────────────────────────────────────┐
+│                      AI CACHE?                                      │
+│                                                                    │
+│   ① Browser (Chrome, Firefox...)              ✅ CACHE             │
+│      └── Lưu DNS trong vài phút đến vài giờ                        │
+│                                                                    │
+│   ② Hệ điều hành (Windows, macOS, Linux)      ✅ CACHE             │
+│      └── OS có DNS Cache riêng                                     │
+│                                                                    │
+│   ③ DNS Resolver (ISP hoặc Google 8.8.8.8)    ✅ CACHE             │
+│      └── Đây là nơi cache NHIỀU NHẤT theo TTL                      │
+│                                                                    │
+│   ④ Route 53 (Authoritative DNS)              ❌ KHÔNG CACHE       │
+│      └── Đây là NGUỒN GỐC, không cần cache ai cả                   │
+└────────────────────────────────────────────────────────────────────┘
+```
 
-T=0s                    T=300s                   T=600s
-│                       │                        │
-▼                       ▼                        ▼
-┌─────────────────────────────────────────────────────────────────┐
-│     Query lần 1       │       Cached          │   Query lần 2   │
-│     (đến Route 53)    │   (trả từ cache)      │  (đến Route 53) │
-└─────────────────────────────────────────────────────────────────┘
+### TTL hoạt động như thế nào?
+
+```
+Route 53 trả về: example.com = 1.2.3.4, TTL = 300s
+                            │
+                            ▼
+                 DNS Resolver lưu vào cache
+                            │
+    ┌───────────────────────┼───────────────────────┐
+    │   0s - 300s           │  Sau 300s             │
+    │   (Trong TTL)         │  (Hết TTL)            │
+    │                       │                       │
+    │   Query tiếp theo     │  Query tiếp theo      │
+    │           │           │           │           │
+    │           ▼           │           ▼           │
+    │   Trả từ cache        │  Hỏi lại Route 53     │
+    │   (NHANH, 1-5ms)      │  (CHẬM hơn, 50-200ms) │
+    └───────────────────────┴───────────────────────┘
 ```
 
 ### Trade-off TTL
 
 | TTL | Ưu điểm | Nhược điểm |
 |-----|---------|------------|
-| **Cao (24h)** | Ít queries → giảm chi phí, giảm latency | Thay đổi IP mất thời gian propagate |
-| **Thấp (60s)** | Thay đổi nhanh | Nhiều queries → tăng chi phí |
+| **Cao (24h)** | Ít queries → giảm chi phí, truy cập nhanh (từ cache) | Đổi IP mất **cả ngày** mới cập nhật xong |
+| **Thấp (60s)** | Thay đổi IP được áp dụng **gần như ngay** | Nhiều queries → tốn tiền hơn |
 
-**Khuyến nghị:**
-- **Bình thường**: 300s - 3600s
-- **Trước khi thay đổi IP**: Giảm TTL xuống 60s trước vài giờ
-- **Alias records**: TTL tự động theo AWS resource (không set được)
+### Best Practice
+
+1.  **Bình thường:** TTL 300s - 3600s.
+2.  **Trước khi migrate/đổi IP:**
+    *   Vài giờ trước: Hạ TTL xuống **60s**.
+    *   Thực hiện đổi IP.
+    *   Sau khi ổn định: Tăng TTL trở lại.
+3.  **Alias records:** TTL tự động theo AWS resource (không set được).
 
 ---
 
@@ -1064,6 +1076,67 @@ T+24h: Tăng TTL lên 3600s
 | "expand/shrink traffic region" | Geoproximity với Bias |
 | "route based on client IP range" | IP-based |
 | "return multiple healthy IPs" | Multivalue Answer |
+
+---
+
+## Route 53 vs API Gateway (Hay nhầm lẫn!)
+
+Cả hai đều có khả năng "routing", nhưng hoạt động ở **tầng khác nhau**:
+
+| Tiêu chí | Route 53 | API Gateway |
+| :--- | :--- | :--- |
+| **Tầng hoạt động** | **DNS Level** (trước khi kết nối) | **Application Level** (HTTP/HTTPS) |
+| **Thời điểm quyết định** | Khi browser hỏi "IP là gì?" | Sau khi đã kết nối, khi request đến |
+| **Nhận biết request** | Chỉ biết **IP client, location** | Biết **headers, body, path, token...** |
+| **Phạm vi** | Chọn **region/server nào** | Chọn **function/service nào trong server** |
+
+> **Lưu ý:** API Gateway là dịch vụ **regional**. Nếu muốn multi-region, phải tạo API Gateway ở mỗi region và dùng Route 53 để điều phối.
+
+---
+
+## Kiến trúc Multi-Region với Route 53
+
+### Active-Active (HA cao nhất)
+
+```
+                    Route 53 (Latency-based + Health Checks)
+                            │
+         ┌──────────────────┴──────────────────┐
+         ▼                                     ▼
+    Singapore ✅ Healthy                   Tokyo ✅ Healthy
+    ┌─────────────────┐               ┌─────────────────┐
+    │ API Gateway     │               │ API Gateway     │
+    │ Lambda/ECS      │               │ Lambda/ECS      │
+    │ RDS (Primary)   │◀── Sync ──▶  │ RDS (Replica)   │
+    └─────────────────┘               └─────────────────┘
+         │                                     │
+         └────────────── Cả 2 đều nhận traffic ───────────────┘
+```
+
+**Bình thường:**
+- User Việt Nam → Singapore (latency thấp hơn)
+- User Nhật → Tokyo (latency thấp hơn)
+- **Cả 2 region cùng hoạt động**
+
+**Khi Singapore sập:**
+```
+Route 53 Health Check phát hiện Singapore ❌ Unhealthy
+                │
+                ▼
+TẤT CẢ traffic tự động chuyển về Tokyo ✅
+(Không cần thao tác thủ công = HA!)
+```
+
+### So sánh các mức độ HA
+
+| Kiến trúc | Mô tả | Mức HA |
+| :--- | :--- | :---: |
+| **Single AZ** | 1 server, 1 datacenter | ❌ Không HA |
+| **Multi-AZ** (cùng region) | 2+ AZs trong 1 region | ✅ HA cơ bản |
+| **Active-Passive** (2 regions) | 1 region chạy, 1 region standby | ✅✅ HA tốt |
+| **Active-Active** (2+ regions) | Tất cả regions cùng chạy | ✅✅✅ **HA cao nhất** |
+
+> **Key insight:** "Độc lập" = mỗi region **tự chạy được**. Chính vì vậy khi 1 region chết, region còn lại vẫn sống và tiếp nhận traffic. Route 53 Health Checks là "người gác cổng" tự động chuyển hướng.
 
 ---
 
