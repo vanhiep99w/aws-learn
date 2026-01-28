@@ -40,7 +40,7 @@
 ## Networking
 
 - [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, Internet Gateway, NAT Gateway
-- [ ] Route 53
+- [x] [Route 53](route53.md) - DNS Service, Hosted Zones, Routing Policies, Health Checks
 - [ ] CloudFront
 
 ## Security
@@ -53,8 +53,13 @@
 
 ## Monitoring & Management
 
+- [x] [SSM](ssm.md) - Systems Manager, Parameter Store, Session Manager, Run Command
 - [ ] CloudWatch
 - [ ] CloudTrail
+
+## Developer Tools
+
+- [x] [AWS Developer Tools](aws-developer-tools.md) - CodeCommit, CodeBuild, CodeDeploy, CodePipeline, CodeArtifact
 
 ## Infrastructure as Code
 
