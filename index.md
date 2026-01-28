@@ -18,6 +18,8 @@
 - [x] [API Gateway](api-gateway.md) - REST/HTTP/WebSocket APIs, Lambda Integration
 - [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
 - [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
+- [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
+- [x] [Lightsail](lightsail.md) - Simple Virtual Private Server (VPS), Pre-configured Stacks (WordPress, LAMP)
 
 ## Storage
 
