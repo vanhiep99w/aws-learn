@@ -47,6 +47,103 @@ WHO (Authentication)     +     WHAT (Authorization)
 
 ---
 
+## ARN (Amazon Resource Name)
+
+**ARN** là định danh duy nhất để xác định **bất kỳ resource nào** trong AWS. ARN được dùng rất nhiều trong IAM Policies.
+
+### Format của ARN
+
+```
+arn:partition:service:region:account-id:resource-type/resource-id
+```
+
+| Phần | Ý nghĩa | Ví dụ |
+|------|---------|-------|
+| `arn` | Cố định | `arn` |
+| `partition` | AWS partition | `aws`, `aws-cn` (China), `aws-us-gov` |
+| `service` | Tên service | `s3`, `ec2`, `lambda`, `iam` |
+| `region` | Region (có thể trống) | `us-east-1`, `ap-southeast-1` |
+| `account-id` | AWS Account ID | `123456789012` |
+| `resource` | Resource type và ID | `bucket/my-bucket`, `role/MyRole` |
+
+### Ví dụ ARN
+
+```bash
+# S3 Bucket (global → không có region, account)
+arn:aws:s3:::my-bucket
+arn:aws:s3:::my-bucket/folder/file.txt
+
+# IAM Role (global → không có region)
+arn:aws:iam::123456789012:role/MyRole
+
+# EC2 Instance (regional → có đầy đủ)
+arn:aws:ec2:us-east-1:123456789012:instance/i-1234567890abcdef0
+
+# Lambda Function
+arn:aws:lambda:ap-southeast-1:123456789012:function:my-function
+
+# RDS Database
+arn:aws:rds:us-east-1:123456789012:db:my-database
+```
+
+### Tại sao có `:::` vs `:` ?
+
+Một số trường có thể **BỎ TRỐNG** → tạo ra nhiều dấu `:` liền nhau:
+
+```
+S3 Bucket:
+arn:aws:s3:::my-bucket
+         │ │││
+         │ ││└─ resource (my-bucket)
+         │ │└── account-id (TRỐNG - S3 bucket name globally unique)
+         │ └─── region (TRỐNG - S3 là global)
+         └──── service (s3)
+
+IAM Role:
+arn:aws:iam::123456789012:role/MyRole
+          │ │            │
+          │ │            └─ resource
+          │ └────────────── account-id (có)
+          └──────────────── region (TRỐNG - IAM là global)
+
+EC2 Instance:
+arn:aws:ec2:us-east-1:123456789012:instance/i-123
+          │         │            │
+          │         │            └─ resource
+          │         └────────────── account-id (có)
+          └──────────────────────── region (có - EC2 là regional)
+```
+
+### Quy tắc nhớ nhanh
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  GLOBAL SERVICES (không có region):                             │
+│  ├── IAM        → arn:aws:iam::account:...                     │
+│  ├── S3         → arn:aws:s3:::bucket-name                     │
+│  ├── CloudFront → arn:aws:cloudfront::account:...              │
+│  └── Route53    → arn:aws:route53:::...                        │
+│                                                                   │
+│  REGIONAL SERVICES (có đầy đủ region + account):                │
+│  ├── EC2        → arn:aws:ec2:region:account:...               │
+│  ├── Lambda     → arn:aws:lambda:region:account:...            │
+│  ├── RDS        → arn:aws:rds:region:account:...               │
+│  └── ECS        → arn:aws:ecs:region:account:...               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### ARN trong IAM Policies
+
+```json
+{
+  "Effect": "Allow",
+  "Action": "s3:GetObject",
+  "Resource": "arn:aws:s3:::my-bucket/*"   ← ARN xác định bucket
+}
+```
+
+---
+
 ## 1. Root User
 
 **Root User** là tài khoản được tạo khi đăng ký AWS account.

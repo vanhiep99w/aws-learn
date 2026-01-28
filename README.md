@@ -20,6 +20,7 @@
 - [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
 - [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
 - [x] [Lightsail](lightsail.md) - Simple Virtual Private Server (VPS), Pre-configured Stacks (WordPress, LAMP)
+- [x] [Elastic Beanstalk](elastic-beanstalk.md) - PaaS, Deploy apps không lo infrastructure, Deployment Policies
 
 ## Storage
 
@@ -54,7 +55,11 @@
 
 - [ ] CloudWatch
 - [ ] CloudTrail
-- [ ] CloudFormation
+
+## Infrastructure as Code
+
+- [x] [CloudFormation](cloudformation.md) - IaC với YAML/JSON, Templates, Stacks, Intrinsic Functions
+- [x] [CDK](cdk.md) - Cloud Development Kit, IaC với TypeScript/Python, Constructs (L1, L2, L3)
 
 ## Messaging
 
