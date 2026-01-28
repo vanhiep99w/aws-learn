@@ -1,2 +1,67 @@
-# aws-learn
-All document learn about aws
+# AWS Learning - Mục lục
+
+## Fundamentals
+
+- [x] [AWS Overview](aws-overview.md) - Lịch sử AWS, Global Infrastructure (Regions, AZs, Edge Locations)
+- [x] [Cloud Computing Basics](cloud-computing-basics.md) - Traditional Server vs Cloud Computing, SLA
+- [x] [Shared Responsibility Model](shared-responsibility-model.md) - Trách nhiệm bảo mật AWS vs Khách hàng
+- [x] [AWS CLI](aws-cli.md) - Cài đặt, cấu hình, các lệnh thường dùng
+
+## Compute
+
+- [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
+- [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
+- [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
+- [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks
+- [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
+- [x] [Lambda](lambda.md) - Serverless Functions, Triggers, Cold Start, Pricing
+- [x] [API Gateway](api-gateway.md) - REST/HTTP/WebSocket APIs, Lambda Integration
+- [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
+- [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
+- [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
+- [x] [Lightsail](lightsail.md) - Simple Virtual Private Server (VPS), Pre-configured Stacks (WordPress, LAMP)
+
+## Storage
+
+- [x] [S3](s3.md) - Simple Storage Service, Storage Classes, Lifecycle, Security
+- [x] [EBS](ebs.md) - Elastic Block Store, Volume Types, Snapshots, Encryption
+- [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
+- [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
+- [x] [Snow Family](snow-family.md) - Snowcone, Snowball Edge, Physical Data Transfer
+- [x] [AWS Storage Deep Dive](aws-storage-deep-dive.md) - So sánh chi tiết các loại Block, File, Object, Hybrid, Edge
+
+## Database
+
+- [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
+- [ ] DynamoDB
+- [ ] ElastiCache
+
+## Networking
+
+- [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, Internet Gateway, NAT Gateway
+- [ ] Route 53
+- [ ] CloudFront
+
+## Security
+
+- [x] [IAM](iam.md) - Users, Groups, Roles, Policies
+- [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
+- [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
+- [ ] KMS
+- [ ] Cognito
+
+## Monitoring & Management
+
+- [ ] CloudWatch
+- [ ] CloudTrail
+- [ ] CloudFormation
+
+## Messaging
+
+- [ ] SQS
+- [ ] SNS
+- [ ] EventBridge
+
+---
+
+_Đánh dấu [x] khi hoàn thành mỗi chủ đề_

@@ -4,7 +4,7 @@
 AWS learning documentation repository - collection of Markdown files covering AWS services and concepts.
 
 ## Structure
-- `index.md` - Table of contents with links to all topics
+- `README.md` - Table of contents with links to all topics
 - `*.md` - Individual documentation files for each AWS service/topic
 
 ## Commands
@@ -13,9 +13,9 @@ No build/test commands - this is a documentation-only repository.
 ## Guidelines
 - All documentation in Markdown format (.md)
 - Use Vietnamese for content
-- Keep `index.md` updated when adding new topics
+- Keep `README.md` updated when adding new topics
 - Organize files by AWS service category (Compute, Storage, Database, etc.)
-- Use checkboxes `- [ ]` in index.md to track learning progress
+- Use checkboxes `- [ ]` in README.md to track learning progress
 - Include practical examples and diagrams where helpful
 - Link related topics between documents
 
