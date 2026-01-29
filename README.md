@@ -23,6 +23,7 @@
 - [x] [Elastic Beanstalk](elastic-beanstalk.md) - PaaS, Deploy apps không lo infrastructure, Deployment Policies
 - [x] [AWS Outposts](aws-outposts.md) - Hybrid Cloud, AWS infrastructure tại on-premises data center
 - [x] [AWS Wavelength](aws-wavelength.md) - 5G Edge Computing, ultra-low latency cho mobile apps
+- [x] [AWS Local Zones](aws-local-zones.md) - AWS mini DC gần thành phố lớn, low latency cho city users
 
 ## Storage
 
