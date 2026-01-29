@@ -73,6 +73,7 @@
 
 ## Messaging & Streaming
 
+- [x] [Messaging Patterns Comparison](messaging-patterns-comparison.md) - **So sánh Queue vs Pub/Sub vs Streaming vs Event Bus**
 - [x] [SQS](sqs.md) - Simple Queue Service, Standard vs FIFO, DLQ, Long Polling
 - [x] [SNS](sns.md) - Simple Notification Service, Pub/Sub, Fan-out, Message Filtering
 - [x] [Kinesis](kinesis.md) - Data Streams, Firehose, Analytics, Real-time Streaming

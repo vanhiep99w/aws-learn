@@ -353,7 +353,96 @@
 
 ---
 
-## 5. FIFO Topics
+## 5. Spring Boot Integration
+
+### 5.1 Spring Boot có thể nhận SNS messages?
+
+> **Có!** Nhưng có 2 cách:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              SPRING BOOT + SNS                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   OPTION 1: SNS → HTTP Endpoint (Spring Boot expose API)        │
+│   ┌───────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──PUSH──→ https://your-app.com/sns-endpoint    ││
+│   │                           ↓                               ││
+│   │                    @PostMapping("/sns-endpoint")          ││
+│   │                    public void handle(@RequestBody...)    ││
+│   │                                                           ││
+│   │  ⚠️ Cần public URL, xử lý subscription confirmation       ││
+│   └───────────────────────────────────────────────────────────┘│
+│                                                                 │
+│   OPTION 2: SNS → SQS → Spring Boot (RECOMMENDED!)              │
+│   ┌───────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──→ SQS Queue ←── Spring Boot @SqsListener     ││
+│   │                                                           ││
+│   │  ✅ Better: decoupled, retry, DLQ support                 ││
+│   │  ✅ No need for public URL                                ││
+│   │  ✅ Buffering when app is down                            ││
+│   └───────────────────────────────────────────────────────────┘│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 5.2 Option 1: HTTP Endpoint
+
+```java
+@RestController
+public class SnsController {
+
+    @PostMapping("/sns-endpoint")
+    public ResponseEntity<String> handleSns(@RequestBody String payload,
+                                            @RequestHeader("x-amz-sns-message-type") String messageType) {
+        
+        // 1. Handle subscription confirmation
+        if ("SubscriptionConfirmation".equals(messageType)) {
+            // Extract SubscribeURL and call it to confirm
+            return ResponseEntity.ok("Subscribed");
+        }
+        
+        // 2. Handle actual notifications
+        if ("Notification".equals(messageType)) {
+            // Process the message
+            processMessage(payload);
+        }
+        
+        return ResponseEntity.ok("OK");
+    }
+}
+```
+
+### 5.3 Option 2: SNS → SQS → Spring Boot (Recommended)
+
+```java
+@Component
+public class OrderEventConsumer {
+
+    // SNS publishes to SQS, Spring Boot listens to SQS
+    @SqsListener("order-events-queue")
+    public void handleOrderEvent(String message) {
+        // Message contains SNS wrapper, parse it
+        SnsNotification notification = objectMapper.readValue(message, SnsNotification.class);
+        String actualMessage = notification.getMessage();
+        
+        // Process the actual message
+        processOrderEvent(actualMessage);
+    }
+}
+```
+
+### 5.4 So sánh các patterns
+
+| Pattern | Pros | Cons |
+|---------|------|------|
+| **SNS → HTTP** | Simple, direct | Need public URL, handle retries |
+| **SNS → SQS → App** | Decoupled, buffering, DLQ | Extra hop, slight delay |
+| **SNS → Lambda** | Serverless, auto-scale | Cold start, 15 min timeout |
+
+---
+
+## 6. FIFO Topics
 
 ### 5.1 FIFO Topic Features
 

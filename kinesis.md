@@ -481,22 +481,203 @@
 
 ## 4. So sánh Kinesis vs SQS vs Kafka
 
-### 4.1 Bảng so sánh
+### 4.1 Queue vs Streaming - Khác biệt cốt lõi
 
-| Feature | **Kinesis Data Streams** | **SQS** | **Kafka (MSK)** |
-|---------|-------------------------|---------|-----------------|
-| **Model** | Streaming | Queue | Streaming |
-| **Ordering** | Per shard | FIFO only | Per partition |
-| **Consumers** | Multiple (fan-out) | 1 per message | Multiple (consumer groups) |
-| **Replay** | ✅ Yes | ❌ No | ✅ Yes |
-| **Retention** | 1-365 days | Max 14 days | Unlimited |
-| **Throughput** | Provisioned (shards) | Unlimited | Provisioned |
-| **Max Message Size** | 1 MB | 256 KB | 1 MB (configurable) |
-| **Consumer Groups** | Via Enhanced Fan-out | ❌ No | ✅ Yes |
-| **Managed** | ✅ Serverless | ✅ Serverless | ⚠️ Semi-managed |
-| **Use Case** | Real-time analytics | Task queue | Event streaming |
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        QUEUE (SQS)                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Producer → [A] [B] [C] [D] [E] → Consumer                     │
+│                     ↓                                           │
+│              Sau khi xử lý xong                                 │
+│                     ↓                                           │
+│              MESSAGE BỊ XÓA ❌                                   │
+│                                                                 │
+│   Giống như: HỘP THƯ                                            │
+│   • Bạn nhận thư, đọc xong, VỨT ĐI                              │
+│   • Người khác không thể đọc lại thư đó                         │
+│   • 1 thư = 1 người đọc                                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 
-### 4.2 Khi nào dùng gì?
+┌─────────────────────────────────────────────────────────────────┐
+│                     STREAMING (Kinesis/Kafka)                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Producer → [A] [B] [C] [D] [E] ← Consumer 1 đọc               │
+│                                 ← Consumer 2 đọc                │
+│                                 ← Consumer 3 đọc                │
+│                     ↓                                           │
+│              CÁC MESSAGE VẪN CÒN ĐÓ ✅                          │
+│              (Lưu 1-365 ngày)                                   │
+│                                                                 │
+│   Giống như: YOUTUBE VIDEO / BĂNG GHI ÂM                        │
+│   • Bạn xem video, video VẪN CÒN ĐÓ                             │
+│   • Người khác có thể xem lại                                   │
+│   • Bạn có thể tua lại xem từ đầu                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.2 Kinesis vs Kafka - So sánh chi tiết
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                KINESIS vs KAFKA ARCHITECTURE                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   KAFKA:                                                        │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Topic "orders"                                         │  │
+│   │  ┌───────────────────────────────────────────────────┐  │  │
+│   │  │ Partition 0: [A] [D] [G]                          │  │  │
+│   │  │ Partition 1: [B] [E] [H]                          │  │  │
+│   │  │ Partition 2: [C] [F] [I]                          │  │  │
+│   │  └───────────────────────────────────────────────────┘  │  │
+│   │           ↓                          ↓                  │  │
+│   │  ┌─────────────────┐        ┌─────────────────┐         │  │
+│   │  │Consumer Group A │        │Consumer Group B │         │  │
+│   │  │C1→P0, C2→P1, C3→P2      │ C1→P0,P1,P2     │         │  │
+│   │  └─────────────────┘        └─────────────────┘         │  │
+│   │                                                         │  │
+│   │  → Có Consumer Groups (native)                          │  │
+│   │  → Trong 1 group: mỗi msg → 1 consumer                  │  │
+│   │  → Nhiều groups: mỗi group nhận TẤT CẢ messages         │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   KINESIS:                                                      │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Stream "orders"                                        │  │
+│   │  ┌───────────────────────────────────────────────────┐  │  │
+│   │  │ Shard 1: [A] [D] [G]                              │  │  │
+│   │  │ Shard 2: [B] [E] [H]                              │  │  │
+│   │  │ Shard 3: [C] [F] [I]                              │  │  │
+│   │  └───────────────────────────────────────────────────┘  │  │
+│   │           ↓                          ↓                  │  │
+│   │  ┌─────────────────┐        ┌─────────────────┐         │  │
+│   │  │KCL App A        │        │KCL App B        │         │  │
+│   │  │(reads all shards)       │(reads all shards)│         │  │
+│   │  └─────────────────┘        └─────────────────┘         │  │
+│   │                                                         │  │
+│   │  → KHÔNG có Consumer Groups (native)                    │  │
+│   │  → Dùng Enhanced Fan-out hoặc KCL để làm tương tự       │  │
+│   │  → Mỗi KCL app = tương đương 1 consumer group           │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.3 Consumer Group - Giải thích chi tiết
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              KAFKA CONSUMER GROUP DETAIL                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Topic "orders" với 3 partitions                               │
+│                                                                 │
+│   SCENARIO 1: 1 Consumer Group với 3 consumers                  │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Group "order-service"                                  │  │
+│   │  ┌────────┐  ┌────────┐  ┌────────┐                     │  │
+│   │  │  C1    │  │  C2    │  │  C3    │                     │  │
+│   │  │  P0    │  │  P1    │  │  P2    │                     │  │
+│   │  │ [A][D] │  │ [B][E] │  │ [C][F] │                     │  │
+│   │  └────────┘  └────────┘  └────────┘                     │  │
+│   │                                                         │  │
+│   │  → Mỗi consumer nhận 1 phần messages (load balancing)   │  │
+│   │  → GIỐNG SQS behavior trong 1 group!                    │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   SCENARIO 2: 2 Consumer Groups                                 │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Group "order-service"        Group "analytics"         │  │
+│   │  ┌────────────────────┐      ┌────────────────────┐     │  │
+│   │  │ C1(P0) C2(P1) C3(P2)│      │     C1(ALL)        │     │  │
+│   │  └────────────────────┘      └────────────────────┘     │  │
+│   │  Nhận: A,B,C,D,E,F            Nhận: A,B,C,D,E,F          │  │
+│   │  (chia cho 3 consumers)       (1 consumer nhận all)      │  │
+│   │                                                         │  │
+│   │  → CẢ HAI groups đều nhận TẤT CẢ messages!              │  │
+│   │  → Khác SQS: SQS chỉ có 1 "group"                       │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.4 Kinesis tương đương Kafka Consumer Groups
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│           KINESIS: EMULATING CONSUMER GROUPS                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   OPTION 1: Multiple KCL Applications                           │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Stream "orders"                                        │  │
+│   │         ↓                     ↓                         │  │
+│   │  ┌─────────────────┐   ┌─────────────────┐              │  │
+│   │  │KCL App A        │   │KCL App B        │              │  │
+│   │  │"order-service"  │   │"analytics"      │              │  │
+│   │  │DynamoDB Table A │   │DynamoDB Table B │              │  │
+│   │  └─────────────────┘   └─────────────────┘              │  │
+│   │                                                         │  │
+│   │  → Mỗi KCL app có riêng checkpoint table                │  │
+│   │  → Cả 2 apps đều đọc TẤT CẢ data                        │  │
+│   │  → Giống Kafka 2 consumer groups!                       │  │
+│   │  ⚠️ Shared throughput (2 MB/s per shard)               │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   OPTION 2: Enhanced Fan-out                                    │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Stream "orders"                                        │  │
+│   │         ↓ (push)          ↓ (push)                      │  │
+│   │  ┌─────────────────┐   ┌─────────────────┐              │  │
+│   │  │Consumer A       │   │Consumer B       │              │  │
+│   │  │2 MB/s dedicated │   │2 MB/s dedicated │              │  │
+│   │  └─────────────────┘   └─────────────────┘              │  │
+│   │                                                         │  │
+│   │  → Mỗi consumer nhận RIÊNG 2 MB/s                       │  │
+│   │  → Up to 20 consumers per stream                        │  │
+│   │  → Giống Kafka consumer groups hơn!                     │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.5 Bảng so sánh Kinesis vs Kafka
+
+| Feature | **Kinesis** | **Kafka (MSK)** |
+|---------|-------------|-----------------|
+| **Managed** | ✅ Fully serverless | ⚠️ Semi-managed (broker management) |
+| **Consumer Groups** | Via KCL apps / Enhanced Fan-out | ✅ Native |
+| **Partitioning** | Shards (manual/on-demand) | Partitions |
+| **Retention** | 1-365 days | Unlimited (disk-based) |
+| **Throughput per shard/partition** | 1 MB/s write, 2 MB/s read | Depends on broker config |
+| **Message Size** | 1 MB max | 1 MB default (configurable) |
+| **Protocol** | AWS SDK / HTTP | Kafka Protocol |
+| **Ecosystem** | AWS integrations | Kafka Connect, Schema Registry |
+| **Cost Model** | Per shard hour + data | Per broker hour |
+| **Scaling** | Shard split/merge | Add partitions |
+| **Replay** | ✅ Via iterator | ✅ Via offset |
+| **Ordering** | Per shard | Per partition |
+| **Exactly-once** | ❌ At-least-once | ✅ Transactions |
+| **Multi-Region** | ❌ Single region | ✅ MirrorMaker |
+
+### 4.6 So sánh với SQS
+
+| Feature | **Kinesis/Kafka** | **SQS** |
+|---------|-------------------|---------|
+| **Message sau xử lý** | VẪN CÒN | BỊ XÓA |
+| **Replay** | ✅ Yes | ❌ No |
+| **Consumer Groups** | ✅ Yes | ❌ No (1 "group" only) |
+| **Ordering** | Per shard/partition | FIFO queues only |
+| **Use case** | Event streaming, analytics | Task queue, job processing |
+| **Scaling** | Provision shards | Unlimited |
+| **Latency** | ~200ms | ~10ms |
+
+### 4.7 Khi nào dùng gì?
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -521,7 +702,7 @@
 │       Streams  (simple queue)                                   │
 │                                                                 │
 │                                                                 │
-│   Đang dùng Kafka on-prem?                                      │
+│   Đang dùng Kafka on-prem? Cần Kafka ecosystem?                 │
 │        │                                                        │
 │   ┌────┴────┐                                                   │
 │   ↓         ↓                                                   │
@@ -529,10 +710,21 @@
 │   │         │                                                   │
 │   ↓         ↓                                                   │
 │ Amazon    Kinesis                                               │
-│  MSK      (AWS native)                                          │
+│  MSK      (AWS native, simpler)                                 │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+| Scenario | Recommendation |
+|----------|----------------|
+| New AWS project, need streaming | **Kinesis** |
+| Migrate from Kafka on-prem | **Amazon MSK** |
+| Need Kafka Connect ecosystem | **Amazon MSK** |
+| Simple task queue | **SQS** |
+| Fan-out to multiple services | **SNS + SQS** |
+| Real-time analytics | **Kinesis** |
+| Need exactly-once semantics | **Kafka/MSK** |
+
 
 ---
 

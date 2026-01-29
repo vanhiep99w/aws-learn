@@ -593,7 +593,97 @@
 
 ---
 
-## 7. SQS vs SNS vs Kinesis
+## 7. Spring Boot Integration
+
+### 7.1 Spring Boot làm SQS Consumer (HOÀN TOÀN ĐƯỢC!)
+
+> **⚠️ Lưu ý:** Nhiều người lầm tưởng SQS chỉ dùng được với Lambda. Thực tế bạn **HOÀN TOÀN CÓ THỂ** dùng Spring Boot (hoặc bất kỳ app nào) làm consumer!
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              SPRING BOOT + SQS                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SQS Queue                         Spring Boot App             │
+│   ┌───────────┐                    ┌───────────────────────┐   │
+│   │  [A] [B]  │  ←── POLL ────────│ @SqsListener          │   │
+│   │  [C] [D]  │      (long poll)   │                       │   │
+│   └───────────┘                    │ public void process(  │   │
+│                                    │   String message) {   │   │
+│                                    │   // xử lý message    │   │
+│                                    │ }                     │   │
+│                                    └───────────────────────┘   │
+│                                                                 │
+│   Thư viện: spring-cloud-aws-messaging hoặc aws-sdk-java       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 7.2 Code Example
+
+**Maven dependency:**
+```xml
+<dependency>
+    <groupId>io.awspring.cloud</groupId>
+    <artifactId>spring-cloud-aws-messaging</artifactId>
+    <version>3.0.0</version>
+</dependency>
+```
+
+**Consumer code:**
+```java
+@Component
+public class OrderConsumer {
+
+    @SqsListener("order-queue")
+    public void processOrder(String message) {
+        log.info("Received order: {}", message);
+        // Xử lý order
+        orderService.process(message);
+        // Message tự động được delete sau khi method return success
+    }
+    
+    // Hoặc với object mapping:
+    @SqsListener("order-queue")
+    public void processOrder(Order order) {
+        orderService.process(order);
+    }
+}
+```
+
+### 7.3 So sánh Consumer Types
+
+| Consumer Type | Use Case | Pros | Cons |
+|---------------|----------|------|------|
+| **Spring Boot + SQS** | Long-running apps, microservices | Full control, existing infrastructure | Manage scaling yourself |
+| **Lambda + SQS Trigger** | Serverless, event-driven | Auto-scaling, pay per use | Cold start, 15 min timeout |
+| **ECS/EKS + SQS** | Containerized workloads | Container orchestration | More complex setup |
+
+### 7.4 Kafka vs SQS - Điểm khác biệt THỰC SỰ
+
+> Khác biệt **KHÔNG PHẢI** là Spring Boot có thể làm consumer hay không (đều được!), mà là:
+
+| | **Kafka** | **SQS** |
+|---|-----------|---------|
+| **Consumer library** | `@KafkaListener` | `@SqsListener` |
+| **Sau khi đọc** | Message VẪN CÒN | Message BỊ XÓA |
+| **Consumer Groups** | ✅ Native | ❌ Không có |
+| **Replay** | ✅ Có | ❌ Không |
+| **Nhiều apps đọc cùng data** | ✅ Dễ dàng | ❌ Phải dùng SNS fan-out |
+
+```
+KAFKA:    Topic ─┬→ App A (đọc tất cả)   ← CÙNG DATA
+                 └→ App B (đọc tất cả)   ← CÙNG DATA
+                 
+SQS:      Queue ─→ App A hoặc App B (MỖI msg chỉ 1 app nhận)
+                 
+SNS+SQS:  SNS ─┬→ Queue A → App A (nhận copy)
+              └→ Queue B → App B (nhận copy)
+```
+
+---
+
+## 8. SQS vs SNS vs Kinesis
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
