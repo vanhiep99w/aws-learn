@@ -71,11 +71,17 @@
 - [x] [CloudFormation](cloudformation.md) - IaC với YAML/JSON, Templates, Stacks, Intrinsic Functions
 - [x] [CDK](cdk.md) - Cloud Development Kit, IaC với TypeScript/Python, Constructs (L1, L2, L3)
 
-## Messaging
+## Messaging & Streaming
 
-- [ ] SQS
-- [ ] SNS
-- [ ] EventBridge
+- [x] [SQS](sqs.md) - Simple Queue Service, Standard vs FIFO, DLQ, Long Polling
+- [x] [SNS](sns.md) - Simple Notification Service, Pub/Sub, Fan-out, Message Filtering
+- [x] [Kinesis](kinesis.md) - Data Streams, Firehose, Analytics, Real-time Streaming
+- [x] [Amazon MQ](amazon-mq.md) - Managed ActiveMQ/RabbitMQ, Migration từ on-premises
+- [x] [EventBridge](eventbridge.md) - Event Bus, Rules, Patterns, Pipes, Scheduler, Archive & Replay
+
+## Global Applications Architecture
+
+- [x] [Global Applications Architecture](global-applications-architecture.md) - Multi-Region patterns, DR strategies, CloudFront vs Global Accelerator
 
 ---
 
