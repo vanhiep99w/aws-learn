@@ -21,10 +21,13 @@
 - [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
 - [x] [Lightsail](lightsail.md) - Simple Virtual Private Server (VPS), Pre-configured Stacks (WordPress, LAMP)
 - [x] [Elastic Beanstalk](elastic-beanstalk.md) - PaaS, Deploy apps không lo infrastructure, Deployment Policies
+- [x] [AWS Outposts](aws-outposts.md) - Hybrid Cloud, AWS infrastructure tại on-premises data center
+- [x] [AWS Wavelength](aws-wavelength.md) - 5G Edge Computing, ultra-low latency cho mobile apps
 
 ## Storage
 
 - [x] [S3](s3.md) - Simple Storage Service, Storage Classes, Lifecycle, Security
+- [x] [S3 Transfer Acceleration](s3-transfer-acceleration.md) - Tăng tốc upload/download qua Edge Locations
 - [x] [EBS](ebs.md) - Elastic Block Store, Volume Types, Snapshots, Encryption
 - [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
