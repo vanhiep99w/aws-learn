@@ -504,27 +504,77 @@ EC2 gửi request đến google.com:
 
 ### 5. VPC Peering
 
-**Tác dụng:** Kết nối 2 VPC với nhau (cùng hoặc khác account/region).
+**Tác dụng:** Kết nối 2 VPC với nhau (cùng hoặc khác account/region), cho phép giao tiếp bằng **private IP**.
+
+#### Vấn đề: VPC mặc định cách ly hoàn toàn
 
 ```
 ┌─────────────────┐              ┌─────────────────┐
-│    VPC-Prod     │              │    VPC-Dev      │
-│  10.0.0.0/16    │◄────────────►│  172.16.0.0/16  │
-│                 │ VPC Peering  │                 │
-│   ┌─────────┐   │    Connection│   ┌─────────┐   │
-│   │   EC2   │   │              │   │   EC2   │   │
+│    VPC-Prod     │      ❌      │    VPC-Dev      │
+│  10.0.0.0/16    │   Không thể  │  172.16.0.0/16  │
+│                 │   kết nối!   │                 │
+│   ┌─────────┐   │              │   ┌─────────┐   │
+│   │  EC2-A  │──────────────────│   │  EC2-B  │   │
+│   │10.0.1.5 │   │              │   │172.16.1.5│  │
 │   └─────────┘   │              │   └─────────┘   │
 └─────────────────┘              └─────────────────┘
 
-EC2 trong VPC-Prod có thể gọi EC2 trong VPC-Dev qua private IP
+EC2-A muốn gọi EC2-B bằng private IP?
+→ KHÔNG THỂ! (khác VPC = khác mạng hoàn toàn)
+```
+
+#### Giải pháp: VPC Peering
+
+```
+┌─────────────────┐              ┌─────────────────┐
+│    VPC-Prod     │◄────────────►│    VPC-Dev      │
+│  10.0.0.0/16    │ VPC Peering  │  172.16.0.0/16  │
+│                 │  Connection  │                 │
+│   ┌─────────┐   │      ✅      │   ┌─────────┐   │
+│   │  EC2-A  │◄─────────────────►  │  EC2-B  │   │
+│   │10.0.1.5 │   │  Gọi được!   │   │172.16.1.5│  │
+│   └─────────┘   │              │   └─────────┘   │
+└─────────────────┘              └─────────────────┘
+
+EC2-A ping 172.16.1.5 → ✅ Thành công!
+```
+
+#### Use Cases thực tế
+
+| Tình huống | Giải thích |
+|------------|------------|
+| **Dev gọi Prod database** | Team dev cần test với data thật từ RDS Prod |
+| **Shared Services** | VPC chung chứa logging, monitoring cho nhiều VPC khác dùng |
+| **Multi-account** | Công ty có nhiều AWS account, mỗi account có VPC riêng nhưng cần giao tiếp |
+| **Microservices** | Service A (VPC-1) cần gọi Service B (VPC-2) |
+
+#### Tại sao không gọi qua Internet?
+
+| Cách | Ưu điểm | Nhược điểm |
+|------|---------|------------|
+| **Qua Internet** | Đơn giản | 💰 Tốn phí NAT, 🐢 Latency cao, 🔓 Kém bảo mật |
+| **VPC Peering** | ✅ Miễn phí*, ⚡ Low latency, 🔒 Private | Cần setup route tables |
+
+```
+Qua Internet:
+  EC2-A → NAT Gateway → Internet → NAT Gateway → EC2-B
+          💰 $0.045/GB    🐢 Latency cao    🔓 Public
+
+VPC Peering:
+  EC2-A → Private Network → EC2-B
+          ✅ Free*         ⚡ Low latency   🔒 Private
+
+(*Chỉ trả data transfer nếu cross-AZ/region: $0.01/GB)
 ```
 
 | Đặc điểm | Giá trị |
 |----------|---------|
-| Chi phí | ✅ Miễn phí (chỉ trả data transfer) |
+| Chi phí | ✅ Miễn phí (chỉ trả data transfer cross-AZ/region) |
 | Data transfer | $0.01/GB cross-AZ |
 | Giới hạn | Không transitive (A↔B, B↔C ≠ A↔C) |
 | CIDR | Không được trùng nhau |
+
+> ⚠️ **Lưu ý về Transitive:** VPC Peering không hỗ trợ transitive routing. Nếu VPC-A peering với VPC-B, và VPC-B peering với VPC-C, **VPC-A không thể gọi VPC-C** qua VPC-B. Cần tạo peering riêng A↔C hoặc dùng Transit Gateway.
 
 ---
 
@@ -532,31 +582,97 @@ EC2 trong VPC-Prod có thể gọi EC2 trong VPC-Dev qua private IP
 
 **Tác dụng:** Hub trung tâm kết nối nhiều VPC và on-premise (thay thế nhiều VPC Peering).
 
+#### Vấn đề: Kết nối nhiều VPC với VPC Peering
+
 ```
+KHÔNG có Transit Gateway (dùng VPC Peering):
+
+    VPC-A ◄──────► VPC-B
+      │              │
+      │              │
+      ▼              ▼
+    VPC-C ◄──────► VPC-D
+
+3 VPC cần 3 peering: A↔B, A↔C, B↔C
+4 VPC cần 6 peering: A↔B, A↔C, A↔D, B↔C, B↔D, C↔D
+5 VPC cần 10 peering...
+10 VPC cần 45 peering!!! 😱
+
+→ Công thức: n(n-1)/2 peering connections
+→ Quản lý RẤT PHỨC TẠP!
+```
+
+#### Giải pháp: Transit Gateway
+
+```
+CÓ Transit Gateway:
+
                     ┌─────────────────┐
                     │ Transit Gateway │
                     │   (Hub trung    │
-                    │    tâm)         │
+                    │     tâm)        │
                     └────────┬────────┘
            ┌─────────────────┼─────────────────┐
-           │                 │                 │
-           ▼                 ▼                 ▼
-    ┌──────────┐      ┌──────────┐      ┌──────────┐
-    │  VPC-A   │      │  VPC-B   │      │  VPC-C   │
-    └──────────┘      └──────────┘      └──────────┘
-           │                 │                 │
-           └─────────────────┴─────────────────┘
-                   Tất cả có thể gọi nhau!
-
-So với VPC Peering:
-  3 VPC cần 3 peering connections (A↔B, B↔C, A↔C)
-  Transit Gateway: chỉ cần 1 hub
+           │         │       │       │         │
+           ▼         ▼       ▼       ▼         ▼
+        ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐
+        │VPC-A│  │VPC-B│  │VPC-C│  │VPC-D│  │VPC-E│
+        └─────┘  └─────┘  └─────┘  └─────┘  └─────┘
+  
+10 VPC? Chỉ cần 10 attachments!
+→ Tất cả VPC đều có thể gọi nhau (transitive routing)!
+→ Quản lý TẬP TRUNG!
 ```
+
+#### So sánh VPC Peering vs Transit Gateway
+
+| Tiêu chí | VPC Peering | Transit Gateway |
+|----------|-------------|-----------------|
+| **Topology** | Mesh (lưới) | Hub-and-spoke (trục) |
+| **Transitive** | ❌ Không (A↔B, B↔C ≠ A↔C) | ✅ Có (A↔Hub↔C = A↔C) |
+| **Số connections (10 VPC)** | 45 peering 😱 | 10 attachments ✅ |
+| **On-premise** | ❌ Không hỗ trợ | ✅ Hỗ trợ (VPN, Direct Connect) |
+| **Cross-region** | ✅ Có | ✅ Có (peering giữa TGW) |
+| **Chi phí** | Free (chỉ data) | 💰 $0.05/giờ + $0.02/GB |
+| **Quản lý** | Phức tạp khi scale | Tập trung |
+
+#### Use Cases
+
+| Tình huống | Giải thích |
+|------------|------------|
+| **Nhiều VPC (>3)** | Tránh quản lý hàng chục peering connections |
+| **Shared Services** | VPC chung (logging, monitoring) cần kết nối với tất cả VPC khác |
+| **Hybrid Cloud** | Kết nối on-premise với nhiều VPC qua VPN hoặc Direct Connect |
+| **Multi-region** | Kết nối VPC ở nhiều region khác nhau (TGW peering) |
+| **Multi-account** | Công ty có nhiều AWS account, mỗi account có VPC |
+
+#### Chi phí
+
+| Thành phần | Chi phí |
+|------------|---------|
+| **Per attachment** | 💰 $0.05/giờ (~$36/tháng mỗi VPC) |
+| **Per GB** | 💰 $0.02/GB (cross-VPC traffic) |
+
+**Ví dụ:** 5 VPC attachments + 100GB data/tháng:
+```
+Attachments: $0.05 × 24h × 30 × 5 = $180/tháng
+Data:        $0.02 × 100 = $2/tháng
+Tổng:        ~$182/tháng
+```
+
+#### Khi nào dùng cái nào?
+
+| Số VPC | Recommendation |
+|--------|----------------|
+| **2-3 VPC** | 🏆 VPC Peering (đơn giản, miễn phí) |
+| **4+ VPC** | 🏆 Transit Gateway (dễ quản lý) |
+| **Cần on-premise** | 🏆 Transit Gateway |
+| **Budget hạn chế** | VPC Peering (dù nhiều VPC) |
 
 | Đặc điểm | Giá trị |
 |----------|---------|
-| Chi phí | 💰 $0.05/giờ + $0.02/GB |
-| Use case | Nhiều VPC (>3), kết nối on-premise |
+| Chi phí | 💰 $0.05/giờ per attachment + $0.02/GB |
+| Use case | Nhiều VPC (>3), kết nối on-premise, multi-region |
 | Transitive | ✅ Có (A↔Hub↔C = A có thể gọi C) |
 
 ---
@@ -589,7 +705,135 @@ So với VPC Peering:
 
 ---
 
-### 8. Security Groups
+### 8. AWS Client VPN
+
+**Tác dụng:** Cho phép **người dùng cá nhân** (developer, admin) kết nối **từ laptop** vào VPC một cách an toàn.
+
+#### Phân biệt Site-to-Site VPN vs Client VPN
+
+| Tiêu chí | Site-to-Site VPN | Client VPN |
+|----------|------------------|------------|
+| **Mục đích** | Kết nối văn phòng/DC | Kết nối người dùng cá nhân |
+| **Ai dùng** | Toàn bộ network | Developer, admin, remote worker |
+| **Thiết bị** | Router/Firewall | Laptop, PC (VPN client app) |
+| **Protocol** | IPSec | OpenVPN (SSL/TLS) |
+| **Setup** | Phức tạp (cần hardware) | Đơn giản (chỉ cần app) |
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     2 LOẠI VPN TRONG AWS                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   SITE-TO-SITE VPN                    CLIENT VPN                     │
+│   (Kết nối văn phòng)                 (Kết nối cá nhân)              │
+│                                                                      │
+│   ┌──────────────┐                    ┌──────────────┐               │
+│   │  On-Premise  │                    │   Laptop     │               │
+│   │  Data Center │                    │   (Từ nhà)   │               │
+│   │  (Nhiều máy) │                    │   (1 người)  │               │
+│   └──────┬───────┘                    └──────┬───────┘               │
+│          │                                   │                       │
+│          │ IPSec Tunnel                      │ OpenVPN/SSL           │
+│          │                                   │                       │
+│          ▼                                   ▼                       │
+│   ┌──────────────┐                    ┌──────────────┐               │
+│   │   Virtual    │                    │  Client VPN  │               │
+│   │   Private    │                    │   Endpoint   │               │
+│   │   Gateway    │                    │              │               │
+│   └──────┬───────┘                    └──────┬───────┘               │
+│          │                                   │                       │
+│          ▼                                   ▼                       │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                          YOUR VPC                             │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### Client VPN hoạt động như thế nào?
+
+```
+┌─────────────────┐
+│  Your Laptop    │
+│   (Từ nhà)      │
+│ ┌─────────────┐ │
+│ │ VPN Client  │ │
+│ └──────┬──────┘ │
+└────────┼────────┘
+         │
+         │ OpenVPN (SSL/TLS encrypted)
+         ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                              VPC                                     │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                    Client VPN Endpoint                        │   │
+│   │            (Assign IP: 10.0.100.10 cho laptop)               │   │
+│   └───────────────────────────┬─────────────────────────────────┘   │
+│                               │                                      │
+│                               │ Laptop giờ "như trong VPC"          │
+│                               ▼                                      │
+│   ┌─────────────────┐                                               │
+│   │  PRIVATE Subnet │                                               │
+│   │  ┌───────────┐  ┌───────────┐  ┌───────────┐                   │
+│   │  │   EC2     │  │   RDS     │  │   ECS     │                   │
+│   │  └───────────┘  └───────────┘  └───────────┘                   │
+│   └─────────────────┘                                               │
+│                                                                      │
+│   Developer SSH trực tiếp vào EC2, connect RDS, truy cập internal web│
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### So sánh Client VPN vs Jump Server (Bastion Host)
+
+Nhiều công ty dùng **Jump Server (Bastion Host)** để truy cập VPC. Đây là so sánh:
+
+| Tiêu chí | Jump Server (Bastion) | Client VPN |
+|----------|----------------------|------------|
+| **Cách hoạt động** | SSH qua 1 máy trung gian | Laptop "như trong VPC" |
+| **Số bước** | 2 bước (Laptop → Bastion → EC2) | 1 bước (Laptop → EC2 trực tiếp) |
+| **Expose ra internet** | ✅ Bastion có Public IP | ❌ Không cần expose gì |
+| **Bảo mật** | ⚠️ Bastion là attack surface | 🔒 Không có server exposed |
+| **Truy cập RDS** | ❌ Khó (cần tunnel hoặc tool) | ✅ Trực tiếp connect |
+| **Truy cập web internal** | ❌ Cần port forwarding | ✅ Mở browser trực tiếp |
+| **Quản lý user** | Quản lý SSH key trên Bastion | Quản lý qua Certificate/AD/SSO |
+
+**Chi phí so sánh:**
+
+| | Jump Server | Client VPN |
+|---|-------------|------------|
+| **Infra** | EC2 t3.micro ~$8/tháng | $72/tháng (endpoint) |
+| **Connection** | Free | $0.05/giờ/connection |
+| **10 dev, 8h/ngày** | ~$8/tháng | ~$152/tháng |
+
+#### Khi nào dùng cái nào?
+
+| Tình huống | Nên dùng |
+|------------|----------|
+| **Startup nhỏ, ít người, tiết kiệm** | 🏆 Jump Server |
+| **Chỉ cần SSH vào EC2** | Jump Server OK |
+| **Cần truy cập RDS, ElastiCache, internal web** | 🏆 Client VPN |
+| **Nhiều developer, cần quản lý tập trung** | 🏆 Client VPN |
+| **Compliance/Security cao** | 🏆 Client VPN |
+| **Không muốn expose bất kỳ gì ra internet** | 🏆 Client VPN |
+
+#### Authentication Methods
+
+| Method | Mô tả | Khi nào dùng |
+|--------|-------|--------------|
+| **Mutual Certificate** | Client + Server đều có certificate | Đơn giản, không cần AD |
+| **Active Directory** | Xác thực qua AD/LDAP | Công ty đã có AD |
+| **SAML (SSO)** | Xác thực qua Okta, Azure AD... | Dùng chung với SSO |
+
+| Đặc điểm | Giá trị |
+|----------|---------|
+| Chi phí Endpoint | 💰 $0.10/giờ (~$72/tháng) |
+| Chi phí Connection | 💰 $0.05/giờ/connection |
+| Use case | Developer remote, admin access, security audit |
+
+> 💡 **Alternative:** **SSM Session Manager** - không cần Bastion, không cần VPN, truy cập EC2 qua AWS Console. Hoàn toàn miễn phí!
+
+---
+
+### 9. Security Groups
 
 **Tác dụng:** Virtual firewall cho **instance** (EC2, RDS, Lambda...).
 
@@ -604,7 +848,7 @@ Xem chi tiết: [Security Groups](security-groups.md)
 
 ---
 
-### 9. Network ACLs (NACLs)
+### 10. Network ACLs (NACLs)
 
 **Tác dụng:** Firewall cho **subnet** (lớp bảo vệ thêm ngoài Security Group).
 
@@ -649,23 +893,161 @@ Xem chi tiết: [Security Groups](security-groups.md)
 └────────┴──────────┴──────────┴───────┴────────┴────────┘
 ```
 
+#### Khi nào cần dùng NACL?
+
+| Use Case | Mô tả |
+|----------|-------|
+| **Block IP độc hại** | Chặn toàn bộ dải IP đang tấn công ra khỏi subnet |
+| **Defense in depth** | Thêm lớp bảo vệ ngoài Security Group |
+| **Cần rule DENY** | Security Group chỉ có ALLOW, NACL mới có DENY |
+| **Compliance/Audit** | Một số tiêu chuẩn yêu cầu nhiều lớp firewall |
+
+**Ví dụ thực tế:**
+```
+Bị tấn công DDoS từ dải IP 203.0.113.0/24?
+
+Security Group: ❌ Không thể block (chỉ có ALLOW)
+Network ACL:    ✅ Thêm rule DENY 203.0.113.0/24 → chặn toàn subnet!
+```
+
+#### Có bắt buộc cấu hình NACL không?
+
+**Không bắt buộc!** 
+
+- Default NACL của AWS **cho phép tất cả traffic** (ALLOW all inbound/outbound)
+- Hầu hết chỉ cần dùng **Security Group** là đủ
+- NACL thường dùng trong môi trường **enterprise** hoặc khi cần **compliance chặt chẽ**
+
+```
+Dự án nhỏ/startup:
+  → Chỉ cần Security Group ✅
+
+Dự án enterprise/regulated (ngân hàng, healthcare):
+  → Security Group + NACL ✅✅
+```
+
+> 💡 **Tip:** Nếu không chắc cần NACL hay không, hãy giữ nguyên default. Chỉ thêm NACL rules khi có yêu cầu cụ thể về security hoặc compliance.
+
 ---
 
-### 10. VPC Endpoints
+### 11. VPC Endpoints
 
 **Tác dụng:** Truy cập AWS services (S3, DynamoDB, ECR...) mà **không cần đi qua internet**.
 
-```
-KHÔNG có Endpoint:
-  EC2 (Private) → NAT Gateway → Internet → S3
-                  💰 Tốn phí NAT + chậm
+#### Hiểu lầm phổ biến: S3 nằm trong VPC?
 
-CÓ Endpoint:
-  EC2 (Private) → VPC Endpoint → S3
-                  ✅ Nhanh + có thể miễn phí
+> ⚠️ **Không!** S3, DynamoDB, SQS, SNS... là các service **PUBLIC** của AWS, tồn tại **bên ngoài** VPC của bạn.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AWS Region (ap-southeast-1)                   │
+│                                                                      │
+│   ┌──────────────────────────────────────────┐                      │
+│   │              YOUR VPC                     │                      │
+│   │           (10.0.0.0/16)                   │                      │
+│   │                                           │                      │
+│   │   ┌───────────────┐  ┌───────────────┐   │                      │
+│   │   │ Public Subnet │  │ Private Subnet│   │                      │
+│   │   │  ┌─────────┐  │  │  ┌─────────┐  │   │                      │
+│   │   │  │   EC2   │  │  │  │   EC2   │  │   │                      │
+│   │   │  │   RDS   │  │  │  │   RDS   │  │   │                      │
+│   │   │  └─────────┘  │  │  └─────────┘  │   │                      │
+│   │   └───────────────┘  └───────────────┘   │                      │
+│   │                                           │                      │
+│   │   ❌ S3, DynamoDB KHÔNG Ở ĐÂY!           │                      │
+│   └──────────────────────────────────────────┘                      │
+│                                                                      │
+│   ┌────────────────────────────────────────────────────────────┐    │
+│   │                  AWS MANAGED SERVICES                        │   │
+│   │              (Bên ngoài VPC của bạn)                         │   │
+│   │                                                              │   │
+│   │   ┌─────┐  ┌─────────┐  ┌─────┐  ┌─────┐  ┌──────────────┐  │   │
+│   │   │ S3  │  │DynamoDB │  │ SQS │  │ SNS │  │ SSM Parameter│  │   │
+│   │   └─────┘  └─────────┘  └─────┘  └─────┘  └──────────────┘  │   │
+│   │                                                              │   │
+│   │   → Truy cập qua PUBLIC ENDPOINT (internet)                  │   │
+│   │   → s3.ap-southeast-1.amazonaws.com                          │   │
+│   └────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-**2 loại Endpoint:**
+#### Phân loại AWS Services
+
+| Loại | Trong VPC | Bên ngoài VPC (Public) |
+|------|-----------|------------------------|
+| **Ví dụ** | EC2, RDS, ElastiCache, Lambda (VPC mode) | S3, DynamoDB, SQS, SNS, SSM, Secrets Manager |
+| **Private IP** | ✅ Có | ❌ Không |
+| **Truy cập** | Qua private network | Qua **internet endpoint** |
+
+#### Vấn đề: EC2 Private muốn gọi S3
+
+```
+EC2 trong Private Subnet → Không có public IP → Không ra được internet
+
+                               ┌─────────────────┐
+                               │       S3        │
+                               │ s3.amazonaws.com│ ← Public endpoint
+                               └────────┬────────┘
+                                        │
+                                   Internet
+                                        │
+                                        ❌ Không có đường đi!
+                                        │
+    ┌───────────────────────────────────┼───────────────────────────────┐
+    │                         VPC       │                                │
+    │   ┌─────────────────┐             │                                │
+    │   │ Private Subnet  │             │                                │
+    │   │  ┌───────────┐  │             │                                │
+    │   │  │    EC2    │──┼─────────────┘                                │
+    │   │  │ (no public│  │   Muốn upload file lên S3                    │
+    │   │  │    IP)    │  │   → KHÔNG THỂ! (không ra được internet)      │
+    │   │  └───────────┘  │                                              │
+    │   └─────────────────┘                                              │
+    └────────────────────────────────────────────────────────────────────┘
+```
+
+#### 2 cách để EC2 Private gọi S3
+
+**Cách 1: Dùng NAT Gateway (tốn phí)**
+```
+EC2 (Private) → NAT Gateway → Internet Gateway → Internet → S3
+                    │                                  │
+               💰 $0.045/giờ                    💰 $0.045/GB data
+                    │
+               ~$32/tháng + data transfer
+```
+
+**Cách 2: Dùng VPC Endpoint (miễn phí cho S3!)**
+```
+┌───────────────────────────────────────────────────────────────────┐
+│                              VPC                                   │
+│                                                                    │
+│   ┌─────────────────┐         ┌─────────────────┐                 │
+│   │ Private Subnet  │         │  VPC Endpoint   │                 │
+│   │                 │         │   (Gateway)     │──────────► S3   │
+│   │  ┌───────────┐  │         │                 │    AWS          │
+│   │  │    EC2    │──┼────────►│  Đường đi riêng │    Private      │
+│   │  │           │  │         │  trong AWS      │    Network      │
+│   │  └───────────┘  │         └─────────────────┘                 │
+│   └─────────────────┘                                              │
+│                                                                    │
+│   ❌ Không cần NAT Gateway                                         │
+│   ❌ Không đi qua Internet                                         │
+│   ✅ Miễn phí (với S3, DynamoDB)                                   │
+│   ✅ Bảo mật hơn (traffic không ra public)                         │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+#### So sánh 2 cách
+
+| Tiêu chí | Qua NAT Gateway | Qua VPC Endpoint |
+|----------|-----------------|------------------|
+| **Chi phí** | 💰 $32+/tháng + data | ✅ Miễn phí (Gateway Endpoint) |
+| **Bảo mật** | Traffic đi qua internet | 🔒 Traffic ở trong AWS backbone |
+| **Tốc độ** | Phụ thuộc internet | ⚡ Nhanh hơn |
+| **Setup** | Cần NAT Gateway | Chỉ cần tạo endpoint + route |
+
+#### 2 loại VPC Endpoint
 
 | Loại | Gateway Endpoint | Interface Endpoint |
 |------|------------------|-------------------|
@@ -681,9 +1063,127 @@ aws ec2 create-vpc-endpoint \
     --route-table-ids rtb-xxx
 ```
 
+> 💡 **Best Practice:** Luôn tạo Gateway Endpoint cho S3 và DynamoDB (miễn phí!) để tiết kiệm chi phí NAT Gateway và tăng bảo mật.
+
 ---
 
-### 11. VPC Flow Logs
+### 12. AWS PrivateLink
+
+**Tác dụng:** Expose service của bạn cho VPC khác (hoặc khách hàng) mà **không cần qua internet**.
+
+#### Vấn đề: Share service giữa các VPC
+
+```
+Bạn có 1 service (API) trong VPC-A, muốn cho VPC-B truy cập:
+
+Cách 1: VPC Peering
+  → Phải mở toàn bộ network giữa 2 VPC
+  → Có thể truy cập được nhiều thứ khác (không muốn)
+  → CIDR không được trùng
+
+Cách 2: Qua Internet (Public endpoint)
+  → 💰 Tốn phí
+  → 🔓 Kém bảo mật
+  → 🐢 Chậm
+
+Cách 3: PrivateLink ✅
+  → Chỉ expose đúng service cần thiết
+  → Traffic đi qua AWS backbone (private)
+  → Không cần lo CIDR trùng
+```
+
+#### PrivateLink hoạt động như thế nào?
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      SERVICE PROVIDER (VPC-A)                        │
+│                                                                      │
+│   ┌─────────────────┐         ┌─────────────────────┐               │
+│   │  Your Service   │────────►│ Network Load Balancer│               │
+│   │  (EC2, ECS...)  │         │       (NLB)         │               │
+│   └─────────────────┘         └──────────┬──────────┘               │
+│                                          │                           │
+│                               ┌──────────▼──────────┐               │
+│                               │  VPC Endpoint Service│ ◄── Bạn tạo  │
+│                               │    (PrivateLink)     │               │
+│                               └──────────┬──────────┘               │
+└──────────────────────────────────────────┼──────────────────────────┘
+                                           │
+                         AWS Private Network (không qua internet)
+                                           │
+┌──────────────────────────────────────────┼──────────────────────────┐
+│                      SERVICE CONSUMER (VPC-B)                        │
+│                                                                      │
+│                               ┌──────────▼──────────┐               │
+│                               │  Interface Endpoint │ ◄── Consumer   │
+│                               │  (ENI với private IP)│     tạo       │
+│                               └──────────┬──────────┘               │
+│                                          │                           │
+│   ┌─────────────────┐                    │                           │
+│   │   EC2 Consumer  │◄───────────────────┘                           │
+│   │  (gọi service)  │  Gọi qua private IP!                          │
+│   └─────────────────┘                                                │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### Các thành phần của PrivateLink
+
+| Thành phần | Vai trò | Ai tạo? |
+|------------|---------|---------|
+| **Network Load Balancer** | Phía trước service của bạn | Provider |
+| **VPC Endpoint Service** | Expose NLB qua PrivateLink | Provider |
+| **Interface Endpoint** | Kết nối đến Endpoint Service | Consumer |
+
+#### Use Cases thực tế
+
+| Tình huống | Giải thích |
+|------------|------------|
+| **SaaS Provider** | Bạn là nhà cung cấp SaaS, muốn cho khách hàng truy cập API của bạn một cách private |
+| **Multi-account** | Team Platform expose shared services cho các team khác trong org |
+| **3rd Party Integration** | Truy cập service của vendor qua private network (MongoDB Atlas, Snowflake, Datadog...) |
+| **Microservices** | Service ở VPC này cần gọi service ở VPC khác mà không muốn mở toàn bộ VPC |
+
+#### So sánh PrivateLink vs VPC Peering
+
+| Tiêu chí | VPC Peering | PrivateLink |
+|----------|-------------|-------------|
+| **Phạm vi** | Toàn bộ VPC | Chỉ 1 service cụ thể |
+| **CIDR trùng** | ❌ Không được trùng | ✅ OK (không quan tâm CIDR) |
+| **Bảo mật** | Mở rộng hơn | 🔒 Chặt hơn (chỉ expose service cần) |
+| **Transitive** | ❌ Không | ❌ Không |
+| **Chi phí** | Free (chỉ data transfer) | 💰 $0.01/giờ + data |
+| **Scalability** | Quản lý phức tạp khi nhiều VPC | Dễ scale cho nhiều consumer |
+
+#### Ví dụ thực tế
+
+```
+Công ty bạn có:
+  - VPC Platform: chứa Auth Service, Logging Service
+  - VPC Team-A: App của team A
+  - VPC Team-B: App của team B
+  
+Dùng VPC Peering:
+  → Team A có thể truy cập MỌI THỨ trong VPC Platform
+  → Team B có thể truy cập MỌI THỨ trong VPC Platform
+  → Không an toàn!
+
+Dùng PrivateLink:
+  → Team A chỉ truy cập được Auth Service (qua endpoint)
+  → Team B chỉ truy cập được Logging Service (qua endpoint)
+  → Kiểm soát chặt chẽ hơn!
+```
+
+| Đặc điểm | Giá trị |
+|----------|---------|
+| Chi phí Endpoint | 💰 $0.01/giờ (~$7.2/tháng) |
+| Chi phí Data | 💰 $0.01/GB |
+| Khi nào dùng | Expose service cho VPC khác/khách hàng một cách private |
+
+> 💡 **Tip:** Nhiều AWS services (như ECR, SSM, Secrets Manager) thực chất sử dụng PrivateLink dưới dạng Interface Endpoint. Khi bạn tạo Interface Endpoint đến các service này, bạn đang dùng PrivateLink!
+
+---
+
+### 13. VPC Flow Logs
 
 **Tác dụng:** Ghi log tất cả traffic vào/ra VPC (để audit, troubleshoot, security).
 
@@ -713,7 +1213,7 @@ aws ec2 create-vpc-endpoint \
 
 ---
 
-### 12. DHCP Option Sets
+### 14. DHCP Option Sets
 
 **Tác dụng:** Cấu hình DNS, domain name, NTP cho VPC.
 

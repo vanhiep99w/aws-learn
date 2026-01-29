@@ -43,7 +43,7 @@
 
 ## Networking
 
-- [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, Internet Gateway, NAT Gateway
+- [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, NAT Gateway, VPC Peering, Transit Gateway, Client VPN, PrivateLink, VPC Endpoints
 - [x] [Route 53](route53.md) - DNS Service, Hosted Zones, Routing Policies, Health Checks
 - [x] [DNS Deep Dive](how-dns-works.md) - Giải thích cơ chế DNS, phân biệt Registry/Registrar/Nameserver (quan trọng!)
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
