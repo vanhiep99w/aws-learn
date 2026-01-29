@@ -59,8 +59,10 @@
 ## Monitoring & Management
 
 - [x] [SSM](ssm.md) - Systems Manager, Parameter Store, Session Manager, Run Command
-- [ ] CloudWatch
-- [ ] CloudTrail
+- [x] [CloudWatch](cloudwatch.md) - Metrics, Alarms, Logs, Dashboards, Insights
+- [x] [CloudTrail](cloudtrail.md) - API Logging, Audit, Security Analysis, Event History
+- [x] [X-Ray](aws-xray.md) - Distributed Tracing, Service Map, Performance Analysis
+- [x] [AWS Health Dashboard](aws-health-dashboard.md) - Service Status, Personal Health Events, EventBridge Integration
 
 ## Developer Tools
 
