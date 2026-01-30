@@ -48,6 +48,10 @@
 - [x] [DNS Deep Dive](how-dns-works.md) - Giải thích cơ chế DNS, phân biệt Registry/Registrar/Nameserver (quan trọng!)
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
 
+## Account Management
+
+- [x] [AWS Organizations](aws-organizations.md) - Multi-Account Management, OUs, SCPs, Consolidated Billing
+
 ## Security
 
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
