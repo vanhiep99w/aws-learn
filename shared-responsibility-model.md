@@ -257,6 +257,72 @@ Thực tế:
 
 ---
 
+## Exam Tips cho Cloud Practitioner
+
+> [!IMPORTANT]
+> **Keywords để nhớ:**
+> - **AWS**: Security **OF** the Cloud = Infrastructure (hardware, data centers, hypervisor)
+> - **Customer**: Security **IN** the Cloud = Data, configuration, applications
+
+### Cách nhớ nhanh
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     CÁCH NHỚ NHANH                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  OF = Infrastructure VẬT LÝ → AWS lo                            │
+│  ├── Data centers, servers, networking                          │
+│  ├── Hypervisor, virtualization                                 │
+│  └── Global infrastructure (Regions, AZs)                       │
+│                                                                  │
+│  IN = Những gì bạn ĐẶT LÊN cloud → Customer lo                  │
+│  ├── Data encryption                                             │
+│  ├── IAM (users, roles, MFA)                                    │
+│  ├── OS patching (EC2)                                          │
+│  ├── Security groups, network config                            │
+│  └── Application code                                            │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Câu hỏi thường gặp
+
+| Câu hỏi | Trả lời |
+|---------|---------|
+| Ai responsible cho physical data center security? | **AWS** (OF the Cloud) |
+| Ai responsible cho OS patching trên EC2? | **Customer** (IN the Cloud) |
+| Ai responsible cho hypervisor security? | **AWS** |
+| Ai responsible cho S3 bucket permissions? | **Customer** |
+| Ai responsible cho RDS database engine patching? | **AWS** (managed service) |
+| Ai responsible cho data encryption? | **Customer** |
+| Ai responsible cho hardware failures? | **AWS** |
+| Ai responsible cho IAM policies? | **Customer** |
+
+### Theo loại Service
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  IaaS (EC2):     Customer lo NHIỀU nhất (OS, patching, apps)    │
+│  PaaS (RDS):     AWS lo OS/patching, Customer lo data/config    │  
+│  SaaS (WorkMail): AWS lo HẦU HẾT, Customer chỉ lo data/users    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Phân biệt nhanh
+
+| Nếu câu hỏi về... | Trả lời |
+|-------------------|---------|
+| Hardware, data center, physical | **AWS** |
+| Data, encryption, IAM | **Customer** |
+| OS patching EC2 | **Customer** |
+| OS patching RDS/Lambda | **AWS** |
+| Security groups | **Customer** |
+| Hypervisor | **AWS** |
+| Application code | **Customer** |
+
+---
+
 ## Tài liệu tham khảo
 - [AWS Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/)
 - [Security Pillar - Shared Responsibility](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/shared-responsibility.html)

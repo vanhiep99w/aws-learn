@@ -68,8 +68,13 @@
 - [x] [Amazon Macie](amazon-macie.md) - Sensitive Data Discovery trong S3, PII Detection, Compliance
 - [x] [AWS Policies & Compliance](aws-policies-compliance.md) - AUP, Penetration Testing, AWS Artifact, Compliance Programs
 - [x] [AWS Secrets Manager](aws-secrets-manager.md) - Secret Storage, Automatic Rotation, Cross-account Sharing
+- [x] [AWS CloudHSM](aws-cloudhsm.md) - Dedicated Hardware Security Module, FIPS 140-2 Level 3, Key Management
 - [ ] KMS
 - [ ] Cognito
+
+## Partner & Marketplace
+
+- [x] [AWS Partner Solutions](aws-partner-solutions.md) - Quick Starts, Automated Reference Deployments, CloudFormation Templates
 
 ## Monitoring & Management
 
