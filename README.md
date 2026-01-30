@@ -6,6 +6,7 @@
 - [x] [Cloud Computing Basics](cloud-computing-basics.md) - Traditional Server vs Cloud Computing, SLA
 - [x] [Shared Responsibility Model](shared-responsibility-model.md) - Trách nhiệm bảo mật AWS vs Khách hàng
 - [x] [AWS CLI](aws-cli.md) - Cài đặt, cấu hình, các lệnh thường dùng
+- [x] [AWS Cloud Adoption Framework (CAF)](aws-caf.md) - 6 Perspectives, Cloud Transformation Roadmap
 
 ## Compute
 
@@ -70,6 +71,7 @@
 - [x] [X-Ray](aws-xray.md) - Distributed Tracing, Service Map, Performance Analysis
 - [x] [AWS Health Dashboard](aws-health-dashboard.md) - Service Status, Personal Health Events, EventBridge Integration
 - [x] [AWS Trusted Advisor](aws-trusted-advisor.md) - Best Practices Recommendations (Cost, Performance, Security, Fault Tolerance, Limits)
+- [x] [AWS Compute Optimizer](aws-compute-optimizer.md) - ML-based Rightsizing Recommendations cho EC2, EBS, Lambda, ECS
 
 ## Developer Tools
 
@@ -92,6 +94,10 @@
 ## Global Applications Architecture
 
 - [x] [Global Applications Architecture](global-applications-architecture.md) - Multi-Region patterns, DR strategies, CloudFront vs Global Accelerator
+
+## AI/ML Services
+
+- [x] [AWS AI/ML Services](aws-ai-ml-services.md) - Rekognition, Textract, Polly, Transcribe, Translate, Comprehend, Lex, Kendra, Personalize, Forecast, Bedrock, SageMaker
 
 ---
 

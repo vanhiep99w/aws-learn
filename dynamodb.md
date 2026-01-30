@@ -52,6 +52,70 @@
 
 > **Nguồn**: [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
 
+### 🎯 EXAM TIP: "LEAST Operational Overhead for ANY Scale"
+
+> [!IMPORTANT]
+> Khi exam hỏi: "Which database has the **LEAST operational overhead** at **ANY scale**?"
+> → Đáp án luôn là **DynamoDB**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    DynamoDB = Zero Operational Overhead                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ✅ NO patching                 - AWS quản lý hoàn toàn                    │
+│   ✅ NO capacity planning        - Auto scale up/down (On-Demand mode)      │
+│   ✅ NO server management        - Serverless (không có instance)          │
+│   ✅ NO replication setup        - Built-in multi-AZ                        │
+│   ✅ NO backup management        - Continuous backup available              │
+│   ✅ NO connection pooling       - HTTP-based API                           │
+│                                                                             │
+│   Scale: 0 → millions of requests/second (không cần thay đổi gì!)          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh Operational Overhead
+
+| Task | DynamoDB | Aurora Serverless | RDS | EC2 + Self-managed |
+|------|----------|-------------------|-----|---------------------|
+| **Patching** | AWS | AWS | AWS | ❌ You |
+| **Scaling** | ✅ **Automatic** | Automatic | Manual resize | ❌ You |
+| **Capacity** | ✅ **On-Demand** | Auto pause | Pre-provision | ❌ You |
+| **HA/Replication** | ✅ **Built-in** | Built-in | Multi-AZ config | ❌ You |
+| **Backups** | ✅ **Automatic** | Automatic | Configure | ❌ You |
+
+```
+Operational Overhead:
+
+Ít nhất ──────────────────────────────────────────► Nhiều nhất
+
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────────┐
+│ DynamoDB │   │  Aurora  │   │   RDS    │   │ Self-managed │
+│          │   │Serverless│   │          │   │   on EC2     │
+└──────────┘   └──────────┘   └──────────┘   └──────────────┘
+   ✅ Best        Good          Manual         Everything!
+```
+
+### Sample Exam Questions
+
+```
+❓ "Which database provides the LEAST operational overhead at ANY scale?"
+
+   A. Amazon RDS
+   B. Amazon Aurora
+   C. ✅ Amazon DynamoDB
+   D. Amazon Redshift
+
+❓ "Company needs a database that scales automatically with 
+    no capacity planning. Which service?"
+
+   A. RDS MySQL
+   B. Aurora PostgreSQL  
+   C. ✅ DynamoDB
+   D. ElastiCache
+```
+
 ---
 
 ## 📋 Mục lục
