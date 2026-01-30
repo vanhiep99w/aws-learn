@@ -7,6 +7,7 @@
 - [x] [Shared Responsibility Model](shared-responsibility-model.md) - Trách nhiệm bảo mật AWS vs Khách hàng
 - [x] [AWS CLI](aws-cli.md) - Cài đặt, cấu hình, các lệnh thường dùng
 - [x] [AWS Cloud Adoption Framework (CAF)](aws-caf.md) - 6 Perspectives, Cloud Transformation Roadmap
+- [x] [AWS Well-Architected Framework](aws-well-architected.md) - 6 Pillars, Design Principles, Best Practices
 
 ## Compute
 
@@ -42,6 +43,10 @@
 - [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
 - [ ] ElastiCache
 
+## Data Integration
+
+- [x] [AWS Glue](aws-glue.md) - Serverless ETL, Data Catalog, Crawlers, Spark/Python Jobs, Glue Studio
+
 ## Networking
 
 - [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, NAT Gateway, VPC Peering, Transit Gateway, Client VPN, PrivateLink, VPC Endpoints
@@ -60,6 +65,7 @@
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
 - [x] [AWS Policies & Compliance](aws-policies-compliance.md) - AUP, Penetration Testing, AWS Artifact, Compliance Programs
+- [x] [AWS Secrets Manager](aws-secrets-manager.md) - Secret Storage, Automatic Rotation, Cross-account Sharing
 - [ ] KMS
 - [ ] Cognito
 
@@ -72,6 +78,7 @@
 - [x] [AWS Health Dashboard](aws-health-dashboard.md) - Service Status, Personal Health Events, EventBridge Integration
 - [x] [AWS Trusted Advisor](aws-trusted-advisor.md) - Best Practices Recommendations (Cost, Performance, Security, Fault Tolerance, Limits)
 - [x] [AWS Compute Optimizer](aws-compute-optimizer.md) - ML-based Rightsizing Recommendations cho EC2, EBS, Lambda, ECS
+- [x] [AWS Config](aws-config.md) - Configuration Recording, Compliance Rules, Remediation, Multi-Account Aggregation
 
 ## Developer Tools
 
