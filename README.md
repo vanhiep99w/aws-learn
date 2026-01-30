@@ -57,16 +57,19 @@
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
+- [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
+- [x] [AWS Policies & Compliance](aws-policies-compliance.md) - AUP, Penetration Testing, AWS Artifact, Compliance Programs
 - [ ] KMS
 - [ ] Cognito
 
 ## Monitoring & Management
 
-- [x] [SSM](ssm.md) - Systems Manager, Parameter Store, Session Manager, Run Command
+- [x] [AWS Systems Manager (SSM)](aws-systems-manager.md) - Run Command, Session Manager, Patch Manager, Parameter Store, Automation
 - [x] [CloudWatch](cloudwatch.md) - Metrics, Alarms, Logs, Dashboards, Insights
 - [x] [CloudTrail](cloudtrail.md) - API Logging, Audit, Security Analysis, Event History
 - [x] [X-Ray](aws-xray.md) - Distributed Tracing, Service Map, Performance Analysis
 - [x] [AWS Health Dashboard](aws-health-dashboard.md) - Service Status, Personal Health Events, EventBridge Integration
+- [x] [AWS Trusted Advisor](aws-trusted-advisor.md) - Best Practices Recommendations (Cost, Performance, Security, Fault Tolerance, Limits)
 
 ## Developer Tools
 
