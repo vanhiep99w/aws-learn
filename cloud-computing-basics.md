@@ -38,6 +38,101 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 
 ---
 
+## 🌟 Six Advantages of Cloud Computing (AWS Official)
+
+> [!IMPORTANT]
+> **Đây là nội dung quan trọng cho các kỳ thi AWS (CCP, SAA, SAP)**. Cần nhớ đúng 6 điểm này!
+
+| # | Advantage | Mô tả | Keyword để nhớ |
+|---|-----------|-------|----------------|
+| 1 | **Trade fixed expense for variable expense** | Thay vì đầu tư lớn vào data center trước, bạn chỉ trả tiền khi sử dụng và trả đúng mức sử dụng | 💰 **CapEx → OpEx** |
+| 2 | **Benefit from massive economies of scale** | AWS tổng hợp usage từ hàng trăm nghìn khách hàng → đạt economies of scale → giá rẻ hơn tự build | 📉 **Giá rẻ hơn** |
+| 3 | **Stop guessing capacity** | Không cần đoán trước capacity. Scale up/down trong vài phút theo nhu cầu thực tế | 📊 **No guessing** |
+| 4 | **Increase speed and agility** | Tài nguyên IT chỉ cách vài click, giảm thời gian từ vài tuần xuống vài phút | ⚡ **Nhanh hơn** |
+| 5 | **Stop spending money running and maintaining data centers** | Tập trung vào business/sản phẩm, không lo vận hành hạ tầng (racking, stacking, powering servers) | 🎯 **Focus on business** |
+| 6 | **Go global in minutes** | Deploy ứng dụng ở nhiều regions trên thế giới chỉ trong vài phút → giảm latency cho users | 🌍 **Global reach** |
+
+### Chi tiết từng điểm
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                 SIX ADVANTAGES OF CLOUD COMPUTING                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  1️⃣ TRADE FIXED EXPENSE FOR VARIABLE EXPENSE                            │
+│     ┌──────────────────┐         ┌──────────────────┐                   │
+│     │ Traditional      │         │ Cloud            │                   │
+│     │ Buy servers $$$  │   →     │ Pay per use $    │                   │
+│     │ before knowing   │         │ Only when needed │                   │
+│     │ actual needs     │         │                  │                   │
+│     └──────────────────┘         └──────────────────┘                   │
+│                                                                          │
+│  2️⃣ BENEFIT FROM MASSIVE ECONOMIES OF SCALE                             │
+│     Single company: 100 servers → Price per server: $$$                 │
+│     AWS (millions): 1,000,000+ servers → Price per server: $            │
+│     → AWS passes savings to customers                                   │
+│                                                                          │
+│  3️⃣ STOP GUESSING CAPACITY                                              │
+│     ┌─────────────────────────────────────────────────┐                 │
+│     │  Traditional: Guess for 3 years ahead           │                 │
+│     │  ├─ Over-provision → 💸 Waste money             │                 │
+│     │  └─ Under-provision → 😢 Lose customers         │                 │
+│     │                                                 │                 │
+│     │  Cloud: Scale on demand                         │                 │
+│     │  └─ Right-size always → ✅ Pay for what you use │                 │
+│     └─────────────────────────────────────────────────┘                 │
+│                                                                          │
+│  4️⃣ INCREASE SPEED AND AGILITY                                          │
+│     Traditional: Need new server?                                       │
+│     → Order → Ship → Install → Configure → 4-8 weeks                    │
+│                                                                          │
+│     Cloud: Need new server?                                             │
+│     → Click → Launch → Ready → 5 minutes                                │
+│                                                                          │
+│  5️⃣ STOP SPENDING MONEY ON DATA CENTERS                                 │
+│     ┌───────────────────────────────────────────┐                       │
+│     │ Don't worry about:                        │                       │
+│     │ • Racking servers                         │                       │
+│     │ • Stacking equipment                      │                       │
+│     │ • Powering & cooling                      │                       │
+│     │ • Physical security                       │                       │
+│     │                                           │                       │
+│     │ Focus on:                                 │                       │
+│     │ • Building products ✅                    │                       │
+│     │ • Serving customers ✅                    │                       │
+│     └───────────────────────────────────────────┘                       │
+│                                                                          │
+│  6️⃣ GO GLOBAL IN MINUTES                                                │
+│                     🌍                                                   │
+│         ┌─────────────────────────────┐                                 │
+│         │    Deploy worldwide         │                                 │
+│         │    in just a few clicks     │                                 │
+│         │                             │                                 │
+│         │  US ─── EU ─── Asia ─── AU  │                                 │
+│         │   │     │      │       │    │                                 │
+│         │   └─────┴──────┴───────┘    │                                 │
+│         │   Lower latency for users   │                                 │
+│         └─────────────────────────────┘                                 │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 📝 Mẹo nhớ cho kỳ thi
+
+```
+Nhớ 6 keywords: 
+1. Variable expense (pay-as-you-go)
+2. Economies of scale (cheaper)
+3. Stop guessing (scale on demand)
+4. Speed & Agility (minutes not weeks)
+5. Focus on business (no data center)
+6. Go global (worldwide in minutes)
+```
+
+> **Nguồn**: [AWS Official - Six Advantages of Cloud Computing](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/six-advantages-of-cloud-computing.html)
+
+---
+
 ## So sánh Traditional Server vs Cloud Computing
 
 | Tiêu chí | Traditional Server | Cloud Computing |

@@ -38,7 +38,7 @@
 ## Database
 
 - [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
-- [ ] DynamoDB
+- [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
 - [ ] ElastiCache
 
 ## Networking

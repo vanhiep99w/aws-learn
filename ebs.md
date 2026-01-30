@@ -933,6 +933,12 @@ EBS tính phí theo **3 thành phần chính**:
 Tổng chi phí = Storage + IOPS (nếu có) + Throughput (nếu có) + Snapshots
 ```
 
+> [!IMPORTANT]
+> **Per-Second Billing (từ 10/2017):**
+> - **EBS Volume storage**: Tính theo giây (minimum 1 phút)
+> - **Provisioned IOPS** (io1/io2): Tính theo giây
+> - **EBS Snapshots**: Vẫn tính theo giờ
+
 ### 1. Storage (dung lượng)
 
 Tính theo **GB-month** (số GB × số tháng sử dụng).

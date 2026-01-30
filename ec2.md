@@ -70,6 +70,44 @@ Amazon EC2 cung cấp nhiều mô hình pricing để tối ưu chi phí:
 - **750 giờ/tháng** cho t2.micro hoặc t3.micro (12 tháng đầu tiên)
 - Chi tiết: [AWS Free Tier](https://aws.amazon.com/free/)
 
+### Per-Second Billing (Tính phí theo giây)
+
+> [!IMPORTANT]
+> **Từ tháng 10/2017**, EC2 và EBS chuyển từ per-hour sang **per-second billing**.
+
+| Service | Billing | Minimum |
+|---------|---------|---------|
+| **Linux EC2** (On-Demand, Reserved, Spot) | Per-second ⏱️ | 1 phút (60 giây) |
+| **Windows EC2** | Per-hour ⏰ | 1 giờ |
+| **EBS Volumes** (provisioned storage) | Per-second | 1 phút |
+| **EBS Provisioned IOPS** (io1/io2) | Per-second | - |
+| **EBS Snapshots** | Per-hour | - |
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PER-SECOND BILLING EXAMPLE                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Linux instance chạy 5 phút 30 giây:                                │
+│  → Bạn trả cho: 5 phút 30 giây = 330 giây                           │
+│                                                                      │
+│  Linux instance chạy 45 giây:                                       │
+│  → Bạn trả cho: 1 phút (minimum)                                    │
+│                                                                      │
+│  Windows instance chạy 5 phút 30 giây:                              │
+│  → Bạn trả cho: 1 giờ (per-hour billing)                            │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Lợi ích per-second billing:**
+- ✅ CI/CD pipelines - build xong terminate ngay
+- ✅ Dev/Test environments - spin up/down nhanh
+- ✅ Batch processing - jobs chạy vài phút
+- ✅ Auto Scaling - scale nhanh không lo phí thừa
+
+> **Nguồn**: [Per-Second Billing for EC2 and EBS](https://aws.amazon.com/blogs/aws/new-per-second-billing-for-ec2-instances-and-ebs-volumes/)
+
 > **Nguồn**: [Amazon EC2 Pricing](https://aws.amazon.com/ec2/pricing/)
 
 ---

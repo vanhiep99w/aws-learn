@@ -97,9 +97,10 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
----
+# 2️⃣ Session Manager (Deep Dive)
 
-# 2️⃣ Session Manager
+> [!IMPORTANT]
+> **Session Manager** là cách được khuyến nghị để access EC2 instances - thay thế hoàn toàn SSH truyền thống.
 
 ## Khái Niệm
 
@@ -125,29 +126,337 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Lợi ích
+## Kiến Trúc Chi Tiết
 
-| Feature | Mô tả |
-|---------|-------|
-| **No SSH keys** | Sử dụng IAM để authorize |
-| **No open ports** | Chỉ cần outbound 443 |
-| **No bastion host** | Tiết kiệm cost và management |
-| **Audit logs** | Tất cả sessions được log vào CloudWatch/S3 |
-| **Cross-platform** | Linux và Windows |
-| **Port forwarding** | Tunnel ports qua SSM |
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    SESSION MANAGER ARCHITECTURE                           │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  USER                        AWS CLOUD                    EC2 INSTANCE   │
+│  ┌─────────┐                                              ┌─────────────┐│
+│  │ Browser │──┐                                           │   Private   ││
+│  │   or    │  │             ┌─────────────────┐           │   Subnet    ││
+│  │  CLI    │  │  HTTPS      │                 │  HTTPS    │ ┌─────────┐ ││
+│  └─────────┘  └────────────►│  SSM Service    │◄──────────┤ │SSM Agent│ ││
+│                             │                 │ (polling) │ └─────────┘ ││
+│  ┌─────────┐                │  - Session      │           │             ││
+│  │   IAM   │───authenticate─│  - WebSocket    │           │  No port 22 ││
+│  │  User   │                │  - Encryption   │           │  No SSH key ││
+│  └─────────┘                └────────┬────────┘           └─────────────┘│
+│                                      │                                    │
+│                              ┌───────┴───────┐                           │
+│                              ▼               ▼                           │
+│                       ┌──────────┐    ┌──────────┐                       │
+│                       │CloudWatch│    │    S3    │                       │
+│                       │  Logs    │    │  Bucket  │                       │
+│                       │ (Audit)  │    │ (Audit)  │                       │
+│                       └──────────┘    └──────────┘                       │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+```
 
-## Sử dụng
+## Lợi Ích So Với SSH
+
+| Category | Traditional SSH | Session Manager |
+|----------|-----------------|-----------------|
+| **Inbound Ports** | ❌ Mở port 22 | ✅ Không cần mở port |
+| **SSH Keys** | ❌ Phải quản lý, rotate | ✅ Không cần SSH keys |
+| **Bastion Host** | ❌ Cần maintain, cost | ✅ Không cần bastion |
+| **Authentication** | SSH keys | ✅ IAM (MFA support) |
+| **Authorization** | Server-level | ✅ IAM policies (granular) |
+| **Audit** | ❌ Manual logging | ✅ CloudWatch/S3 auto-log |
+| **Session Recording** | ❌ Không có | ✅ Full session recording |
+| **Network** | Cần direct access | ✅ Qua HTTPS, works anywhere |
+| **Cross-platform** | Khác nhau theo OS | ✅ Same cho Linux/Windows |
+
+## Requirements
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              SESSION MANAGER REQUIREMENTS CHECKLIST                  │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ☑️ 1. SSM AGENT                                                     │
+│     • Pre-installed on Amazon Linux 2/2023, Ubuntu 16.04+,          │
+│       Windows Server 2016+                                          │
+│     • Must be running                                                │
+│                                                                      │
+│  ☑️ 2. IAM INSTANCE PROFILE                                          │
+│     • Attach role với policy: AmazonSSMManagedInstanceCore          │
+│     • Hoặc custom policy với ssm:* permissions                      │
+│                                                                      │
+│  ☑️ 3. NETWORK CONNECTIVITY                                          │
+│     Option A: Public subnet với Internet Gateway                    │
+│     Option B: Private subnet + NAT Gateway                          │
+│     Option C: Private subnet + VPC Endpoints (recommended)          │
+│               • ssm.region.amazonaws.com                            │
+│               • ssmmessages.region.amazonaws.com                    │
+│               • ec2messages.region.amazonaws.com                    │
+│                                                                      │
+│  ☑️ 4. USER IAM PERMISSIONS                                          │
+│     • ssm:StartSession                                              │
+│     • ssm:ResumeSession                                             │
+│     • ssm:TerminateSession                                          │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## VPC Endpoints cho Private Subnet
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│           ACCESS PRIVATE EC2 WITHOUT INTERNET                            │
+│                                                                          │
+│     VPC                                                                  │
+│     ┌─────────────────────────────────────────────────────────────────┐ │
+│     │                                                                  │ │
+│     │  Private Subnet (No Internet)          VPC Endpoints            │ │
+│     │  ┌───────────────────┐                ┌───────────────────────┐ │ │
+│     │  │                   │                │ com.amazonaws.region. │ │ │
+│     │  │  EC2 Instance     │       ◄────────│ ssm                   │ │ │
+│     │  │  ┌─────────────┐  │                │ ssmmessages           │ │ │
+│     │  │  │ SSM Agent   │──┼────────────────│ ec2messages           │ │ │
+│     │  │  └─────────────┘  │                └───────────────────────┘ │ │
+│     │  │                   │                         │                │ │
+│     │  │  • No NAT needed  │                         │                │ │
+│     │  │  • No IGW needed  │                         ▼                │ │
+│     │  └───────────────────┘                   AWS PrivateLink        │ │
+│     │                                          (to SSM Service)       │ │
+│     └─────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Cách Sử Dụng
+
+### 1. Qua AWS Console
+
+```
+EC2 Console → Instances → Select Instance → Connect → Session Manager
+```
+
+### 2. Qua AWS CLI
 
 ```bash
-# Qua AWS CLI
+# Start session
 aws ssm start-session --target i-1234567890abcdef0
 
-# Port forwarding
+# Start session với specific user (Linux)
+aws ssm start-session \
+    --target i-1234567890abcdef0 \
+    --document-name AWS-StartInteractiveCommand \
+    --parameters command="sudo su - ec2-user"
+
+# List active sessions
+aws ssm describe-sessions --state Active
+
+# Terminate session
+aws ssm terminate-session --session-id session-id
+```
+
+### 3. SSH Proxy qua Session Manager
+
+Có thể dùng SSH commands thông qua Session Manager (để tương thích với tools cần SSH):
+
+```bash
+# ~/.ssh/config
+Host i-* mi-*
+    ProxyCommand sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+    User ec2-user
+
+# Sau đó dùng SSH bình thường
+ssh i-1234567890abcdef0
+scp file.txt i-1234567890abcdef0:/home/ec2-user/
+```
+
+## Advanced Features
+
+### 1. Port Forwarding
+
+```bash
+# Forward local port 9999 → remote port 3306 (MySQL)
 aws ssm start-session \
     --target i-1234567890abcdef0 \
     --document-name AWS-StartPortForwardingSession \
-    --parameters '{"portNumber":["3306"],"localPortNumber":["3306"]}'
+    --parameters '{"portNumber":["3306"],"localPortNumber":["9999"]}'
+
+# Sau đó connect MySQL client đến localhost:9999
+mysql -h 127.0.0.1 -P 9999 -u admin -p
 ```
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PORT FORWARDING                                   │
+│                                                                      │
+│  Your Laptop              SSM Service              EC2 Instance     │
+│  ┌──────────┐            ┌──────────┐            ┌──────────────┐  │
+│  │localhost │   HTTPS    │          │   HTTPS    │              │  │
+│  │:9999     │◄──────────►│ Session  │◄──────────►│ RDS/MySQL    │  │
+│  │          │  WebSocket │ Manager  │  Tunnel    │ :3306        │  │
+│  └────┬─────┘            └──────────┘            └──────────────┘  │
+│       │                                                              │
+│       ▼                                                              │
+│  ┌──────────┐                                                        │
+│  │ MySQL    │  Connect to localhost:9999                            │
+│  │ Client   │  → Tunnel through SSM                                  │
+│  └──────────┘  → Reach RDS on :3306                                 │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 2. Port Forwarding to Remote Host
+
+```bash
+# Forward đến host KHÁC thông qua EC2 (như jump host)
+aws ssm start-session \
+    --target i-1234567890abcdef0 \
+    --document-name AWS-StartPortForwardingSessionToRemoteHost \
+    --parameters '{"host":["rds-instance.abc123.us-east-1.rds.amazonaws.com"],"portNumber":["3306"],"localPortNumber":["9999"]}'
+```
+
+### 3. Session Logging (Audit)
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    SESSION LOGGING OPTIONS                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Session Manager Preferences (console hoặc CLI):                    │
+│                                                                      │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ CloudWatch Logs:                                               │  │
+│  │   • Log Group: /aws/ssm/sessions                              │  │
+│  │   • Stream: session-id                                         │  │
+│  │   • Contains: All commands executed                            │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ S3 Bucket:                                                     │  │
+│  │   • Bucket: my-ssm-session-logs                               │  │
+│  │   • Path: /session-id/session.log                             │  │
+│  │   • Encrypt with KMS key                                       │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │ KMS Encryption:                                                │  │
+│  │   • Encrypt session data in transit                           │  │
+│  │   • Encrypt logs at rest                                       │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## IAM Policy Examples
+
+### Basic Session Manager Access
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:StartSession"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "ssm:resourceTag/Environment": "Development"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:TerminateSession",
+                "ssm:ResumeSession"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:*:session/${aws:username}-*"
+            ]
+        }
+    ]
+}
+```
+
+### Restrict Document Types
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ssm:StartSession",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "ssm:SessionDocumentAccessCheck": "true"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ssm:StartSession",
+            "Resource": [
+                "arn:aws:ssm:*::document/AWS-StartInteractiveCommand",
+                "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
+            ]
+        }
+    ]
+}
+```
+
+## Session Manager vs SSH Comparison
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                SESSION MANAGER vs SSH - WHEN TO USE?                      │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ✅ USE SESSION MANAGER when:                                             │
+│     • AWS EC2 instances                                                   │
+│     • Need audit logging                                                  │
+│     • Want to eliminate SSH key management                               │
+│     • Private subnet access without bastion                              │
+│     • Compliance requirements (session recording)                         │
+│     • Centralized IAM access control                                     │
+│                                                                           │
+│  ⚠️ CONSIDER SSH when:                                                    │
+│     • Non-AWS servers                                                     │
+│     • Need SCP file transfer (workaround: use S3)                        │
+│     • Legacy tools requiring SSH                                         │
+│     • SSH tunneling for specific protocols                               │
+│                                                                           │
+│  💡 HYBRID: Use SSH through Session Manager proxy                         │
+│     → Get benefits of both!                                               │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+## Limitations
+
+| Limitation | Workaround |
+|------------|------------|
+| **No SCP/SFTP** | Use S3 + aws s3 cp |
+| **Session timeout** | Default 20 mins idle, configurable up to 60 mins |
+| **File transfer** | Upload to S3, download with aws cli |
+| **No X11 forwarding** | Not supported |
+| **Concurrent sessions** | Default limit, can request increase |
+
+## Exam Tips
+
+| Topic | Remember |
+|-------|----------|
+| **No port 22** | Session Manager không cần mở inbound port |
+| **No bastion** | Không cần bastion host |
+| **IAM auth** | Sử dụng IAM để authenticate, không phải SSH keys |
+| **VPC Endpoints** | Cần cho private subnet không có internet |
+| **Audit** | CloudWatch Logs + S3 cho session logging |
+| **Port forwarding** | Có thể tunnel ports (RDS, etc.) |
 
 ---
 
