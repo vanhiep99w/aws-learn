@@ -41,7 +41,7 @@
 
 - [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
 - [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
-- [ ] ElastiCache
+- [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
 
 ## Data Integration
 
@@ -69,8 +69,8 @@
 - [x] [AWS Policies & Compliance](aws-policies-compliance.md) - AUP, Penetration Testing, AWS Artifact, Compliance Programs
 - [x] [AWS Secrets Manager](aws-secrets-manager.md) - Secret Storage, Automatic Rotation, Cross-account Sharing
 - [x] [AWS CloudHSM](aws-cloudhsm.md) - Dedicated Hardware Security Module, FIPS 140-2 Level 3, Key Management
-- [ ] KMS
-- [ ] Cognito
+- [x] [AWS KMS](aws-kms.md) - Key Management Service, Encryption Keys, Envelope Encryption, Key Rotation
+- [x] [Amazon Cognito](amazon-cognito.md) - User Pools, Identity Pools, Authentication, Social Login, JWT Tokens
 
 ## Partner & Marketplace
 
