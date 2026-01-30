@@ -64,6 +64,8 @@
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
+- [x] [Amazon GuardDuty](amazon-guardduty.md) - Threat Detection, ML-based Security Monitoring, Malware Protection
+- [x] [Amazon Macie](amazon-macie.md) - Sensitive Data Discovery trong S3, PII Detection, Compliance
 - [x] [AWS Policies & Compliance](aws-policies-compliance.md) - AUP, Penetration Testing, AWS Artifact, Compliance Programs
 - [x] [AWS Secrets Manager](aws-secrets-manager.md) - Secret Storage, Automatic Rotation, Cross-account Sharing
 - [ ] KMS
@@ -101,6 +103,11 @@
 ## Global Applications Architecture
 
 - [x] [Global Applications Architecture](global-applications-architecture.md) - Multi-Region patterns, DR strategies, CloudFront vs Global Accelerator
+
+## Cost Management
+
+- [x] [AWS Pricing Calculator](aws-pricing-calculator.md) - Estimate Costs Before Deploying, Compare Pricing Options
+- [x] [AWS Cost Explorer](aws-cost-explorer.md) - Analyze Costs After Deployment, Usage Reports, Forecasting
 
 ## AI/ML Services
 
