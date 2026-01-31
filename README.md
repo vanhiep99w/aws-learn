@@ -42,14 +42,17 @@
 - [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
 - [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
 - [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
+- [x] [Amazon Redshift](amazon-redshift.md) - Data Warehouse, OLAP, Columnar Storage, MPP, Spectrum, Zero-ETL
 
 ## Data Integration
 
 - [x] [AWS Glue](aws-glue.md) - Serverless ETL, Data Catalog, Crawlers, Spark/Python Jobs, Glue Studio
+- [x] [Amazon EMR](amazon-emr.md) - Managed Big Data Platform, Spark, Hadoop, Hive, Presto, 3 deployment options
 
 ## Networking
 
 - [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, NAT Gateway, VPC Peering, Transit Gateway, Client VPN, PrivateLink, VPC Endpoints
+- [x] [Direct Connect](direct-connect.md) - Dedicated Network Connection, Private VIF, Transit VIF, LAG, MACsec, SiteLink
 - [x] [Route 53](route53.md) - DNS Service, Hosted Zones, Routing Policies, Health Checks
 - [x] [DNS Deep Dive](how-dns-works.md) - Giải thích cơ chế DNS, phân biệt Registry/Registrar/Nameserver (quan trọng!)
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
@@ -71,6 +74,8 @@
 - [x] [AWS CloudHSM](aws-cloudhsm.md) - Dedicated Hardware Security Module, FIPS 140-2 Level 3, Key Management
 - [x] [AWS KMS](aws-kms.md) - Key Management Service, Encryption Keys, Envelope Encryption, Key Rotation
 - [x] [Amazon Cognito](amazon-cognito.md) - User Pools, Identity Pools, Authentication, Social Login, JWT Tokens
+- [x] [AWS WAF](aws-waf.md) - Web Application Firewall, Web ACLs, Bot Control, Fraud Control, Shield Integration
+- [x] [AWS Shield](aws-shield.md) - DDoS Protection, Shield Standard (Free), Shield Advanced, DRT, Cost Protection
 
 ## Partner & Marketplace
 

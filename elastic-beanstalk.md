@@ -20,7 +20,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **AWS Elastic Beanstalk** là dịch vụ **Platform as a Service (PaaS)** cho phép bạn deploy và quản lý applications mà **không cần lo về infrastructure**.
 
@@ -71,7 +71,7 @@
 
 ---
 
-## 🏗️ Kiến trúc Beanstalk
+## Kiến trúc Beanstalk
 
 ### Các thành phần
 
@@ -135,7 +135,7 @@
 
 ---
 
-## 🚀 Supported Platforms
+## Supported Platforms
 
 Beanstalk hỗ trợ nhiều ngôn ngữ và platforms:
 
@@ -153,7 +153,7 @@ Beanstalk hỗ trợ nhiều ngôn ngữ và platforms:
 
 ---
 
-## 📝 Deployment Options
+## Deployment Options
 
 ### Deployment Policies
 
@@ -231,7 +231,7 @@ Beanstalk hỗ trợ nhiều ngôn ngữ và platforms:
 
 ---
 
-## 🔧 Beanstalk CLI (EB CLI)
+## Beanstalk CLI (EB CLI)
 
 ### Cài đặt
 
@@ -351,7 +351,7 @@ eb config --cfg my-config
 
 ---
 
-## 🔗 Beanstalk với RDS
+## Beanstalk với RDS
 
 ### Option 1: RDS trong Beanstalk (NOT recommended for prod)
 
@@ -393,7 +393,7 @@ option_settings:
 
 ---
 
-## 📊 Monitoring & Logs
+## Monitoring & Logs
 
 ### Health Monitoring
 
@@ -438,7 +438,7 @@ eb logs --stream
 
 ---
 
-## 💰 Pricing
+## Pricing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -459,7 +459,7 @@ eb logs --stream
 
 ---
 
-## 🆚 Beanstalk vs ECS vs Lambda
+## Beanstalk vs ECS vs Lambda
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -487,7 +487,7 @@ eb logs --stream
 
 ---
 
-## ⚠️ Limitations - Khi nào KHÔNG dùng Beanstalk
+## Limitations - Khi nào KHÔNG dùng Beanstalk
 
 ### 1 Environment = 1 Application = 1 Scaling Config
 
@@ -579,7 +579,7 @@ Resources:
 | **Microservices (nhiều services)** | ✅ CloudFormation/CDK + ECS/EKS |
 | **Complex infrastructure** | ✅ CloudFormation/CDK |
 
-## 💡 Best Practices
+## Best Practices
 
 ### 1. Separate RDS from Beanstalk
 
@@ -636,7 +636,7 @@ option_settings:
 
 ---
 
-## 🎯 Tổng kết
+## Tổng kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -660,7 +660,7 @@ option_settings:
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Elastic Beanstalk Developer Guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/)
 - [EB CLI Reference](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)

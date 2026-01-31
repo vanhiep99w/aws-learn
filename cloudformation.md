@@ -20,7 +20,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **AWS CloudFormation** là dịch vụ **Infrastructure as Code (IaC)** cho phép bạn mô hình hóa và cung cấp toàn bộ hạ tầng AWS bằng code (JSON/YAML).
 
@@ -78,7 +78,7 @@
 
 ---
 
-## 🏗️ Các khái niệm cốt lõi
+## Các khái niệm cốt lõi
 
 ### Template, Stack, và Resources
 
@@ -154,7 +154,7 @@
 
 ---
 
-## 📝 Cấu trúc Template
+## Cấu trúc Template
 
 ### Template Anatomy
 
@@ -252,7 +252,7 @@ Outputs:
 
 ---
 
-## 🔧 Intrinsic Functions
+## Intrinsic Functions
 
 CloudFormation cung cấp các built-in functions để xử lý dynamic values:
 
@@ -374,7 +374,7 @@ Resources:
 
 ---
 
-## 🚀 Ví dụ thực tế
+## Ví dụ thực tế
 
 ### Ví dụ 1: S3 Bucket đơn giản
 
@@ -609,7 +609,7 @@ Outputs:
 
 ---
 
-## 🔄 Stack Updates và Change Sets
+## Stack Updates và Change Sets
 
 ### Update Behaviors
 
@@ -692,7 +692,7 @@ Outputs:
 
 ---
 
-## 🔒 Rollback và Protection
+## Rollback và Protection
 
 ### Rollback Behaviors
 
@@ -776,7 +776,7 @@ Resources:
 
 ---
 
-## 🔗 Nested Stacks và Cross-Stack References
+## Nested Stacks và Cross-Stack References
 
 ### Nested Stacks
 
@@ -846,7 +846,7 @@ Resources:
 
 ---
 
-## 🛠️ Drift Detection
+## Drift Detection
 
 Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual changes):
 
@@ -886,7 +886,7 @@ Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual change
 
 ---
 
-## 📊 CloudFormation vs Terraform
+## CloudFormation vs Terraform
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1099,7 +1099,7 @@ output "instance_public_ip" {
 
 ---
 
-## 💰 Pricing
+## Pricing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1134,7 +1134,7 @@ output "instance_public_ip" {
 
 ---
 
-## 💡 Best Practices
+## Best Practices
 
 ### 1. Template Organization
 
@@ -1233,7 +1233,7 @@ Resources:
 
 ---
 
-## 🎯 Tổng kết
+## Tổng kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1259,7 +1259,7 @@ Resources:
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/)
 - [Resource Types Reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html)

@@ -18,7 +18,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon SQS** là fully managed message queuing service giúp **decouple** và **scale** microservices, distributed systems, và serverless applications.
 
@@ -919,7 +919,7 @@ Sử dụng **SNS + SQS Pattern**:
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Amazon SQS Developer Guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/)
 - [SQS Best Practices](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-best-practices.html)

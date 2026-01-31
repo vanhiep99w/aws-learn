@@ -623,7 +623,7 @@ aws ec2 attach-volume --volume-id vol-xxx --instance-id i-222
 | AWS managed (RDS, Aurora) | ❌ AWS lo hết |
 | Web app thông thường | ❌ Không cần |
 
-### ⚠️ Những điều cần AWARE khi dùng Multi-Attach
+### Những điều cần AWARE khi dùng Multi-Attach
 
 #### 1. Data Corruption nếu không dùng đúng File System
 

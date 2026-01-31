@@ -22,7 +22,7 @@
 
 ---
 
-## 📊 Tổng Quan
+## Tổng Quan
 
 **Amazon CloudWatch** là dịch vụ **monitoring và observability** toàn diện của AWS, cho phép bạn giám sát tài nguyên AWS, ứng dụng và dịch vụ chạy trên cloud hoặc on-premises.
 
@@ -53,7 +53,7 @@
 
 ---
 
-## 🎯 CloudWatch Core Components
+## CloudWatch Core Components
 
 | Component | Mô Tả | Use Case |
 |-----------|-------|----------|
@@ -68,7 +68,7 @@
 
 ---
 
-## 📈 CloudWatch Metrics
+## CloudWatch Metrics
 
 ### 1. Metrics Là Gì?
 
@@ -201,7 +201,7 @@ cloudwatch.put_metric_data(
 
 ---
 
-## 📋 CloudWatch Logs
+## CloudWatch Logs
 
 ### 1. Logs Architecture
 
@@ -603,7 +603,7 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
 
 ---
 
-## 📊 CloudWatch Dashboards
+## CloudWatch Dashboards
 
 ### 1. Dashboard Features
 
@@ -678,7 +678,7 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
 
 ---
 
-## 🔍 CloudWatch Synthetics (Canaries)
+## CloudWatch Synthetics (Canaries)
 
 ### 1. Canary Overview
 
@@ -764,7 +764,7 @@ exports.handler = async () => {
 
 ---
 
-## 🌐 CloudWatch ServiceLens & X-Ray Integration
+## CloudWatch ServiceLens & X-Ray Integration
 
 ### 1. End-to-End Observability
 
@@ -814,7 +814,7 @@ exports.handler = async () => {
 
 ---
 
-## 📦 CloudWatch Container Insights
+## CloudWatch Container Insights
 
 ### 1. Container Monitoring
 
@@ -871,7 +871,7 @@ exports.handler = async () => {
 
 ---
 
-## 🔗 EventBridge Integration (formerly CloudWatch Events)
+## EventBridge Integration (formerly CloudWatch Events)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -897,7 +897,7 @@ exports.handler = async () => {
 
 ---
 
-## 💰 CloudWatch Pricing
+## CloudWatch Pricing
 
 ### 1. Pricing Components
 
@@ -949,7 +949,7 @@ exports.handler = async () => {
 
 ---
 
-## 🛠️ Common Use Cases & Best Practices
+## Common Use Cases & Best Practices
 
 ### 1. Basic EC2 Monitoring Setup
 
@@ -1026,7 +1026,7 @@ MetricFilter:
 
 ---
 
-## ❓ CloudWatch FAQ
+## CloudWatch FAQ
 
 ### Q: CloudWatch Agent vs Built-in Metrics - Khi nào cần Agent?
 
@@ -1068,7 +1068,7 @@ Log Group: /aws/lambda/order-service     ← Container (billing, retention)
 
 ---
 
-## 🔗 Related Services
+## Related Services
 
 | Service | Relationship với CloudWatch |
 |---------|----------------------------|
@@ -1082,7 +1082,7 @@ Log Group: /aws/lambda/order-service     ← Container (billing, retention)
 
 ---
 
-## 📚 Tổng Kết
+## Tổng Kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

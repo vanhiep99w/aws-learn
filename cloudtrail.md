@@ -20,7 +20,7 @@
 
 ---
 
-## 📋 Tổng Quan
+## Tổng Quan
 
 **AWS CloudTrail** là dịch vụ **audit và governance** cho phép bạn ghi lại, giám sát và lưu giữ lịch sử tất cả các API calls và hoạt động trong AWS account của bạn.
 
@@ -55,7 +55,7 @@
 
 ---
 
-## 🆚 CloudTrail vs CloudWatch
+## CloudTrail vs CloudWatch
 
 | Aspect | CloudTrail | CloudWatch |
 |--------|------------|------------|
@@ -97,7 +97,7 @@
 
 ---
 
-## 🎯 CloudTrail Event Types
+## CloudTrail Event Types
 
 ### 1. Ba Loại Events
 
@@ -183,7 +183,7 @@
 
 ---
 
-## 🏗️ CloudTrail Architecture
+## CloudTrail Architecture
 
 ### 1. Trail Types
 
@@ -335,7 +335,7 @@
 
 ---
 
-## 🔐 CloudTrail Security Best Practices
+## CloudTrail Security Best Practices
 
 ### 1. Log File Integrity
 
@@ -404,7 +404,7 @@
 
 ---
 
-## 📊 CloudTrail + CloudWatch Integration
+## CloudTrail + CloudWatch Integration
 
 ### 1. Real-time Alerting Flow
 
@@ -493,7 +493,7 @@ resource "aws_cloudwatch_log_metric_filter" "sg_changes" {
 
 ---
 
-## 🔍 Querying CloudTrail Logs
+## Querying CloudTrail Logs
 
 ### 1. Using Athena
 
@@ -585,7 +585,7 @@ fields @timestamp, eventName, requestParameters.bucketName
 
 ---
 
-## 🔄 CloudTrail + EventBridge
+## CloudTrail + EventBridge
 
 ### Real-time Event Processing
 
@@ -646,7 +646,7 @@ fields @timestamp, eventName, requestParameters.bucketName
 
 ---
 
-## 💰 CloudTrail Pricing
+## CloudTrail Pricing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -717,7 +717,7 @@ fields @timestamp, eventName, requestParameters.bucketName
 
 ---
 
-## ❓ CloudTrail FAQ
+## CloudTrail FAQ
 
 ### Q: CloudTrail có ghi lại tất cả API calls không?
 
@@ -760,7 +760,7 @@ ORDER BY eventTime DESC;
 
 ---
 
-## 🔗 Related Services
+## Related Services
 
 | Service | Relationship |
 |---------|--------------|
@@ -774,7 +774,7 @@ ORDER BY eventTime DESC;
 
 ---
 
-## 📚 Tổng Kết
+## Tổng Kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐

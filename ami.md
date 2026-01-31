@@ -240,7 +240,7 @@ aws ec2 delete-snapshot --snapshot-id snap-222
 
 ## AMI lưu gì từ Instance?
 
-### ✅ Những gì ĐƯỢC lưu (trên EBS volumes)
+### Những gì ĐƯỢC lưu (trên EBS volumes)
 
 | Thành phần | Ví dụ |
 |------------|-------|
@@ -250,7 +250,7 @@ aws ec2 delete-snapshot --snapshot-id snap-222
 | Files trên disk | Code, scripts, database files |
 | User accounts | Users tạo trong OS |
 
-### ❌ Những gì KHÔNG được lưu
+### Những gì KHÔNG được lưu
 
 | Thành phần | Lý do |
 |------------|-------|

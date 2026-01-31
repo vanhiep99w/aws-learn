@@ -19,7 +19,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **Amazon DynamoDB** là **fully managed NoSQL database service** cung cấp hiệu suất single-digit millisecond latency ở mọi quy mô. DynamoDB hỗ trợ cả **key-value** và **document data models**, phù hợp cho các ứng dụng yêu cầu throughput cao và latency thấp.
 
@@ -71,7 +71,7 @@
 
 > **Nguồn**: [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
 
-### 🎯 EXAM TIP: "LEAST Operational Overhead for ANY Scale"
+### EXAM TIP: "LEAST Operational Overhead for ANY Scale"
 
 > [!IMPORTANT]
 > Khi exam hỏi: "Which database has the **LEAST operational overhead** at **ANY scale**?"

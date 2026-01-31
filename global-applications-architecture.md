@@ -13,7 +13,7 @@
 
 ---
 
-## 🌍 Tổng quan
+## Tổng quan
 
 **Global Applications Architecture** là kiến trúc thiết kế ứng dụng phục vụ users trên toàn cầu với:
 - **Low Latency**: Giảm độ trễ cho users ở mọi nơi
@@ -766,7 +766,7 @@
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [AWS Global Accelerator Documentation](https://docs.aws.amazon.com/global-accelerator/)
 - [CloudFront Developer Guide](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/)

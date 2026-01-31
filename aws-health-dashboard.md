@@ -50,7 +50,7 @@
 
 ---
 
-## 📊 Hai Loại Dashboard
+## Hai Loại Dashboard
 
 ### 1. Service Health Dashboard (Public)
 
@@ -209,7 +209,7 @@
 
 ---
 
-## 🔗 AWS Health API
+## AWS Health API
 
 ### API Overview
 
@@ -547,7 +547,7 @@ for event in events['events']:
 
 ---
 
-## 🛠️ Terraform Configuration
+## Terraform Configuration
 
 ### Create EventBridge Rule for Health Events
 
@@ -651,7 +651,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ---
 
-## 📊 Best Practices
+## Best Practices
 
 ### 1. Monitoring & Alerting
 
@@ -721,7 +721,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ---
 
-## 🆚 So Sánh Với Services Khác
+## So Sánh Với Services Khác
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -753,7 +753,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ---
 
-## 📚 Tổng Kết
+## Tổng Kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -785,7 +785,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ---
 
-## 🔗 Tài Liệu Tham Khảo
+## Tài Liệu Tham Khảo
 
 - [AWS Health Dashboard](https://health.aws.amazon.com/)
 - [Personal Health Dashboard Guide](https://docs.aws.amazon.com/health/latest/ug/)

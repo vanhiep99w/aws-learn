@@ -18,7 +18,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **Amazon EKS (Elastic Kubernetes Service)** là dịch vụ Kubernetes được AWS quản lý hoàn toàn (fully managed). EKS giúp bạn chạy Kubernetes trên AWS mà không cần cài đặt, vận hành và maintain Kubernetes control plane.
 
@@ -56,7 +56,7 @@
 
 ---
 
-## 🎯 EKS vs Tự cài Kubernetes
+## EKS vs Tự cài Kubernetes
 
 ### Tự quản lý Kubernetes
 
@@ -115,7 +115,7 @@
 
 ---
 
-## 🏗️ Kiến trúc EKS
+## Kiến trúc EKS
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -440,7 +440,7 @@ spec:
 
 ---
 
-## 🚀 EKS Node Types
+## EKS Node Types
 
 ### EC2 Managed Node Groups
 
@@ -627,7 +627,7 @@ spec:
 
 ---
 
-## 🔧 EKS Cluster Setup
+## EKS Cluster Setup
 
 ### Tạo EKS Cluster với eksctl
 
@@ -689,7 +689,7 @@ kubectl cluster-info
 
 ---
 
-## 📊 EKS vs ECS - Khi nào dùng cái nào?
+## EKS vs ECS - Khi nào dùng cái nào?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -738,7 +738,7 @@ kubectl cluster-info
 
 ---
 
-## 🎯 Production Best Practices
+## Production Best Practices
 
 ### 1. Cluster Architecture
 
@@ -844,7 +844,7 @@ spec:
 
 ---
 
-## 📈 Monitoring & Logging
+## Monitoring & Logging
 
 ### CloudWatch Container Insights
 
@@ -884,7 +884,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 ---
 
-## 📚 Tổng kết
+## Tổng kết
 
 ### EKS Core Concepts
 
@@ -916,7 +916,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 ---
 
-## 🔗 Resources hữu ích
+## Resources hữu ích
 
 - [EKS Documentation](https://docs.aws.amazon.com/eks/)
 - [eksctl - Official CLI](https://eksctl.io/)

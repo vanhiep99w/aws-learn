@@ -15,7 +15,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp bạn hiểu khi nào dùng pattern nào.
 
@@ -672,7 +672,7 @@ Chi tiết xem:
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [SQS Documentation](./sqs.md)
 - [SNS Documentation](./sns.md)

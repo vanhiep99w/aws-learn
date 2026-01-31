@@ -14,7 +14,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon Kinesis** là platform để thu thập, xử lý và phân tích **real-time streaming data** ở bất kỳ quy mô nào.
 
@@ -815,7 +815,7 @@
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Amazon Kinesis Data Streams Developer Guide](https://docs.aws.amazon.com/streams/latest/dev/)
 - [Amazon Kinesis Data Firehose Developer Guide](https://docs.aws.amazon.com/firehose/latest/dev/)

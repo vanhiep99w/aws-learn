@@ -96,7 +96,7 @@ WITH Transfer Acceleration:
 
 ## Khi nào dùng Transfer Acceleration?
 
-### ✅ NÊN dùng
+### NÊN dùng
 
 | Scenario | Lý do |
 |----------|-------|
@@ -106,7 +106,7 @@ WITH Transfer Acceleration:
 | **Upload liên tục** | Backup từ nhiều locations, media upload |
 | **Throughput quan trọng** | Thời gian = tiền (video processing pipeline) |
 
-### ❌ KHÔNG hiệu quả khi
+### KHÔNG hiệu quả khi
 
 | Scenario | Lý do |
 |----------|-------|
@@ -121,7 +121,7 @@ WITH Transfer Acceleration:
 
 > **Câu hỏi thường gặp:** Transfer Acceleration có dùng được cho download không? Có nhanh hơn không? Có mất phí không?
 
-### ✅ CÓ dùng được cho Download
+### CÓ dùng được cho Download
 
 Transfer Acceleration hoạt động cho **cả Upload VÀ Download**:
 
@@ -133,7 +133,7 @@ DOWNLOAD với Transfer Acceleration:
 └──────────┘     └───────────┘                    └──────────┘
 ```
 
-### ⚡ Có nhanh hơn không?
+### Có nhanh hơn không?
 
 | Scenario | Kết quả |
 |----------|--------|
@@ -141,7 +141,7 @@ DOWNLOAD với Transfer Acceleration:
 | Client **gần** bucket (VD: Singapore → ap-southeast-1) | ❌ Không cải thiện |
 | Download content **lặp lại nhiều lần** | ⚠️ CloudFront tốt hơn (có cache) |
 
-### 💰 Có mất phí không?
+### Có mất phí không?
 
 **CÓ, mất phí cho CẢ Download:**
 
@@ -175,7 +175,7 @@ Client ◄── Edge (CACHE HIT) ◄─┘
 | **Unique files** | ✅ Phù hợp | ⚠️ Overkill |
 | **Static assets** | ❌ Không nên | ✅ Tốt nhất |
 
-### ✅ Khi nào dùng Transfer Acceleration cho Download
+### Khi nào dùng Transfer Acceleration cho Download
 
 ```
 ✅ NÊN dùng:

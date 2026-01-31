@@ -19,7 +19,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon EventBridge** là serverless **event bus** service để xây dựng event-driven architectures. Nó là phiên bản nâng cấp của CloudWatch Events.
 
@@ -567,7 +567,7 @@ Same as EventBridge rules: Lambda, Step Functions, SQS, SNS, etc.
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Amazon EventBridge User Guide](https://docs.aws.amazon.com/eventbridge/latest/userguide/)
 - [Event Patterns](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html)

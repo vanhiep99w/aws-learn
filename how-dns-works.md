@@ -35,7 +35,7 @@ Tài liệu này giải thích chi tiết về cơ chế hoạt động của DN
 
 Rất nhiều người nghĩ rằng khi user truy cập web, request sẽ đi qua Nhà đăng ký (Namecheap). **Điều này là SAI**.
 
-### ❌ Hiểu lầm (SAI):
+### Hiểu lầm (SAI):
 ```mermaid
 graph LR
     User[User/Browser] --> Namecheap[Nhà đăng ký (Namecheap)]
@@ -44,7 +44,7 @@ graph LR
 ```
 > *Tại sao sai?* Vì Namecheap chỉ là nơi làm thủ tục hành chính. Server của họ không đủ sức và cũng không có nhiệm vụ gánh hàng tỷ lượt truy cập web toàn cầu. Nếu mô hình này đúng, Namecheap bảo trì thì web của bạn sẽ sập -> Vô lý.
 
-### ✅ Thực tế (ĐÚNG):
+### Thực tế (ĐÚNG):
 ```mermaid
 graph LR
     User[User/Browser] -- 1. Hỏi đường --> Registry[Registry (.me/.com)]
@@ -79,7 +79,7 @@ Khi một khách gõ `tranbahiep.me` vào trình duyệt:
 
 3.  **Bước 3 (Kết nối):** Trình duyệt cầm IP `1.2.3.4` và kết nối thẳng đến Server chứa web.
 
-### 💡 Bài học rút ra
+### Bài học rút ra
 *   **Namecheap sập?** Web bạn vẫn chạy bình thường (vì request không đi qua Namecheap).
 *   **Cloudflare sập?** Web bạn không truy cập được (vì không ai trả lời IP là gì).
 *   **AWS Route 53** đóng vai trò giống hệt Cloudflare ở Bước 2 nếu bạn dùng nó làm Nameserver.

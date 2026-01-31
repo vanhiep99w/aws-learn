@@ -17,7 +17,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **AWS CDK** là framework cho phép bạn định nghĩa AWS infrastructure **bằng programming languages** (TypeScript, Python, Java, C#, Go) thay vì JSON/YAML.
 
@@ -62,7 +62,7 @@
 
 ---
 
-## 🏗️ Các khái niệm cốt lõi
+## Các khái niệm cốt lõi
 
 ### App, Stack, Construct
 
@@ -137,7 +137,7 @@
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Cài đặt
 
@@ -179,7 +179,7 @@ my-cdk-app/
 
 ---
 
-## 📝 Ví dụ Code
+## Ví dụ Code
 
 ### Ví dụ 1: S3 Bucket
 
@@ -277,7 +277,7 @@ bucket.grantDelete(fn);       // Lambda có thể xóa objects
 
 ---
 
-## 🔧 CDK Commands
+## CDK Commands
 
 | Command | Mô tả |
 |---------|-------|
@@ -311,7 +311,7 @@ cdk destroy                 # Xóa stack
 
 ---
 
-## 🌐 Cross-Stack References
+## Cross-Stack References
 
 ```typescript
 // network-stack.ts
@@ -375,7 +375,7 @@ test('Lambda Has Correct Runtime', () => {
 
 ---
 
-## 📊 CDK vs CloudFormation vs Terraform
+## CDK vs CloudFormation vs Terraform
 
 | Feature | CloudFormation | Terraform | CDK |
 |---------|---------------|-----------|-----|
@@ -407,7 +407,7 @@ test('Lambda Has Correct Runtime', () => {
 
 ---
 
-## 💡 Best Practices
+## Best Practices
 
 ### 1. Tổ chức code theo feature
 
@@ -490,7 +490,7 @@ new ec2.Instance(this, 'Instance', {
 
 ---
 
-## 🎯 Tổng kết
+## Tổng kết
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -515,7 +515,7 @@ new ec2.Instance(this, 'Instance', {
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [CDK Developer Guide](https://docs.aws.amazon.com/cdk/v2/guide/home.html)
 - [CDK API Reference](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-construct-library.html)

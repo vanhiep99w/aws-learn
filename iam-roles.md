@@ -215,7 +215,7 @@ Developer (Account A)
     S3, EC2 in Prod
 ```
 
-### ⚠️ Giới hạn quan trọng của Role Chaining
+### Giới hạn quan trọng của Role Chaining
 
 | Giới hạn | Giá trị |
 |----------|---------|

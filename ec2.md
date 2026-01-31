@@ -62,8 +62,31 @@ Các loại instance được phân loại theo mục đích sử dụng:
 - AWS giữ public key, bạn giữ private key
 
 ### 6. Security Groups
+
 - **Virtual firewall** kiểm soát traffic vào/ra instance
 - Quy định protocol, port, source/destination IP được phép
+
+| Đặc điểm | Chi tiết |
+|----------|----------|
+| **Rules** | ✅ **Chỉ có ALLOW** - không có DENY rules |
+| **Default** | Block tất cả (implicit deny) |
+| **Stateful** | ✅ Response tự động được allow |
+| **Level** | Instance (ENI) |
+| **Chi phí** | ✅ Miễn phí |
+
+> 💡 **Exam tip:** Nếu cần **DENY specific IPs** → dùng **NACL**, không phải Security Group!
+
+```
+Security Group hoạt động:
+─────────────────────────
+❌ Mọi thứ bị BLOCK by default
+         ↓
+✅ Chỉ những gì bạn ALLOW mới được vào/ra
+         ↓
+→ Không cần "deny rule" vì mặc định đã deny hết!
+```
+
+Xem chi tiết tại [Security Groups](security-groups.md).
 
 ---
 

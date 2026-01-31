@@ -16,7 +16,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon MQ** là managed message broker service hỗ trợ **Apache ActiveMQ** và **RabbitMQ**. Dành cho việc **migrate** từ on-premises messaging systems sang AWS mà không cần thay đổi code.
 
@@ -463,7 +463,7 @@
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Amazon MQ Developer Guide](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/)
 - [Amazon MQ FAQs](https://aws.amazon.com/amazon-mq/faqs/)

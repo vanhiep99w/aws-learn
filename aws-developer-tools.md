@@ -48,7 +48,7 @@
 
 > AWS Developer Tools là bộ công cụ CI/CD hoàn chỉnh giúp tự động hóa quy trình phát triển phần mềm từ source code đến deployment.
 
-## 📋 Tổng Quan
+## Tổng Quan
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -67,7 +67,7 @@
                     CodeStar (Project Management)
 ```
 
-## 📊 So Sánh Các Services
+## So Sánh Các Services
 
 | Service | Mục đích | Tương đương |
 |---------|----------|-------------|
@@ -79,7 +79,7 @@
 | **CodeGuru** | AI code review | SonarQube |
 | **CodeStar** | Project management | Azure DevOps |
 
-## 📁 Config Files: buildspec.yml vs appspec.yml
+## Config Files: buildspec.yml vs appspec.yml
 
 AWS tách riêng Build và Deploy thành các services khác nhau, mỗi service có **config file riêng**:
 

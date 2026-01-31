@@ -23,7 +23,7 @@
 
 ---
 
-## 🔍 Tổng Quan
+## Tổng Quan
 
 **AWS X-Ray** là dịch vụ **distributed tracing** giúp bạn **analyze và debug** ứng dụng phân tán (distributed applications). X-Ray cung cấp **end-to-end view** của requests khi chúng đi qua nhiều services trong hệ thống của bạn.
 
@@ -64,7 +64,7 @@
 
 ---
 
-## 🎯 Tại Sao Cần X-Ray?
+## Tại Sao Cần X-Ray?
 
 ### Vấn Đề Với Distributed Systems
 
@@ -112,7 +112,7 @@
 
 ---
 
-## 🏗️ X-Ray Core Concepts
+## X-Ray Core Concepts
 
 ### 1. Trace, Segment, Subsegment
 
@@ -230,7 +230,7 @@
 
 ---
 
-## 📊 Service Map
+## Service Map
 
 ### Visual Application Topology
 
@@ -301,7 +301,7 @@
 
 ---
 
-## 🧩 Tích Hợp X-Ray Với AWS Services
+## Tích Hợp X-Ray Với AWS Services
 
 ### Native Integration
 
@@ -398,7 +398,7 @@ Resources:
 
 ---
 
-## 💻 X-Ray SDK Integration
+## X-Ray SDK Integration
 
 ### 1. Node.js/TypeScript
 
@@ -588,7 +588,7 @@ public class OrderService {
 
 ---
 
-## 🔧 X-Ray Daemon
+## X-Ray Daemon
 
 ### Architecture
 
@@ -694,7 +694,7 @@ spec:
 
 ---
 
-## 🔍 Trace Analysis & Filtering
+## Trace Analysis & Filtering
 
 ### Trace Query Syntax
 
@@ -740,7 +740,7 @@ spec:
 
 ---
 
-## 📈 X-Ray Analytics
+## X-Ray Analytics
 
 ### Insights Dashboard
 
@@ -828,7 +828,7 @@ spec:
 
 ---
 
-## 🔗 X-Ray vs CloudWatch ServiceLens
+## X-Ray vs CloudWatch ServiceLens
 
 ### Integration
 
@@ -877,7 +877,7 @@ spec:
 
 ---
 
-## 🆚 X-Ray vs OpenTelemetry (OTel)
+## X-Ray vs OpenTelemetry (OTel)
 
 ### Tổng Quan So Sánh
 
@@ -1186,7 +1186,7 @@ span.end();
 
 ---
 
-## 💰 Pricing
+## Pricing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -1225,7 +1225,7 @@ span.end();
 
 ---
 
-## 🛡️ IAM Permissions
+## IAM Permissions
 
 ### Required Policies
 
@@ -1377,7 +1377,7 @@ aws xray put-trace-segments --region us-east-1 --trace-segment-documents '{...}'
 
 ---
 
-## 📚 Tổng Kết
+## Tổng Kết
 
 ### X-Ray Key Takeaways
 
@@ -1421,7 +1421,7 @@ aws xray put-trace-segments --region us-east-1 --trace-segment-documents '{...}'
 
 ---
 
-## 🔗 Tài Liệu Tham Khảo
+## Tài Liệu Tham Khảo
 
 - [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/)
 - [X-Ray SDK Documentation](https://docs.aws.amazon.com/xray-sdk-for-python/latest/reference/)

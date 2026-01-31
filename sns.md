@@ -18,7 +18,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon SNS** là fully managed **pub/sub** messaging service để gửi notifications đến nhiều subscribers cùng lúc.
 
@@ -693,7 +693,7 @@ public class OrderEventConsumer {
 
 ---
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [Amazon SNS Developer Guide](https://docs.aws.amazon.com/sns/latest/dg/)
 - [SNS Message Filtering](https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html)

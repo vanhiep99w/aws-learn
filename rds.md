@@ -8,22 +8,22 @@
 - [DB Instance Classes (Loại Instance)](#db-instance-classes-loại-instance)
 - [Storage Types](#storage-types)
 - [Bảo mật RDS](#bảo-mật-rds)
-- [⚡ High Availability với Multi-AZ](#high-availability-với-multi-az)
+- [High Availability với Multi-AZ](#high-availability-với-multi-az)
 - [Read Replicas](#read-replicas)
-- [Scaling Patterns & Real-world Usage](#scaling-patterns-real-world-usage)
+- [Scaling Patterns và Real-world Usage](#scaling-patterns-và-real-world-usage)
 - [Backup và Recovery](#backup-và-recovery)
 - [Maintenance và Patching](#maintenance-và-patching)
 - [Monitoring](#monitoring)
 - [Pricing](#pricing)
 - [Hands-on Labs](#hands-on-labs)
 - [Best Practices](#best-practices)
-- [❓ RDS vs Aurora vs Self-managed](#rds-vs-aurora-vs-self-managed)
+- [RDS vs Aurora vs Self-managed](#rds-vs-aurora-vs-self-managed)
 - [Exam Tips (SAA-C03)](#exam-tips-saa-c03)
 - [Tài liệu tham khảo](#tài-liệu-tham-khảo)
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **Amazon RDS (Relational Database Service)** là dịch vụ cơ sở dữ liệu quan hệ được quản lý toàn diện (fully managed) của AWS. RDS giúp đơn giản hóa việc thiết lập, vận hành và mở rộng các cơ sở dữ liệu quan hệ trên đám mây.
 
@@ -39,7 +39,7 @@
 
 ---
 
-## 🔧 Các Database Engine được hỗ trợ
+## Các Database Engine được hỗ trợ
 
 RDS hỗ trợ **6 database engine** phổ biến:
 
@@ -49,7 +49,7 @@ RDS hỗ trợ **6 database engine** phổ biến:
 - Auto-scaling storage từ 10GB đến 128TB
 - Giá cao hơn nhưng performance tốt nhất
 
-#### 🔍 Tại sao Aurora nhanh hơn 5x MySQL và 3x PostgreSQL?
+#### Tại sao Aurora nhanh hơn 5x MySQL và 3x PostgreSQL?
 
 Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì **AWS thiết kế lại hoàn toàn tầng storage**.
 
@@ -128,7 +128,7 @@ Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì
 
 ---
 
-## 💻 DB Instance Classes (Loại Instance)
+## DB Instance Classes (Loại Instance)
 
 ### Các họ Instance chính:
 
@@ -150,7 +150,7 @@ db.m6g.large
 
 ---
 
-## 💾 Storage Types
+## Storage Types
 
 RDS sử dụng **Amazon EBS (Elastic Block Store)** - là **network-attached storage**, KHÔNG phải Instance Store.
 
@@ -201,7 +201,7 @@ RDS sử dụng **Amazon EBS (Elastic Block Store)** - là **network-attached st
 
 ---
 
-## 🔒 Bảo mật RDS
+## Bảo mật RDS
 
 ### 1. Network Security
 
@@ -260,7 +260,7 @@ token = rds_client.generate_db_auth_token(
 
 ---
 
-## ⚡ High Availability với Multi-AZ
+## High Availability với Multi-AZ
 
 ### 3 Loại Multi-AZ Deployment
 
@@ -436,7 +436,7 @@ aws rds modify-db-instance --db-instance-identifier my-db --multi-az
 
 ---
 
-## 📖 Read Replicas
+## Read Replicas
 
 ### Mục đích
 - **Scale read workloads** - Phân tải các query đọc
@@ -482,7 +482,7 @@ aws rds modify-db-instance --db-instance-identifier my-db --multi-az
 
 ---
 
-## 📈 Scaling Patterns & Real-world Usage
+## Scaling Patterns và Real-world Usage
 
 ### Single Writer có đủ không?
 
@@ -637,7 +637,7 @@ Automatic election khi Primary fail
 | Downtime risk | Low (AWS SLA) | Higher |
 | **Total** | ~$300/mo | ~$250/mo + risk + người |
 
-## 💾 Backup và Recovery
+## Backup và Recovery
 
 ### 1. Automated Backups
 
@@ -677,7 +677,7 @@ Automatic election khi Primary fail
 
 ---
 
-## 🔧 Maintenance và Patching
+## Maintenance và Patching
 
 ### Maintenance Window
 - OS patching, DB engine updates
@@ -693,7 +693,7 @@ Automatic election khi Primary fail
 
 ---
 
-## 📊 Monitoring
+## Monitoring
 
 ### CloudWatch Metrics:
 - **CPUUtilization**: % CPU usage
@@ -717,7 +717,7 @@ Automatic election khi Primary fail
 
 ---
 
-## 💰 Pricing
+## Pricing
 
 ### Các thành phần tính phí:
 
@@ -750,7 +750,7 @@ Automatic election khi Primary fail
 
 ---
 
-## 📝 Hands-on Labs
+## Hands-on Labs
 
 ### Lab 1: Tạo RDS MySQL Instance
 
@@ -820,7 +820,7 @@ aws rds restore-db-instance-from-db-snapshot \
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
 ### 1. Security
 - ✅ Đặt RDS trong private subnet
@@ -849,7 +849,7 @@ aws rds restore-db-instance-from-db-snapshot \
 
 ---
 
-## ❓ RDS vs Aurora vs Self-managed
+## RDS vs Aurora vs Self-managed
 
 | Tiêu chí | Self-managed (EC2) | RDS | Aurora |
 |----------|-------------------|-----|--------|
@@ -862,7 +862,7 @@ aws rds restore-db-instance-from-db-snapshot \
 
 ---
 
-## 📚 Exam Tips (SAA-C03)
+## Exam Tips (SAA-C03)
 
 1. **Multi-AZ**: Cho HA, automatic failover, KHÔNG dùng để đọc
 2. **Read Replica**: Cho scalability, CÓ THỂ đọc, manual promotion
@@ -875,7 +875,7 @@ aws rds restore-db-instance-from-db-snapshot \
 
 ---
 
-## 🔗 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [AWS RDS Documentation](https://docs.aws.amazon.com/rds/)
 - [RDS User Guide](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/)

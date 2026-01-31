@@ -17,7 +17,7 @@
 
 ---
 
-## 🎯 Tổng quan
+## Tổng quan
 
 **Amazon API Gateway** là dịch vụ fully managed giúp tạo, publish, maintain, monitor, và secure APIs ở mọi quy mô.
 
@@ -60,7 +60,7 @@
 
 ---
 
-## 🔀 Các loại API
+## Các loại API
 
 API Gateway hỗ trợ 3 loại API:
 
@@ -176,7 +176,7 @@ API Gateway hỗ trợ 3 loại API:
 
 ---
 
-## 🏗️ Kiến trúc
+## Kiến trúc
 
 ### Request/Response Flow
 
@@ -365,7 +365,7 @@ API Gateway hỗ trợ 3 loại API:
 
 ---
 
-## 🔒 Authentication & Authorization
+## Authentication & Authorization
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -486,7 +486,7 @@ def generate_policy(principal_id, effect, resource):
 
 ---
 
-## ⚡ Features
+## Features
 
 ### Caching
 
@@ -602,7 +602,7 @@ def generate_policy(principal_id, effect, resource):
 
 ---
 
-## 💰 Pricing
+## Pricing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -648,7 +648,7 @@ def generate_policy(principal_id, effect, resource):
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -714,7 +714,7 @@ def generate_policy(principal_id, effect, resource):
 
 ---
 
-## 📝 Hands-on Examples
+## Hands-on Examples
 
 ### Example 1: REST API with Lambda (SAM Template)
 
@@ -932,7 +932,7 @@ Resources:
 
 ---
 
-## 🔗 Liên kết
+## Liên kết
 
 - [Lambda](./lambda.md) - Serverless compute
 - [DynamoDB](./dynamodb.md) - NoSQL database
@@ -941,7 +941,7 @@ Resources:
 
 ---
 
-## 🎯 Key Takeaways
+## Key Takeaways
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐

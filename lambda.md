@@ -21,7 +21,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **AWS Lambda** là dịch vụ compute serverless cho phép bạn chạy code mà không cần quản lý servers. Bạn chỉ tập trung vào code, AWS lo toàn bộ infrastructure.
 
@@ -95,7 +95,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 🏗️ Kiến trúc AWS Lambda
+## Kiến trúc AWS Lambda
 
 ### Các thành phần chính
 
@@ -163,7 +163,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 🔄 Lambda Execution Model
+## Lambda Execution Model
 
 ### Cold Start vs Warm Start
 
@@ -232,7 +232,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## ⚡ Lambda Triggers (Event Sources)
+## Lambda Triggers (Event Sources)
 
 ### Các loại triggers phổ biến
 
@@ -311,7 +311,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 💰 Lambda Pricing
+## Lambda Pricing
 
 ### Mô hình tính giá
 
@@ -378,7 +378,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 🔒 Lambda Security
+## Lambda Security
 
 ### IAM Execution Role
 
@@ -459,7 +459,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 🌐 Lambda Networking
+## Lambda Networking
 
 ### Lambda trong VPC
 
@@ -505,7 +505,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ---
 
-## 📊 Lambda Limits và Best Practices
+## Lambda Limits và Best Practices
 
 ### Limits quan trọng
 
@@ -577,7 +577,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### ⚠️ Khi Lambda chạy quá 15 phút (Timeout)
+### Khi Lambda chạy quá 15 phút (Timeout)
 
 Nếu Lambda chạy quá **15 phút**, function sẽ bị **terminate** ngay lập tức. Đây là **hard limit** không thể thay đổi.
 
@@ -756,7 +756,7 @@ def process_item(item):
 
 ---
 
-## 🛠️ Lambda Layers
+## Lambda Layers
 
 ### Lambda Layers là gì?
 
@@ -810,7 +810,7 @@ def process_item(item):
 
 ---
 
-## 🏗️ Serverless Application Patterns
+## Serverless Application Patterns
 
 ### Pattern 1: REST API
 
@@ -923,7 +923,7 @@ def process_item(item):
 
 ---
 
-## 🆚 Lambda vs ECS vs EKS
+## Lambda vs ECS vs EKS
 
 ### So sánh tổng quan
 
@@ -1012,7 +1012,7 @@ def process_item(item):
 
 ---
 
-## 📝 Hands-on Examples
+## Hands-on Examples
 
 ### Example 1: Simple Lambda Function (Python)
 
@@ -1173,7 +1173,7 @@ def lambda_handler(event, context):
 
 ---
 
-## 🎯 Key Takeaways
+## Key Takeaways
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1214,7 +1214,7 @@ def lambda_handler(event, context):
 
 ---
 
-## 🔗 Các dịch vụ Serverless khác của AWS (Chi tiết)
+## Các dịch vụ Serverless khác của AWS (Chi tiết)
 
 ### Tổng quan Serverless Ecosystem
 
@@ -1266,7 +1266,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 🌐 1. API Gateway
+### 1. API Gateway
 
 **Amazon API Gateway** - Dịch vụ fully managed để tạo, publish, maintain, monitor, và secure APIs.
 
@@ -1346,7 +1346,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 📊 2. DynamoDB
+### 2. DynamoDB
 
 **Amazon DynamoDB** - Serverless NoSQL database với single-digit millisecond performance.
 
@@ -1553,7 +1553,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 🔀 5. EventBridge
+### 5. EventBridge
 
 **Amazon EventBridge** - Serverless event bus để kết nối applications.
 
@@ -1633,7 +1633,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 🔄 6. Step Functions
+### 6. Step Functions
 
 **AWS Step Functions** - Serverless workflow orchestration.
 
@@ -1746,7 +1746,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 🚀 7. Fargate
+### 7. Fargate
 
 **AWS Fargate** - Serverless compute engine cho containers (ECS & EKS).
 
@@ -1904,7 +1904,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 🔐 10. Cognito
+### 10. Cognito
 
 **Amazon Cognito** - Serverless authentication và user management.
 
@@ -1977,7 +1977,7 @@ def lambda_handler(event, context):
 
 ---
 
-### 📊 Tổng hợp: Khi nào dùng dịch vụ nào?
+### Tổng hợp: Khi nào dùng dịch vụ nào?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -2034,7 +2034,7 @@ def lambda_handler(event, context):
 
 ---
 
-## 📚 Tiếp theo
+## Tiếp theo
 
 - [Step Functions](./step-functions.md) - Orchestrate Lambda functions
 - [API Gateway](./api-gateway.md) - Build serverless APIs  

@@ -23,7 +23,7 @@
 
 ---
 
-## 📖 Tổng quan
+## Tổng quan
 
 **Amazon ECS (Elastic Container Service)** là dịch vụ quản lý container được AWS quản lý hoàn toàn (fully managed). ECS giúp bạn chạy, dừng và quản lý Docker containers trên một cluster.
 
@@ -80,7 +80,7 @@
 | Tự thiết lập load balancing | Tích hợp ALB/NLB |
 | Tự cấu hình auto-scaling | Application Auto Scaling |
 
-#### 🔍 Giải thích chi tiết từng điểm:
+#### Giải thích chi tiết từng điểm:
 
 ---
 
@@ -399,7 +399,7 @@ aws application-autoscaling put-scaling-policy \
 
 ---
 
-### 🎯 Tóm tắt: Tự quản lý vs ECS
+### Tóm tắt: Tự quản lý vs ECS
 
 | Công việc | Tự quản lý | ECS |
 |-----------|-----------|-----|
@@ -414,7 +414,7 @@ aws application-autoscaling put-scaling-policy \
 
 ---
 
-## 🏗️ Kiến trúc ECS
+## Kiến trúc ECS
 
 ### Các thành phần chính
 
@@ -442,7 +442,7 @@ aws application-autoscaling put-scaling-policy \
 
 ---
 
-### 📌 1. Cluster (Cụm)
+### 1. Cluster (Cụm)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -470,7 +470,7 @@ aws application-autoscaling put-scaling-policy \
 
 ---
 
-### 📌 2. Task Definition (Bản thiết kế)
+### 2. Task Definition (Bản thiết kế)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -529,7 +529,7 @@ aws application-autoscaling put-scaling-policy \
 
 ---
 
-### 📌 3. Task (Công việc đang chạy)
+### 3. Task (Công việc đang chạy)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -544,7 +544,7 @@ aws application-autoscaling put-scaling-policy \
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-#### ⚠️ 1 Task có thể chứa NHIỀU Containers!
+#### 1 Task có thể chứa NHIỀU Containers!
 
 ```
 TRƯỜNG HỢP 1: 1 Task = 1 Container (phổ biến nhất - 90%)
@@ -583,7 +583,7 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ---
 
-### 📌 4. Service (Dịch vụ)
+### 4. Service (Dịch vụ)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -623,7 +623,7 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ---
 
-### 📌 5. Container Instance (Chỉ với EC2 Launch Type)
+### 5. Container Instance (Chỉ với EC2 Launch Type)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -654,7 +654,7 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ---
 
-### 📊 Tổng kết quan hệ các thành phần
+### Tổng kết quan hệ các thành phần
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -692,9 +692,9 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ---
 
-## 🚀 Launch Types: EC2 vs Fargate
+## Launch Types: EC2 vs Fargate
 
-### ❓ Tại sao ECS cần EC2 hoặc Fargate? Mỗi cái làm gì?
+### Tại sao ECS cần EC2 hoặc Fargate? Mỗi cái làm gì?
 
 > **Điểm quan trọng cần hiểu**: 
 > - ECS là **bộ não điều khiển** (không có CPU/RAM)
@@ -763,7 +763,7 @@ Thợ: "Ai order? Bao nhiêu cái? Loại gì?"
 → Cần có manager (ECS) để điều phối!
 ```
 
-### 🎯 Vậy 2 Launch Types là gì?
+### Vậy 2 Launch Types là gì?
 
 **Launch Type = Cách bạn cung cấp "thợ làm bánh" cho ECS**
 
@@ -842,7 +842,7 @@ Thợ: "Ai order? Bao nhiêu cái? Loại gì?"
 | Có Reserved Instances | Không muốn lo capacity |
 | Cần tận dụng Spot Instances | Development, testing |
 
-### 🔥 Khi hết resources thì sao?
+### Khi hết resources thì sao?
 
 #### Với EC2 Launch Type:
 
@@ -885,7 +885,7 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 
 ---
 
-## 🌐 Network Modes
+## Network Modes
 
 ### 4 Network Modes trong ECS
 
@@ -959,7 +959,7 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 | **host** | Maximum performance, single task per port |
 | **none** | Batch jobs không cần network |
 
-### 🔑 Network Mode vs Security Group
+### Network Mode vs Security Group
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -999,7 +999,7 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 🚀 Traffic đi như thế nào với awsvpc?
+### Traffic đi như thế nào với awsvpc?
 
 ```
      ALB
@@ -1023,7 +1023,7 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 🔄 Task gọi Task trên cùng EC2
+### Task gọi Task trên cùng EC2
 
 ```
 Task 1 (10.0.1.5) gọi Task 2 (10.0.1.8) trên CÙNG EC2:
@@ -1039,7 +1039,7 @@ Task 1 (10.0.1.5) gọi Task 2 (10.0.1.8) trên CÙNG EC2:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 💡 Tại sao awsvpc + Security Group quan trọng?
+### Tại sao awsvpc + Security Group quan trọng?
 
 ```
 VỚI BRIDGE MODE:
@@ -1059,7 +1059,7 @@ VỚI AWSVPC MODE:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### ⚠️ Giới hạn: Số ENI trên mỗi EC2
+### Giới hạn: Số ENI trên mỗi EC2
 
 | Instance Type | Max ENIs | Max Tasks (awsvpc) |
 |---------------|----------|-------------------|
@@ -1073,7 +1073,7 @@ VỚI AWSVPC MODE:
 
 ---
 
-## 🔄 ECS Service
+## ECS Service
 
 ### Service là gì?
 
@@ -1126,7 +1126,7 @@ Service đảm bảo số lượng tasks mong muốn luôn chạy:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### 🔄 ECS tự động quản lý Load Balancer:
+#### ECS tự động quản lý Load Balancer:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1280,7 +1280,7 @@ ECS có các strategies để quyết định đặt task ở đâu:
 
 ---
 
-## 📦 Container Images & ECR
+## Container Images & ECR
 
 ### Amazon ECR (Elastic Container Registry)
 
@@ -1328,7 +1328,7 @@ docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
 
 ---
 
-## 🔐 IAM Roles trong ECS
+## IAM Roles trong ECS
 
 ### 2 loại IAM Roles quan trọng
 
@@ -1389,7 +1389,7 @@ docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
 
 ---
 
-## 📊 Auto Scaling
+## Auto Scaling
 
 ### ECS Service Auto Scaling
 
@@ -1437,7 +1437,7 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 
 ---
 
-## 🔧 Secrets & Configuration
+## Secrets & Configuration
 
 ### Cách truyền secrets vào containers
 
@@ -1500,7 +1500,7 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 
 ---
 
-## 📝 Logging
+## Logging
 
 ### Container Logging với CloudWatch
 
@@ -1541,9 +1541,9 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 
 ---
 
-## 💰 Pricing: EC2 vs Fargate chi tiết
+## Pricing: EC2 vs Fargate chi tiết
 
-### 💡 Điểm khác biệt cốt lõi
+### Điểm khác biệt cốt lõi
 
 | | EC2 Launch Type | Fargate Launch Type |
 |--|-----------------|---------------------|
@@ -1551,7 +1551,7 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 | **Không chạy gì** | Vẫn trả tiền EC2! | $0 |
 | **Ví von** | Thuê nhà tháng (trả cả tháng) | Thuê phòng theo giờ |
 
-### 📌 EC2 Launch Type - Cách tính
+### EC2 Launch Type - Cách tính
 
 ```
 Bạn thuê 2 x t3.medium ($0.0416/giờ mỗi cái)
@@ -1568,7 +1568,7 @@ Chi phí cố định: $0.0832/giờ × 24 × 30 = ~$60/tháng
 └───────────────────────────────────────────────────────────────┘
 ```
 
-### 📌 Fargate Launch Type - Cách tính
+### Fargate Launch Type - Cách tính
 
 ```
 Giá (US East - tham khảo):
@@ -1585,7 +1585,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 ✅ Không chạy = $0!
 ```
 
-### 📊 So sánh thực tế: 3 containers (0.5 vCPU, 1GB mỗi cái)
+### So sánh thực tế: 3 containers (0.5 vCPU, 1GB mỗi cái)
 
 | Thời gian chạy | EC2 (2 x t3.medium) | Fargate | Ai rẻ hơn? |
 |----------------|---------------------|---------|------------|
@@ -1597,7 +1597,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 > ⚠️ **Lưu ý**: Ví dụ trên EC2 chưa tối ưu. Với Reserved Instances hoặc Spot, EC2 sẽ rẻ hơn nhiều!
 
-### 🎯 Khi nào EC2 rẻ hơn?
+### Khi nào EC2 rẻ hơn?
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
@@ -1625,7 +1625,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-### 💵 Các cách tiết kiệm
+### Các cách tiết kiệm
 
 | Phương pháp | EC2 | Fargate | Tiết kiệm |
 |-------------|-----|---------|-----------|
@@ -1662,7 +1662,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 | 🚕 On-Demand | Đi taxi, bật đồng hồ |
 | 🚗 Reserved | Thuê xe tháng/năm - cam kết, rẻ hơn |
 
-#### ⚡ Spot Instances là gì?
+#### Spot Instances là gì?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -1728,7 +1728,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 | Single instance app | Bị đuổi = downtime |
 | Long-running jobs không checkpoint | Mất hết progress |
 
-### 📋 Tóm tắt: Chọn loại nào?
+### Tóm tắt: Chọn loại nào?
 
 | Tình huống | Recommendation |
 |------------|----------------|
@@ -1740,7 +1740,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ---
 
-## 🔄 ECS vs EKS vs Fargate
+## ECS vs EKS vs Fargate
 
 ### So sánh các Container Services
 
@@ -1771,7 +1771,7 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ---
 
-## 📝 Hands-on Labs
+## Hands-on Labs
 
 ### Lab 1: Tạo ECS Cluster với Fargate
 
@@ -1875,7 +1875,7 @@ aws ecs update-service \
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
 ### 1. Container Best Practices
 
@@ -1918,7 +1918,7 @@ aws ecs update-service \
 
 ---
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -2093,7 +2093,7 @@ Developer push code
 
 ---
 
-## 📚 Tóm tắt
+## Tóm tắt
 
 ### Khi nào dùng ECS?
 

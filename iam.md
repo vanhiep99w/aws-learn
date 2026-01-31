@@ -174,7 +174,7 @@ arn:aws:ec2:us-east-1:123456789012:instance/i-123
 | **Đăng nhập** | Email + Password |
 | **Không thể restrict** | Không thể giới hạn quyền của root |
 
-### ⚠️ Best Practices cho Root User
+### Best Practices cho Root User
 
 ```
 ❌ KHÔNG NÊN:

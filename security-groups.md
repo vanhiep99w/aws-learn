@@ -374,7 +374,7 @@ aws ec2 delete-security-group \
 
 ## Best Practices
 
-### ✅ Nên làm
+### Nên làm
 
 1. **Principle of Least Privilege**: Chỉ mở ports cần thiết
 2. **Sử dụng Security Group referencing** thay vì hard-code IP
@@ -383,7 +383,7 @@ aws ec2 delete-security-group \
 5. **Regular audit** các security group rules
 6. **Sử dụng VPC Flow Logs** để monitor traffic
 
-### ❌ Không nên làm
+### Không nên làm
 
 1. **Không mở 0.0.0.0/0** cho SSH (port 22) hoặc RDP (port 3389)
 2. **Không mở large port ranges** (VD: 1-65535)
@@ -406,6 +406,37 @@ aws ec2 delete-security-group \
 1. Kiểm tra **Outbound rules** của Security Group
 2. Kiểm tra có **NAT Gateway** hoặc **Internet Gateway** không
 3. Kiểm tra **Route tables** có route đến 0.0.0.0/0 không
+
+## Exam Tips
+
+### Key Points for AWS Exams
+
+1. **Security Group chỉ có ALLOW rules**
+   - Không có DENY rules
+   - Mặc định deny tất cả (implicit deny)
+   - Nếu cần DENY specific IPs → dùng **NACL**
+
+2. **Stateful vs Stateless**
+   - Security Group = **Stateful** → response tự động cho phép
+   - NACL = **Stateless** → phải tạo rule cả 2 chiều
+
+3. **Default behavior**
+   - Inbound: Deny all (phải thêm rule để allow)
+   - Outbound: Allow all (default)
+
+4. **Instance level, không phải subnet**
+   - Security Group gắn vào ENI (Network Interface)
+   - NACL áp dụng cho cả subnet
+
+### Common Exam Scenarios
+
+| Scenario | Answer |
+|----------|--------|
+| Block specific IP addresses | **NACL** (Security Group không có deny) |
+| Allow return traffic automatically | **Security Group** (stateful) |
+| Defense in depth at subnet level | **NACL** |
+| Firewall per instance | **Security Group** |
+| Need both Allow AND Deny rules | **NACL** |
 
 ---
 

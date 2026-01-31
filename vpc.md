@@ -11,7 +11,6 @@
 - [Tác dụng của Subnet](#tác-dụng-của-subnet)
 - [Public Subnet vs Private Subnet](#public-subnet-vs-private-subnet)
 - [Các thành phần trong VPC Dashboard](#các-thành-phần-trong-vpc-dashboard)
-- [Bảng tổng hợp thành phần](#bảng-tổng-hợp-thành-phần)
 - [Khi nào tạo VPC mới?](#khi-nào-tạo-vpc-mới)
 - [Khi nào tạo Subnet mới?](#khi-nào-tạo-subnet-mới)
 - [Ví dụ thực tế theo quy mô](#ví-dụ-thực-tế-theo-quy-mô)
@@ -341,6 +340,27 @@ VPC Dashboard
     └── DNS Settings       → Enable/disable DNS trong VPC
 ```
 
+### Bảng tổng hợp thành phần
+
+| STT | Thành phần | Tác dụng | Chi phí | Quan trọng? |
+|-----|------------|----------|---------|-------------|
+| - | VPC | Mạng ảo | ✅ Free | ⭐⭐⭐ Bắt buộc |
+| - | Subnet | Chia VPC | ✅ Free | ⭐⭐⭐ Bắt buộc |
+| 1 | [Internet Gateway](#1-internet-gateway-igw) | Ra internet | ✅ Free | ⭐⭐⭐ Cần cho public |
+| 2 | [NAT Gateway](#2-nat-gateway) | Private ra internet | 💰 $32+/tháng | ⭐⭐ Tùy chọn |
+| 3 | [Route Table](#3-route-table) | Định tuyến | ✅ Free | ⭐⭐⭐ Bắt buộc |
+| 4 | [Elastic IP](#4-elastic-ip-eip) | IP tĩnh | 💰 $3.6/tháng | ⭐ Tùy chọn |
+| 5 | [VPC Peering](#5-vpc-peering) | Nối 2 VPC | ✅ Free | ⭐ Khi cần |
+| 6 | [Transit Gateway](#6-transit-gateway) | Hub nhiều VPC | 💰 $36+/tháng | ⭐ Khi cần |
+| 7 | [VPN Connection](#7-vpn-connection-site-to-site-vpn) | Nối on-premise | 💰 $36+/tháng | ⭐ Khi cần |
+| 8 | [Client VPN](#8-aws-client-vpn) | VPN cá nhân | 💰 $0.05/giờ | ⭐ Khi cần |
+| 9 | [Security Group](#9-security-groups) | Firewall instance | ✅ Free | ⭐⭐⭐ Bắt buộc |
+| 10 | [Network ACL](#10-network-acls-nacls) | Firewall subnet | ✅ Free | ⭐ Tùy chọn |
+| 11 | [VPC Endpoint](#11-vpc-endpoints) | Nối AWS services | ✅/💰 | ⭐⭐ Nên dùng |
+| 12 | [PrivateLink](#12-aws-privatelink) | Expose service | 💰 $0.01/giờ | ⭐ Khi cần |
+| 13 | [Flow Logs](#13-vpc-flow-logs) | Audit traffic | 💰 | ⭐ Production |
+| 14 | [DHCP Option Sets](#14-dhcp-option-sets) | Cấu hình DNS | ✅ Free | ⭐ Tùy chọn |
+
 ---
 
 ### 1. Internet Gateway (IGW)
@@ -440,7 +460,63 @@ Route Table: 10.0.0.0/16 → local (traffic trong VPC không cần NAT)
 | Use case | EC2 private cần apt update, gọi external API |
 | HA | Tạo 1 NAT Gateway mỗi AZ |
 
-**Thay thế rẻ hơn:** NAT Instance (EC2 t3.micro ~$8/tháng) cho dev/test.
+#### NAT Gateway vs NAT Instance
+
+| Tiêu chí | NAT Gateway | NAT Instance |
+|----------|-------------|--------------|
+| **Managed by** | ✅ AWS quản lý hoàn toàn | ❌ Bạn tự quản lý (EC2) |
+| **High Availability** | ✅ Tự động trong 1 AZ | ❌ Phải tự setup failover |
+| **Bandwidth** | Tự động scale đến 100 Gbps | Phụ thuộc instance type |
+| **Maintenance** | ✅ AWS patching | ❌ Bạn tự patch OS |
+| **Security Group** | ❌ Không hỗ trợ | ✅ Có thể attach SG |
+| **Bastion Host** | ❌ Không thể | ✅ Có thể dùng làm bastion |
+| **Port forwarding** | ❌ Không hỗ trợ | ✅ Có thể cấu hình |
+| **Chi phí** | 💰 ~$32/tháng + data | 💸 ~$8/tháng (t3.micro) |
+
+> 💡 **NAT Instance** là giải pháp cũ trước khi AWS có NAT Gateway (2015). Hiện tại chỉ nên dùng cho dev/test để tiết kiệm chi phí.
+
+#### NAT vs Bastion - Hiểu đơn giản
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    NAT vs BASTION (Jump Server)                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  BASTION / JUMP SERVER                  NAT GATEWAY                     │
+│  ──────────────────────                 ────────────                    │
+│                                                                         │
+│  Internet ──► Bastion ──► Private EC2   Private EC2 ──► NAT ──► Internet│
+│                                                                         │
+│  ✅ Cho phép VÀO (inbound)              ✅ Cho phép RA (outbound)       │
+│  ❌ Không dùng cho outbound             ❌ Không cho VÀO                │
+│                                                                         │
+│  Mục đích: SSH/RDP vào private EC2      Mục đích: EC2 ra internet       │
+│            từ bên ngoài                           (update, API calls)   │
+│                                                                         │
+│              ┌─────────────────────────────┐                            │
+│              │       PRIVATE SUBNET        │                            │
+│              │                             │                            │
+│ ┌─────────┐  │      ┌─────────────┐        │      ┌──────────┐          │
+│ │  Admin  │──┼─────►│   EC2 App   │────────┼─────►│ Internet │          │
+│ │ (SSH)   │  │      └─────────────┘        │      │ (apt-get)│          │
+│ └─────────┘  │                             │      └──────────┘          │
+│      │       │                             │           ▲                │
+│      ▼       │                             │           │                │
+│ ┌─────────┐  │                             │      ┌─────────┐           │
+│ │ Bastion │──┘                             └──────│   NAT   │           │
+│ └─────────┘                                       └─────────┘           │
+│ (Cửa VÀO)                                        (Cửa RA)               │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+> 🎯 **Tóm lại:** Bastion = "Cửa VÀO" (cho admin SSH vào), NAT = "Cửa RA" (cho EC2 ra internet)
+
+#### Tại sao NAT phải đặt riêng?
+
+NAT không thể chạy trong chính EC2 mà nó bảo vệ vì:
+1. **NAT cần Public IP** để giao tiếp với internet → nếu EC2 có Public IP → internet gọi được VÀO → mất tính "private"
+2. **NAT là "cầu nối"** giữa private network và internet → phải đứng ở giữa, không thể nằm trong 1 bên
 
 ---
 
@@ -723,7 +799,7 @@ Tổng:        ~$182/tháng
 | Bandwidth | Tối đa ~1.25 Gbps |
 | Use case | Hybrid cloud, kết nối văn phòng với AWS |
 
-**Thay thế nhanh hơn:** AWS Direct Connect (kết nối vật lý, đắt hơn).
+**Thay thế nhanh hơn:** [AWS Direct Connect](direct-connect.md) (kết nối vật lý, đắt hơn nhưng latency thấp và ổn định).
 
 ---
 
@@ -1253,24 +1329,6 @@ Dùng PrivateLink:
 
 ---
 
-## Bảng tổng hợp thành phần
-
-| Thành phần | Tác dụng | Chi phí | Quan trọng? |
-|------------|----------|---------|-------------|
-| VPC | Mạng ảo | ✅ Free | ⭐⭐⭐ Bắt buộc |
-| Subnet | Chia VPC | ✅ Free | ⭐⭐⭐ Bắt buộc |
-| Route Table | Định tuyến | ✅ Free | ⭐⭐⭐ Bắt buộc |
-| Internet Gateway | Ra internet | ✅ Free | ⭐⭐⭐ Cần cho public |
-| NAT Gateway | Private ra internet | 💰 $32+/tháng | ⭐⭐ Tùy chọn |
-| Elastic IP | IP tĩnh | 💰 $3.6/tháng | ⭐ Tùy chọn |
-| Security Group | Firewall instance | ✅ Free | ⭐⭐⭐ Bắt buộc |
-| Network ACL | Firewall subnet | ✅ Free | ⭐ Tùy chọn |
-| VPC Peering | Nối 2 VPC | ✅ Free | ⭐ Khi cần |
-| Transit Gateway | Hub nhiều VPC | 💰 $36+/tháng | ⭐ Khi cần |
-| VPN Connection | Nối on-premise | 💰 $36+/tháng | ⭐ Khi cần |
-| VPC Endpoint | Nối AWS services | ✅/💰 | ⭐⭐ Nên dùng |
-| Flow Logs | Audit traffic | 💰 | ⭐ Production |
-
 ---
 
 ## Khi nào tạo VPC mới?
@@ -1398,7 +1456,7 @@ aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-xxx"
 
 ## Best Practices
 
-### ✅ Nên làm
+### Nên làm
 
 1. **Tách môi trường bằng VPC** - Dev, Staging, Prod riêng biệt
 2. **Sử dụng nhiều AZ** - Tối thiểu 2 AZ cho production
@@ -1406,7 +1464,7 @@ aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-xxx"
 4. **Đặt tên rõ ràng** - `prod-public-subnet-1a`, `dev-private-subnet-1b`
 5. **Plan CIDR block** - Tránh overlap khi cần VPC Peering
 
-### ❌ Không nên làm
+### Không nên làm
 
 1. **Dùng default VPC cho production** - Không đủ bảo mật
 2. **CIDR quá nhỏ** - Khó mở rộng sau này
