@@ -248,16 +248,143 @@ Hiểu rõ ai chịu trách nhiệm gì:
 
 ## AWS Support Plans
 
-| Plan | Price | Features |
-|------|-------|----------|
-| **Basic** | FREE | Customer Service, Documentation, Whitepapers, Forums |
-| **Developer** | $29+/month | Business hours email support |
-| **Business** | $100+/month | 24/7 phone, chat, email + Trusted Advisor full |
-| **Enterprise On-Ramp** | $5,500+/month | Technical Account Manager (TAM) pool |
-| **Enterprise** | $15,000+/month | Designated TAM, 15-min response for critical |
+AWS cung cấp **5 Support Plans** với các mức độ hỗ trợ khác nhau:
 
-> [!NOTE]
-> Phần Support Plans cũng hay được hỏi trong exam!
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        AWS SUPPORT PLANS                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│    Enterprise ───▶ $15,000+/tháng  │ Designated TAM, 15-min critical        │
+│         ↑                                                                    │
+│    Enterprise On-Ramp ───▶ $5,500+/tháng │ TAM pool, 30-min critical        │
+│         ↑                                                                    │
+│    Business ───▶ $100+/tháng │ 24/7 support, 1-hour urgent                  │
+│         ↑                                                                    │
+│    Developer ───▶ $29+/tháng │ Email only, business hours                   │
+│         ↑                                                                    │
+│    Basic ───▶ FREE │ Documentation, forums only                             │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh chi tiết các Plans
+
+| Feature | Basic | Developer | Business | Enterprise On-Ramp | Enterprise |
+|---------|-------|-----------|----------|-------------------|------------|
+| **Giá** | FREE | $29+/tháng | $100+/tháng | $5,500+/tháng | $15,000+/tháng |
+| **Ai được mở case** | ❌ | 1 người | Không giới hạn | Không giới hạn | Không giới hạn |
+| **Kênh hỗ trợ** | Documentation, Forums | Email | **24/7** Phone, Chat, Email | **24/7** Phone, Chat, Email | **24/7** Phone, Chat, Email |
+
+### Response Time
+
+| Severity | Developer | Business | Enterprise On-Ramp | Enterprise |
+|----------|-----------|----------|-------------------|------------|
+| **General guidance** | 24 business hours | 24 hours | 24 hours | 24 hours |
+| **System impaired** | 12 business hours | 12 hours | 12 hours | 12 hours |
+| **Production down** | ❌ | **4 hours** | **4 hours** | **4 hours** |
+| **Production critical** | ❌ | **1 hour** | **1 hour** | **1 hour** |
+| **Business-critical down** | ❌ | ❌ | **30 minutes** | **15 minutes** |
+
+### Trusted Advisor Access
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TRUSTED ADVISOR BY PLAN                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   BASIC / DEVELOPER:                                                        │
+│   • Chỉ có 7 CORE checks (service limits, security groups, etc.)           │
+│                                                                              │
+│   BUSINESS / ENTERPRISE ON-RAMP / ENTERPRISE:                               │
+│   • ✅ FULL Trusted Advisor (tất cả checks)                                 │
+│   • ✅ Programmatic access (API)                                            │
+│   • ✅ CloudWatch integration                                                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Technical Account Manager (TAM)
+
+| Feature | Basic/Developer/Business | Enterprise On-Ramp | Enterprise |
+|---------|--------------------------|-------------------|------------|
+| **TAM** | ❌ No | ✅ **Pool of TAMs** | ✅ **Designated TAM** |
+| **Concierge Support Team** | ❌ | ✅ | ✅ |
+| **Infrastructure Event Management** | ❌ | ✅ (1 per year) | ✅ Unlimited |
+| **Operations Reviews** | ❌ | ✅ | ✅ |
+
+### Architectural Guidance
+
+**Architectural Guidance** = **Hướng dẫn kiến trúc** - AWS Support review và tư vấn cách thiết kế hệ thống của bạn trên AWS.
+
+**Ví dụ thực tế:**
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    ARCHITECTURAL GUIDANCE EXAMPLE                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Bạn: "Tôi đang build hệ thống e-commerce, muốn host trên AWS.              │
+│        Tôi nên dùng services nào? Design thế nào cho tốt?"                  │
+│                                                                              │
+│                              ↓                                               │
+│                                                                              │
+│  AWS Support Engineer (Business plan+):                                     │
+│                                                                              │
+│  "Với use-case e-commerce của bạn, tôi recommend:                           │
+│   • Dùng ALB + Auto Scaling cho high availability                           │
+│   • Database nên dùng Aurora thay vì RDS MySQL vì traffic cao               │
+│   • Cache với ElastiCache để giảm load database                             │
+│   • CloudFront để serve static content nhanh hơn..."                        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**"Contextual to your use-case" là gì?**
+
+| General Guidance (Developer) | Contextual Guidance (Business+) |
+|------------------------------|--------------------------------|
+| "Auto Scaling giúp scale automatically" | "Với workload của bạn (peak 9-11am), nên set scaling CPU > 70%" |
+| "RDS supports MySQL, PostgreSQL..." | "Với 50GB data của bạn, recommend Aurora vì cost-effective hơn" |
+| Link đến documentation | **Review architecture diagram của BẠN** và đưa feedback cụ thể |
+
+**Availability theo Plan:**
+
+| Plan | Architectural Guidance |
+|------|----------------------|
+| **Basic** | ❌ Không có (chỉ documentation) |
+| **Developer** | General guidance qua email (chung chung) |
+| **Business** | ✅ **Contextual guidance** - tư vấn cho use-case CỤ THỂ của bạn |
+| **Enterprise On-Ramp** | ✅ Consultative review + Well-Architected Reviews |
+| **Enterprise** | ✅ Proactive guidance từ designated TAM |
+
+> [!IMPORTANT]
+> **"Architectural guidance contextual to your specific use-cases"** bắt đầu từ **Business plan** trở lên!
+
+### Additional Features by Plan
+
+| Feature | Where Available |
+|---------|-----------------|
+| **AWS Support API** | Business+ |
+| **Third-party software support** | Business+ |
+| **Well-Architected Reviews** | Business+ (self-service), Enterprise (with TAM) |
+| **Training discounts** | Enterprise On-Ramp+ |
+| **Support Automation Workflows** | Business+ |
+
+### Tóm tắt Key Differences
+
+| Plan | Key Feature |
+|------|-------------|
+| **Basic** | Chỉ documentation, forums (không có technical support) |
+| **Developer** | Email support trong business hours, general guidance |
+| **Business** | 24/7 support + Full Trusted Advisor + **Contextual architectural guidance** |
+| **Enterprise On-Ramp** | **TAM pool** + 30-min critical response + Concierge |
+| **Enterprise** | **Designated TAM** + 15-min critical response + Unlimited IEM |
+
+> [!TIP]
+> **Nhớ:**
+> - Muốn **architectural guidance cho use-case cụ thể** → **Business** trở lên
+> - Muốn có **TAM** → **Enterprise On-Ramp** trở lên
+> - Muốn response **15 phút** cho critical → Chỉ **Enterprise**
 
 ---
 
