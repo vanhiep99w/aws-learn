@@ -1,5 +1,24 @@
 # Amazon DynamoDB
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. Core Concepts](#1-core-concepts)
+- [2. Primary Key](#2-primary-key)
+- [3. Capacity Modes](#3-capacity-modes)
+- [4. Secondary Indexes](#4-secondary-indexes)
+- [5. Global Tables](#5-global-tables)
+- [6. DynamoDB Streams](#6-dynamodb-streams)
+- [7. DAX (DynamoDB Accelerator)](#7-dax-dynamodb-accelerator)
+- [8. Transactions](#8-transactions)
+- [9. TTL (Time to Live)](#9-ttl-time-to-live)
+- [10. Best Practices](#10-best-practices)
+- [11. Pricing](#11-pricing)
+- [Summary](#summary)
+
+---
+
 ## 📖 Tổng quan
 
 **Amazon DynamoDB** là **fully managed NoSQL database service** cung cấp hiệu suất single-digit millisecond latency ở mọi quy mô. DynamoDB hỗ trợ cả **key-value** và **document data models**, phù hợp cho các ứng dụng yêu cầu throughput cao và latency thấp.
@@ -117,8 +136,6 @@ Operational Overhead:
 ```
 
 ---
-
-## 📋 Mục lục
 
 1. [Core Concepts](#1-core-concepts)
 2. [Primary Key](#2-primary-key)

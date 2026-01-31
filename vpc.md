@@ -1,5 +1,27 @@
 # Amazon VPC (Virtual Private Cloud)
 
+
+## Mục lục
+
+- [VPC là gì?](#vpc-là-gì)
+- [Tác dụng của VPC](#tác-dụng-của-vpc)
+- [CIDR Notation trong VPC](#cidr-notation-trong-vpc)
+- [Chi phí VPC](#chi-phí-vpc)
+- [Subnet là gì?](#subnet-là-gì)
+- [Tác dụng của Subnet](#tác-dụng-của-subnet)
+- [Public Subnet vs Private Subnet](#public-subnet-vs-private-subnet)
+- [Các thành phần trong VPC Dashboard](#các-thành-phần-trong-vpc-dashboard)
+- [Bảng tổng hợp thành phần](#bảng-tổng-hợp-thành-phần)
+- [Khi nào tạo VPC mới?](#khi-nào-tạo-vpc-mới)
+- [Khi nào tạo Subnet mới?](#khi-nào-tạo-subnet-mới)
+- [Ví dụ thực tế theo quy mô](#ví-dụ-thực-tế-theo-quy-mô)
+- [Quản lý VPC với AWS CLI](#quản-lý-vpc-với-aws-cli)
+- [Best Practices](#best-practices)
+- [CIDR Block là gì?](#cidr-block-là-gì)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## VPC là gì?
 
 **VPC** là mạng ảo riêng của bạn trên AWS, nơi bạn có toàn quyền kiểm soát:

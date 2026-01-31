@@ -1,5 +1,27 @@
 # AWS Local Zones
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Tại sao gọi là "Local" Zone? (không phải chỉ là "Zone")](#tại-sao-gọi-là-local-zone-không-phải-chỉ-là-zone)
+- [Vị trí vật lý - Hiểu rõ Local Zones](#vị-trí-vật-lý-hiểu-rõ-local-zones)
+- [So sánh: Local Zones vs Outposts vs Wavelength](#so-sánh-local-zones-vs-outposts-vs-wavelength)
+- [Tại sao cần Local Zones?](#tại-sao-cần-local-zones)
+- [Use Cases](#use-cases)
+- [AWS Services trong Local Zones](#aws-services-trong-local-zones)
+- [Network Architecture](#network-architecture)
+- [Danh sách Local Zones](#danh-sách-local-zones)
+- [Hands-on: Deploy App to Local Zone](#hands-on-deploy-app-to-local-zone)
+- [Pricing](#pricing)
+- [Decision Tree: Chọn giải pháp nào?](#decision-tree-chọn-giải-pháp-nào)
+- [Exam Tips (SAA-C03)](#exam-tips-saa-c03)
+- [Tổng kết](#tổng-kết)
+- [Tổng kết bộ 3 Edge Computing Solutions](#tổng-kết-bộ-3-edge-computing-solutions)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS Local Zones** là extension của AWS Region, đặt **gần các thành phố lớn** để cung cấp **low latency** cho end users tại những khu vực đó.

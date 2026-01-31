@@ -1,5 +1,23 @@
 # Shared Responsibility Model
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [AWS chịu trách nhiệm gì?](#aws-chịu-trách-nhiệm-gì)
+- [Khách hàng chịu trách nhiệm gì?](#khách-hàng-chịu-trách-nhiệm-gì)
+- [Trách nhiệm thay đổi theo loại service](#trách-nhiệm-thay-đổi-theo-loại-service)
+- [Shared Controls (Trách nhiệm chung)](#shared-controls-trách-nhiệm-chung)
+- [Ví dụ thực tế](#ví-dụ-thực-tế)
+- [Inherited Controls (Thừa hưởng từ AWS)](#inherited-controls-thừa-hưởng-từ-aws)
+- [Customer-Specific Controls](#customer-specific-controls)
+- [Best Practices cho khách hàng](#best-practices-cho-khách-hàng)
+- [Lưu ý quan trọng](#lưu-ý-quan-trọng)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 Khi sử dụng AWS, **trách nhiệm bảo mật được chia sẻ** giữa AWS và khách hàng:

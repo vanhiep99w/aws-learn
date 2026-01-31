@@ -19,6 +19,36 @@ No build/test commands - this is a documentation-only repository.
 - Include practical examples and diagrams where helpful
 - Link related topics between documents
 
+## Table of Contents (Mục lục)
+
+Mỗi file documentation (trừ `README.md` và `AGENTS.md`) cần có **mục lục** ở đầu file:
+
+- Đặt ngay sau tiêu đề chính (`# ...`)
+- Sử dụng heading `## Mục lục`
+- Liệt kê tất cả các `##` headings trong file dưới dạng links
+- Kết thúc bằng `---`
+
+**Format:**
+```markdown
+# Tên Service
+
+## Mục lục
+
+- [Section 1](#section-1)
+- [Section 2](#section-2)
+- [Section 3](#section-3)
+
+---
+
+## Section 1
+...
+```
+
+**Lưu ý:**
+- Chỉ thêm TOC cho file có ≥3 headings
+- Anchor link: chuyển heading thành lowercase, thay space bằng `-`, bỏ ký tự đặc biệt
+- Nếu heading có emoji, bỏ emoji trong anchor (ví dụ: `## 🎯 Tổng quan` → `#tổng-quan`)
+
 ## Accuracy & Sources (AWS)
 
 - Khi trả lời câu hỏi về AWS hoặc tạo/cập nhật tài liệu AWS, **phải xác minh thông tin bằng các MCP tools của `aws-knowledge` trước khi kết luận**:

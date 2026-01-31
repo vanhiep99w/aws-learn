@@ -1,5 +1,31 @@
 # Amazon Elastic File System (EFS)
 
+
+## Mục lục
+
+- [EFS là gì?](#efs-là-gì)
+- [Tại sao cần EFS?](#tại-sao-cần-efs)
+- [EFS xử lý Concurrent Access như thế nào?](#efs-xử-lý-concurrent-access-như-thế-nào)
+- [EBS Multi-Attach thì sao?](#ebs-multi-attach-thì-sao)
+- [EFS vs S3 - Khác nhau hoàn toàn!](#efs-vs-s3-khác-nhau-hoàn-toàn)
+- [Tóm lại các loại Storage](#tóm-lại-các-loại-storage)
+- [So sánh EFS vs EBS vs Instance Store](#so-sánh-efs-vs-ebs-vs-instance-store)
+- [EFS hoạt động như thế nào?](#efs-hoạt-động-như-thế-nào)
+- [File System Types](#file-system-types)
+- [Storage Classes](#storage-classes)
+- [Performance Modes](#performance-modes)
+- [Throughput Modes](#throughput-modes)
+- [Mount EFS trên EC2](#mount-efs-trên-ec2)
+- [Security](#security)
+- [Use Cases](#use-cases)
+- [EFS với các AWS Services khác](#efs-với-các-aws-services-khác)
+- [Pricing](#pricing)
+- [Hạn chế](#hạn-chế)
+- [Tạo EFS qua CLI](#tạo-efs-qua-cli)
+- [Liên kết với các dịch vụ khác](#liên-kết-với-các-dịch-vụ-khác)
+
+---
+
 ## EFS là gì?
 
 **Amazon EFS** là dịch vụ **file storage** được quản lý hoàn toàn (fully managed), cho phép chia sẻ file giữa nhiều EC2 instances cùng lúc.

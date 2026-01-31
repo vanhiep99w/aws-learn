@@ -1,5 +1,24 @@
 # AWS Partner Solutions (formerly Quick Starts)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Đặc điểm chính](#đặc-điểm-chính)
+- [Thành phần của Partner Solution](#thành-phần-của-partner-solution)
+- [Deployment Options](#deployment-options)
+- [Các loại Partner Solutions](#các-loại-partner-solutions)
+- [Cách sử dụng Partner Solution](#cách-sử-dụng-partner-solution)
+- [Architecture Patterns](#architecture-patterns)
+- [Ví dụ: Deploy HashiCorp Vault](#ví-dụ-deploy-hashicorp-vault)
+- [So sánh với các phương pháp khác](#so-sánh-với-các-phương-pháp-khác)
+- [Khi nào nên dùng Partner Solutions?](#khi-nào-nên-dùng-partner-solutions)
+- [Liên quan đến AWS Marketplace](#liên-quan-đến-aws-marketplace)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **AWS Partner Solutions** (trước đây gọi là **AWS Quick Starts**) là các **reference deployments** được tự động hóa, được xây dựng bởi AWS Solutions Architects và AWS Partners để giúp bạn deploy các công nghệ phổ biến trên AWS **nhanh chóng và đúng best practices**.

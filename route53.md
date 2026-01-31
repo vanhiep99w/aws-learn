@@ -1,5 +1,30 @@
 # Amazon Route 53
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [3 Chức năng chính](#3-chức-năng-chính)
+- [DNS là gì?](#dns-là-gì)
+- [Hosted Zones](#hosted-zones)
+- [Record Types](#record-types)
+- [Alias Records (Route 53 Exclusive)](#alias-records-route-53-exclusive)
+- [TTL (Time To Live)](#ttl-time-to-live)
+- [Routing Policies](#routing-policies)
+- [Health Checks](#health-checks)
+- [Route 53 + ELB Integration](#route-53-elb-integration)
+- [Domain Registration](#domain-registration)
+- [Traffic Flow (Visual Editor)](#traffic-flow-visual-editor)
+- [DNSSEC](#dnssec)
+- [Pricing](#pricing)
+- [Best Practices](#best-practices)
+- [Exam Tips (AWS Certification)](#exam-tips-aws-certification)
+- [Route 53 vs API Gateway (Hay nhầm lẫn!)](#route-53-vs-api-gateway-hay-nhầm-lẫn)
+- [Kiến trúc Multi-Region với Route 53](#kiến-trúc-multi-region-với-route-53)
+- [Liên kết](#liên-kết)
+
+---
+
 ## Tổng quan
 
 **Amazon Route 53** là dịch vụ **Domain Name System (DNS)** có tính sẵn sàng cao và khả năng mở rộng của AWS. Tên "Route 53" lấy từ **cổng 53** - cổng tiêu chuẩn của giao thức DNS.

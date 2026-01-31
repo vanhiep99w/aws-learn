@@ -1,5 +1,26 @@
 # Amazon GuardDuty
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Đặc điểm chính](#đặc-điểm-chính)
+- [Data Sources - Nguồn dữ liệu phân tích](#data-sources-nguồn-dữ-liệu-phân-tích)
+- [Kiến trúc hoạt động](#kiến-trúc-hoạt-động)
+- [Protection Plans Chi tiết](#protection-plans-chi-tiết)
+- [Threat Intelligence Sources](#threat-intelligence-sources)
+- [Finding Types - Các loại phát hiện](#finding-types-các-loại-phát-hiện)
+- [Multi-Account Management](#multi-account-management)
+- [Automated Response](#automated-response)
+- [So sánh với các Security Services khác](#so-sánh-với-các-security-services-khác)
+- [Pricing](#pricing)
+- [Best Practices](#best-practices)
+- [Use Cases thực tế](#use-cases-thực-tế)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **Amazon GuardDuty** là một dịch vụ **threat detection** (phát hiện mối đe dọa) được quản lý hoàn toàn, sử dụng **machine learning**, **anomaly detection** và **threat intelligence** để liên tục giám sát và phát hiện các hoạt động đáng ngờ trong AWS environment.

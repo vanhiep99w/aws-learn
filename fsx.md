@@ -1,5 +1,25 @@
 # Amazon FSx
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Chọn File System phù hợp](#chọn-file-system-phù-hợp)
+- [1. FSx for Lustre](#1-fsx-for-lustre)
+- [2. FSx for NetApp ONTAP](#2-fsx-for-netapp-ontap)
+- [3. FSx for OpenZFS](#3-fsx-for-openzfs)
+- [4. FSx for Windows File Server](#4-fsx-for-windows-file-server)
+- [So sánh Performance](#so-sánh-performance)
+- [So sánh Protocols & Compatibility](#so-sánh-protocols-compatibility)
+- [Availability SLA](#availability-sla)
+- [Pricing Model](#pricing-model)
+- [Khi nào chọn FSx?](#khi-nào-chọn-fsx)
+- [FSx vs EFS - Khi nào chọn cái nào?](#fsx-vs-efs-khi-nào-chọn-cái-nào)
+- [So sánh với các Storage Services khác](#so-sánh-với-các-storage-services-khác)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 Amazon FSx là dịch vụ fully managed file storage cho phép bạn khởi chạy và quản lý các hệ thống file phổ biến mà không cần provisioning hardware, cấu hình software, patching hoặc backup.

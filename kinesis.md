@@ -1,5 +1,19 @@
 # Amazon Kinesis
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. Kinesis Data Streams](#1-kinesis-data-streams)
+- [2. Kinesis Data Firehose](#2-kinesis-data-firehose)
+- [3. Kinesis Data Analytics](#3-kinesis-data-analytics)
+- [4. So sánh Kinesis vs SQS vs Kafka](#4-so-sánh-kinesis-vs-sqs-vs-kafka)
+- [5. Best Practices](#5-best-practices)
+- [6. Common Exam Questions](#6-common-exam-questions)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## 🎯 Tổng quan
 
 **Amazon Kinesis** là platform để thu thập, xử lý và phân tích **real-time streaming data** ở bất kỳ quy mô nào.
@@ -34,8 +48,6 @@
 | **Video Streams** | Stream video for ML | Real-time | Video analytics |
 
 ---
-
-## 📋 Mục lục
 
 1. [Kinesis Data Streams](#1-kinesis-data-streams)
 2. [Kinesis Data Firehose](#2-kinesis-data-firehose)

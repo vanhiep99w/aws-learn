@@ -1,5 +1,23 @@
 # Amazon SNS (Simple Notification Service)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. Core Concepts](#1-core-concepts)
+- [2. Subscription Types](#2-subscription-types)
+- [3. Message Filtering](#3-message-filtering)
+- [4. SNS + SQS Fan-out](#4-sns-sqs-fan-out)
+- [5. Spring Boot Integration](#5-spring-boot-integration)
+- [6. FIFO Topics](#6-fifo-topics)
+- [6. Security](#6-security)
+- [7. Best Practices](#7-best-practices)
+- [8. SNS vs SQS vs EventBridge](#8-sns-vs-sqs-vs-eventbridge)
+- [9. Common Exam Questions](#9-common-exam-questions)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## 🎯 Tổng quan
 
 **Amazon SNS** là fully managed **pub/sub** messaging service để gửi notifications đến nhiều subscribers cùng lúc.
@@ -38,8 +56,6 @@
 | **Consumer** | Passive (receive push) | Active (poll messages) |
 
 ---
-
-## 📋 Mục lục
 
 1. [Core Concepts](#1-core-concepts)
 2. [Subscription Types](#2-subscription-types)

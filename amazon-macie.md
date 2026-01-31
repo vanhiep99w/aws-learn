@@ -1,5 +1,25 @@
 # Amazon Macie
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Các chức năng chính](#các-chức-năng-chính)
+- [Các loại dữ liệu nhạy cảm Macie phát hiện](#các-loại-dữ-liệu-nhạy-cảm-macie-phát-hiện)
+- [Kiến trúc hoạt động](#kiến-trúc-hoạt-động)
+- [Các loại Findings (Phát hiện)](#các-loại-findings-phát-hiện)
+- [Sensitive Data Discovery Jobs](#sensitive-data-discovery-jobs)
+- [Custom Data Identifiers](#custom-data-identifiers)
+- [Integration với các AWS Services](#integration-với-các-aws-services)
+- [So sánh với các dịch vụ bảo mật khác](#so-sánh-với-các-dịch-vụ-bảo-mật-khác)
+- [Pricing Model](#pricing-model)
+- [Best Practices](#best-practices)
+- [Use Cases thực tế](#use-cases-thực-tế)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **Amazon Macie** là một dịch vụ bảo mật dữ liệu được quản lý hoàn toàn, sử dụng **machine learning** và **pattern matching** để tự động phát hiện, phân loại và bảo vệ dữ liệu nhạy cảm trong **Amazon S3**.

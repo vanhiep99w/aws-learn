@@ -1,5 +1,24 @@
 # Load Balancing Patterns: AWS vs K8s vs Spring Cloud
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Server-side vs Client-side Load Balancing](#server-side-vs-client-side-load-balancing)
+- [Khi nào dùng loại nào?](#khi-nào-dùng-loại-nào)
+- [Spring Cloud LoadBalancer + Eureka](#spring-cloud-loadbalancer-eureka)
+- [Chi tiết theo môi trường](#chi-tiết-theo-môi-trường)
+- [So sánh Load Balancing](#so-sánh-load-balancing)
+- [So sánh Auto Scaling](#so-sánh-auto-scaling)
+- [Các kiến trúc Microservices phổ biến](#các-kiến-trúc-microservices-phổ-biến)
+- [Bảng so sánh tổng hợp](#bảng-so-sánh-tổng-hợp)
+- [So sánh Cost chi tiết](#so-sánh-cost-chi-tiết)
+- [Decision Tree: Chọn kiến trúc nào?](#decision-tree-chọn-kiến-trúc-nào)
+- [Tại sao cần AWS ALB trước K8s?](#tại-sao-cần-aws-alb-trước-k8s)
+- [Liên kết](#liên-kết)
+
+---
+
 ## Tổng quan
 
 So sánh các giải pháp Load Balancing và Auto Scaling ở các layer khác nhau:

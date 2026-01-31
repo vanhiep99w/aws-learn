@@ -1,5 +1,26 @@
 # AWS Cost Explorer
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Tính năng chính](#tính-năng-chính)
+- [Các loại Cost Views](#các-loại-cost-views)
+- [Forecasting (Dự báo chi phí)](#forecasting-dự-báo-chi-phí)
+- [Charge Types (Loại phí)](#charge-types-loại-phí)
+- [Rightsizing Recommendations](#rightsizing-recommendations)
+- [Reserved Instance Recommendations](#reserved-instance-recommendations)
+- [Cost Explorer API](#cost-explorer-api)
+- [Granularity Options](#granularity-options)
+- [So sánh với các công cụ khác](#so-sánh-với-các-công-cụ-khác)
+- [Best Practices](#best-practices)
+- [Natural Language Queries (Amazon Q)](#natural-language-queries-amazon-q)
+- [Enabling Cost Explorer](#enabling-cost-explorer)
+- [Tóm tắt](#tóm-tắt)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS Cost Explorer** là công cụ quản lý chi phí đám mây cho phép bạn:

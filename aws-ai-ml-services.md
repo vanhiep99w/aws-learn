@@ -1,5 +1,25 @@
 # AWS AI/ML Services (For Cloud Practitioner)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. Vision Services](#1-vision-services)
+- [2. Speech Services](#2-speech-services)
+- [3. Language Services](#3-language-services)
+- [4. Chatbot Services](#4-chatbot-services)
+- [5. Search & Personalization](#5-search-personalization)
+- [6. Forecasting & Fraud](#6-forecasting-fraud)
+- [7. Developer AI Services](#7-developer-ai-services)
+- [8. Generative AI](#8-generative-ai)
+- [9. ML Platform](#9-ml-platform)
+- [10. Quick Reference Table](#10-quick-reference-table)
+- [11. Exam Tips](#11-exam-tips)
+- [Tổng kết](#tổng-kết)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
@@ -30,8 +50,6 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 ```
 
 ---
-
-## 📋 Mục lục
 
 1. [Vision Services](#1-vision-services)
 2. [Speech Services](#2-speech-services)

@@ -1,5 +1,25 @@
 # AWS Well-Architected Framework
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [6 Pillars (Trụ cột)](#6-pillars-trụ-cột)
+- [1. Operational Excellence (Vận hành xuất sắc)](#1-operational-excellence-vận-hành-xuất-sắc)
+- [2. Security (Bảo mật)](#2-security-bảo-mật)
+- [3. Reliability (Độ tin cậy) ️](#3-reliability-độ-tin-cậy)
+- [4. Performance Efficiency (Hiệu năng) ⚡](#4-performance-efficiency-hiệu-năng)
+- [5. Cost Optimization (Tối ưu chi phí)](#5-cost-optimization-tối-ưu-chi-phí)
+- [6. Sustainability (Bền vững)](#6-sustainability-bền-vững)
+- [AWS Well-Architected Tool](#aws-well-architected-tool)
+- [Trade-offs giữa các Pillars](#trade-offs-giữa-các-pillars)
+- [Ví dụ thực tế: E-commerce Application](#ví-dụ-thực-tế-e-commerce-application)
+- [Well-Architected Labs](#well-architected-labs)
+- [Resources](#resources)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **AWS Well-Architected Framework** là bộ best practices và guidelines giúp bạn thiết kế và vận hành hệ thống trên AWS một cách **reliable, secure, efficient, cost-effective, và sustainable**. 

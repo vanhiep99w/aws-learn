@@ -1,5 +1,16 @@
 # Amazon Lightsail
 
+
+## Mục lục
+
+- [1. Key Features](#1-key-features)
+- [2. Pricing Model (Mô hình giá)](#2-pricing-model-mô-hình-giá)
+- [3. Lightsail vs. EC2](#3-lightsail-vs-ec2)
+- [4. Use Cases (Trường hợp sử dụng)](#4-use-cases-trường-hợp-sử-dụng)
+- [5. Hands-on: Tạo WordPress Site](#5-hands-on-tạo-wordpress-site)
+
+---
+
 **Amazon Lightsail** là server ảo (Virtual Private Server - VPS) dễ sử dụng nhất của AWS, được thiết kế cho người mới bắt đầu, các ứng dụng web đơn giản, hoặc các dự án nhỏ cần chi phí dự đoán được.
 
 Nó cung cấp mọi thứ cần thiết để khởi chạy một ứng dụng hoặc website: compute (máy chủ), storage (lưu trữ), networking (mạng), và security (bảo mật) trong một gói dịch vụ với mức giá cố định hàng tháng thấp.

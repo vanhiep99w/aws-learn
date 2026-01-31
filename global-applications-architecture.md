@@ -1,5 +1,18 @@
 # Global Applications Architecture
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. AWS Services cho Global Architecture](#1-aws-services-cho-global-architecture)
+- [2. AWS Global Accelerator](#2-aws-global-accelerator)
+- [3. CloudFront vs Global Accelerator](#3-cloudfront-vs-global-accelerator)
+- [4. Disaster Recovery Patterns](#4-disaster-recovery-patterns)
+- [5. Tổng kết](#5-tổng-kết)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## 🌍 Tổng quan
 
 **Global Applications Architecture** là kiến trúc thiết kế ứng dụng phục vụ users trên toàn cầu với:
@@ -25,8 +38,6 @@
 ```
 
 ---
-
-## 📋 Mục lục
 
 1. [AWS Services cho Global Architecture](#1-aws-services-cho-global-architecture)
 2. [AWS Global Accelerator](#2-aws-global-accelerator)

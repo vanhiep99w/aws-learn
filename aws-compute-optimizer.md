@@ -1,5 +1,21 @@
 # AWS Compute Optimizer
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Cách hoạt động](#cách-hoạt-động)
+- [Recommendation Types](#recommendation-types)
+- [Supported Resources](#supported-resources)
+- [So sánh với các service khác](#so-sánh-với-các-service-khác)
+- [Requirements](#requirements)
+- [Graviton Recommendations](#graviton-recommendations)
+- [Exam Tips (Cloud Practitioner)](#exam-tips-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS Compute Optimizer** là service sử dụng **machine learning** để phân tích historical utilization metrics và đưa ra recommendations cho việc **rightsizing** AWS resources.

@@ -1,5 +1,24 @@
 # AWS Outposts
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Tại sao cần AWS Outposts?](#tại-sao-cần-aws-outposts)
+- [Hai loại Outposts](#hai-loại-outposts)
+- [AWS Services trên Outposts](#aws-services-trên-outposts)
+- [Network Connectivity](#network-connectivity)
+- [Tại sao Outposts cần kết nối đến AWS Region?](#tại-sao-outposts-cần-kết-nối-đến-aws-region)
+- [Quản lý Outposts - Giống hệt AWS Cloud!](#quản-lý-outposts-giống-hệt-aws-cloud)
+- [Pricing Model](#pricing-model)
+- [So sánh Outposts vs Hybrid Solutions khác](#so-sánh-outposts-vs-hybrid-solutions-khác)
+- [High Availability & Disaster Recovery](#high-availability-disaster-recovery)
+- [Exam Tips (SAA-C03)](#exam-tips-saa-c03)
+- [Tổng kết](#tổng-kết)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS Outposts** là dịch vụ cho phép bạn chạy **AWS infrastructure và services ngay tại data center của bạn** (on-premises). Đây là giải pháp **Hybrid Cloud** thực sự của AWS.

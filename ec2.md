@@ -1,5 +1,18 @@
 # Amazon EC2 (Elastic Compute Cloud)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Các thành phần chính](#các-thành-phần-chính)
+- [Pricing Models](#pricing-models)
+- [Cách truy cập EC2](#cách-truy-cập-ec2)
+- [Các dịch vụ liên quan](#các-dịch-vụ-liên-quan)
+- [Best Practices](#best-practices)
+- [Tham khảo thêm](#tham-khảo-thêm)
+
+---
+
 ## Tổng quan
 
 **Amazon EC2** là dịch vụ cung cấp **compute capacity có thể mở rộng** (scalable) trong AWS Cloud. EC2 cho phép bạn khởi tạo các **virtual servers** (gọi là **instances**) theo nhu cầu, không cần đầu tư phần cứng vật lý trước.

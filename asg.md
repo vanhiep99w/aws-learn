@@ -1,5 +1,29 @@
 # Auto Scaling Group (ASG)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Kiến trúc tổng quan](#kiến-trúc-tổng-quan)
+- [Các thông số cơ bản](#các-thông-số-cơ-bản)
+- [Launch Template vs Launch Configuration](#launch-template-vs-launch-configuration)
+- [Scaling Policies](#scaling-policies)
+- [Scaling Cooldown](#scaling-cooldown)
+- [Health Checks](#health-checks)
+- [Instance Refresh](#instance-refresh)
+- [Warm Pools](#warm-pools)
+- [Multi-AZ Deployment](#multi-az-deployment)
+- [Termination Policies](#termination-policies)
+- [Lifecycle Hooks](#lifecycle-hooks)
+- [Mixed Instances Policy](#mixed-instances-policy)
+- [Instance Protection](#instance-protection)
+- [CloudWatch Metrics](#cloudwatch-metrics)
+- [Tích hợp với ELB](#tích-hợp-với-elb)
+- [Best Practices](#best-practices)
+- [Liên kết](#liên-kết)
+
+---
+
 ## Tổng quan
 
 **Auto Scaling Group (ASG)** là tập hợp các EC2 instances được quản lý và scale tự động bởi **Amazon EC2 Auto Scaling**. ASG đảm bảo số lượng instances phù hợp với demand và thay thế unhealthy instances tự động.

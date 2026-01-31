@@ -1,15 +1,19 @@
 # Amazon API Gateway
 
-## 📋 Mục lục
-- [Tổng quan](#-tổng-quan)
-- [Các loại API](#-các-loại-api)
-- [Kiến trúc](#-kiến-trúc)
-- [Integration Types](#-integration-types)
-- [Authentication & Authorization](#-authentication--authorization)
-- [Features](#-features)
-- [Pricing](#-pricing)
-- [Best Practices](#-best-practices)
-- [Hands-on Examples](#-hands-on-examples)
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Các loại API](#các-loại-api)
+- [️ Kiến trúc](#kiến-trúc)
+- [Integration Types](#integration-types)
+- [Authentication & Authorization](#authentication-authorization)
+- [⚡ Features](#features)
+- [Pricing](#pricing)
+- [Best Practices](#best-practices)
+- [Hands-on Examples](#hands-on-examples)
+- [Liên kết](#liên-kết)
+- [Key Takeaways](#key-takeaways)
 
 ---
 

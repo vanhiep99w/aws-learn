@@ -1,5 +1,24 @@
 # AWS Key Management Service (KMS)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Hiểu đơn giản: KMS làm gì?](#hiểu-đơn-giản-kms-làm-gì)
+- [Các loại KMS Keys](#các-loại-kms-keys)
+- [Envelope Encryption](#envelope-encryption)
+- [Key Rotation](#key-rotation)
+- [Key Policies](#key-policies)
+- [KMS Integration với AWS Services](#kms-integration-với-aws-services)
+- [Multi-Region Keys](#multi-region-keys)
+- [Custom Key Store Options](#custom-key-store-options)
+- [So sánh KMS với các services liên quan](#so-sánh-kms-với-các-services-liên-quan)
+- [Pricing](#pricing)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **AWS KMS** là dịch vụ quản lý **encryption keys** được AWS quản lý hoàn toàn. KMS giúp bạn tạo, quản lý và sử dụng các keys để mã hóa data một cách dễ dàng và an toàn.

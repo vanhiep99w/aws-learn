@@ -1,5 +1,23 @@
 # AWS Batch
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [️ Kiến trúc AWS Batch](#kiến-trúc-aws-batch)
+- [EC2 vs Fargate trong AWS Batch](#ec2-vs-fargate-trong-aws-batch)
+- [Job Dependencies](#job-dependencies)
+- [Chi phí AWS Batch](#chi-phí-aws-batch)
+- [AWS Batch vs Các Services Khác](#aws-batch-vs-các-services-khác)
+- [Ví dụ thực tế: Video Processing Pipeline](#ví-dụ-thực-tế-video-processing-pipeline)
+- [️ Tích hợp với các AWS Services](#tích-hợp-với-các-aws-services)
+- [Best Practices](#best-practices)
+- [Monitoring và Debugging](#monitoring-và-debugging)
+- [Tổng kết](#tổng-kết)
+- [Liên kết](#liên-kết)
+
+---
+
 ## 📖 Tổng quan
 
 **AWS Batch** là dịch vụ được AWS quản lý hoàn toàn để chạy **batch computing workloads** ở bất kỳ quy mô nào. AWS Batch tự động cung cấp compute resources và tối ưu hóa việc phân phối workload dựa trên số lượng và yêu cầu resources của jobs.

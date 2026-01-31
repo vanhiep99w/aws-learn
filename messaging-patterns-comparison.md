@@ -1,5 +1,20 @@
 # Messaging Patterns Comparison: Queue vs Pub/Sub vs Streaming vs Event Bus
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. 4 Messaging Patterns](#1-4-messaging-patterns)
+- [2. So sánh chi tiết](#2-so-sánh-chi-tiết)
+- [3. Use Cases](#3-use-cases)
+- [4. Decision Tree](#4-decision-tree)
+- [5. Kết hợp các patterns](#5-kết-hợp-các-patterns)
+- [6. Spring Boot Integration](#6-spring-boot-integration)
+- [7. Exam Tips](#7-exam-tips)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## 🎯 Tổng quan
 
 Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp bạn hiểu khi nào dùng pattern nào.
@@ -12,8 +27,6 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 - [Amazon MQ - Traditional Messaging](./amazon-mq.md)
 
 ---
-
-## 📋 Mục lục
 
 1. [4 Messaging Patterns](#1-4-messaging-patterns)
 2. [So sánh chi tiết](#2-so-sánh-chi-tiết)

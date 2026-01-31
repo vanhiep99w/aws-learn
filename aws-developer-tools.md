@@ -1,5 +1,51 @@
 # AWS Developer Tools (Code* Services)
 
+
+## Mục lục
+
+- [Tổng Quan](#tổng-quan)
+- [So Sánh Các Services](#so-sánh-các-services)
+- [Config Files: buildspec.yml vs appspec.yml](#config-files-buildspecyml-vs-appspecyml)
+- [Khái Niệm](#khái-niệm)
+- [Đặc Điểm Chính](#đặc-điểm-chính)
+- [Authentication](#authentication)
+- [Cross-Account Access](#cross-account-access)
+- [Triggers & Notifications](#triggers-notifications)
+- [Khái Niệm](#khái-niệm)
+- [Build Triggers](#build-triggers)
+- [buildspec.yml](#buildspecyml)
+- [Phases Chi Tiết](#phases-chi-tiết)
+- [Environment Variables](#environment-variables)
+- [Build trong VPC](#build-trong-vpc)
+- [Khái Niệm](#khái-niệm)
+- [Deployment Targets](#deployment-targets)
+- [CodeDeploy Agent](#codedeploy-agent)
+- [appspec.yml (EC2/On-premises)](#appspecyml-ec2on-premises)
+- [Deployment Hooks Lifecycle](#deployment-hooks-lifecycle)
+- [Deployment Strategies](#deployment-strategies)
+- [appspec.yml (Lambda)](#appspecyml-lambda)
+- [appspec.yml (ECS)](#appspecyml-ecs)
+- [Rollback Strategies](#rollback-strategies)
+- [Khái Niệm](#khái-niệm)
+- [Pipeline Structure](#pipeline-structure)
+- [Artifacts và S3](#artifacts-và-s3)
+- [Action Types](#action-types)
+- [CloudWatch Events Integration](#cloudwatch-events-integration)
+- [Parallel và Sequential Actions](#parallel-và-sequential-actions)
+- [Khái Niệm](#khái-niệm)
+- [Supported Package Types](#supported-package-types)
+- [Usage Example](#usage-example)
+- [Upstream Repositories](#upstream-repositories)
+- [Khái Niệm](#khái-niệm)
+- [Components](#components)
+- [CodeGuru Reviewer Integration](#codeguru-reviewer-integration)
+- [Khái Niệm](#khái-niệm)
+- [Features](#features)
+- [Key Points for AWS Certification](#key-points-for-aws-certification)
+- [Common Scenarios](#common-scenarios)
+
+---
+
 > AWS Developer Tools là bộ công cụ CI/CD hoàn chỉnh giúp tự động hóa quy trình phát triển phần mềm từ source code đến deployment.
 
 ## 📋 Tổng Quan

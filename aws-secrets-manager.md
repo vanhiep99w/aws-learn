@@ -1,5 +1,26 @@
 # AWS Secrets Manager
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Tại sao cần Secrets Manager?](#tại-sao-cần-secrets-manager)
+- [Kiến trúc và Workflow](#kiến-trúc-và-workflow)
+- [Secret Structure](#secret-structure)
+- [Automatic Rotation](#automatic-rotation)
+- [Secrets Manager vs SSM Parameter Store](#secrets-manager-vs-ssm-parameter-store)
+- [IAM Database Authentication (Alternative)](#iam-database-authentication-alternative)
+- [Access Control](#access-control)
+- [Code Examples](#code-examples)
+- [CloudFormation Integration](#cloudformation-integration)
+- [Monitoring và Logging](#monitoring-và-logging)
+- [Pricing](#pricing)
+- [Best Practices](#best-practices)
+- [AWS Services Integration](#aws-services-integration)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **AWS Secrets Manager** là dịch vụ giúp bạn quản lý, truy xuất và **rotate** (thay đổi định kỳ) các secrets như:

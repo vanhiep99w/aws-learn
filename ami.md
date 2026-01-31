@@ -1,5 +1,28 @@
 # Amazon Machine Image (AMI)
 
+
+## Mục lục
+
+- [AMI là gì?](#ami-là-gì)
+- [AMI vs Volume vs Snapshot](#ami-vs-volume-vs-snapshot)
+- [Flow tạo AMI và Launch Instance](#flow-tạo-ami-và-launch-instance)
+- [AMI lưu gì từ Instance?](#ami-lưu-gì-từ-instance)
+- [Đặc điểm của AMI](#đặc-điểm-của-ami)
+- [Nguồn AMI](#nguồn-ami)
+- [Launch Permissions](#launch-permissions)
+- [Root Volume Type](#root-volume-type)
+- [Virtualization Types](#virtualization-types)
+- [AMI Lifecycle](#ami-lifecycle)
+- [Tạo Custom AMI](#tạo-custom-ami)
+- [Copy AMI giữa các Regions](#copy-ami-giữa-các-regions)
+- [Share AMI](#share-ami)
+- [AMI Billing](#ami-billing)
+- [Tìm AMI](#tìm-ami)
+- [Deregister AMI](#deregister-ami)
+- [Liên kết với các dịch vụ khác](#liên-kết-với-các-dịch-vụ-khác)
+
+---
+
 ## AMI là gì?
 
 **Amazon Machine Image (AMI)** là một **template/metadata** dùng để launch EC2 instance. 

@@ -1,5 +1,19 @@
 # So sánh chuyên sâu các loại lưu trữ trên AWS
 
+
+## Mục lục
+
+- [1. Phân loại tổng quan](#1-phân-loại-tổng-quan)
+- [2. Block Storage (Lưu trữ khối)](#2-block-storage-lưu-trữ-khối)
+- [3. File Storage (Lưu trữ tệp)](#3-file-storage-lưu-trữ-tệp)
+- [4. Object Storage (Lưu trữ đối tượng)](#4-object-storage-lưu-trữ-đối-tượng)
+- [5. Hybrid & Edge Storage (Lai & Biên)](#5-hybrid-edge-storage-lai-biên)
+- [6. Data Transfer & Migration (Truyền tải)](#6-data-transfer-migration-truyền-tải)
+- [Bảng so sánh nhanh các tiêu chí quan trọng](#bảng-so-sánh-nhanh-các-tiêu-chí-quan-trọng)
+- [Lời khuyên chọn lựa (Decision Guide)](#lời-khuyên-chọn-lựa-decision-guide)
+
+---
+
 Tài liệu này cung cấp cái nhìn toàn diện về hệ sinh thái lưu trữ của AWS, vượt ra ngoài ba loại cơ bản (Block, File, Object) để bao gồm các giải pháp lai (Hybrid), biên (Edge), truyền tải dữ liệu và sao lưu.
 
 ## 1. Phân loại tổng quan

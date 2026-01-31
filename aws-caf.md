@@ -1,5 +1,20 @@
 # AWS Cloud Adoption Framework (AWS CAF)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [6 Perspectives (Góc nhìn)](#6-perspectives-góc-nhìn)
+- [Cách nhớ 6 Perspectives](#cách-nhớ-6-perspectives)
+- [4 Transformation Phases](#4-transformation-phases)
+- [Ví dụ thực tế](#ví-dụ-thực-tế)
+- [So sánh với Well-Architected Framework](#so-sánh-với-well-architected-framework)
+- [Exam Tips (Cloud Practitioner)](#exam-tips-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS Cloud Adoption Framework (CAF)** là một framework giúp tổ chức lên kế hoạch và thực hiện **cloud adoption journey** một cách hiệu quả. 

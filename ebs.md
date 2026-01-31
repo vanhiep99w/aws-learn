@@ -1,5 +1,26 @@
 # Amazon EBS (Elastic Block Store)
 
+
+## Mục lục
+
+- [EBS là gì?](#ebs-là-gì)
+- [Ví dụ thực tế: EBS dùng để làm gì?](#ví-dụ-thực-tế-ebs-dùng-để-làm-gì)
+- [Root Volume vs Data Volume](#root-volume-vs-data-volume)
+- [EBS vs Instance Store](#ebs-vs-instance-store)
+- [Các loại EBS Volume](#các-loại-ebs-volume)
+- [EBS Snapshots](#ebs-snapshots)
+- [EBS Encryption](#ebs-encryption)
+- [EBS Multi-Attach](#ebs-multi-attach)
+- [Elastic Volumes](#elastic-volumes)
+- [Sử dụng EBS Volume: Attach, Format, Mount](#sử-dụng-ebs-volume-attach-format-mount)
+- [Data Lifecycle Manager (DLM)](#data-lifecycle-manager-dlm)
+- [EBS Pricing (Chi phí)](#ebs-pricing-chi-phí)
+- [Best Practices](#best-practices)
+- [Liên kết](#liên-kết)
+- [Tham khảo](#tham-khảo)
+
+---
+
 ## EBS là gì?
 
 Amazon Elastic Block Store (EBS) là dịch vụ **block storage** có hiệu suất cao, được thiết kế để sử dụng với Amazon EC2. EBS cho phép bạn tạo các storage volumes và attach vào EC2 instances.

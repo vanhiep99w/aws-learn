@@ -1,5 +1,23 @@
 # AWS Pricing Calculator
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Đặc điểm chính](#đặc-điểm-chính)
+- [Cách sử dụng](#cách-sử-dụng)
+- [Các thông số cần configure](#các-thông-số-cần-configure)
+- [Pricing Options trong Calculator](#pricing-options-trong-calculator)
+- [Export & Share Options](#export-share-options)
+- [Groups - Tổ chức Estimates](#groups-tổ-chức-estimates)
+- [So sánh với các Cost Tools khác](#so-sánh-với-các-cost-tools-khác)
+- [Tips sử dụng hiệu quả](#tips-sử-dụng-hiệu-quả)
+- [Use Cases thực tế](#use-cases-thực-tế)
+- [Exam Tips cho Cloud Practitioner](#exam-tips-cho-cloud-practitioner)
+- [Tổng kết](#tổng-kết)
+
+---
+
 ## Tổng quan
 
 **AWS Pricing Calculator** là công cụ **miễn phí** của AWS giúp bạn ước tính chi phí sử dụng AWS services **trước khi** thực sự sử dụng chúng.

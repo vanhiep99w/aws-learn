@@ -1,5 +1,21 @@
 # Cloud Computing Basics
 
+
+## Mục lục
+
+- [Traditional Server là gì?](#traditional-server-là-gì)
+- [Cloud Computing là gì?](#cloud-computing-là-gì)
+- [Six Advantages of Cloud Computing (AWS Official)](#six-advantages-of-cloud-computing-aws-official)
+- [So sánh Traditional Server vs Cloud Computing](#so-sánh-traditional-server-vs-cloud-computing)
+- [Các mô hình dịch vụ Cloud (IaaS / PaaS / SaaS)](#các-mô-hình-dịch-vụ-cloud-iaas-paas-saas)
+- [Shared Responsibility Model](#shared-responsibility-model)
+- [Region và Availability Zone (AZ)](#region-và-availability-zone-az)
+- [Khi nào nên dùng?](#khi-nào-nên-dùng)
+- [Khái niệm bổ sung: SLA](#khái-niệm-bổ-sung-sla)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Traditional Server là gì?
 
 Máy chủ vật lý do công ty sở hữu hoặc thuê, đặt tại data center riêng hoặc colocation.

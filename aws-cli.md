@@ -1,5 +1,24 @@
 # AWS CLI (Command Line Interface)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Cài đặt](#cài-đặt)
+- [Cấu hình Credentials](#cấu-hình-credentials)
+- [Thứ tự ưu tiên Credentials](#thứ-tự-ưu-tiên-credentials)
+- [Cấu trúc lệnh](#cấu-trúc-lệnh)
+- [Các lệnh thường dùng](#các-lệnh-thường-dùng)
+- [Output Formats](#output-formats)
+- [Query với --query (JMESPath)](#query-với-query-jmespath)
+- [Các Tips hữu ích](#các-tips-hữu-ích)
+- [AWS CloudShell](#aws-cloudshell)
+- [Local vs EC2: Không cần config trên EC2](#local-vs-ec2-không-cần-config-trên-ec2)
+- [Best Practices](#best-practices)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Tổng quan
 
 **AWS CLI** là công cụ dòng lệnh để tương tác với AWS services.

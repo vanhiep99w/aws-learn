@@ -1,5 +1,24 @@
 # Amazon EventBridge
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [1. Core Concepts](#1-core-concepts)
+- [2. Event Buses](#2-event-buses)
+- [3. Rules & Event Patterns](#3-rules-event-patterns)
+- [4. Targets](#4-targets)
+- [5. Event Replay & Archive](#5-event-replay-archive)
+- [6. Schema Registry](#6-schema-registry)
+- [7. Pipes](#7-pipes)
+- [8. Scheduler](#8-scheduler)
+- [9. Security](#9-security)
+- [10. Best Practices](#10-best-practices)
+- [11. Common Exam Questions](#11-common-exam-questions)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## 🎯 Tổng quan
 
 **Amazon EventBridge** là serverless **event bus** service để xây dựng event-driven architectures. Nó là phiên bản nâng cấp của CloudWatch Events.
@@ -38,8 +57,6 @@
 | **SaaS Integration** | Yes | No | No |
 
 ---
-
-## 📋 Mục lục
 
 1. [Core Concepts](#1-core-concepts)
 2. [Event Buses](#2-event-buses)

@@ -1,5 +1,25 @@
 # AWS CloudTrail
 
+
+## Mục lục
+
+- [Tổng Quan](#tổng-quan)
+- [CloudTrail vs CloudWatch](#cloudtrail-vs-cloudwatch)
+- [CloudTrail Event Types](#cloudtrail-event-types)
+- [️ CloudTrail Architecture](#cloudtrail-architecture)
+- [CloudTrail Event Structure](#cloudtrail-event-structure)
+- [CloudTrail Security Best Practices](#cloudtrail-security-best-practices)
+- [CloudTrail + CloudWatch Integration](#cloudtrail-cloudwatch-integration)
+- [Querying CloudTrail Logs](#querying-cloudtrail-logs)
+- [CloudTrail + EventBridge](#cloudtrail-eventbridge)
+- [CloudTrail Pricing](#cloudtrail-pricing)
+- [CloudTrail Lake](#cloudtrail-lake)
+- [❓ CloudTrail FAQ](#cloudtrail-faq)
+- [Related Services](#related-services)
+- [Tổng Kết](#tổng-kết)
+
+---
+
 ## 📋 Tổng Quan
 
 **AWS CloudTrail** là dịch vụ **audit và governance** cho phép bạn ghi lại, giám sát và lưu giữ lịch sử tất cả các API calls và hoạt động trong AWS account của bạn.

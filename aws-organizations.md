@@ -1,5 +1,21 @@
 # AWS Organizations
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Các khái niệm cơ bản](#các-khái-niệm-cơ-bản)
+- [Feature Sets](#feature-sets)
+- [Organization Policies](#organization-policies)
+- [Service Control Policies (SCPs)](#service-control-policies-scps)
+- [1. Tổng quan](#1-tổng-quan)
+- [2. Kiến trúc và Các thành phần cốt lõi](#2-kiến-trúc-và-các-thành-phần-cốt-lõi)
+- [3. Service Control Policies (SCPs)](#3-service-control-policies-scps)
+- [Resource Control Policies (RCPs)](#resource-control-policies-rcps)
+- [Management Policies](#management-policies)
+
+---
+
 <<<<<<< HEAD
 ## Tổng quan
 

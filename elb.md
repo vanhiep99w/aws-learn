@@ -1,5 +1,24 @@
 # Elastic Load Balancing (ELB)
 
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Các loại Load Balancer](#các-loại-load-balancer)
+- [Application Load Balancer (ALB)](#application-load-balancer-alb)
+- [Network Load Balancer (NLB)](#network-load-balancer-nlb)
+- [Gateway Load Balancer (GWLB)](#gateway-load-balancer-gwlb)
+- [Các thành phần chính](#các-thành-phần-chính)
+- [Health Checks](#health-checks)
+- [Cross-Zone Load Balancing](#cross-zone-load-balancing)
+- [Connection Draining (Deregistration Delay)](#connection-draining-deregistration-delay)
+- [SSL/TLS Certificates](#ssltls-certificates)
+- [Tích hợp với Auto Scaling](#tích-hợp-với-auto-scaling)
+- [Pricing](#pricing)
+- [Liên kết](#liên-kết)
+
+---
+
 ## Tổng quan
 
 **Elastic Load Balancing (ELB)** là dịch vụ của AWS tự động phân phối traffic đến nhiều targets (EC2 instances, containers, IP addresses, Lambda functions) để đảm bảo **high availability** và **scalability** cho ứng dụng.

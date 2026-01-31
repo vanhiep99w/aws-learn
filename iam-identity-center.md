@@ -1,12 +1,30 @@
 # AWS IAM Identity Center
 
+
+## Mục lục
+
+- [Tổng Quan](#tổng-quan)
+- [Tại Sao Công Ty Cần Nhiều AWS Accounts?](#tại-sao-công-ty-cần-nhiều-aws-accounts)
+- [SSO Đến Business Applications](#sso-đến-business-applications)
+- [Kiến Trúc](#kiến-trúc)
+- [Identity Sources](#identity-sources)
+- [Permission Sets](#permission-sets)
+- [Tích Hợp AWS Organizations](#tích-hợp-aws-organizations)
+- [Security Features](#security-features)
+- [So Sánh Với IAM Truyền Thống](#so-sánh-với-iam-truyền-thống)
+- [Use Cases](#use-cases)
+- [Best Practices](#best-practices)
+- [Pricing](#pricing)
+- [Exam Tips (SAA, SAP, SCS)](#exam-tips-saa-sap-scs)
+- [Tài Liệu Tham Khảo](#tài-liệu-tham-khảo)
+
+---
+
 > **Tên cũ:** AWS Single Sign-On (SSO) - đổi tên vào tháng 7/2022
 
 AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho phép workforce users đăng nhập một lần (SSO) để truy cập nhiều AWS accounts và ứng dụng.
 
 ---
-
-## 📋 Mục Lục
 
 1. [Tổng Quan](#tổng-quan)
 2. [Kiến Trúc](#kiến-trúc)

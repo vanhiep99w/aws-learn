@@ -1,5 +1,14 @@
 # Cách DNS Hoạt Động (DNS Works)
 
+
+## Mục lục
+
+- [1. Các thành phần tham gia](#1-các-thành-phần-tham-gia)
+- [2. Hiểu lầm phổ biến về luồng đi (Traffic Flow)](#2-hiểu-lầm-phổ-biến-về-luồng-đi-traffic-flow)
+- [3. Quy trình chi tiết (Ví dụ thực tế)](#3-quy-trình-chi-tiết-ví-dụ-thực-tế)
+
+---
+
 Tài liệu này giải thích chi tiết về cơ chế hoạt động của DNS, vai trò của các bên tham gia (Registrar, Registry, Nameserver) và đính chính những hiểu lầm phổ biến về luồng dữ liệu (traffic flow).
 
 ## 1. Các thành phần tham gia
