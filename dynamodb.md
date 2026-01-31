@@ -771,41 +771,56 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 
 ## 5. Global Tables
 
+### Global Tables là gì?
+
+**Global Tables = Multi-region replication** - 1 table tự động sync giữa nhiều AWS regions.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      DYNAMODB GLOBAL TABLES                         │
+│                      TẠI SAO CẦN GLOBAL TABLES?                      │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
-│  Multi-region, multi-active replication cho DynamoDB tables         │
+│  Scenario: App có users ở cả US và EU                                │
 │                                                                       │
-│  ┌──────────────────┐      ┌──────────────────┐      ┌──────────────┐│
-│  │   us-east-1      │◄────►│   eu-west-1      │◄────►│ ap-southeast ││
-│  │   (N. Virginia)  │      │   (Ireland)      │      │ (Singapore)  ││
-│  └──────────────────┘      └──────────────────┘      └──────────────┘│
-│         ▲                         ▲                         ▲       │
-│         │                         │                         │       │
-│         └─────────────────────────┴─────────────────────────┘       │
-│                         Conflict-free Replicated Data Type (CRDT)    │
+│  ❌ KHÔNG CÓ Global Tables:                                          │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │  US User ──► US DynamoDB ◄── EU User                         │   │
+│  │             (N. Virginia)     (cross-region ~200ms!)         │   │
+│  │                                                               │   │
+│  │  → EU users bị lag cao khi access data ở US                  │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
-│  ✓ Active-Active: Write vào bất kỳ region nào                        │
-│  ✓ Low Latency: Local reads/writes cho users ở mọi region           │
-│  ✓ Automatic Conflict Resolution: Last Writer Wins                   │
-│  ✓ Disaster Recovery: Multi-region availability                      │
-│                                                                       │
-│  Replication Lag: < 1 second giữa các regions                        │
-│                                                                       │
-│  Use Cases:                                                           │
-│  • Global applications với users ở nhiều regions                    │
-│  • Disaster recovery và business continuity                          │
-│  • Data residency requirements                                       │
-│                                                                       │
-│  Requirements:                                                        │
-│  • On-Demand capacity mode (hoặc Provisioned với Auto Scaling)      │
-│  • DynamoDB Streams phải enabled                                     │
-│  • Empty table khi tạo Global Table                                  │
+│  ✅ CÓ Global Tables:                                                │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                                                               │   │
+│  │  ┌──────────┐   auto-sync (<1s)   ┌──────────┐              │   │
+│  │  │ US DDB   │◄──────────────────►│ EU DDB   │              │   │
+│  │  └────▲─────┘                     └────▲─────┘              │   │
+│  │       │ ~5ms                           │ ~5ms               │   │
+│  │    US User                          EU User                 │   │
+│  │                                                               │   │
+│  │  → Mỗi user access local region → LOW LATENCY!              │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+### Đặc điểm Global Tables
+
+| Feature | Giải thích |
+|---------|------------|
+| **Active-Active** | Write được ở BẤT KỲ region nào (không phải chỉ 1 master) |
+| **Auto sync** | Data tự động đồng bộ giữa regions (<1 giây) |
+| **Conflict resolution** | Last Writer Wins (timestamp mới nhất thắng) |
+| **No downtime** | Nếu 1 region chết, traffic tự động chuyển sang region khác |
+
+### Khi nào dùng Global Tables?
+
+| ✅ Nên dùng | ❌ Không cần |
+|------------|-------------|
+| Users ở nhiều regions (US, EU, Asia) | Users chỉ ở 1 region |
+| Cần Disaster Recovery tự động | Chấp nhận downtime khi có sự cố |
+| Cần low latency cho global users | Latency không quan trọng |
 
 > **Nguồn**: [Global Tables](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html)
 
@@ -813,54 +828,60 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 
 ## 6. DynamoDB Streams
 
+### Streams là gì?
+
+**DynamoDB Streams = Event log** - Ghi lại MỌI thay đổi (INSERT/UPDATE/DELETE) xảy ra trong table.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      DYNAMODB STREAMS                               │
+│                      TẠI SAO CẦN STREAMS?                            │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
-│  Change Data Capture - Ghi lại mọi thay đổi trong table             │
+│  Scenario: E-commerce - Khi order được tạo, cần:                     │
+│  • Gửi email confirmation cho customer                               │
+│  • Update inventory                                                   │
+│  • Ghi log cho audit                                                 │
 │                                                                       │
-│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐        │
-│  │   INSERT     │     │   MODIFY     │     │   REMOVE     │        │
-│  │   Item A     │────►│   Item A'    │────►│   [deleted]  │        │
-│  └──────────────┘     └──────────────┘     └──────────────┘        │
-│         │                    │                    │                │
-│         └────────────────────┼────────────────────┘                │
-│                              ▼                                      │
-│                    ┌──────────────────┐                            │
-│                    │  DynamoDB Stream │                            │
-│                    │  • New Image     │                            │
-│                    │  • Old Image     │                            │
-│                    │  • Both          │                            │
-│                    └────────┬─────────┘                            │
-│                             │                                       │
-│         ┌───────────────────┼───────────────────┐                   │
-│         ▼                   ▼                   ▼                   │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │
-│  │   Lambda     │  │   Kinesis    │  │   EventBridge│              │
-│  │   Function   │  │   Data Stream│  │   / SNS      │              │
-│  └──────────────┘  └──────────────┘  └──────────────┘              │
+│  ❌ KHÔNG CÓ Streams (Polling):                                      │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │  App phải liên tục query: "Có order mới không?"               │   │
+│  │  → Tốn RCU, không real-time, phức tạp                         │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
-│  Stream Record View Types:                                            │
-│  • NEW_IMAGE: Chỉ có data sau thay đổi                               │
-│  • OLD_IMAGE: Chỉ có data trước thay đổi                             │
-│  • NEW_AND_OLD_IMAGES: Cả data trước và sau                          │
-│  • KEYS_ONLY: Chỉ có primary key                                     │
-│                                                                       │
-│  Retention: 24 hours                                                  │
+│  ✅ CÓ Streams (Event-driven):                                       │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                                                               │   │
+│  │  Order Created ──► Stream Record ──► Lambda ──► Send Email   │   │
+│  │                         │                                     │   │
+│  │                         ├──► Lambda ──► Update Inventory      │   │
+│  │                         │                                     │   │
+│  │                         └──► Kinesis ──► Audit Log            │   │
+│  │                                                               │   │
+│  │  → Real-time, không cần polling, event-driven!               │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Common Stream Use Cases
+### Stream Record Types
 
-| Use Case | Mô tả |
-|----------|-------|
-| **Real-time Analytics** | Cập nhật dashboards, metrics, aggregations |
-| **Replication** | Sync data đến Elasticsearch, data warehouse |
-| **Audit Trail** | Log mọi thay đổi cho compliance |
-| **Cross-region Sync** | Cơ chế nền tảng cho Global Tables |
-| **Event-driven** | Trigger Lambda cho workflows |
+| Type | Nội dung | Use case |
+|------|----------|----------|
+| **NEW_IMAGE** | Data SAU thay đổi | Sync data sang service khác |
+| **OLD_IMAGE** | Data TRƯỚC thay đổi | Audit, rollback |
+| **NEW_AND_OLD_IMAGES** | Cả trước và sau | So sánh thay đổi, analytics |
+| **KEYS_ONLY** | Chỉ primary key | Lightweight triggers |
+
+### Khi nào dùng Streams?
+
+| ✅ Nên dùng | ❌ Không cần |
+|------------|-------------|
+| Cần react khi data thay đổi | Chỉ cần CRUD đơn giản |
+| Sync data sang Elasticsearch, S3 | Không cần real-time processing |
+| Audit/compliance logging | Không có event-driven workflows |
+| Trigger notifications | |
+
+> **Retention**: Stream records được giữ **24 giờ**
 
 > **Nguồn**: [DynamoDB Streams](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html)
 
@@ -868,54 +889,73 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 
 ## 7. DAX (DynamoDB Accelerator)
 
+### DAX là gì?
+
+**DAX = In-memory cache** đặt giữa App và DynamoDB để tăng tốc đọc.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    DAX - DYNAMODB ACCELERATOR                       │
+│                      TẠI SAO CẦN DAX?                                │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
-│  In-memory caching cho DynamoDB - Microsecond latency                │
+│  Scenario: Game leaderboard - 1 triệu users cùng xem top 100        │
 │                                                                       │
+│  ❌ KHÔNG CÓ DAX:                                                    │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                         APPLICATION                          │   │
-│  └─────────────────────────────┬───────────────────────────────┘   │
-│                                │                                     │
-│                      ┌─────────▼─────────┐                         │
-│                      │   DAX Client      │                         │
-│                      │   (SDK)           │                         │
-│                      └─────────┬─────────┘                         │
-│                                │                                     │
-│         ┌──────────────────────┼──────────────────────┐             │
-│         ▼                      ▼                      ▼             │
-│  ┌─────────────┐       ┌─────────────┐       ┌─────────────┐       │
-│  │ DAX Node 1  │◄─────►│ DAX Node 2  │◄─────►│ DAX Node 3  │       │
-│  │  (Leader)   │       │  (Follower) │       │  (Follower) │       │
-│  └──────┬──────┘       └─────────────┘       └─────────────┘       │
-│         │                                                           │
-│         └──────────────────────┐                                    │
-│                                ▼                                    │
-│                       ┌─────────────┐                               │
-│                       │  DYNAMODB   │                               │
-│                       │  (Backing)  │                               │
-│                       └─────────────┘                               │
+│  │  1M users ──► DynamoDB                                        │   │
+│  │              │                                                │   │
+│  │              └─ 1M requests × 1 RCU = 1M RCU/giây            │   │
+│  │              └─ Latency: ~5-10ms mỗi request                 │   │
+│  │              └─ THROTTLING! (vượt quá capacity)              │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
-│  ✓ Microsecond latency (10x faster than DynamoDB)                   │
-│  ✓ Fully managed - AWS quản lý cluster                              │
-│  ✓ Compatible API - Không cần đổi code nhiều                         │
-│  ✓ Item cache và Query cache                                        │
-│  ✓ Write-through caching                                            │
-│                                                                       │
-│  Best for:                                                            │
-│  • Read-heavy workloads                                              │
-│  • Repeated reads cho cùng items                                     │
-│  • Real-time applications (gaming, trading)                          │
-│                                                                       │
-│  Node Types: r3.large đến r5.4xlarge                                 │
-│  Cluster Size: 1-10 nodes                                            │
+│  ✅ CÓ DAX:                                                          │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                                                               │   │
+│  │  1M users ──► DAX (cache) ──► DynamoDB                       │   │
+│  │              │                   │                            │   │
+│  │              │ Cache HIT         │ Cache MISS (chỉ 1 lần)    │   │
+│  │              │ ~0.001ms          │ ~5ms                       │   │
+│  │              │ Không tốn RCU!    │                            │   │
+│  │              │                                                │   │
+│  │  → 1M requests nhưng chỉ tốn ~1 RCU (cache refresh)         │   │
+│  │  → Latency: MICROSECONDS thay vì milliseconds               │   │
+│  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+### So sánh có/không có DAX
+
+| Metric | Không có DAX | Có DAX |
+|--------|-------------|--------|
+| **Read latency** | 5-10ms | **Microseconds** (~0.001ms) |
+| **RCU cost** | Mỗi request tốn RCU | Cache hit = **FREE** |
+| **Hot partition** | Dễ bị throttle | Cache giảm tải |
+
+### Khi nào dùng DAX?
+
+| ✅ Nên dùng DAX | ❌ Không nên dùng |
+|-----------------|-------------------|
+| Read-heavy workloads (90%+ reads) | Write-heavy workloads |
+| Cùng items được đọc nhiều lần | Mỗi item chỉ đọc 1 lần |
+| Cần microsecond latency (gaming, trading) | Milliseconds là đủ |
+| Muốn giảm RCU cost | Cần strongly consistent reads |
+
+> **Lưu ý**: DAX chỉ hỗ trợ **Eventually Consistent Reads**. Nếu cần Strongly Consistent, phải bypass DAX.
+
 > **Nguồn**: [DAX](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html)
+
+### So sánh DAX vs Global Tables vs Streams
+
+> [!IMPORTANT]
+> **Exam Tip**: Phân biệt 3 features quan trọng này!
+
+| Feature | Mục đích | Khi nào dùng |
+|---------|----------|--------------|
+| **DAX** | **Tăng tốc đọc** (in-memory cache) | Read-heavy, cần microsecond latency, giảm RCU cost |
+| **Global Tables** | **Multi-region sync** | Global users, disaster recovery, low latency ở nhiều regions |
+| **Streams** | **Capture changes** (event log) | Event-driven workflows, audit, sync to other services |
 
 ---
 

@@ -93,6 +93,87 @@ CAF chia thành **6 perspectives**, mỗi perspective đại diện cho một kh
 | **Security** | Protection & IAM | CISO, Security team | "Làm sao bảo vệ data và workloads?" |
 | **Operations** | Monitoring & support | Ops team, SRE | "Làm sao vận hành và monitor hiệu quả?" |
 
+### Foundational Capabilities (CAF 3.0)
+
+> [!IMPORTANT]
+> CAF 3.0 định nghĩa các **Foundational Capabilities** cụ thể cho mỗi perspective. Đây là kiến thức cần thiết cho exam!
+
+#### Business Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Strategy management** | Định nghĩa và communicate cloud strategy |
+| **Portfolio management** | Quản lý portfolio of cloud initiatives |
+| **Innovation management** | Foster innovation culture, rapid experimentation |
+| **Product management** | Quản lý products với agile methods, customer feedback |
+| **Strategic partnership** | Partnerships với AWS và partners |
+| **Data monetization** | Tạo value từ data assets |
+| **Business insight** | Data-driven decision making |
+
+#### People Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Culture evolution** | Thay đổi culture hướng cloud-native |
+| **Transformational leadership** | Leaders drive và support transformation |
+| **Cloud fluency** | Training và upskilling cho cloud |
+| **Workforce transformation** | Restructure teams cho cloud operating model |
+| **Change acceleration** | Manage organizational change effectively |
+| **Organization design** | **Tổ chức cross-functional teams around products** |
+| **Organizational alignment** | Align organization structure với cloud goals |
+
+#### Governance Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Program và project management** | Quản lý cloud initiatives |
+| **Benefits management** | Track và realize cloud benefits |
+| **Risk management** | Identify và mitigate cloud risks |
+| **Cloud financial management** | FinOps, cost optimization |
+| **Application portfolio management** | Assess và prioritize applications |
+| **Data governance** | Data quality, lifecycle, compliance |
+| **Data curation** | Organize và manage data assets |
+
+#### Platform Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Platform architecture** | Design scalable cloud architecture |
+| **Data architecture** | Design data platforms và pipelines |
+| **Platform engineering** | Build và maintain cloud platform |
+| **Data engineering** | Build data infrastructure |
+| **Provisioning và orchestration** | Automate infrastructure deployment |
+| **Modern application development** | Cloud-native development practices |
+| **CI/CD** | Continuous integration và delivery |
+
+#### Security Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Security governance** | Security policies và standards |
+| **Security assurance** | Compliance và audit |
+| **Identity và access management** | IAM, least privilege |
+| **Threat detection** | Detect security threats |
+| **Vulnerability management** | Identify và fix vulnerabilities |
+| **Infrastructure protection** | Protect cloud infrastructure |
+| **Data protection** | Encrypt và protect data |
+| **Application security** | Secure applications |
+| **Incident response** | Respond to security incidents |
+
+#### Operations Perspective Capabilities
+
+| Capability | Mô tả |
+|------------|-------|
+| **Observability** | Monitoring, logging, tracing |
+| **Event management** | Detect và respond to events |
+| **Incident và problem management** | Handle incidents effectively |
+| **Change và release management** | Safe deployments |
+| **Performance và capacity management** | Optimize performance |
+| **Configuration management** | Manage configurations |
+| **Patch management** | Keep systems updated |
+| **Availability và continuity management** | Ensure uptime, DR |
+| **Application management** | Manage applications lifecycle |
+
 ---
 
 ## Cách nhớ 6 Perspectives

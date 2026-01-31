@@ -44,6 +44,10 @@
 - [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
 - [x] [Amazon Redshift](amazon-redshift.md) - Data Warehouse, OLAP, Columnar Storage, MPP, Spectrum, Zero-ETL
 
+## Migration
+
+- [x] [AWS DMS](aws-dms.md) - Database Migration Service, SCT, 6Rs Migration Strategies, CDC
+
 ## Data Integration
 
 - [x] [AWS Glue](aws-glue.md) - Serverless ETL, Data Catalog, Crawlers, Spark/Python Jobs, Glue Studio
@@ -76,6 +80,7 @@
 - [x] [Amazon Cognito](amazon-cognito.md) - User Pools, Identity Pools, Authentication, Social Login, JWT Tokens
 - [x] [AWS WAF](aws-waf.md) - Web Application Firewall, Web ACLs, Bot Control, Fraud Control, Shield Integration
 - [x] [AWS Shield](aws-shield.md) - DDoS Protection, Shield Standard (Free), Shield Advanced, DRT, Cost Protection
+- [x] [AWS Artifact](aws-artifact.md) - Compliance Reports (SOC, PCI, ISO), Agreements (HIPAA BAA, GDPR DPA)
 
 ## Partner & Marketplace
 
@@ -118,6 +123,10 @@
 
 - [x] [AWS Pricing Calculator](aws-pricing-calculator.md) - Estimate Costs Before Deploying, Compare Pricing Options
 - [x] [AWS Cost Explorer](aws-cost-explorer.md) - Analyze Costs After Deployment, Usage Reports, Forecasting
+
+## Support
+
+- [x] [AWS Support Resources](aws-support-resources.md) - FREE vs PAID Resources, re:Post, Knowledge Center, Professional Services, AMS
 
 ## AI/ML Services
 

@@ -54,7 +54,7 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 
 ---
 
-## 🌟 Six Advantages of Cloud Computing (AWS Official)
+## Six Advantages of Cloud Computing (AWS Official)
 
 > [!IMPORTANT]
 > **Đây là nội dung quan trọng cho các kỳ thi AWS (CCP, SAA, SAP)**. Cần nhớ đúng 6 điểm này!
