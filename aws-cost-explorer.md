@@ -228,6 +228,62 @@ Cost Explorer cho phép lọc và nhóm dữ liệu theo nhiều dimensions:
 | **Tax** | Thuế (VAT, GST, etc.) |
 | **Support fee** | Phí support plan hàng tháng |
 
+### AWS Credits là gì?
+
+**AWS Credits** = Voucher/tiền thưởng từ AWS để trừ vào hóa đơn.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        AWS CREDIT                                │
+├─────────────────────────────────────────────────────────────────┤
+│  Value:    $100                                                  │
+│  Expires:  July 2024                                             │
+│  Valid for: EC2, S3                                              │
+│                                                                  │
+│  → Giống voucher giảm giá, tự động trừ vào bill                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Nguồn nhận AWS Credits
+
+| Nguồn | Mô tả |
+|-------|-------|
+| **AWS Activate** | Chương trình cho startups (lên đến $100,000) |
+| **AWS Educate** | Cho sinh viên/giáo viên |
+| **Promotional credits** | Khuyến mãi từ AWS events, workshops |
+| **Support refunds** | AWS hoàn tiền khi có sự cố |
+| **Partner programs** | Qua các đối tác AWS |
+
+#### Cách AWS áp dụng nhiều Credits
+
+> [!IMPORTANT]
+> **Exam Tip**: AWS áp dụng credits theo thứ tự ưu tiên:
+> 1. **Hết hạn sớm nhất trước** (earliest expiring first)
+> 2. **Ít linh hoạt nhất trước** (nếu cùng ngày hết hạn)
+
+**Ví dụ thực tế:**
+
+```
+Credits có:
+├── Credit 1: $100 (cho EC2 hoặc S3, hết hạn July)  ← Apply trước
+└── Credit 2: $50  (chỉ cho EC2, hết hạn Dec)
+
+Hóa đơn:
+├── EC2: $1,000
+└── S3:  $500
+─────────────────
+Tổng:   $1,500
+
+Sau khi apply credits:
+├── Credit 1 ($100) → trừ vào EC2 hoặc S3
+├── Credit 2 ($50)  → trừ vào EC2
+─────────────────
+Bạn phải trả: $1,500 - $150 = $1,350
+```
+
+> [!NOTE]
+> Tất cả credits được apply **cùng lúc** trong 1 billing cycle, không phải chọn 1 credit để dùng.
+
 ---
 
 ## Rightsizing Recommendations
@@ -294,6 +350,30 @@ Cost Explorer cung cấp đề xuất tối ưu hóa cho EC2 instances:
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+### AWS Services hỗ trợ Reservations
+
+> [!IMPORTANT]
+> **Exam Tip**: Câu hỏi thường gặp - "Which AWS services support reservations to optimize costs?"
+
+| Service | Loại Reservation | Max Savings |
+|---------|-----------------|-------------|
+| **Amazon EC2** | Reserved Instances, Savings Plans | Lên đến 72% |
+| **Amazon RDS** | Reserved DB Instances | Lên đến 69% |
+| **Amazon DynamoDB** | Reserved Capacity | Lên đến 77% |
+| **Amazon Redshift** | Reserved Nodes | Lên đến 75% |
+| **Amazon ElastiCache** | Reserved Cache Nodes | Lên đến 55% |
+| **Amazon OpenSearch** | Reserved Instances | Lên đến 60% |
+| **Amazon SageMaker** | Savings Plans | Lên đến 64% |
+| **AWS Lambda** | ❌ KHÔNG có (pay per invocation) | - |
+| **Amazon S3** | ❌ KHÔNG có (chỉ có Storage Classes) | - |
+| **Amazon SQS/SNS** | ❌ KHÔNG có (pay per request) | - |
+| **Amazon DocumentDB** | ❌ KHÔNG có | - |
+| **AWS API Gateway** | ❌ KHÔNG có | - |
+
+**Quy tắc nhớ nhanh:**
+- ✅ **CÓ Reservations**: Services chạy **liên tục** (compute instances, databases)
+- ❌ **KHÔNG có Reservations**: Services **serverless/pay-per-use** (Lambda, S3, SQS)
 
 ---
 
