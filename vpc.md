@@ -1300,6 +1300,35 @@ OUTBOUND RULES:
 └────────┴──────────┴──────────┴────────────┴───────────┴────────┘
 ```
 
+#### Rule Number - Thứ tự đánh giá
+
+**Rule Number** = **Thứ tự ưu tiên**. Số **nhỏ hơn** = **ưu tiên cao hơn**. NACL kiểm tra theo thứ tự và **DỪNG ngay** khi match rule đầu tiên.
+
+```
+Traffic đến → Kiểm tra rule 100 → 110 → 120 → ... → DỪNG khi match!
+
+┌────────┬──────────┬───────────┬────────┐
+│ Rule # │   Port   │  Source   │ Action │
+├────────┼──────────┼───────────┼────────┤
+│  100   │    22    │ 10.0.0.0/8│ ALLOW  │ ← Kiểm tra đầu tiên
+│  110   │    80    │ 0.0.0.0/0 │ ALLOW  │
+│  200   │    22    │ 0.0.0.0/0 │ DENY   │ ← SSH từ ngoài bị chặn
+│   *    │   All    │ 0.0.0.0/0 │ DENY   │ ← Default (cuối, không xóa được)
+└────────┴──────────┴───────────┴────────┘
+
+Ví dụ:
+  SSH từ 10.0.1.50 → Match rule 100 → ✅ ALLOW (dừng, không đến rule 200)
+  SSH từ 203.0.113.5 → Không match 100 → Match rule 200 → ❌ DENY
+```
+
+**Best Practices:**
+
+| Tip | Giải thích |
+|-----|------------|
+| **Đánh số cách nhau** | 100, 110, 120... để còn chỗ chèn (105, 115) |
+| **DENY đặt số nhỏ** | Để block IP độc hại TRƯỚC khi đến ALLOW |
+| **Rule * không xóa được** | Default DENY all, luôn ở cuối |
+
 #### Khi nào cần dùng NACL?
 
 | Use Case | Mô tả |
