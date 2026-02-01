@@ -450,5 +450,6 @@ aws ec2 delete-security-group \
 ---
 
 *Liên kết:*
+- [ENI](eni.md) - Elastic Network Interface
 - [VPC](vpc.md) - Virtual Private Cloud, Subnets, Public vs Private
 - [IAM](iam.md) - Identity and Access Management

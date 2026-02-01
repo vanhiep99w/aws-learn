@@ -7,6 +7,8 @@
 - [3 Chức năng chính](#3-chức-năng-chính)
 - [DNS là gì?](#dns-là-gì)
 - [Hosted Zones](#hosted-zones)
+  - [DNS Zone là gì?](#dns-zone-là-gì)
+  - [Records tự động tạo khi tạo Hosted Zone](#records-tự-động-tạo-khi-tạo-hosted-zone)
 - [Record Types](#record-types)
 - [Alias Records (Route 53 Exclusive)](#alias-records-route-53-exclusive)
 - [TTL (Time To Live)](#ttl-time-to-live)
@@ -212,6 +214,32 @@ Browser gõ example.com
 
 ## Hosted Zones
 
+### DNS Zone là gì?
+
+**DNS Zone = "Vùng quản lý"** của một domain và các subdomain của nó. DNS Zone chứa **tất cả DNS records** liên quan đến domain đó.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Domain:        example.com                                      │
+│                     │                                            │
+│                     ▼                                            │
+│  DNS Zone:      Chứa tất cả thông tin DNS của domain            │
+│                     │                                            │
+│                     ├── NS record (ai quản lý zone này)         │
+│                     ├── SOA record (metadata zone)              │
+│                     ├── A record (domain → IP)                  │
+│                     ├── CNAME record (alias)                    │
+│                     └── ... các records khác                    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Thuật ngữ | Ý nghĩa |
+|-----------|---------|
+| **DNS Zone** | Khái niệm tổng quát - "vùng quản lý DNS" |
+| **Hosted Zone** | Tên gọi của DNS Zone trong Route 53 |
+
+### Hosted Zone trong Route 53
+
 **Hosted Zone** = **"Tủ hồ sơ"** chứa tất cả DNS records cho một domain.
 
 ```
@@ -234,9 +262,25 @@ Browser gõ example.com
 → Trong Hosted Zone có nhiều DNS records (A, CNAME, MX...)
 ```
 
-### Hosted Zone được lưu ở đâu?
+### Records tự động tạo khi tạo Hosted Zone
 
-Khi bạn tạo Hosted Zone, AWS tự động assign **4 Name Servers**:
+Khi bạn tạo một Hosted Zone, AWS **tự động tạo 2 loại records bắt buộc**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  KHI TẠO HOSTED ZONE, AWS TỰ ĐỘNG TẠO:                          │
+│                                                                 │
+│  ① NS Record (Name Server)                                      │
+│     └── Chỉ ra 4 name servers quản lý zone này                 │
+│                                                                 │
+│  ② SOA Record (Start of Authority)                              │
+│     └── Metadata quản trị của zone                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### NS Record (Name Server)
+
+**NS Record** chứa danh sách **4 Name Servers** của AWS quản lý zone của bạn:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -252,6 +296,63 @@ Khi bạn tạo Hosted Zone, AWS tự động assign **4 Name Servers**:
 │   → Phân tán trên 100+ AWS Edge Locations toàn cầu             │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+**Khi nào cần dùng NS Record?**
+- Khi bạn mua domain ở nhà cung cấp khác (GoDaddy, Namecheap...) và muốn dùng Route 53 quản lý DNS
+- **→ Copy 4 NS này** vào cài đặt nameserver của domain tại registrar
+
+#### SOA Record (Start of Authority)
+
+**SOA Record** = "Giấy chứng nhận quyền sở hữu" của DNS Zone, chứa **thông tin quản trị**.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  SOA RECORD - MỤC ĐÍCH:                                          │
+│                                                                 │
+│  ① Xác định ai là "chủ" của zone                                │
+│     └── Primary name server, admin email                        │
+│                                                                 │
+│  ② Đồng bộ giữa Primary và Secondary DNS servers               │
+│     └── Serial number: tăng mỗi khi có thay đổi                │
+│     └── Refresh: Secondary check Primary sau bao lâu           │
+│     └── Retry: Nếu fail, thử lại sau bao lâu                   │
+│     └── Expire: Ngừng phục vụ nếu mất liên lạc quá lâu         │
+│                                                                 │
+│  ③ Negative Caching (TTL cho "không tìm thấy")                  │
+│     └── Cache "record không tồn tại" trong bao lâu             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Ví dụ SOA Record:**
+
+```
+ns-123.awsdns-45.com. hostmaster.example.com. 1 7200 900 1209600 86400
+│                      │                      │  │    │   │       │
+│                      │                      │  │    │   │       └─ Minimum TTL
+│                      │                      │  │    │   └───────── Expire time
+│                      │                      │  │    └───────────── Retry interval
+│                      │                      │  └────────────────── Refresh interval
+│                      │                      └───────────────────── Serial number
+│                      └──────────────────────────────────────────── Admin email
+└─────────────────────────────────────────────────────────────────── Primary NS
+```
+
+| Thành phần | Ý nghĩa |
+|------------|---------|
+| **Primary NS** | Name server chính quản lý zone |
+| **Admin Email** | Email admin (dấu `.` thay cho `@`) |
+| **Serial** | Version number, tăng mỗi khi có thay đổi |
+| **Refresh** | Secondary NS check updates sau bao lâu |
+| **Retry** | Nếu refresh fail, thử lại sau bao lâu |
+| **Expire** | Secondary NS ngừng phục vụ nếu không liên lạc được primary |
+| **Minimum TTL** | TTL mặc định cho negative caching |
+
+> [!TIP]
+> **Đối với bạn (người dùng Route 53):**
+> - **NS Record**: Cần biết để cấu hình domain registrar
+> - **SOA Record**: **AWS lo hết** - bạn không cần sửa gì cả
+> 
+> Chỉ cần tập trung tạo A, AAAA, CNAME, Alias records!
 
 ### Loại Hosted Zone
 

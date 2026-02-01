@@ -353,6 +353,51 @@ Private Subnet:
 = THÊM 1 LỚP BẢO VỆ
 ```
 
+### VPC Traffic Control - Ai làm gì?
+
+Nhiều người nhầm lẫn các components trong VPC. Đây là tóm tắt:
+
+```
+                         Internet
+                             │
+                             ▼
+                    ┌─────────────────┐
+        GATEWAY     │ Internet Gateway│  ← Chỉ là "cửa", KHÔNG filter
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+        ROUTING     │   Route Table   │  ← Quyết định traffic ĐI ĐÂU (outbound)
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+        FIREWALL    │      NACL       │  ← Firewall SUBNET (allow/deny)
+        (Layer 1)   └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+        FIREWALL    │ Security Group  │  ← Firewall INSTANCE (allow only)
+        (Layer 2)   └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │       EC2       │
+                    └─────────────────┘
+```
+
+| Component | Vai trò | Kiểm soát | Inbound? | Outbound? |
+|-----------|---------|-----------|----------|-----------|
+| **Internet Gateway** | Cửa ngõ | ❌ Không filter | - | - |
+| **Route Table** | Định tuyến | Traffic đi đường nào | ❌ | ✅ |
+| **NACL** | Firewall subnet | Allow/Deny ports | ✅ | ✅ |
+| **Security Group** | Firewall instance | Allow ports | ✅ | ✅ |
+
+> ⚠️ **Lưu ý quan trọng:**
+> - **Route Table** chỉ kiểm soát **outbound** (đi ra), không kiểm soát inbound
+> - **Security Group + NACL** kiểm soát cả **inbound lẫn outbound**
+> - **Internet Gateway** chỉ là "đường đi", không quyết định ai được vào
+
 ---
 
 ## Các thành phần trong VPC Dashboard
@@ -572,6 +617,124 @@ NAT không thể chạy trong chính EC2 mà nó bảo vệ vì:
 **Tác dụng:** Quyết định traffic **đi ra (outbound)** đi đâu dựa trên destination IP.
 
 > ⚠️ **Lưu ý quan trọng:** Route Table chỉ kiểm soát **outbound traffic**, không kiểm soát inbound.
+
+#### Các loại Route Table
+
+| Loại | Mô tả |
+|------|-------|
+| **Main Route Table** | Route table **mặc định** tạo tự động khi tạo VPC. Subnet không associate với custom route table sẽ dùng Main. |
+| **Custom Route Table** | Route table bạn **tự tạo** để cấu hình routing riêng cho từng subnet. |
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         VPC                                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   MAIN ROUTE TABLE (mặc định)                                    │
+│   └── Tự động tạo khi tạo VPC                                   │
+│   └── Chỉ có route "local" (10.0.0.0/16 → local)               │
+│   └── Subnet không associate → dùng Main                        │
+│   └── KHÔNG THỂ XÓA (chỉ có thể thay đổi Main)                  │
+│                                                                  │
+│   CUSTOM ROUTE TABLE (tự tạo)                                    │
+│   └── Bạn tự tạo cho mục đích riêng                             │
+│   └── Thêm route đến IGW, NAT, VPN...                           │
+│   └── Associate với subnet cụ thể                               │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Route Table Associations
+
+Route Table có thể associate vào **2 loại**:
+
+| Association Type | Mô tả | Use Case |
+|------------------|-------|----------|
+| **Subnet Association** | Mỗi subnet **phải** associate với 1 route table | Định tuyến traffic ra/vào subnet (phổ biến nhất) |
+| **Gateway Association** | Route table gắn vào IGW hoặc VGW | Kiểm soát traffic **inbound** từ gateway (nâng cao) |
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ROUTE TABLE ASSOCIATIONS                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1️⃣ SUBNET ASSOCIATION (phổ biến nhất)                          │
+│  ━━━━━━━━━━━━━━━━━━━━━━━                                        │
+│                                                                  │
+│     Route Table "Public"                                         │
+│          │                                                       │
+│          ├── Public Subnet 1  → 0.0.0.0/0 → IGW                 │
+│          └── Public Subnet 2                                    │
+│                                                                  │
+│     Route Table "Private"                                        │
+│          │                                                       │
+│          ├── Private Subnet 1 → 0.0.0.0/0 → NAT                 │
+│          └── Private Subnet 2                                   │
+│                                                                  │
+│  2️⃣ GATEWAY ASSOCIATION (Edge Association - nâng cao)           │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                      │
+│                                                                  │
+│     Route Table ────── Internet Gateway                          │
+│     Route Table ────── Virtual Private Gateway (VPN)            │
+│                                                                  │
+│     → Kiểm soát traffic INBOUND từ gateway vào VPC              │
+│     → Dùng cho Middlebox routing (firewall appliance...)        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Quy tắc | Chi tiết |
+|---------|---------|
+| **1 Subnet - 1 Route Table** | Mỗi subnet chỉ associate với **1 route table** tại 1 thời điểm |
+| **1 Route Table - Nhiều Subnet** | 1 route table có thể associate với **nhiều subnets** |
+| **Implicit association** | Subnet không explicit associate → dùng **Main Route Table** |
+| **Main không xóa được** | Main Route Table **không thể xóa**, chỉ có thể đổi Main sang table khác |
+| **Local route bắt buộc** | Mọi route table đều có route "local" (VPC CIDR → local), **không thể xóa** |
+
+#### Local Route - Kết nối nội bộ trong VPC
+
+**Local route** (`10.0.0.0/16 → local`) là route **tự động có sẵn** trong mọi Route Table, cho phép traffic **trong VPC** đi đến nhau.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  MỌI ROUTE TABLE ĐỀU CÓ SẴN:                                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   ┌─────────────┬─────────────┐                                 │
+│   │ Destination │   Target    │                                 │
+│   ├─────────────┼─────────────┤                                 │
+│   │ 10.0.0.0/16 │   local     │ ← TỰ ĐỘNG, KHÔNG XÓA ĐƯỢC!     │
+│   │ 0.0.0.0/0   │   igw-xxx   │ ← Bạn thêm (nếu cần)           │
+│   └─────────────┴─────────────┘                                 │
+│                                                                  │
+│   "local" = VPC's implicit router                               │
+│   → Traffic trong VPC sẽ đi nội bộ, không ra internet          │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Mặc định trong VPC có kết nối được với nhau không?**
+
+| Lớp | Chức năng | Mặc định |
+|-----|-----------|----------|
+| **Route Table (Local route)** | Có đường đi không? | ✅ Có (không xóa được) |
+| **Security Group** | Cho phép traffic không? | ⚠️ Phải cấu hình! |
+
+```
+EC2-A (10.0.1.50) muốn gọi RDS (10.0.2.100) port 3306:
+
+1. ROUTING CHECK:
+   Route Table: 10.0.0.0/16 → local ✅
+   → Có đường đi!
+
+2. SECURITY CHECK:
+   Security Group của RDS:
+   - Inbound: Allow port 3306 from 10.0.1.50?
+     - Nếu CÓ → ✅ Kết nối được!
+     - Nếu KHÔNG → ❌ Bị block!
+```
+
+> 💡 **Local route chỉ giải quyết ROUTING** (có đường đi), còn **Security Group quyết định có cho đi qua hay không**!
 
 ```
 EC2 gửi request đến google.com:
@@ -999,7 +1162,42 @@ Nhiều công ty dùng **Jump Server (Bastion Host)** để truy cập VPC. Đâ
 | Chi phí Connection | 💰 $0.05/giờ/connection |
 | Use case | Developer remote, admin access, security audit |
 
-> 💡 **Alternative:** **SSM Session Manager** - không cần Bastion, không cần VPN, truy cập EC2 qua AWS Console. Hoàn toàn miễn phí!
+#### Sau khi bật VPN, bạn có thể làm gì?
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  SAU KHI BẬT CLIENT VPN, LAPTOP CÓ THỂ:                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ✅ SSH vào EC2 private:  ssh ec2-user@10.0.1.50                │
+│  ✅ Connect RDS trực tiếp: mysql -h 10.0.2.100 -u admin -p      │
+│  ✅ Connect Redis:        redis-cli -h 10.0.3.50 -p 6379        │
+│  ✅ Truy cập internal web: http://10.0.1.100:8080               │
+│  ✅ Debug microservices:   curl http://api-internal:8080        │
+│  ✅ Dùng tools GUI:        DBeaver, DataGrip, MySQL Workbench   │
+│                                                                  │
+│  → Laptop NHƯ ĐANG NGỒI TRONG VPC!                              │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Vai trò | Dùng Client VPN để... |
+|---------|----------------------|
+| **Backend Developer** | SSH vào EC2, connect RDS để debug, test API internal |
+| **Data Engineer** | Connect Redshift, OpenSearch, query data trực tiếp |
+| **DevOps/SRE** | SSH vào private instances, check health services |
+| **DBA** | Connect RDS/Aurora để query, backup, tuning |
+
+#### Alternatives (tiết kiệm chi phí)
+
+| Giải pháp | Chi phí/tháng | Ưu điểm | Nhược điểm |
+|-----------|---------------|---------|------------|
+| **AWS Client VPN** | ~$100+ | Dễ dùng, full access VPC | 💰 Đắt |
+| **SSM Session Manager** | **FREE** | Miễn phí, không expose | Chỉ SSH, cần IAM |
+| **Bastion Host** | ~$8 (t3.micro) | Rẻ | Chỉ SSH, cần port forward |
+| **Tailscale/Wireguard** | Free hoặc rẻ | Đơn giản, nhanh | Tự quản lý |
+
+> 💡 **SSM Session Manager** - không cần Bastion, không cần VPN, truy cập EC2 qua AWS Console. Hoàn toàn miễn phí! Nhiều công ty dùng **Tailscale** thay vì AWS Client VPN để tiết kiệm.
 
 ---
 
@@ -1045,22 +1243,61 @@ Xem chi tiết: [Security Groups](security-groups.md)
 
 | Đặc điểm | Security Group | Network ACL |
 |----------|----------------|-------------|
-| Cấp độ | Instance | Subnet |
-| Stateful | ✅ Có | ❌ Không (phải tạo rule cả 2 chiều) |
+| Cấp độ | Instance (ENI) | Subnet |
+| Stateful | ✅ Có (response tự động) | ❌ Không (phải tạo rule cả 2 chiều) |
 | Rules | Chỉ Allow | Allow + Deny |
 | Đánh giá | Tất cả rules | Theo thứ tự số (100, 200...) |
 | Chi phí | ✅ Miễn phí | ✅ Miễn phí |
 
-**Ví dụ NACL rule:**
+#### NACL Stateless - Giải thích chi tiết
+
 ```
-┌────────┬──────────┬──────────┬───────┬────────┬────────┐
-│ Rule # │   Type   │ Protocol │ Port  │ Source │ Action │
-├────────┼──────────┼──────────┼───────┼────────┼────────┤
-│  100   │   HTTP   │   TCP    │  80   │0.0.0.0/0│ ALLOW │
-│  110   │   HTTPS  │   TCP    │  443  │0.0.0.0/0│ ALLOW │
-│  120   │   SSH    │   TCP    │  22   │10.0.0.0/8│ ALLOW │
-│  *     │ All traffic│  All   │  All  │0.0.0.0/0│ DENY  │ ← Default
-└────────┴──────────┴──────────┴───────┴────────┴────────┘
+SECURITY GROUP (Stateful):
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+Chỉ cần 1 rule:
+  Inbound: Allow port 80
+
+User ──► Request (port 80) ──► EC2    ✅ Inbound rule
+User ◄── Response ◄────────── EC2    ✅ TỰ ĐỘNG (nhớ connection)
+
+
+NACL (Stateless):
+━━━━━━━━━━━━━━━━━
+Cần 2 rules:
+  Inbound:  Allow port 80
+  Outbound: Allow ephemeral ports (1024-65535)   ← BẮT BUỘC!
+
+User ──► Request (port 80) ──► EC2    ✅ Inbound rule
+User ◄── Response (port 5xxxx) ◄── EC2    ✅ Outbound rule
+
+⚠️ Thiếu outbound rule → Response bị chặn dù inbound OK!
+```
+
+> 💡 **Tại sao cần ephemeral ports (1024-65535)?**  
+> Response từ server trả về qua **port ngẫu nhiên** (ephemeral port) do client mở, KHÔNG phải port 80!  
+> Ví dụ: Client gửi request từ port 54321 → Server response về port 54321.
+
+**Ví dụ NACL rule ĐÚNG (cần cả Inbound + Outbound):**
+```
+INBOUND RULES:
+┌────────┬──────────┬──────────┬───────┬───────────┬────────┐
+│ Rule # │   Type   │ Protocol │ Port  │  Source   │ Action │
+├────────┼──────────┼──────────┼───────┼───────────┼────────┤
+│  100   │   HTTP   │   TCP    │  80   │ 0.0.0.0/0 │ ALLOW  │
+│  110   │   HTTPS  │   TCP    │  443  │ 0.0.0.0/0 │ ALLOW  │
+│  120   │   SSH    │   TCP    │  22   │10.0.0.0/8 │ ALLOW  │
+│  *     │ All traffic│  All   │  All  │ 0.0.0.0/0 │ DENY   │ ← Default
+└────────┴──────────┴──────────┴───────┴───────────┴────────┘
+
+OUTBOUND RULES:
+┌────────┬──────────┬──────────┬────────────┬───────────┬────────┐
+│ Rule # │   Type   │ Protocol │    Port    │   Dest    │ Action │
+├────────┼──────────┼──────────┼────────────┼───────────┼────────┤
+│  100   │  Custom  │   TCP    │ 1024-65535 │ 0.0.0.0/0 │ ALLOW  │ ← Ephemeral!
+│  110   │   HTTP   │   TCP    │     80     │ 0.0.0.0/0 │ ALLOW  │
+│  120   │   HTTPS  │   TCP    │    443     │ 0.0.0.0/0 │ ALLOW  │
+│  *     │ All traffic│  All   │    All     │ 0.0.0.0/0 │ DENY   │ ← Default
+└────────┴──────────┴──────────┴────────────┴───────────┴────────┘
 ```
 
 #### Khi nào cần dùng NACL?
@@ -1351,6 +1588,55 @@ Dùng PrivateLink:
 
 > 💡 **Tip:** Nhiều AWS services (như ECR, SSM, Secrets Manager) thực chất sử dụng PrivateLink dưới dạng Interface Endpoint. Khi bạn tạo Interface Endpoint đến các service này, bạn đang dùng PrivateLink!
 
+#### Tóm tắt: Provider vs Consumer - Ai tạo gì?
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                 VPC ENDPOINT vs PRIVATELINK                     │
+├────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   PROVIDER (Bạn có service)    CONSUMER (Khách muốn dùng)      │
+│                                                                 │
+│   Tạo: ENDPOINT SERVICE        Tạo: VPC ENDPOINT               │
+│         (PrivateLink)                (Interface type)          │
+│                                                                 │
+│   ┌─────────────────┐          ┌─────────────────┐             │
+│   │  Your Service   │          │  Customer EC2   │             │
+│   │  (NLB + App)    │◄─────────│  (Client)       │             │
+│   │                 │ Private  │                 │             │
+│   │                 │ Network  │                 │             │
+│   └─────────────────┘          └─────────────────┘             │
+│                                                                 │
+│   Bạn EXPOSE service           Khách KẾT NỐI đến bạn           │
+│                                                                 │
+└────────────────────────────────────────────────────────────────┘
+```
+
+| Vai trò | Tạo gì | Mục đích | Trong AWS Console |
+|---------|--------|----------|-------------------|
+| **Provider (nhà cung cấp)** | Endpoint Service | Expose service của bạn | VPC → Endpoint Services |
+| **Consumer (khách hàng)** | VPC Endpoint | Kết nối đến service | VPC → Endpoints |
+
+**Flow khi kết nối:**
+
+```
+1. PROVIDER:
+   ├── Có service chạy đằng sau Network Load Balancer (NLB)
+   ├── Tạo Endpoint Service (PrivateLink) trỏ đến NLB
+   └── Gửi Service Name cho khách hàng
+       (dạng: com.amazonaws.vpce.ap-southeast-1.vpce-svc-xxx)
+
+2. CONSUMER:
+   ├── Nhận Service Name từ Provider
+   ├── Tạo VPC Endpoint (Interface type) với Service Name đó
+   └── Traffic đi PRIVATE, không qua Internet!
+```
+
+> [!IMPORTANT]
+> **AWS services (S3, SQS, SNS...)** cũng hoạt động như vậy:
+> - AWS là **Provider** (đã tạo sẵn Endpoint Service)
+> - Bạn là **Consumer** (tạo VPC Endpoint để kết nối)
+
 ---
 
 ### 13. VPC Flow Logs
@@ -1549,6 +1835,8 @@ aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-xxx"
 
 **CIDR (Classless Inter-Domain Routing)** là cách viết gọn để định nghĩa một dải địa chỉ IP.
 
+> 📚 **Xem chi tiết:** [CIDR Documentation](cidr.md) - Giải thích đầy đủ về CIDR notation, cách tính số IP, Private IP ranges, và ví dụ chia subnet.
+
 ### Cách đọc CIDR
 
 ```
@@ -1664,5 +1952,7 @@ Account AWS:
 ---
 
 *Liên kết:*
+- [CIDR](cidr.md) - Classless Inter-Domain Routing
+- [ENI](eni.md) - Elastic Network Interface
 - [Security Groups](security-groups.md) - Virtual Firewall
 - [IAM](iam.md) - Identity and Access Management
