@@ -1490,6 +1490,39 @@ EC2 (Private) → NAT Gateway → Internet Gateway → Internet → S3
 | Dùng cho | S3, DynamoDB | 100+ services khác (ECR, SSM, SQS...) |
 | Chi phí | ✅ Miễn phí | 💰 $0.01/giờ + $0.01/GB |
 | Cách hoạt động | Thêm route trong Route Table | Tạo ENI trong subnet |
+| Security Group | ❌ Không cần | ✅ Cần (vì có ENI) |
+
+#### Tại sao Interface Endpoint cần Security Group?
+
+```
+Interface Endpoint → Tạo ENI → ENI cần Security Group
+
+❌ Không phải: Endpoint = Instance
+✅ Đúng là:    Endpoint = ENI (và ENI luôn cần Security Group)
+```
+
+**Security Group gắn vào ENI**, không phải gắn vào instance. Bất cứ thứ gì có private IP trong VPC đều có ENI bên dưới (EC2, RDS, Lambda VPC, ELB, Interface Endpoint...) và đều cần Security Group!
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Private Subnet                           │
+│                                                              │
+│   ┌──────────────┐         ┌──────────────────────┐         │
+│   │     EC2      │         │  Interface Endpoint  │         │
+│   │  10.0.1.50   │────────►│  (ENI: 10.0.1.100)   │────► SSM│
+│   └──────────────┘         └──────────────────────┘         │
+│                                      ▲                       │
+│                                      │                       │
+│                            Security Group                    │
+│                            (Allow port 443)                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Security Group cho Interface Endpoint nên allow:**
+
+| Protocol | Port | Source | Mô tả |
+|----------|------|--------|-------|
+| TCP | 443 | VPC CIDR (10.0.0.0/16) | HTTPS từ các resource trong VPC |
 
 **Ví dụ tạo Gateway Endpoint cho S3:**
 ```bash
@@ -1503,7 +1536,12 @@ aws ec2 create-vpc-endpoint \
 
 ---
 
-### 12. AWS PrivateLink
+### 12. AWS PrivateLink (Endpoint Service)
+
+> [!NOTE]
+> **PrivateLink = Endpoint Service** (phía Provider)
+> - **VPC Endpoint** = Bạn muốn **KẾT NỐI** đến service của người khác (Consumer)
+> - **Endpoint Service (PrivateLink)** = Bạn muốn **EXPOSE** service của bạn cho người khác (Provider)
 
 **Tác dụng:** Expose service của bạn cho VPC khác (hoặc khách hàng) mà **không cần qua internet**.
 
@@ -1698,7 +1736,93 @@ Dùng PrivateLink:
 
 ---
 
-### 14. DHCP Option Sets
+### 14. VPC DNS Settings
+
+VPC có 2 settings quan trọng liên quan đến DNS:
+
+#### Enable DNS Resolution
+
+**Câu hỏi:** VPC có dùng **Amazon DNS Server** (10.0.0.2) không?
+
+```
+✅ ON (mặc định):
+   EC2 hỏi "s3.amazonaws.com là IP gì?"
+       │
+       ▼
+   Amazon DNS trả lời: "52.219.x.x"
+       │
+       ▼
+   ✅ EC2 kết nối được S3
+
+❌ OFF:
+   EC2 hỏi → Không ai trả lời → ❌ Không kết nối được
+```
+
+#### Enable DNS Hostnames
+
+**Câu hỏi:** EC2 có Public IP có được **đặt tên hostname** không?
+
+```
+❌ OFF (mặc định cho custom VPC):
+   EC2 chỉ có IP: 54.123.45.67
+   → Truy cập bằng IP
+
+✅ ON:
+   EC2 có hostname: ec2-54-123-45-67.ap-southeast-1.compute.amazonaws.com
+   → Truy cập bằng tên hoặc IP
+```
+
+#### Tại sao Interface Endpoint cần DNS Hostnames = ON?
+
+```
+DNS Hostnames = OFF:
+   EC2 gọi ssm.ap-southeast-1.amazonaws.com
+       │
+       ▼
+   DNS trả về PUBLIC IP (52.x.x.x)
+       │
+       ▼
+   ❌ Traffic đi ra INTERNET thay vì qua Endpoint!
+
+DNS Hostnames = ON:
+   EC2 gọi ssm.ap-southeast-1.amazonaws.com
+       │
+       ▼
+   DNS biết VPC có Endpoint → trả về PRIVATE IP (10.0.1.100)
+       │
+       ▼
+   ✅ Traffic đi qua Endpoint, không ra internet!
+```
+
+#### Tại sao Route 53 Private Hosted Zone cần DNS Hostnames = ON?
+
+Private Hosted Zone tạo custom domain chỉ dùng trong VPC:
+
+```
+Private Hosted Zone: internal.mycompany.com
+   db.internal.mycompany.com → 10.0.2.50 (RDS)
+
+DNS Hostnames = OFF:
+   → Amazon DNS không xử lý private hostnames
+   → ❌ Không phân giải được!
+
+DNS Hostnames = ON:
+   → Amazon DNS kiểm tra Private Hosted Zone
+   → ✅ Trả về 10.0.2.50
+```
+
+#### Tóm tắt
+
+| Setting | Mặc định | Tác dụng |
+|---------|----------|----------|
+| **DNS Resolution** | ✅ ON | EC2 có thể phân giải domain → IP |
+| **DNS Hostnames** | ❌ OFF (custom VPC) | EC2 có public hostname, cần cho Interface Endpoint & Private Hosted Zone |
+
+> 💡 **Best Practice:** Bật cả 2 cho production VPC!
+
+---
+
+### 15. DHCP Option Sets
 
 **Tác dụng:** Cấu hình DNS, domain name, NTP cho VPC.
 
