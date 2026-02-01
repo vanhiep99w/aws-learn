@@ -8,6 +8,9 @@
 - [ARN (Amazon Resource Name)](#arn-amazon-resource-name)
 - [1. Root User](#1-root-user)
 - [2. IAM Users](#2-iam-users)
+  - [AWS Account ID và Account Alias](#aws-account-id-và-account-alias)
+  - [So sánh cách đăng nhập: Root User vs IAM User](#so-sánh-cách-đăng-nhập-root-user-vs-iam-user)
+  - [Cách lấy Account ID](#cách-lấy-account-id)
 - [3. IAM Groups](#3-iam-groups)
 - [4. IAM Roles](#4-iam-roles)
 - [5. IAM Policies](#5-iam-policies)
@@ -237,6 +240,92 @@ Secret Access Key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 - Rotate access keys định kỳ (90 ngày)
 - Không dùng access keys của root user
 - 1 user có tối đa 2 access keys (để rotate)
+
+### AWS Account ID và Account Alias
+
+#### Account ID là gì?
+
+**Account ID** là **số 12 chữ số duy nhất** định danh cho mỗi AWS Account (không phải của Root User - mà của toàn bộ Account).
+
+```
+AWS Account (ID: 123456789012)
+├── Root User ──────────┐
+├── IAM User "hiep" ────┤── Tất cả đều thuộc cùng Account ID
+├── IAM User "nam" ─────┤
+└── IAM User "admin" ───┘
+```
+
+**Tại sao IAM User cần Account ID khi login?**
+
+IAM Users **chỉ tồn tại trong một AWS Account cụ thể**, không phải global. Khi login, AWS cần biết:
+1. **Account nào** bạn muốn đăng nhập (Account ID)
+2. **User nào** trong account đó (Username + Password)
+
+> [!IMPORTANT]
+> Có thể có IAM User tên "hiep" trong Account A và IAM User tên "hiep" trong Account B - đây là **2 users khác nhau**.
+
+#### Account Alias là gì?
+
+| Khái niệm | Mô tả |
+|-----------|-------|
+| **Account ID** | Số 12 chữ số, AWS tự gán, không đổi được |
+| **Account Alias** | Tên thay thế (tự đặt), dễ nhớ hơn Account ID |
+| **Account Name** | Tên hiển thị của account (khác với Alias) |
+
+**Account Alias** giúp tạo URL login **dễ nhớ hơn**:
+
+```
+Không có Alias:  https://123456789012.signin.aws.amazon.com/console
+Có Alias:        https://my-company.signin.aws.amazon.com/console
+```
+
+**Lưu ý về Account Alias:**
+- ✅ **Optional** - không bắt buộc phải tạo
+- ✅ **Unique globally** - không được trùng với account khác trên toàn AWS
+- ✅ Tạo/sửa trong **IAM Console → Dashboard → AWS Account → Create Alias**
+
+### So sánh cách đăng nhập: Root User vs IAM User
+
+| | Root User | IAM User |
+|---|-----------|----------|
+| **URL Login** | `console.aws.amazon.com` | `<account-id>.signin.aws.amazon.com/console` hoặc `<alias>.signin.aws.amazon.com/console` |
+| **Đăng nhập bằng** | Email + Password | Account ID/Alias + Username + Password |
+| **Cần Account ID?** | ❌ Không | ✅ Có |
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    LOGIN COMPARISON                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ROOT USER:                                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Email:    admin@mycompany.com                           │   │
+│  │  Password: ********                                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│  IAM USER:                                                       │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Account ID or Alias: 123456789012 (hoặc my-company)    │   │
+│  │  Username: developer-john                                │   │
+│  │  Password: ********                                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Cách lấy Account ID
+
+**1. Từ AWS Console:**
+- Click vào tên account/user ở góc **trên bên phải** → Account ID hiển thị trong dropdown
+
+**2. Từ AWS CLI:**
+```bash
+aws sts get-caller-identity
+# Output: {"Account": "123456789012", ...}
+```
+
+**3. Từ IAM Dashboard:**
+- Vào **IAM Console → Dashboard** → xem mục **AWS Account**
 
 ---
 
