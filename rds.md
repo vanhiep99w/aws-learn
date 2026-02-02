@@ -438,6 +438,55 @@ aws rds modify-db-instance --db-instance-identifier my-db --multi-az
 
 ## Read Replicas
 
+> [!IMPORTANT]
+> **Read Replica KHÔNG phải config option** khi tạo RDS. Bạn **tạo Read Replica riêng** SAU KHI Primary database đã chạy.
+
+### Multi-AZ vs Read Replica - Khác nhau hoàn toàn!
+
+| Tiêu chí | Multi-AZ | Read Replica |
+|----------|----------|--------------|
+| **Là gì?** | Config option khi tạo RDS | Instance riêng tạo sau |
+| **Mục đích** | High Availability (HA) | Scale reads |
+| **Cách tạo** | Chọn khi tạo DB hoặc modify | Actions → Create read replica |
+
+**Có thể dùng cả 2 cùng lúc!** (Best practice cho production)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                Multi-AZ + Read Replicas (Production Setup)                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│         MULTI-AZ (HA)                          READ REPLICAS (Scale)         │
+│    ┌──────────────────────┐                                                  │
+│    │                      │                    ┌──────────┐                  │
+│    │   ┌──────────┐       │      Async         │ Replica 1│  ← App đọc       │
+│    │   │ PRIMARY  │───────│───────────────────►│   (RO)   │                  │
+│    │   │   (RW)   │       │                    └──────────┘                  │
+│    │   └────┬─────┘       │                                                  │
+│    │        │ Sync        │                    ┌──────────┐                  │
+│    │   ┌────▼─────┐       │                    │ Replica 2│  ← Reports       │
+│    │   │ STANDBY  │       │                    │   (RO)   │                  │
+│    │   │(failover)│       │                    └──────────┘                  │
+│    │   └──────────┘       │                                                  │
+│    └──────────────────────┘                                                  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Cách tạo Read Replica
+
+**AWS Console:**
+```
+RDS → Databases → [Chọn DB đã có] → Actions → Create read replica
+```
+
+**AWS CLI:**
+```bash
+aws rds create-db-instance-read-replica \
+    --db-instance-identifier my-read-replica \
+    --source-db-instance-identifier my-primary-db
+```
+
 ### Mục đích
 - **Scale read workloads** - Phân tải các query đọc
 - **Disaster Recovery** - Cross-region backup

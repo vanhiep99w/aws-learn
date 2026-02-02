@@ -245,31 +245,114 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 #### 2.2 Scope: Regional vs Zonal
 
+> [!TIP]
+> **Regional RI là MẶC ĐỊNH** khi mua trên AWS Console. AWS khuyến khích dùng Regional RI vì linh hoạt hơn.
+
 | Scope | Mô tả | Flexibility | Capacity Reservation |
 |-------|-------|-------------|---------------------|
-| **Regional** | Áp dụng cho toàn Region | Tự động apply cho instances trong Region | ❌ Không |
+| **Regional** (Default) | Áp dụng cho toàn Region | Tự động apply cho instances trong Region | ❌ Không |
 | **Zonal** | Chỉ định cụ thể AZ | Chỉ apply cho AZ đó | ✅ Có (đảm bảo capacity) |
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    REGIONAL vs ZONAL RI                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  REGIONAL RI (Khuyến nghị)                                      │
-│  ──────────────────────────                                      │
-│  • Tự động apply discount cho instances ở BẤT KỲ AZ nào        │
-│  • Linh hoạt chọn AZ khi launch                                 │
-│  • AZ Flexibility: m5.large ở AZ-a hoặc AZ-b đều được discount  │
-│  • Instance Size Flexibility: m5.large = 2 × m5.medium          │
-│                                                                  │
-│  ZONAL RI                                                        │
-│  ──────────────                                                  │
-│  • Chỉ apply cho instances ở AZ chỉ định                        │
-│  • Đảm bảo capacity reservation trong AZ đó                     │
-│  • Phù hợp khi CẦN đảm bảo có capacity                          │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         REGIONAL vs ZONAL RI                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  REGIONAL RI (Default - Khuyến nghị)                                        │
+│  ───────────────────────────────────                                         │
+│                                                                              │
+│       ┌───────────────────────────────────────────────────────┐             │
+│       │                    us-east-1                           │             │
+│       │   ┌─────────┐   ┌─────────┐   ┌─────────┐             │             │
+│       │   │  1a ✅  │   │  1b ✅  │   │  1c ✅  │             │             │
+│       │   │ Discount│   │ Discount│   │ Discount│             │             │
+│       │   └─────────┘   └─────────┘   └─────────┘             │             │
+│       │                                                        │             │
+│       │   Discount áp dụng ở BẤT KỲ AZ nào trong Region!       │             │
+│       └───────────────────────────────────────────────────────┘             │
+│                                                                              │
+│  ✅ AZ Flexibility: Launch ở AZ nào cũng được discount                       │
+│  ✅ Size Flexibility: m5.large = 2 × m5.medium (cùng family)                 │
+│  ❌ Không có capacity reservation                                            │
+│                                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ZONAL RI (Chọn AZ cụ thể)                                                  │
+│  ─────────────────────────                                                   │
+│                                                                              │
+│       ┌───────────────────────────────────────────────────────┐             │
+│       │                    us-east-1                           │             │
+│       │   ┌─────────┐   ┌─────────┐   ┌─────────┐             │             │
+│       │   │  1a ✅  │   │  1b ❌  │   │  1c ❌  │             │             │
+│       │   │ Discount│   │ No disc │   │ No disc │             │             │
+│       │   │+Capacity│   │         │   │         │             │             │
+│       │   └─────────┘   └─────────┘   └─────────┘             │             │
+│       │                                                        │             │
+│       │   Discount CHỈ ở AZ đã chọn (us-east-1a)!              │             │
+│       └───────────────────────────────────────────────────────┘             │
+│                                                                              │
+│  ✅ Capacity Reservation: Đảm bảo LUÔN có máy sẵn trong AZ                  │
+│  ❌ Không có AZ flexibility                                                  │
+│  ❌ Không có Size flexibility                                                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Capacity Reservation là gì?**
+
+| Không có Capacity Reservation | Có Capacity Reservation |
+|-------------------------------|-------------------------|
+| Launch EC2 → Có thể bị lỗi "InsufficientCapacity" nếu AZ hết máy | Launch EC2 → **LUÔN thành công** vì AWS giữ máy sẵn cho bạn |
+| Giống mua voucher giảm giá nhưng không đặt ghế | Giống đặt trước ghế máy bay |
+
+**Điều kiện để được RI discount (quan trọng cho exam!):**
+
+| RI Type | Điều kiện matching |
+|---------|-------------------|
+| **Regional RI** | Cùng **Region** + Instance Type + Platform |
+| **Zonal RI** | Cùng **AZ** + Instance Type + Platform |
+
+**Ví dụ: RI Sharing trong Consolidated Billing (AWS Organizations)**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│      RI Sharing - Regional RI vs Zonal RI trong Consolidated Billing         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Scenario: Susan (Account A) mua 5 RIs m5.large                             │
+│            Bob (Account B) chạy 3 instances m5.large                         │
+│            Cả hai trong cùng AWS Organization                                │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│  Nếu Susan mua REGIONAL RI (us-east-1):                                     │
+│  │                                                                           │
+│  │  Susan chạy ở: us-east-1a                                                │
+│  │  Bob chạy ở:   us-east-1b  ← KHÁC AZ                                     │
+│  │                                                                           │
+│  │  → Bob VẪN được discount! (Regional RI flexible across AZs)              │
+│  │                                                                           │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│  Nếu Susan mua ZONAL RI (us-east-1a):                                       │
+│  │                                                                           │
+│  │  Susan chạy ở: us-east-1a ✅                                              │
+│  │  Bob chạy ở:   us-east-1b ❌ KHÔNG được discount!                         │
+│  │                                                                           │
+│  │  → Bob phải chạy ở us-east-1a thì mới được discount                      │
+│  │                                                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Khi nào dùng loại nào?**
+
+| Scenario | Nên dùng |
+|----------|----------|
+| Workload có thể chạy ở bất kỳ AZ | **Regional RI** ✅ |
+| Cần linh hoạt scale size (large ↔ xlarge) | **Regional RI** ✅ |
+| Database production - cần đảm bảo LUÔN có máy | **Zonal RI** |
+| Disaster Recovery - cần guarantee capacity | **Zonal RI** |
+| Mission-critical không chấp nhận "InsufficientCapacity" | **Zonal RI** |
 
 #### 2.3 Instance Size Flexibility (Chỉ Regional RI)
 
