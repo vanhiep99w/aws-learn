@@ -218,7 +218,162 @@
 | **Canary10Percent20Minutes** | 10% → 100% | 20 min |
 | **Exponential10PercentEvery1Minute** | Exponential 10% | 0 min |
 
----
+### "% Deployment" nghĩa là gì?
+
+> [!IMPORTANT]
+> **% trong AppConfig = % THỜI GIAN, KHÔNG PHẢI % instances!**
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│              % Deployment = Thời gian chờ để monitor                          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ❌ HIỂU SAI: 20% instances nhận config mới, 80% nhận config cũ            │
+│                                                                              │
+│   ✅ HIỂU ĐÚNG:                                                              │
+│   • Sau 20% thời gian → Config MỚI đã available                             │
+│   • TẤT CẢ instances poll → Nhận config MỚI                                 │
+│   • AppConfig CHỜ thêm thời gian để MONITOR                                 │
+│   • % tiếp theo = checkpoint để kiểm tra alarms                             │
+│                                                                              │
+│   VÍ DỤ: 10 EC2 instances, deployment time = 20 phút                        │
+│   ─────────────────────────────────────────────────                          │
+│                                                                              │
+│   T=0:     AppConfig bắt đầu deployment                                     │
+│   T=0-30s: Tất cả 10 instances poll → Nhận config MỚI ngay                 │
+│   T=0-4m:  AppConfig monitor (20% time checkpoint)                          │
+│            → Có alarm? Rollback! Không alarm? Tiếp tục                      │
+│   T=4-8m:  Monitor (40% checkpoint)                                          │
+│   ...                                                                        │
+│   T=20m:   100% complete, deployment finalized                              │
+│                                                                              │
+│   → % là THỜI GIAN chờ monitor, KHÔNG phải traffic split!                  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### App lấy config như thế nào?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│              3 cách App lấy config từ AppConfig                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ⚠️ KHÔNG dùng SSM Agent! AppConfig có cách riêng:                         │
+│                                                                              │
+│   1️⃣ APPCONFIG AGENT (Recommended cho EC2/ECS)                              │
+│   ────────────────────────────────────────────                               │
+│   • Agent RIÊNG, KHÁC với SSM Agent                                         │
+│   • Caching + polling tự động                                               │
+│                                                                              │
+│   ┌─────────────────┐    localhost:2772    ┌─────────────────┐              │
+│   │   Your App      │ ◄─────────────────── │ AppConfig Agent │              │
+│   └─────────────────┘                       └────────┬────────┘              │
+│                                                      │ polling               │
+│                                             ┌────────▼────────┐              │
+│                                             │ AppConfig API   │              │
+│                                             └─────────────────┘              │
+│                                                                              │
+│   2️⃣ LAMBDA EXTENSION (Cho Lambda)                                          │
+│   ──────────────────────────────────                                         │
+│   • Lambda layer, không cần agent                                           │
+│   • Tự động cache config                                                    │
+│                                                                              │
+│   3️⃣ DIRECT API CALL (Simple cases)                                         │
+│   ────────────────────────────────                                           │
+│   • App gọi thẳng GetConfiguration API                                      │
+│   • Phải tự handle caching                                                  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Auto Rollback hoạt động như thế nào?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Auto Rollback                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   AppConfig KHÔNG "hiểu" logs!                                              │
+│   Chỉ watch CloudWatch ALARMS mà BẠN setup trước.                           │
+│                                                                              │
+│   Logic đơn giản:                                                           │
+│   ────────────────                                                           │
+│   Đang deploy + Alarm triggered = GIẢ ĐỊNH là do config mới → ROLLBACK     │
+│                                                                              │
+│   VÍ DỤ:                                                                    │
+│   ───────                                                                    │
+│   BẠN setup alarm: "Error rate > 5% → trigger"                             │
+│   BẠN config AppConfig: "Monitor alarm này khi deploy"                      │
+│                                                                              │
+│   T=0:  Start deployment                                                    │
+│   T=3m: Error rate tăng 1% → 8%                                             │
+│         CloudWatch: ALARM!                                                   │
+│         AppConfig: "Có alarm trong khi deploy → ROLLBACK!"                  │
+│   T=3m: Tất cả instances poll → Nhận lại config CŨ                          │
+│                                                                              │
+│   ⚠️ LƯU Ý:                                                                 │
+│   • AppConfig KHÔNG biết error có phải do config hay không                  │
+│   • Chỉ dựa vào correlation (trùng hợp thời gian)                          │
+│   • Philosophy: "Better safe than sorry" - rollback trước, điều tra sau    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh với Canary Deployment (CodeDeploy)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│             Canary Deployment vs AppConfig Deployment                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   GIỐNG NHAU:                                                               │
+│   • Gradual rollout                                                         │
+│   • Monitor metrics                                                         │
+│   • Auto rollback nếu lỗi                                                  │
+│                                                                              │
+│   KHÁC NHAU:                                                                │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   CANARY (CodeDeploy/Lambda):                                               │
+│   ──────────────────────────                                                 │
+│   Deploy: CODE mới                                                          │
+│   Cơ chế: Route % TRAFFIC đến version mới                                  │
+│                                                                              │
+│        10% traffic → v2.0 (new code)                                        │
+│        90% traffic → v1.0 (old code)                                        │
+│                                                                              │
+│   → Có 2 versions chạy song song                                           │
+│   → 10% users thấy app mới, 90% thấy app cũ                                │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   APPCONFIG:                                                                 │
+│   ──────────                                                                 │
+│   Deploy: CONFIG mới (không phải code)                                      │
+│   Cơ chế: Rollout theo THỜI GIAN                                           │
+│                                                                              │
+│        Tất cả instances → Cùng code, CONFIG mới                            │
+│        % = thời gian chờ monitor                                            │
+│                                                                              │
+│   → 1 version code, config mới                                              │
+│   → Tất cả users thấy cùng app với config mới                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| | Canary (CodeDeploy) | AppConfig |
+|--|---------------------|-----------|
+| **Deploy cái gì?** | CODE | CONFIG |
+| **% nghĩa là?** | % traffic | % thời gian |
+| **Có 2 versions song song?** | ✅ Có | ❌ Không |
+| **Traffic split?** | ✅ Có | ❌ Không |
+| **Rollback như nào?** | Shift traffic | Instances poll config cũ |
+
+> [!TIP]
+> - **Canary** = Deploy CODE, split TRAFFIC
+> - **AppConfig** = Deploy CONFIG, split THỜI GIAN
+> - Có thể dùng CẢ HAI: Deploy code bằng Canary, bật feature bằng AppConfig!
 
 ## 5. Feature Flags
 

@@ -45,6 +45,126 @@ WHO (Authentication)     +     WHAT (Authorization)
 
 ---
 
+## AWS Account vs IAM User
+
+> [!IMPORTANT]
+> **Đây là khái niệm quan trọng cần hiểu rõ!** Account và User là 2 thứ KHÁC NHAU hoàn toàn.
+
+### Định nghĩa
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                     AWS Account vs IAM User                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   AWS ACCOUNT = "Ngôi nhà" (Container)                                       │
+│   ─────────────────────────────────────                                       │
+│   • Là đơn vị billing (thanh toán)                                          │
+│   • Chứa TẤT CẢ resources: EC2, S3, RDS, VPC, ...                          │
+│   • Có Account ID riêng (12 chữ số: 123456789012)                           │
+│   • Có Root user (owner, toàn quyền)                                        │
+│   • 1 email = 1 account                                                      │
+│                                                                              │
+│   IAM USER = "Người sống trong nhà" (Identity)                              │
+│   ──────────────────────────────────────────────                              │
+│   • Là người/application sử dụng resources trong account                    │
+│   • Có username + credentials (password/access keys)                        │
+│   • Được gán permissions qua policies                                       │
+│   • 1 account có thể có NHIỀU IAM users                                     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Diagram trực quan
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  AWS ACCOUNT (Account ID: 123456789012)                             │   │
+│   │  Email: admin@company.com                                           │   │
+│   │  ─────────────────────────────────────                               │   │
+│   │                                                                      │   │
+│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
+│   │   │  Root    │  │  User    │  │  User    │  │  User    │            │   │
+│   │   │  User    │  │  "John"  │  │  "Jane"  │  │  "Dev"   │            │   │
+│   │   │ (owner)  │  │  (Admin) │  │  (Dev)   │  │  (App)   │            │   │
+│   │   └──────────┘  └──────────┘  └──────────┘  └──────────┘            │   │
+│   │                                                                      │   │
+│   │   Resources trong account này:                                       │   │
+│   │   ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐            │   │
+│   │   │  EC2   │ │   S3   │ │  RDS   │ │  VPC   │ │ Lambda │            │   │
+│   │   └────────┘ └────────┘ └────────┘ └────────┘ └────────┘            │   │
+│   │                                                                      │   │
+│   │   → TẤT CẢ resources + users = 1 BILL chung                         │   │
+│   │                                                                      │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh chi tiết
+
+| | AWS Account | IAM User |
+|--|-------------|----------|
+| **Tạo bởi** | AWS (khi đăng ký) | IAM trong account |
+| **Định danh** | Account ID (12 số) + Email | Username |
+| **Billing** | ✅ Nhận bill | ❌ Không nhận bill |
+| **Số lượng** | 1 email = 1 account | Nhiều users trong 1 account |
+| **Permissions** | Root = full access | Tùy theo policies được gán |
+| **Resources** | CHỨA resources | SỬ DỤNG resources |
+
+### Ví von thực tế
+
+```
+AWS Account  =  Công ty (Company)
+IAM User     =  Nhân viên (Employee)
+
+• 1 công ty có NHIỀU nhân viên
+• Mỗi nhân viên có quyền hạn khác nhau (Admin, Dev, Viewer)
+• Công ty nhận hóa đơn, không phải nhân viên
+• Nhân viên dùng tài nguyên của công ty
+```
+
+### Multiple Accounts (có và không có Organizations)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   KHÔNG CÓ Organizations:           CÓ Organizations:                       │
+│   ──────────────────────            ─────────────────                        │
+│   (Các accounts ĐỘC LẬP)            (Các accounts LINKED)                   │
+│                                                                             │
+│   ┌──────────┐                      ┌─────────────────────────────────┐    │
+│   │ Account A│  (riêng lẻ)          │       AWS Organizations         │    │
+│   │ Bill: $$ │                      │                                 │    │
+│   └──────────┘                      │   ┌──────────┐                  │    │
+│                                     │   │Management│                  │    │
+│   ┌──────────┐                      │   │ Account  │                  │    │
+│   │ Account B│  (riêng lẻ)          │   └────┬─────┘                  │    │
+│   │ Bill: $$ │                      │        │                        │    │
+│   └──────────┘                      │   ┌────┴────┬────────┐          │    │
+│                                     │   ▼         ▼        ▼          │    │
+│   ┌──────────┐                      │ ┌───────┐┌───────┐┌───────┐    │    │
+│   │ Account C│  (riêng lẻ)          │ │Acct A ││Acct B ││Acct C │    │    │
+│   │ Bill: $$ │                      │ └───────┘└───────┘└───────┘    │    │
+│   └──────────┘                      │                                 │    │
+│                                     │   1 Bill tổng (consolidated)    │    │
+│   3 BILLS riêng lẻ                  │   Centralized management        │    │
+│   Không quản lý chung              │   SCPs có thể GIỚI HẠN quyền    │    │
+│                                     └─────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+> [!TIP]
+> - **Không có Organizations**: Vẫn tạo được nhiều accounts (mỗi email 1 account), nhưng chúng **ĐỘC LẬP** hoàn toàn, không liên quan nhau
+> - **Có Organizations**: Quản lý nhiều accounts **CÙNG NHAU** - consolidated billing, SCPs giới hạn quyền, centralized management
+> 
+> Xem chi tiết tại [aws-organizations.md](./aws-organizations.md)
+
+---
+
 ## Các thành phần chính
 
 ```

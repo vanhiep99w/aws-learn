@@ -640,11 +640,16 @@ aws configservice select-aggregate-resource-config \
 
 ---
 
-## AWS Config vs CloudTrail
+## AWS Config vs CloudTrail (Chi tiết)
+
+### Câu hỏi thường gặp: "CloudTrail làm được hết mà?"
+
+> [!IMPORTANT]
+> **KHÔNG!** CloudTrail và AWS Config có overlap nhưng KHÁC NHAU về mục đích và coverage.
 
 | Feature | AWS Config | CloudTrail |
 |---------|------------|------------|
-| **Focus** | Resource **configuration** | API **activities** |
+| **Focus** | Resource **configuration STATE** | API **activities** |
 | **Records** | What resources look like | Who did what, when |
 | **Question answered** | S3 bucket hiện config thế nào? | Ai đã tạo S3 bucket này? |
 | **History** | Configuration history | API call history |
@@ -652,7 +657,88 @@ aws configservice select-aggregate-resource-config \
 | **Remediation** | ✅ SSM Automation | ❌ No remediation |
 | **Use case** | Compliance, auditing configuration | Security investigation, troubleshooting |
 
-### Complementary Usage
+### Chúng OVERLAP nhưng KHÔNG phải Superset
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│             CloudTrail vs AWS Config - Không phải Superset                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)              │
+│                                                                              │
+│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng              │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                                                                     │   │
+│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config          │   │
+│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐           │   │
+│   │   │              │   │              │   │              │           │   │
+│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │           │   │
+│   │   │   calls      │   │  change      │   │   checks     │           │   │
+│   │   │ • Read ops   │   │  events      │   │ • Drift      │           │   │
+│   │   │   (Describe) │   │              │   │   detection  │           │   │
+│   │   │ • Login      │   │              │   │ • Compliance │           │   │
+│   │   │   events     │   │              │   │   rules      │           │   │
+│   │   │ • Calls ko   │   │              │   │ • Auto       │           │   │
+│   │   │   thay đổi   │   │              │   │   remediate  │           │   │
+│   │   │   state      │   │              │   │              │           │   │
+│   │   │              │   │              │   │              │           │   │
+│   │   └──────────────┘   └──────────────┘   └──────────────┘           │   │
+│   │                                                                     │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 3 Scenarios cụ thể
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       3 Scenarios cụ thể                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                            │
+│   ─────────────────────────────────────────────────                          │
+│   Không có API call mới nào                                                 │
+│   CloudTrail: ❌ Không ghi gì (không có API call)                           │
+│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)      │
+│                                                                              │
+│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                       │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)          │
+│   ─────────────────────────────────────────────────────────────────          │
+│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"               │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│                                                                              │
+│   → CloudTrail ghi cả failed calls!                                         │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                     │
+│   ──────────────────────────────────────────────────                         │
+│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                      │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│                                                                              │
+│   → CloudTrail ghi read operations!                                          │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Khi nào dùng gì?
+
+| Use Case | AWS Config | CloudTrail |
+|----------|------------|------------|
+| "SG nào đang mở port 22 ra 0.0.0.0/0?" | ✅ | |
+| "S3 bucket nào đang public?" | ✅ | |
+| "Tự động fix nếu resources violate rules" | ✅ | |
+| "Check tất cả resources có comply không?" | ✅ | |
+| "Ai đã xóa S3 bucket này?" | | ✅ |
+| "Từ IP nào có người login lạ?" | | ✅ |
+| "User nào thay đổi Security Group?" | | ✅ |
+
+### Complementary Usage: Dùng CẢ HAI
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -661,14 +747,25 @@ aws configservice select-aggregate-resource-config \
 │                                                                             │
 │  Security Incident Investigation:                                           │
 │                                                                             │
-│  CloudTrail: "User John called ModifySecurityGroup at 10:30 AM"            │
-│       +                                                                     │
-│  AWS Config: "Security Group configuration before/after the change"         │
-│       =                                                                     │
-│  Complete Picture: WHO changed WHAT and the EXACT changes made             │
+│  AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                │
+│               vì port 22 open to 0.0.0.0/0"                                │
+│                                                                             │
+│  → Đi check CloudTrail                                                     │
+│                                                                             │
+│  CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress      │
+│               lúc 10:30 AM từ IP 1.2.3.4"                                  │
+│                                                                             │
+│  → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+> [!TIP]
+> **Ví von để nhớ:**
+> - **CloudTrail** = Camera an ninh ghi "AI vào cửa lúc nào"
+> - **AWS Config** = Bảo vệ check "cửa có khóa đúng cách không?"
+>
+> Cả 2 đều trigger khi có người mở cửa, nhưng ghi lại thông tin khác nhau!
 
 ---
 

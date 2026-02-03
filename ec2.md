@@ -1026,11 +1026,135 @@ AWS cung cấp Free Tier cho người dùng mới:
 
 ## Cách truy cập EC2
 
+### Quản lý EC2 (Management)
+
 1. **AWS Management Console** - Giao diện web
 2. **AWS CLI** - Command line interface
 3. **AWS SDKs** - Tích hợp vào code (Python/Boto3, JavaScript, Java, etc.)
 4. **CloudFormation** - Infrastructure as Code
 5. **AWS Tools for PowerShell**
+
+### Connect to Instance (SSH/Shell vào EC2)
+
+Có 3 cách để connect vào EC2 instance:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│              EC2 Console → Select Instance → Connect                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐       │
+│   │   SSH Client      │  │ EC2 Instance      │  │ Session Manager   │       │
+│   │   (Manual)        │  │ Connect           │  │                   │       │
+│   └───────────────────┘  └───────────────────┘  └───────────────────┘       │
+│                                                                              │
+│          Tab 1                  Tab 2                  Tab 3                │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 1. SSH Client (Truyền thống)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         SSH Client - Flow                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Bạn ──── SSH (port 22) ────► EC2 Instance                                 │
+│        │                           ▲                                         │
+│        │                           │                                         │
+│    Private key               Security Group                                  │
+│    (your machine)            phải mở port 22                                │
+│                                                                              │
+│   Command: ssh -i "key.pem" ec2-user@<public-ip>                            │
+│                                                                              │
+│   YÊU CẦU:                                                                  │
+│   • Key pair (.pem file)                                                    │
+│   • Security Group mở port 22                                               │
+│   • EC2 có public IP hoặc bạn ở cùng VPC                                   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 2. EC2 Instance Connect (SSH có AWS quản lý key)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    EC2 Instance Connect - Flow                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Bạn ấn "Connect" trong Console:                                           │
+│                                                                              │
+│   Step 1: AWS tạo temporary SSH key (valid 60 giây)                         │
+│   Step 2: AWS push public key vào ~/.ssh/authorized_keys                    │
+│   Step 3: Browser SSH thẳng vào EC2 qua port 22                             │
+│                                                                              │
+│   ┌─────────────────┐      SSH (port 22)       ┌─────────────────┐          │
+│   │  Browser        │ ────────────────────────►│  EC2 Instance   │          │
+│   │  (terminal)     │                          │                 │          │
+│   └─────────────────┘                          └─────────────────┘          │
+│                                                                              │
+│   YÊU CẦU:                                                                  │
+│   • Port 22 PHẢI mở trong Security Group                                    │
+│   • EC2 có public IP                                                        │
+│   • Vẫn là SSH, chỉ là AWS quản lý key cho bạn                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 3. Session Manager (KHÔNG dùng SSH - Recommended!)
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Session Manager - Flow                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Bạn ấn "Connect" với Session Manager:                                     │
+│                                                                              │
+│   ┌─────────────────┐           ┌─────────────────┐                         │
+│   │  Browser/CLI    │ ────────► │  SSM Service    │                         │
+│   └─────────────────┘           └────────┬────────┘                         │
+│                                          │                                   │
+│                                          ▼                                   │
+│   ┌─────────────────┐           ┌─────────────────┐                         │
+│   │  EC2 Instance   │ ◄──────── │  SSM Agent      │                         │
+│   │  (NO port open) │  polling  │  (trong EC2)    │                         │
+│   └─────────────────┘           └─────────────────┘                         │
+│                                                                              │
+│   KHÔNG cần:                                                                │
+│   ✅ SSH keys                                                               │
+│   ✅ Port 22 mở                                                             │
+│   ✅ Public IP                                                              │
+│   ✅ Bastion host                                                           │
+│                                                                              │
+│   CẦN:                                                                      │
+│   • SSM Agent đang chạy (có sẵn trên Amazon Linux, Windows Server)         │
+│   • IAM Role với AmazonSSMManagedInstanceCore policy                        │
+│   • Agent có đường đi đến SSM Service (internet hoặc VPC Endpoint)         │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh 3 phương thức
+
+| | SSH Client | EC2 Instance Connect | Session Manager |
+|--|------------|---------------------|-----------------|
+| **Bản chất** | SSH thủ công | SSH (AWS quản lý key) | SSM (không dùng SSH) |
+| **Port 22?** | ✅ Phải mở | ✅ Phải mở | ❌ **Không cần** |
+| **SSH Key?** | ✅ Cần .pem file | ❌ AWS tự tạo | ❌ Không cần |
+| **Public IP?** | ✅ Cần | ✅ Cần | ❌ **Không cần** |
+| **IAM Role?** | ❌ Không cần | ❌ Không cần | ✅ Cần |
+| **SSM Agent?** | ❌ Không cần | ❌ Không cần | ✅ Cần |
+| **Logging** | Không có | Không có | ✅ **Full session logging** |
+| **Private subnet?** | ❌ Khó (cần bastion) | ❌ Khó | ✅ **Hoạt động tốt** |
+| **Security** | Phụ thuộc key mgmt | Khá tốt | ✅ **Tốt nhất** |
+
+> [!TIP]
+> **Session Manager là cách recommended** vì:
+> - Không cần mở port → Attack surface = 0
+> - Không cần quản lý SSH keys
+> - Full audit logging với CloudTrail/CloudWatch
+> - Hoạt động tốt cho private subnet
 
 ---
 

@@ -774,6 +774,170 @@ ORDER BY eventTime DESC;
 
 ---
 
+## CloudTrail vs AWS Config (Chi tiết)
+
+### Câu hỏi thường gặp: "CloudTrail làm được hết mà?"
+
+> [!IMPORTANT]
+> **KHÔNG!** CloudTrail và AWS Config có overlap nhưng KHÁC NHAU về mục đích và coverage.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│             CloudTrail vs AWS Config - Không phải Superset                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)              │
+│                                                                              │
+│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng              │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                                                                     │   │
+│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config          │   │
+│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐           │   │
+│   │   │              │   │              │   │              │           │   │
+│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │           │   │
+│   │   │   calls      │   │  change      │   │   checks     │           │   │
+│   │   │ • Read ops   │   │  events      │   │ • Drift      │           │   │
+│   │   │   (Describe) │   │              │   │   detection  │           │   │
+│   │   │ • Login      │   │              │   │ • Compliance │           │   │
+│   │   │   events     │   │              │   │   rules      │           │   │
+│   │   │ • Calls ko   │   │              │   │ • Auto       │           │   │
+│   │   │   thay đổi   │   │              │   │   remediate  │           │   │
+│   │   │   state      │   │              │   │              │           │   │
+│   │   │              │   │              │   │              │           │   │
+│   │   └──────────────┘   └──────────────┘   └──────────────┘           │   │
+│   │                                                                     │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Cùng 1 sự kiện - 2 góc nhìn khác nhau
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│       User mở port 22 ra 0.0.0.0/0 trong Security Group                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│                              │                                               │
+│                              ▼                                               │
+│              ┌───────────────┴───────────────┐                              │
+│              │      API Call xảy ra           │                              │
+│              │  AuthorizeSecurityGroupIngress │                              │
+│              └───────────────┬───────────────┘                              │
+│                              │                                               │
+│              ┌───────────────┴───────────────┐                              │
+│              ▼                               ▼                               │
+│   ┌─────────────────────┐       ┌─────────────────────┐                     │
+│   │     CLOUDTRAIL      │       │     AWS CONFIG      │                     │
+│   │                     │       │                     │                     │
+│   │  GHI LẠI:           │       │  GHI LẠI:           │                     │
+│   │  ─────────          │       │  ─────────          │                     │
+│   │  • Ai: john@co.com  │       │  • State MỚI của SG │                     │
+│   │  • Làm gì: Authorize│       │  • Port 22 open to  │                     │
+│   │  • Lúc nào: 10:30   │       │    0.0.0.0/0        │                     │
+│   │  • IP nguồn: 1.2.3.4│       │  • COMPLIANT hay    │                     │
+│   │  • Success/Failed   │       │    NON-COMPLIANT?   │                     │
+│   │                     │       │                     │                     │
+│   │  KHÔNG biết:        │       │  KHÔNG biết:        │                     │
+│   │  • SG có comply ko  │       │  • AI làm           │                     │
+│   │  • State hiện tại   │       │  • Từ IP nào        │                     │
+│   └─────────────────────┘       └─────────────────────┘                     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Điểm khác biệt quan trọng
+
+| | CloudTrail CÓ | AWS Config CÓ |
+|--|--------------|---------------|
+| **Trigger** | Mọi API call | Khi resource state thay đổi |
+| **Failed calls** | ✅ Ghi lại | ❌ Không ghi (state không đổi) |
+| **Read operations** | ✅ DescribeInstances, ListBuckets | ❌ Không ghi |
+| **Periodic checks** | ❌ Không | ✅ Check định kỳ |
+| **Compliance rules** | ❌ Không | ✅ Có |
+| **Auto remediation** | ❌ Không | ✅ Có (SSM) |
+| **Resources tạo từ trước** | ❌ Không (cần API call mới) | ✅ Phát hiện được |
+
+### Ví dụ cụ thể
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       3 Scenarios cụ thể                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                            │
+│   ─────────────────────────────────────────────────                          │
+│   Không có API call mới nào                                                 │
+│   CloudTrail: ❌ Không ghi gì (không có API call)                           │
+│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)      │
+│                                                                              │
+│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                       │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)          │
+│   ─────────────────────────────────────────────────────────────────          │
+│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"               │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│                                                                              │
+│   → CloudTrail ghi cả failed calls!                                         │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                     │
+│   ──────────────────────────────────────────────────                         │
+│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                      │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│                                                                              │
+│   → CloudTrail ghi read operations!                                          │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Khi nào dùng gì?
+
+| Use Case | CloudTrail | AWS Config |
+|----------|------------|------------|
+| "Ai đã xóa S3 bucket này?" | ✅ | |
+| "Từ IP nào có người login lạ?" | ✅ | |
+| "User nào thay đổi Security Group?" | ✅ | |
+| "SG nào đang mở port 22 ra 0.0.0.0/0?" | | ✅ |
+| "S3 bucket nào đang public?" | | ✅ |
+| "Tự động fix nếu resources violate rules" | | ✅ |
+| "Check tất cả resources có comply không?" | | ✅ |
+
+### Kết hợp cả 2: Complete Picture
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                CloudTrail + AWS Config = Complete Picture                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Security Incident Investigation:                                           │
+│                                                                              │
+│   AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                │
+│                vì port 22 open to 0.0.0.0/0"                                │
+│                                                                              │
+│   → Đi check CloudTrail                                                     │
+│                                                                              │
+│   CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress      │
+│                lúc 10:30 AM từ IP 1.2.3.4"                                  │
+│                                                                              │
+│   → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+> [!TIP]
+> **Ví von để nhớ:**
+> - **CloudTrail** = Camera an ninh ghi "AI vào cửa lúc nào"
+> - **AWS Config** = Bảo vệ check "cửa có khóa đúng cách không?"
+>
+> Cả 2 đều trigger khi có người mở cửa, nhưng ghi lại thông tin khác nhau!
+
+---
+
 ## Tổng Kết
 
 ```

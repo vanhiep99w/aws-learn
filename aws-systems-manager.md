@@ -73,6 +73,136 @@
   3. Agent có thể kết nối với SSM service (network connectivity)
 ```
 
+### SSM Agent hoạt động như thế nào?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    SSM Agent - Cách hoạt động                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ⚠️ QUAN TRỌNG: Agent KHÔNG lắng nghe connections!                         │
+│   Agent CHỦ ĐỘNG gọi RA NGOÀI đến SSM Service                               │
+│                                                                              │
+│   ┌─────────────────────┐                                                   │
+│   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                 │
+│   │   (trên cloud)      │                                                   │
+│   └──────────▲──────────┘                                                   │
+│              │                                                               │
+│              │  WebSocket (Agent GỌI RA, giữ connection)                    │
+│              │                                                               │
+│   ┌──────────┴──────────┐                                                   │
+│   │   SSM Agent         │  ← Phần mềm TRONG EC2                             │
+│   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện      │
+│   └─────────────────────┘                                                   │
+│                                                                              │
+│   Workflow:                                                                  │
+│   1. Agent connect RA NGOÀI đến SSM Service (WebSocket)                     │
+│   2. Giữ connection, chờ commands/sessions                                  │
+│   3. Khi có command → Thực hiện và trả kết quả                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Agent có sẵn hay phải cài?
+
+| AMI | SSM Agent |
+|-----|-----------|
+| Amazon Linux 2/2023 | ✅ Có sẵn, đang chạy |
+| Windows Server 2016+ | ✅ Có sẵn |
+| Ubuntu 16.04+ (AWS AMIs) | ✅ Có sẵn |
+| On-premises servers | ❌ Phải cài thủ công |
+| Custom AMIs | ⚠️ Có thể chưa có |
+
+> [!NOTE]
+> Agent có sẵn ≠ SSM hoạt động. Cần thêm **IAM Role** và **network connectivity**!
+
+### Network Connectivity cho SSM Agent
+
+Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                  Network Options cho SSM Agent                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   OPTION 1: Qua Internet                                                    │
+│   ────────────────────────                                                   │
+│   EC2 ──► NAT Gateway ──► Internet ──► SSM Service                          │
+│                                                                              │
+│   Yêu cầu: EC2 có internet access (IGW hoặc NAT Gateway)                   │
+│   Cost: NAT Gateway ~$32/tháng + data transfer                              │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   OPTION 2: Qua VPC Endpoints (Private - không cần internet)                │
+│   ───────────────────────────────────────────────────────────                │
+│   EC2 ──► VPC Endpoint ──► SSM Service (qua AWS PrivateLink)               │
+│                                                                              │
+│   Yêu cầu: Tạo 3 Interface Endpoints (BẠN TỰ TẠO, AWS không tự tạo!)       │
+│   • com.amazonaws.{region}.ssm                                               │
+│   • com.amazonaws.{region}.ssmmessages                                       │
+│   • com.amazonaws.{region}.ec2messages                                       │
+│                                                                              │
+│   Cost: ~$0.01/hour/endpoint/AZ                                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Scenario | Dùng gì? |
+|----------|----------|
+| EC2 có public IP | Internet (không cần thêm gì) |
+| Private subnet + NAT Gateway | Internet (qua NAT) |
+| Private subnet + KHÔNG có NAT | **VPC Endpoints** (bắt buộc) |
+| Yêu cầu security cao | **VPC Endpoints** (recommended) |
+
+### Tại sao SSM Agent an toàn hơn SSH?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│              INBOUND (SSH) vs OUTBOUND (SSM) - Bảo mật khác nhau!            │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ❌ SSH PORT 22 (INBOUND) - Attack surface lớn:                             │
+│   ──────────────────────────────────────────────                             │
+│                                                                              │
+│   Hacker ─────────────────────────────────► EC2 (port 22 OPEN)              │
+│          "Brute force password"              ▲                              │
+│          "Exploit SSH vulnerability"         │ LẮNG NGHE                    │
+│          "Scan port"                         │                              │
+│                                                                              │
+│   → EC2 mở port, chấp nhận connections từ BẤT KỲ AI                         │
+│   → Hacker có thể scan, brute force, exploit                                │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   ✅ SSM AGENT (OUTBOUND) - Attack surface = 0:                             │
+│   ─────────────────────────────────────────────                              │
+│                                                                              │
+│   Hacker ──────────X──────────► EC2 (NO ports open)                         │
+│          "Không thể connect"      │                                         │
+│                                   ▼ OUTBOUND                                │
+│                             SSM Service (AWS managed)                       │
+│                                                                              │
+│   → EC2 KHÔNG mở port nào                                                   │
+│   → Hacker KHÔNG THỂ connect đến EC2                                       │
+│   → Agent chỉ gọi đến AWS endpoints (trusted)                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| | SSH (Port 22 INBOUND) | SSM Agent (OUTBOUND) |
+|--|----------------------|---------------------|
+| **Ai initiate connection?** | Ai cũng có thể thử | Chỉ Agent initiate |
+| **Attack surface** | Lớn (exposed) | **0** (không mở port) |
+| **Brute force?** | ✅ Có thể | ❌ Không thể |
+| **Port scan?** | ✅ Phát hiện được | ❌ Không scan được |
+| **Authentication** | SSH keys (có thể bị leak) | IAM (integrated với AWS) |
+| **Logging** | Phải setup riêng | ✅ Tích hợp CloudTrail/CloudWatch |
+
+> [!TIP]
+> **OUTBOUND đến AWS endpoints an toàn hơn nhiều so với INBOUND port mở!**
+> Giống như: Nhà đóng kín cửa, bạn chỉ gọi điện ra khi cần - không ai vào được.
+
 ---
 
 ## Phân loại SSM Tools
