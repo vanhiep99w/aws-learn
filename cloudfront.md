@@ -601,10 +601,77 @@ Distribution:
 
 ### 2. Origin Access Control (OAC)
 
-Bảo vệ S3 origin - chỉ cho phép CloudFront access:
+**OAC là gì?**
+
+OAC (Origin Access Control) là cơ chế cho phép **CloudFront access S3 bucket private**.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Origin Access Control (OAC)                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  User → CloudFront → [OAC Sign Request] → S3 (private)         │
+│                              ↑                                  │
+│                    AWS Signature V4                             │
+│                                                                 │
+│  User truy cập S3 trực tiếp: ❌ 403 Forbidden                  │
+│  User truy cập qua CloudFront: ✅ 200 OK                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Tại sao cần OAC (signing) khi đã có Bucket Policy?**
+
+Bucket Policy chỉ định nghĩa "AI được phép", không verify "đó có thật là CloudFront không":
+
+```
+Bucket Policy: "Cho phép cloudfront.amazonaws.com"
+                    ↓
+Nhưng làm sao S3 biết request ĐẾN TỪ CloudFront thật sự?
+                    ↓
+OAC signing = Chứng minh danh tính (như thẻ nhân viên + vân tay)
+```
+
+**Cách OAC hoạt động:**
+
+```
+1. User request → CloudFront
+2. CloudFront SIGN request với AWS Signature V4
+3. Request có chữ ký → gửi đến S3
+4. S3 verify chữ ký → "OK, đây là CloudFront được phép"
+5. S3 trả content → CloudFront → User
+
+Lưu ý: Chỉ sign khi Cache MISS (cần lấy từ S3)
+       Cache HIT → trả từ cache, không gọi S3
+```
+
+**OAC vs OAI (cũ):**
+
+| Feature | OAI (Legacy) | OAC (Mới - 2022) |
+|---------|--------------|------------------|
+| **Signing** | CloudFront identity | AWS Signature V4 |
+| **SSE-KMS** | ❌ Không hỗ trợ | ✅ Hỗ trợ |
+| **POST/PUT** | ❌ Chỉ GET | ✅ Tất cả methods |
+| **All regions** | ❌ Một số | ✅ Tất cả |
+| **Recommended** | ❌ | ✅ |
+
+**Origins hỗ trợ OAC:**
+
+| Origin Type | OAC Support | Cách bảo mật khác |
+|-------------|-------------|-------------------|
+| **S3** | ✅ | - |
+| **MediaStore** | ✅ | - |
+| **Lambda Function URL** | ✅ | - |
+| **ALB/EC2** | ❌ | Custom header + Security Group |
+| **API Gateway** | ❌ | IAM / API Key |
+
+**Setup OAC:**
+
+1. Tạo OAC trong CloudFront Console (Origin settings)
+2. S3 giữ "Block Public Access: ON"
+3. Thêm Bucket Policy cho CloudFront:
 
 ```json
-// S3 Bucket Policy
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -624,6 +691,15 @@ Bảo vệ S3 origin - chỉ cho phép CloudFront access:
     ]
 }
 ```
+
+**Lưu ý về S3 Endpoint:**
+
+| S3 Endpoint | OAC Support |
+|-------------|-------------|
+| `bucket.s3.region.amazonaws.com` (REST API) | ✅ Có |
+| `bucket.s3-website-region.amazonaws.com` (Website) | ❌ Không |
+
+Nếu dùng S3 Website Endpoint → không có OAC → S3 phải public.
 
 ### 3. Signed URLs / Signed Cookies
 
@@ -916,6 +992,76 @@ Vì:
 - File mới → chưa có cache → lấy từ S3
 ```
 
+**Deploy Script đầy đủ:**
+
+```bash
+#!/bin/bash
+# deploy-react.sh
+
+BUCKET="my-react-app"
+DISTRIBUTION_ID="E1234567890"
+
+# 1. Build
+npm run build
+
+# 2. Upload static files với long cache
+aws s3 sync build/ s3://$BUCKET/ \
+    --exclude "index.html" \
+    --exclude "*.map" \
+    --cache-control "public, max-age=31536000, immutable"
+
+# 3. Upload index.html với no-cache
+aws s3 cp build/index.html s3://$BUCKET/index.html \
+    --cache-control "no-cache, no-store, must-revalidate"
+
+# 4. (Optional) Invalidate index.html để chắc chắn
+aws cloudfront create-invalidation \
+    --distribution-id $DISTRIBUTION_ID \
+    --paths "/index.html"
+
+echo "Deploy completed!"
+```
+
+**CloudFront Behaviors cho React SPA:**
+
+| Priority | Path Pattern | Cache Policy | Ghi chú |
+|----------|--------------|--------------|---------|
+| 0 | `/index.html` | CachingDisabled | Luôn fresh |
+| 1 | `/api/*` | CachingDisabled | API calls |
+| 2 | Default `*` | CachingOptimized | Static assets |
+
+**Xử lý Client-Side Routing (React Router):**
+
+Khi user truy cập `/about` trực tiếp → S3 trả 404 (không có file `/about`). 
+
+Giải pháp với CloudFront Custom Error Response:
+
+```yaml
+CustomErrorResponses:
+  - ErrorCode: 403
+    ResponsePagePath: /index.html
+    ResponseCode: 200
+  - ErrorCode: 404
+    ResponsePagePath: /index.html
+    ResponseCode: 200
+```
+
+Hoặc dùng CloudFront Function:
+
+```javascript
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+    
+    // Nếu không có extension → SPA route → trả về index.html
+    if (!uri.includes('.')) {
+        request.uri = '/index.html';
+    }
+    
+    return request;
+}
+```
+
 ### 2. API Acceleration
 
 ```
@@ -1086,4 +1232,5 @@ Nguyên nhân phổ biến:
 - [Route 53](route53.md) - DNS và domain management
 - [Lambda](lambda.md) - Lambda@Edge source
 - [ALB/ELB](elb.md) - Dynamic content origin
-- [ACM](https://docs.aws.amazon.com/acm/) - SSL certificates
+- [AWS ACM](aws-acm.md) - SSL certificates, tại sao cert cho CloudFront phải ở us-east-1
+
