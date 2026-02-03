@@ -83,6 +83,7 @@
 - [x] [AWS WAF](aws-waf.md) - Web Application Firewall, Web ACLs, Bot Control, Fraud Control, Shield Integration
 - [x] [AWS Shield](aws-shield.md) - DDoS Protection, Shield Standard (Free), Shield Advanced, DRT, Cost Protection
 - [x] [AWS Artifact](aws-artifact.md) - Compliance Reports (SOC, PCI, ISO), Agreements (HIPAA BAA, GDPR DPA)
+- [x] [AWS ACM](aws-acm.md) - AWS Certificate Manager, SSL/TLS Certificates, DNS/Email Validation, Auto Renewal
 
 ## Partner & Marketplace
 
