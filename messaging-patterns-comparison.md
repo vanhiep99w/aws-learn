@@ -241,6 +241,7 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 | Feature | **Queue (SQS)** | **Pub/Sub (SNS)** | **Streaming (Kinesis)** | **Event Bus (EventBridge)** |
 |---------|-----------------|-------------------|------------------------|---------------------------|
 | **Ví dụ đời thực** | Quầy gọi món | Đài phát thanh | YouTube video | Trung tâm điều phối |
+| **Non-AWS Alternatives** | RabbitMQ, ActiveMQ | Google Pub/Sub, Redis Pub/Sub | **Kafka**, Pulsar | ❌ (không có exact match) |
 | **Model** | Point-to-Point | Fan-out | Log/Stream | Event routing |
 | **Delivery** | Pull (poll) | Push | Pull | Push |
 | **1 msg → ? consumers** | 1 | ALL | ALL (consumer groups) | Depends on rules |
@@ -252,6 +253,49 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 | **Scaling** | Auto | Auto | Provision shards | Auto |
 | **Max message size** | 256 KB | 256 KB | 1 MB | 256 KB |
 
+### 2.1.1 Alternatives ngoài AWS
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                  AWS vs Non-AWS Alternatives                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   QUEUE:                                                                     │
+│   ───────                                                                    │
+│   AWS: SQS                                                                   │
+│   Alternatives: RabbitMQ, ActiveMQ, Redis Queue, Amazon MQ                  │
+│                                                                              │
+│   PUB/SUB:                                                                   │
+│   ─────────                                                                  │
+│   AWS: SNS                                                                   │
+│   Alternatives: Google Pub/Sub, Redis Pub/Sub, RabbitMQ (exchange mode)     │
+│                                                                              │
+│   STREAMING:                                                                 │
+│   ───────────                                                                │
+│   AWS: Kinesis, MSK                                                          │
+│   Alternatives: Apache Kafka, Apache Pulsar, Redpanda                       │
+│                                                                              │
+│   EVENT BUS:                                                                 │
+│   ───────────                                                                │
+│   AWS: EventBridge                                                           │
+│   Alternatives: Không có exact match (gần giống: Kafka + Schema Registry)   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Pattern | AWS | Alternatives ngoài AWS | Loại |
+|---------|-----|----------------------|------|
+| **Queue** | SQS | RabbitMQ, ActiveMQ, Redis Queue | Point-to-Point |
+| **Pub/Sub** | SNS | Google Pub/Sub, Redis Pub/Sub | Fan-out |
+| **Streaming** | Kinesis, MSK | **Apache Kafka**, Apache Pulsar | Log-based |
+| **Event Bus** | EventBridge | ❌ (không có exact match) | Rule-based routing |
+
+> [!TIP]
+> **Kafka** là **STREAMING** (giống Kinesis), KHÔNG phải Queue hay Pub/Sub đơn thuần.
+> Kafka có **Consumer Groups** nên có thể làm cả 2:
+> - Fan-out GIỮA các groups (như Pub/Sub)
+> - Load balance TRONG group (như Queue)
+
 ### 2.2 So sánh theo câu hỏi
 
 ```
@@ -261,9 +305,10 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │                                                                 │
 │   Q: Message sau khi đọc có còn không?                          │
 │   ┌─────────────────────────────────────────────────────────┐  │
-│   │  SQS:        BỊ XÓA sau khi xử lý ❌                     │  │
+│   │  SQS:        BỊ XÓA sau khi consumer gọi Delete ❌       │  │
+│   │              (retention 14 ngày = nếu CHƯA ai xử lý)     │  │
 │   │  SNS:        KHÔNG LƯU từ đầu ❌                         │  │
-│   │  Kinesis:    VẪN CÒN (1-365 ngày) ✅                     │  │
+│   │  Kinesis:    VẪN CÒN (1-365 ngày) ✅ → có thể replay    │  │
 │   │  EventBridge: KHÔNG LƯU (trừ khi Archive) ⚠️            │  │
 │   └─────────────────────────────────────────────────────────┘  │
 │                                                                 │
@@ -294,6 +339,58 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+### 2.3 Consumer Model - Chi tiết
+
+### 2.2.1 Streaming vs Event Bus - Dễ nhầm lẫn!
+
+> [!TIP]
+> Hai pattern này nhìn qua thì giống, nhưng **focus khác nhau hoàn toàn**!
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                   Streaming vs Event Bus - Khác biệt chính                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   STREAMING (Kinesis/Kafka)              EVENT BUS (EventBridge)             │
+│   ─────────────────────────              ──────────────────────              │
+│                                                                              │
+│   🎯 Focus: HIGH THROUGHPUT              🎯 Focus: SMART ROUTING             │
+│   (millions events/sec)                  (filter & route events)             │
+│                                                                              │
+│   📦 Data STORAGE:                       📦 Data STORAGE:                    │
+│   ✅ Lưu 1-365 ngày                      ❌ Không lưu (trừ Archive)          │
+│   ✅ Replay từ bất kỳ đâu                ⚠️ Replay qua Archive               │
+│                                                                              │
+│   🔀 ROUTING:                            🔀 ROUTING:                         │
+│   ❌ Không có (tất cả vào stream)        ✅ 100+ rules phức tạp              │
+│                                          ✅ Filter theo content              │
+│                                          ✅ Transform trước khi gửi          │
+│                                                                              │
+│   📊 ORDERING:                           📊 ORDERING:                        │
+│   ✅ Theo partition/shard                ❌ Không đảm bảo                    │
+│                                                                              │
+│   ⚙️ CAPACITY:                           ⚙️ CAPACITY:                        │
+│   Provision shards (hoặc on-demand)      Serverless, auto-scale              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Câu hỏi | Streaming | Event Bus |
+|---------|-----------|-----------|
+| Xử lý **millions events/sec**? | ✅ | ❌ |
+| Cần **replay** data cũ? | ✅ | ⚠️ (Archive) |
+| Cần **ordering**? | ✅ | ❌ |
+| Cần **filter complex** (if amount > 100)? | ❌ | ✅ |
+| Cần **transform** event? | ❌ | ✅ |
+| Tích hợp **SaaS** (Stripe, Zendesk)? | ❌ | ✅ |
+| **Cron jobs**/scheduled events? | ❌ | ✅ |
+
+> **Ví von:**
+> - **Streaming** = "Ống nước lớn" - chảy liên tục, lưu lại, replay được
+> - **Event Bus** = "Bưu điện thông minh" - phân loại thư, gửi đúng nơi
+
+---
 
 ### 2.3 Consumer Model - Chi tiết
 

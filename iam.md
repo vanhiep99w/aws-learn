@@ -482,6 +482,88 @@ Mỗi Role có **2 loại policy**:
 | **Trust Policy** | "Ai được assume role này?" | EC2, Lambda, Account B |
 | **Permissions Policy** | "Assume rồi được làm gì?" | s3:GetObject, dynamodb:PutItem |
 
+#### Cách phân biệt 2 loại Policy
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Phân biệt Trust Policy vs Permission Policy                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   TRUST POLICY:                          PERMISSION POLICY:                  │
+│   ─────────────                          ──────────────────                  │
+│   {                                      {                                   │
+│     "Effect": "Allow",                     "Effect": "Allow",                │
+│     "Principal": {...},  ← CÓ             "Action": ["s3:GetObject"],       │
+│     "Action": "sts:AssumeRole" ← FIXED    "Resource": "..." ← CÓ            │
+│   }                                      }                                   │
+│                                                                              │
+│   ✅ Có "Principal"                      ❌ KHÔNG có "Principal"             │
+│   ✅ Action = sts:AssumeRole             ✅ Action = các actions khác        │
+│   ❌ Thường không có Resource            ✅ CÓ "Resource"                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Workflow: 2 Policies link với nhau như thế nào?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│            Workflow: Trust Policy + Permission Policy                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Ví dụ: EC2 instance cần đọc S3                                            │
+│                                                                              │
+│   STEP 1: Check TRUST POLICY                                                │
+│   ──────────────────────────────                                             │
+│   "EC2 có được assume role này không?"                                      │
+│                                                                              │
+│   ┌─────────────┐         ┌─────────────────────────────────┐               │
+│   │    EC2      │         │          IAM ROLE               │               │
+│   │  Instance   │ ──────► │                                 │               │
+│   │             │ Assume? │ Trust Policy:                   │               │
+│   └─────────────┘         │ Principal: ec2.amazonaws.com ✅ │               │
+│                           └─────────────────────────────────┘               │
+│                                                                              │
+│   STEP 2: Nhận TEMPORARY CREDENTIALS                                        │
+│   ────────────────────────────────────                                       │
+│   EC2 assume thành công → Nhận credentials với quyền từ Permission Policy  │
+│                                                                              │
+│   STEP 3: Thực hiện action, check PERMISSION POLICY                         │
+│   ───────────────────────────────────────────────────                        │
+│   "Credentials này có quyền s3:GetObject không?"                            │
+│                                                                              │
+│   ┌─────────────┐                                                           │
+│   │    EC2      │  s3:GetObject("my-bucket/file.txt")                       │
+│   │  (có creds) │ ────────────────────────────────────►  S3 Bucket          │
+│   └─────────────┘                                                           │
+│         │                                                                    │
+│         ▼                                                                    │
+│   Permission Policy check: s3:GetObject allowed? ✅                         │
+│                                                                              │
+│   → Thành công! EC2 đọc được file từ S3                                     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Cả 2 đều CẦN!
+
+```
+Thiếu TRUST Policy:
+───────────────────
+EC2 không thể assume role → ❌ Thất bại ngay từ đầu
+
+Thiếu PERMISSION Policy:  
+────────────────────────
+EC2 assume được role → Nhận credentials
+Nhưng credentials KHÔNG có quyền gì → ❌ Access Denied khi gọi S3
+```
+
+| Scenario | Trust Policy | Permission Policy | Kết quả |
+|----------|--------------|-------------------|---------|
+| ✅ Đầy đủ | EC2 được assume | s3:GetObject | Thành công |
+| ❌ Thiếu Trust | EC2 KHÔNG được assume | s3:GetObject | Fail ngay |
+| ❌ Thiếu Permission | EC2 được assume | (trống) | Access Denied |
+
 ```json
 // Trust Policy: EC2 service được assume role này
 {
@@ -490,6 +572,18 @@ Mỗi Role có **2 loại policy**:
     "Effect": "Allow",
     "Principal": {"Service": "ec2.amazonaws.com"},
     "Action": "sts:AssumeRole"
+  }
+}
+```
+
+```json
+// Permission Policy: Role được đọc S3
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": ["s3:GetObject", "s3:ListBucket"],
+    "Resource": ["arn:aws:s3:::my-bucket", "arn:aws:s3:::my-bucket/*"]
   }
 }
 ```
