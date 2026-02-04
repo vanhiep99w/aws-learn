@@ -5,6 +5,10 @@
 
 - [Tổng quan](#tổng-quan)
 - [Các thiết bị Snow Family](#các-thiết-bị-snow-family)
+  - [Snowcone](#1-aws-snowcone)
+  - [Snowball Edge Storage Optimized](#2-snowball-edge-storage-optimized)
+  - [Snowball Edge Compute Optimized](#3-snowball-edge-compute-optimized)
+  - [Snowmobile](#4-aws-snowmobile)
 - [Quy trình sử dụng](#quy-trình-sử-dụng)
 - [Security](#security)
 - [AWS OpsHub](#aws-opshub)
@@ -54,15 +58,15 @@ Tại sao dùng Snow Family thay vì upload qua internet?
 
 ### Bảng so sánh
 
-| | Snowcone | Snowball Edge Storage Optimized | Snowball Edge Compute Optimized |
-|---|----------|--------------------------------|--------------------------------|
-| **Storage** | 8-14 TB HDD/SSD | 80-210 TB | 28-42 TB + 7.68 TB NVMe |
-| **vCPUs** | 2 | 40-104 | 104 |
-| **RAM** | 4 GB | 80-416 GB | 416-512 GB |
-| **Kích thước** | Nhỏ gọn (2.1 kg) | Vali lớn (~23 kg) | Vali lớn (~23 kg) |
-| **Use case** | Edge IoT, remote nhỏ | Data migration lớn | ML, video analysis, edge compute |
-| **Cluster** | Không | Có (3-16 devices) | Có |
-| **EC2/Lambda** | Có (limited) | Có | Có (optimized) |
+| | Snowcone | Snowball Edge Storage | Snowball Edge Compute | Snowmobile |
+|---|----------|----------------------|----------------------|------------|
+| **Storage** | 8-14 TB | 80-210 TB | 28-42 TB + NVMe | 100 PB |
+| **vCPUs** | 2 | 40-104 | 104 | N/A |
+| **RAM** | 4 GB | 80-416 GB | 416-512 GB | N/A |
+| **Kích thước** | 2.1 kg | ~23 kg | ~23 kg | 45-foot container |
+| **Use case** | Edge IoT | Data migration | Edge compute, ML | Exabyte migration |
+| **Cluster** | Không | Có | Có | Không |
+| **EC2/Lambda** | Limited | Có | Có | Không |
 
 ---
 
@@ -116,6 +120,67 @@ Tại sao dùng Snow Family thay vì upload qua internet?
 - Disconnected environments (ships, mines, oil rigs)
 
 ---
+
+### 4. AWS Snowmobile
+
+**Thiết bị lớn nhất** trong Snow Family - xe container 45-foot cho exabyte-scale data migration.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           AWS SNOWMOBILE                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  🚛  ════════════════════════════════════════════════════════════   │   │
+│   │       45-foot shipping container trên xe tải                        │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│   Storage:     100 PB (100,000 TB) per Snowmobile                           │
+│   Security:    GPS tracking, 24/7 video surveillance, security escort       │
+│   Encryption:  256-bit encryption                                           │
+│   Network:     Multiple 40 Gbps connections                                  │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+
+| Đặc điểm | Thông số |
+|----------|----------|
+| **Storage** | 100 PB (100 Petabytes) |
+| **Container** | 45-foot ruggedized shipping container |
+| **Transfer speed** | Up to 1 Tb/s (multiple 40 Gbps connections) |
+| **Time to fill** | ~10 days để fill 100 PB |
+| **Security** | GPS, alarm, 24/7 video, security escort |
+| **Encryption** | 256-bit with multiple encryption keys |
+
+**Use cases:**
+
+- **Exabyte-scale migration**: Data center shutdown, mass migration
+- **Video libraries**: Massive video archives (Hollywood studios)
+- **Scientific data**: Genomics, satellite imagery, seismic data
+- **Disaster recovery**: Moving entire data centers
+
+**Quy trình:**
+
+```
+1. AWS đưa Snowmobile đến data center của bạn
+2. Kết nối Snowmobile với network (multiple 40 Gbps)
+3. Copy data vào Snowmobile (~10 days cho 100 PB)
+4. AWS đưa Snowmobile về và upload vào S3
+```
+
+**So sánh Snowmobile vs Snowball Edge:**
+
+| | Snowball Edge | Snowmobile |
+|---|---------------|------------|
+| **Capacity** | 80-210 TB | 100 PB (100,000 TB) |
+| **Size** | Vali lớn (~23 kg) | Container 45-foot trên xe tải |
+| **Best for** | 10 TB - 10 PB | 10 PB - 100 PB |
+| **Cluster needed** | Có (nhiều devices) | Không (1 Snowmobile) |
+
+> [!NOTE]
+> **Rule of thumb**: Nếu cần transfer hơn **10 PB**, cân nhắc dùng Snowmobile thay vì cluster nhiều Snowball Edge devices.
 
 ## Quy trình sử dụng
 

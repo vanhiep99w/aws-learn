@@ -338,6 +338,42 @@ Hỗ trợ configuration và troubleshooting AWS **interoperability** với ph�
 | Basic/Developer | 7 core checks only |
 | **Business+** | ✅ Full checks + API access + CloudWatch integration |
 
+#### 4. TAM vs Concierge Support Team
+
+**TAM** và **Concierge** là **2 team hoàn toàn khác nhau** trong Enterprise Support:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│              ENTERPRISE SUPPORT - 2 TEAMS KHÁC NHAU                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  TAM (Technical Account Manager)                                        │
+│  ════════════════════════════════                                       │
+│  • Designated technical expert                                          │
+│  • Architecture reviews                                                 │
+│  • Operational best practices                                           │
+│  • Infrastructure event management                                      │
+│  • Proactive technical guidance                                         │
+│                                                                          │
+│  Concierge Support Team                                                 │
+│  ══════════════════════════                                             │
+│  • Billing và payment questions                                         │
+│  • Account issues                                                       │
+│  • Service limits increases                                             │
+│  • Cost optimization tips                                               │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+| Đặc điểm | TAM | Concierge |
+|----------|-----|-----------|
+| **Chuyên môn** | Technical (Kỹ thuật) | Billing & Account (Non-technical) |
+| **Hỗ trợ về** | Architecture, troubleshooting, optimization | Billing, account issues, cost tips |
+| **Có trong plan** | Enterprise On-Ramp+ | Enterprise On-Ramp+ |
+
+> [!TIP]
+> **Exam Tip**: Câu hỏi về **technical issues, architecture** → **TAM**. Câu hỏi về **billing, account, payment** → **Concierge**.
+
 ### Exam Tips - Chọn plan nào?
 
 | Yêu cầu | Plan cần |

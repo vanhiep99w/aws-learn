@@ -15,6 +15,7 @@
 - [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
 - [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
 - [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks
+- [x] [Auto Scaling](auto-scaling.md) - EC2 Auto Scaling chi tiết, Target Tracking, Warm Pools, Mixed Instances
 - [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
 - [x] [Lambda](lambda.md) - Serverless Functions, Triggers, Cold Start, Pricing
 - [x] [API Gateway](api-gateway.md) - REST/HTTP/WebSocket APIs, Lambda Integration
@@ -43,6 +44,7 @@
 - [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
 - [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
 - [x] [Amazon Redshift](amazon-redshift.md) - Data Warehouse, OLAP, Columnar Storage, MPP, Spectrum, Zero-ETL
+- [x] [Amazon Neptune](amazon-neptune.md) - Graph Database, Gremlin, SPARQL, Social Networks, Fraud Detection
 
 ## Migration
 
