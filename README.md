@@ -36,6 +36,7 @@
 - [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
 - [x] [Snow Family](snow-family.md) - Snowcone, Snowball Edge, Physical Data Transfer
+- [x] [AWS Storage Gateway](aws-storage-gateway.md) - Hybrid Cloud Storage, S3 File Gateway, Volume Gateway, Tape Gateway
 - [x] [AWS Storage Deep Dive](aws-storage-deep-dive.md) - So sánh chi tiết các loại Block, File, Object, Hybrid, Edge
 
 ## Database
@@ -55,9 +56,15 @@
 - [x] [AWS Glue](aws-glue.md) - Serverless ETL, Data Catalog, Crawlers, Spark/Python Jobs, Glue Studio
 - [x] [Amazon EMR](amazon-emr.md) - Managed Big Data Platform, Spark, Hadoop, Hive, Presto, 3 deployment options
 
+## Analytics
+
+- [x] [Amazon Athena](amazon-athena.md) - Serverless SQL Query Service, Query S3 Data, Presto/Trino Engine, Partitioning
+- [x] [Amazon QuickSight](amazon-quicksight.md) - BI Visualization, SPICE Engine, Dashboards, ML Insights, Generative BI
+
 ## Networking
 
 - [x] [VPC](vpc.md) - Virtual Private Cloud, Subnets, NAT Gateway, VPC Peering, Transit Gateway, Client VPN, PrivateLink, VPC Endpoints
+- [x] [VPC Endpoints](vpc-endpoints.md) - Gateway Endpoints, Interface Endpoints, PrivateLink, Private Access to AWS Services
 - [x] [CIDR](cidr.md) - Classless Inter-Domain Routing, IP Address Ranges, Subnet Calculation
 - [x] [ENI](eni.md) - Elastic Network Interface, Private/Public IPs, Multiple ENIs, Failover
 - [x] [Direct Connect](direct-connect.md) - Dedicated Network Connection, Private VIF, Transit VIF, LAG, MACsec, SiteLink
@@ -68,10 +75,12 @@
 ## Account Management
 
 - [x] [AWS Organizations](aws-organizations.md) - Multi-Account Management, OUs, SCPs, Consolidated Billing
+- [x] [AWS Service Catalog](aws-service-catalog.md) - Self-Service Product Catalog, Portfolios, Launch Constraints, Governance
 
 ## Security
 
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
+- [x] [IAM Identity Center](iam-identity-center.md) - Single Sign-On (SSO), Multi-Account Access, Identity Providers, Permission Sets
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
@@ -94,6 +103,9 @@
 ## Monitoring & Management
 
 - [x] [AWS Systems Manager (SSM)](aws-systems-manager.md) - Run Command, Session Manager, Patch Manager, Parameter Store, Automation
+- [x] [SSM Deep Dive](ssm.md) - SSM Agent, Session Manager, Run Command, Patch Manager chi tiết
+- [x] [AWS AppConfig](aws-appconfig.md) - Dynamic Configuration, Feature Flags, Gradual Deployment, Rollback
+- [x] [AWS OpsWorks](aws-opsworks.md) - Configuration Management, Chef/Puppet, Stacks, Layers
 - [x] [CloudWatch](cloudwatch.md) - Metrics, Alarms, Logs, Dashboards, Insights
 - [x] [CloudTrail](cloudtrail.md) - API Logging, Audit, Security Analysis, Event History
 - [x] [X-Ray](aws-xray.md) - Distributed Tracing, Service Map, Performance Analysis
@@ -118,10 +130,12 @@
 - [x] [SNS](sns.md) - Simple Notification Service, Pub/Sub, Fan-out, Message Filtering
 - [x] [Kinesis](kinesis.md) - Data Streams, Firehose, Analytics, Real-time Streaming
 - [x] [Amazon MQ](amazon-mq.md) - Managed ActiveMQ/RabbitMQ, Migration từ on-premises
+- [x] [Amazon MSK](amazon-msk.md) - Managed Streaming for Apache Kafka, Serverless, MSK Connect
 - [x] [EventBridge](eventbridge.md) - Event Bus, Rules, Patterns, Pipes, Scheduler, Archive & Replay
 
 ## Global Applications Architecture
 
+- [x] [AWS Global Infrastructure](aws-global-infrastructure.md) - Regions, AZs, Edge Locations, Local Zones, Wavelength Zones, Outposts
 - [x] [Global Applications Architecture](global-applications-architecture.md) - Multi-Region patterns, DR strategies, CloudFront vs Global Accelerator
 
 ## Cost Management
@@ -136,6 +150,10 @@
 ## AI/ML Services
 
 - [x] [AWS AI/ML Services](aws-ai-ml-services.md) - Rekognition, Textract, Polly, Transcribe, Translate, Comprehend, Lex, Kendra, Personalize, Forecast, Bedrock, SageMaker
+
+## Application Integration
+
+- [x] [Amazon Connect](amazon-connect.md) - Cloud Contact Center, Omnichannel, Contact Flows, AI-powered Customer Service
 
 ---
 
