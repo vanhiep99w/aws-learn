@@ -7,10 +7,12 @@
 - [Các Database Engine được hỗ trợ](#các-database-engine-được-hỗ-trợ)
 - [DB Instance Classes (Loại Instance)](#db-instance-classes-loại-instance)
 - [Storage Types](#storage-types)
+- [Parameter Groups và Option Groups](#parameter-groups-và-option-groups)
 - [Bảo mật RDS](#bảo-mật-rds)
   - [DB Subnet Group](#db-subnet-group-là-gì)
 - [High Availability với Multi-AZ](#high-availability-với-multi-az)
 - [Read Replicas](#read-replicas)
+- [RDS Proxy](#rds-proxy)
 - [Scaling Patterns và Real-world Usage](#scaling-patterns-và-real-world-usage)
 - [Backup và Recovery](#backup-và-recovery)
 - [Maintenance và Patching](#maintenance-và-patching)
@@ -254,6 +256,143 @@ Allocated Storage = 100 GB
 - Tự động mở rộng storage khi gần đầy
 - Set maximum storage limit
 - Không downtime khi scaling
+
+---
+
+## Parameter Groups và Option Groups
+
+### Parameter Groups
+
+**Parameter Group** = Tập hợp các configuration parameters cho database engine.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         PARAMETER GROUP                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Parameter Group = "my-mysql-params"                                       │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  max_connections = 200                                               │   │
+│   │  innodb_buffer_pool_size = 1073741824                               │   │
+│   │  slow_query_log = 1                                                  │   │
+│   │  long_query_time = 2                                                 │   │
+│   │  character_set_server = utf8mb4                                      │   │
+│   │  ...                                                                 │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│   Tương đương file my.cnf (MySQL) hoặc postgresql.conf (PostgreSQL)        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Loại Parameter | Mô tả | Cần reboot? |
+|----------------|-------|:-----------:|
+| **Dynamic** | Áp dụng ngay lập tức | ❌ |
+| **Static** | Cần reboot để áp dụng | ✅ |
+
+**Các loại Parameter Group:**
+
+| Loại | Mô tả |
+|------|-------|
+| **Default** | AWS tạo sẵn, KHÔNG thể modify |
+| **Custom** | Bạn tạo, có thể modify (recommended) |
+
+**Ví dụ tạo Parameter Group:**
+```bash
+aws rds create-db-parameter-group \
+    --db-parameter-group-name my-mysql-params \
+    --db-parameter-group-family mysql8.0 \
+    --description "Custom params for MySQL 8.0"
+
+# Modify parameter
+aws rds modify-db-parameter-group \
+    --db-parameter-group-name my-mysql-params \
+    --parameters "ParameterName=max_connections,ParameterValue=300,ApplyMethod=immediate"
+```
+
+---
+
+### Option Groups
+
+**Option Group** = Tập hợp các **features bổ sung** cho database engine.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         OPTION GROUP                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Option Group = "my-mysql-options"                                         │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  MEMCACHED          → In-memory caching                             │   │
+│   │  MARIADB_AUDIT_PLUGIN → Audit logging                               │   │
+│   │  ...                                                                 │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│   Options = Các plugins/features THÊM VÀO engine                            │
+│   (Không phải config parameters)                                            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Một số Options phổ biến:**
+
+| Engine | Option | Mô tả |
+|--------|--------|-------|
+| **MySQL** | MEMCACHED | In-memory caching |
+| **MySQL** | MARIADB_AUDIT_PLUGIN | Audit logging |
+| **Oracle** | APEX | Oracle Application Express |
+| **Oracle** | S3_INTEGRATION | Import/Export data với S3 |
+| **SQL Server** | SQLSERVER_BACKUP_RESTORE | Native backup to S3 |
+
+---
+
+### So sánh Parameter Group vs Option Group
+
+| | Parameter Group | Option Group |
+|--|-----------------|--------------|
+| **Là gì?** | Configuration settings | Additional features/plugins |
+| **Ví dụ** | max_connections, buffer_size | MEMCACHED, Audit Plugin |
+| **Tương đương** | my.cnf, postgresql.conf | Plugin installation |
+| **Required?** | ✅ Mọi RDS đều có | ❌ Optional |
+| **Modify default?** | ❌ Phải tạo custom | ❌ Phải tạo custom |
+
+> [!TIP]
+> **Best Practice**: Luôn tạo **custom Parameter Group** và **custom Option Group** (nếu cần) thay vì dùng default. Vì default không thể modify!
+
+### Thay đổi Parameter/Option Group trên RDS đang chạy
+
+Khi thay đổi Parameter Group hoặc Option Group, RDS đang chạy sẽ bị ảnh hưởng:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    IMPACT KHI THAY ĐỔI                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   PARAMETER GROUP:                                                          │
+│   ════════════════                                                           │
+│   Dynamic params (max_connections, slow_query_log)                          │
+│   → Áp dụng NGAY, không cần reboot, không downtime                          │
+│                                                                              │
+│   Static params (innodb_file_per_table)                                     │
+│   → Phải REBOOT để áp dụng, có downtime vài phút                            │
+│   → Status hiện "pending-reboot"                                            │
+│                                                                              │
+│   OPTION GROUP:                                                             │
+│   ══════════════                                                             │
+│   Tùy option: một số áp dụng ngay, một số cần reboot                        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Thay đổi | Cần Reboot? | Downtime? |
+|----------|:-----------:|:---------:|
+| Dynamic parameter | ❌ | ❌ |
+| Static parameter | ✅ | ✅ (vài phút) |
+| Một số options | ❌ | ❌ |
+| Một số options | ✅ | ✅ |
+
+> [!NOTE]
+> Với **Multi-AZ**, reboot sẽ failover sang Standby trước → giảm downtime xuống ~30-60 giây!
 
 ---
 
@@ -723,6 +862,138 @@ aws rds create-db-instance-read-replica \
 | Failover tự động | ✅ Có | ❌ Không |
 | Cross-region | ❌ Không | ✅ Có |
 | Chi phí network | Free (same AZ) | Có phí cross-AZ/region |
+
+---
+
+## RDS Proxy
+
+**RDS Proxy** là fully managed database proxy cho RDS, giúp ứng dụng chia sẻ và quản lý database connections hiệu quả hơn.
+
+### Vấn đề RDS Proxy giải quyết
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    VẤN ĐỀ: QUÁ NHIỀU CONNECTIONS                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   KHÔNG CÓ RDS PROXY:                                                       │
+│   ════════════════════                                                       │
+│                                                                              │
+│   Lambda 1 ──┐                                                              │
+│   Lambda 2 ──┼──► RDS (max_connections = 100)                               │
+│   Lambda 3 ──┤     ❌ Connection exhausted!                                 │
+│   ...        │     ❌ Mỗi Lambda mở connection mới                          │
+│   Lambda 100─┘     ❌ Lambda scale lên = connections tăng                   │
+│                                                                              │
+│   CÓ RDS PROXY:                                                             │
+│   ══════════════                                                             │
+│                                                                              │
+│   Lambda 1 ──┐                    ┌──────────┐                              │
+│   Lambda 2 ──┼──► RDS Proxy ──────►│   RDS   │                              │
+│   Lambda 3 ──┤   (Connection Pool) │         │                              │
+│   ...        │   ✅ Reuse connections│       │                              │
+│   Lambda 1000┘   ✅ 1000 requests → 50 connections                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Lợi ích của RDS Proxy
+
+| Lợi ích | Mô tả |
+|---------|-------|
+| **Connection Pooling** | Reuse connections, giảm overhead tạo connection mới |
+| **Serverless friendly** | Lý tưởng cho Lambda (scale nhanh, nhiều connections) |
+| **Faster Failover** | Failover nhanh hơn ~66% so với không dùng Proxy |
+| **IAM Authentication** | Quản lý credentials tập trung qua IAM |
+| **TLS/SSL** | Enforce encrypted connections |
+
+### Kiến trúc
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│   Application/Lambda                                                        │
+│         │                                                                   │
+│         ▼                                                                   │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                        RDS PROXY                                     │   │
+│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
+│   │  │              Connection Pool (reusable connections)          │    │   │
+│   │  │    ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐          │    │   │
+│   │  │    │ C1│ │ C2│ │ C3│ │ C4│ │ C5│ │...│ │C49│ │C50│          │    │   │
+│   │  │    └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ └───┘          │    │   │
+│   │  └─────────────────────────────────────────────────────────────┘    │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│         │                                                                   │
+│         ▼                                                                   │
+│   ┌────────────────────┐    ┌────────────────────┐                         │
+│   │   RDS Primary      │    │   RDS Read Replica │                         │
+│   └────────────────────┘    └────────────────────┘                         │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Khi nào dùng RDS Proxy?
+
+| Use Case | Nên dùng? |
+|----------|:---------:|
+| **Lambda + RDS** | ✅ Rất nên |
+| **Nhiều microservices** | ✅ Nên |
+| **Connection limits issues** | ✅ Nên |
+| **Single app, ít connections** | ❌ Không cần |
+| **Self-managed connection pool** | ❌ Không cần |
+
+### Pricing
+
+- Tính theo **vCPU/giờ** của RDS Proxy
+- Thêm ~15-20% so với không dùng Proxy
+- Nhưng giảm load trên RDS → có thể dùng instance nhỏ hơn
+
+### Lambda vs Traditional App (Spring)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│   SPRING BOOT:                      LAMBDA:                                 │
+│   ════════════                      ═══════                                  │
+│   ┌─────────────────┐               Lambda 1 ──┐                            │
+│   │ HikariCP Pool   │               Lambda 2 ──┼── Mỗi instance = 1 conn   │
+│   │ (built-in)      │               Lambda 3 ──┘   → Cần RDS Proxy!        │
+│   └────────┬────────┘                      │                                │
+│            │                               ▼                                │
+│            ▼                        ┌──────────────┐                        │
+│      ┌──────────┐                   │  RDS Proxy   │                        │
+│      │   RDS    │                   └──────┬───────┘                        │
+│      └──────────┘                          ▼                                │
+│                                      ┌──────────┐                           │
+│   → Không cần Proxy                  │   RDS    │                           │
+│                                      └──────────┘                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| App Type | Có Connection Pool? | Cần RDS Proxy? |
+|----------|:-------------------:|:--------------:|
+| **Spring Boot (HikariCP)** | ✅ | ❌ Thường không cần |
+| **Node.js (long-running)** | ✅ pg-pool | ❌ Thường không cần |
+| **Lambda** | ❌ | ✅ Rất nên |
+
+### Hybrid Setup: Lambda + Spring cùng RDS
+
+Có thể setup Lambda đi qua Proxy, còn Spring connect trực tiếp:
+
+```
+Lambda ──► RDS Proxy endpoint ──┐
+                                ├──► RDS
+Spring ──► RDS direct endpoint ─┘
+```
+
+| App | Connect to | Endpoint |
+|-----|------------|----------|
+| **Lambda** | RDS Proxy | `my-proxy.proxy-xxx.rds.amazonaws.com` |
+| **Spring** | RDS Direct | `my-db.xxx.rds.amazonaws.com` |
+
+> [!TIP]
+> **Lambda + RDS = Nên dùng RDS Proxy!** Spring đã có HikariCP nên có thể connect trực tiếp.
 
 ---
 
