@@ -120,6 +120,7 @@
 
 ## Global Applications Architecture
 
+- [x] [AWS Global Infrastructure](aws-global-infrastructure.md) - Regions, AZs, Edge Locations, Local Zones, Wavelength Zones, Outposts
 - [x] [Global Applications Architecture](global-applications-architecture.md) - Multi-Region patterns, DR strategies, CloudFront vs Global Accelerator
 
 ## Cost Management
