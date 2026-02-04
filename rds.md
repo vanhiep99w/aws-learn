@@ -8,6 +8,7 @@
 - [DB Instance Classes (Loại Instance)](#db-instance-classes-loại-instance)
 - [Storage Types](#storage-types)
 - [Bảo mật RDS](#bảo-mật-rds)
+  - [DB Subnet Group](#db-subnet-group-là-gì)
 - [High Availability với Multi-AZ](#high-availability-với-multi-az)
 - [Read Replicas](#read-replicas)
 - [Scaling Patterns và Real-world Usage](#scaling-patterns-và-real-world-usage)
@@ -139,6 +140,38 @@ Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì
 | **db.r5/r6g** | Memory optimized | High-memory applications |
 | **db.x2g** | Memory intensive | Large in-memory databases |
 
+### 3 Loại Instance Classes chi tiết
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    RDS INSTANCE CLASSES                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1. STANDARD (M classes) - db.m5, db.m6g, db.m7g                            │
+│     • General purpose, cân bằng CPU/RAM                                      │
+│     • CPU performance ỔN ĐỊNH, không giới hạn                                │
+│     • Phù hợp: Production workloads thông thường                              │
+│                                                                              │
+│  2. MEMORY OPTIMIZED (R, X classes) - db.r5, db.r6g, db.x2g                 │
+│     • RAM nhiều hơn so với CPU                                               │
+│     • Tối ưu cho workloads cần cache nhiều data trong memory                 │
+│     • Phù hợp: Large databases, analytics                                    │
+│                                                                              │
+│  3. BURSTABLE (T classes) - db.t3, db.t4g                                   │
+│     • CPU baseline thấp, có thể "burst" lên cao khi cần                       │
+│     • Dùng CPU credits để burst                                              │
+│     • Phù hợp: Dev/Test, low traffic (✓ Free Tier: db.t3.micro)              │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Đặc điểm | Standard (M) | Memory Optimized (R/X) | Burstable (T) |
+|----------|:------------:|:----------------------:|:-------------:|
+| **CPU** | Ổn định | Ổn định | Baseline + Burst |
+| **RAM/CPU** | Cân bằng | RAM cao | Cân bằng |
+| **Giá** | $$ | $$$ | $ |
+| **Free Tier** | ❌ | ❌ | ✓ db.t3.micro |
+
 ### Ví dụ đặt tên:
 ```
 db.m6g.large
@@ -194,6 +227,29 @@ RDS sử dụng **Amazon EBS (Elastic Block Store)** - là **network-attached st
 - Legacy storage - Không khuyến nghị cho production mới
 ```
 
+### Allocated Storage
+
+**Allocated Storage** = Dung lượng ổ đĩa (đặt trước) cho RDS database.
+
+```
+Allocated Storage = 100 GB
+┌─────────────────────────────────────────────────────────────────┐
+│██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│
+│   Data: 30 GB                    Còn trống: 70 GB            │
+└─────────────────────────────────────────────────────────────────┘
+
+→ Tính tiền theo 100 GB (allocated), không phải 30 GB (used)
+```
+
+| Setting | Ý nghĩa |
+|---------|--------|
+| **Allocated storage** | Dung lượng ban đầu (VD: 20 GB) |
+| **Maximum storage** | Giới hạn tối đa khi auto-scaling |
+| **Storage autoscaling** | Tự động tăng khi gần đầy |
+
+> [!NOTE]
+> **Free Tier**: Allocated storage tối đa **20 GB**.
+
 ### Storage Auto Scaling
 - Tự động mở rộng storage khi gần đầy
 - Set maximum storage limit
@@ -223,7 +279,146 @@ RDS sử dụng **Amazon EBS (Elastic Block Store)** - là **network-attached st
 
 - **VPC**: Đặt RDS trong private subnet
 - **Security Groups**: Kiểm soát inbound/outbound traffic
-- **Subnet Groups**: Nhóm các subnet cho Multi-AZ
+- **DB Subnet Groups**: Nhóm các subnet cho RDS deployment
+
+### DB Subnet Group là gì?
+
+**DB Subnet Group** là tập hợp các subnets (ít nhất 2 AZs) mà RDS sẽ sử dụng để deploy database instances.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         DB SUBNET GROUP                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                          VPC                                         │   │
+│   │                                                                      │   │
+│   │    AZ-a                    AZ-b                    AZ-c             │   │
+│   │   ┌──────────┐           ┌──────────┐           ┌──────────┐        │   │
+│   │   │ Private  │           │ Private  │           │ Private  │        │   │
+│   │   │ Subnet 1 │           │ Subnet 2 │           │ Subnet 3 │        │   │
+│   │   └────┬─────┘           └────┬─────┘           └────┬─────┘        │   │
+│   │        │                      │                      │              │   │
+│   │        └──────────────────────┼──────────────────────┘              │   │
+│   │                               │                                      │   │
+│   │                    ┌──────────┴──────────┐                          │   │
+│   │                    │   DB Subnet Group   │                          │   │
+│   │                    │  "my-db-subnet-grp" │                          │   │
+│   │                    └─────────────────────┘                          │   │
+│   │                                                                      │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Tại sao cần DB Subnet Group?
+
+```
+Multi-AZ Deployment:
+
+ AZ-a                           AZ-b
+┌──────────────┐              ┌──────────────┐
+│   Primary    │  Sync        │   Standby    │
+│   RDS DB     │ ──────────►  │   RDS DB     │
+│              │  Replication │              │
+└──────────────┘              └──────────────┘
+      │                             │
+Subnet trong                  Subnet trong
+DB Subnet Group               DB Subnet Group
+
+→ RDS cần biết subnets nào có thể dùng để deploy Primary và Standby
+→ DB Subnet Group định nghĩa "danh sách subnets hợp lệ"
+```
+
+#### Yêu cầu
+
+| Yêu cầu | Mô tả |
+|---------|-------|
+| **Ít nhất 2 AZs** | Phải có subnets trong ít nhất 2 Availability Zones |
+| **Cùng VPC** | Tất cả subnets phải thuộc cùng 1 VPC |
+| **Private subnets** | Best practice: dùng private subnets |
+| **CIDR không overlap** | Các subnet không được overlap CIDR |
+
+#### Cách tạo DB Subnet Group
+
+**AWS Console:**
+```
+RDS → Subnet groups → Create DB subnet group:
+  • Name: my-db-subnet-group
+  • VPC: my-vpc
+  • Add subnets: Chọn private subnets từ ít nhất 2 AZs
+```
+
+**AWS CLI:**
+```bash
+aws rds create-db-subnet-group \
+    --db-subnet-group-name my-db-subnet-group \
+    --db-subnet-group-description "Subnet group for production RDS" \
+    --subnet-ids subnet-abc123 subnet-def456 subnet-ghi789
+```
+
+#### Ví dụ thực tế
+
+```
+Khi tạo RDS instance:
+
+1. Bạn chọn DB Subnet Group: "my-db-subnet-group"
+   (chứa subnet-1 ở AZ-a, subnet-2 ở AZ-b, subnet-3 ở AZ-c)
+
+2. RDS tự động:
+   • Đặt Primary DB vào subnet phù hợp trong AZ bạn chọn
+   • Nếu Multi-AZ Instance: Đặt Standby vào subnet ở AZ khác
+   • Nếu Multi-AZ Cluster: Đặt 2 Readers vào 2 AZs còn lại
+   • Failover: Tự động chuyển sang subnet ở AZ khác
+```
+
+#### Default Subnet Group
+
+| Loại | Mô tả |
+|------|-------|
+| **default** | AWS tự tạo với tất cả subnets trong default VPC |
+| **Custom** | Bạn tạo với các private subnets mong muốn (recommended) |
+
+> [!TIP]
+> **Best Practice**: Luôn tạo custom DB Subnet Group với **private subnets only**. Không dùng default subnet group cho production.
+
+#### AZ và Subnet Scenarios
+
+Khi tạo DB Subnet Group, số lượng AZs và subnets ảnh hưởng đến deployment options:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    AZ VÀ SUBNET SCENARIOS                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Scenario 1: Chọn 3 AZs nhưng chỉ có 2 subnets                              │
+│  ══════════════════════════════════════════════                              │
+│                                                                              │
+│   Chọn AZs:  ✓ 2a    ✓ 2b    ✓ 2c                                          │
+│   Subnets:   ✓ subnet-2a   ✓ subnet-2b   ❌ không có subnet 2c             │
+│                                                                              │
+│   → Subnet Group TẠO ĐƯỢC với 2 subnets                                     │
+│   → ❌ KHÔNG tạo được Multi-AZ Cluster (cần 3 subnets/3 AZs)               │
+│   → ✅ CÓ THỂ tạo Multi-AZ Instance (chỉ cần 2 subnets/2 AZs)              │
+│                                                                              │
+│  Scenario 2: Chọn 1 AZ nhưng muốn add subnet từ AZ khác                     │
+│  ══════════════════════════════════════════════════════                      │
+│                                                                              │
+│   → KHÔNG THỂ! Dropdown subnets chỉ hiện subnets TRONG AZ đã chọn          │
+│   → Phải thêm AZ vào selection để thấy subnets của AZ đó                   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Scenario | Multi-AZ Instance | Multi-AZ Cluster | Single-AZ |
+|----------|:-----------------:|:----------------:|:---------:|
+| **3 AZs, 3 subnets** | ✅ | ✅ | ✅ |
+| **3 AZs, 2 subnets** | ✅ | ❌ | ✅ |
+| **2 AZs, 2 subnets** | ✅ | ❌ | ✅ |
+| **1 AZ, 1 subnet** | ❌ | ❌ | ✅ |
+
+> [!WARNING]
+> Nếu bạn thấy message: *"For Multi-AZ DB clusters, you must select 3 subnets in 3 different Availability Zones"* → Cần tạo thêm subnet ở AZ còn thiếu.
 
 ### 2. Encryption
 
