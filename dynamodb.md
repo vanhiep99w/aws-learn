@@ -137,20 +137,6 @@ Operational Overhead:
 
 ---
 
-1. [Core Concepts](#1-core-concepts)
-2. [Primary Key](#2-primary-key)
-3. [Capacity Modes](#3-capacity-modes)
-4. [Secondary Indexes](#4-secondary-indexes)
-5. [Global Tables](#5-global-tables)
-6. [DynamoDB Streams](#6-dynamodb-streams)
-7. [DAX (DynamoDB Accelerator)](#7-dax-dynamodb-accelerator)
-8. [Transactions](#8-transactions)
-9. [TTL (Time to Live)](#9-ttl-time-to-live)
-10. [Best Practices](#10-best-practices)
-11. [Pricing](#11-pricing)
-
----
-
 ## 1. Core Concepts
 
 ### 1.1 Table, Items, Attributes
@@ -448,8 +434,6 @@ Operational Overhead:
 
 #### WCU là gì? (Bonus: Write Capacity Unit)
 
-Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để complete picture:
-
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                   WRITE CAPACITY UNITS (WCU)                        │
@@ -517,6 +501,12 @@ Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để compl
 │  ✓ Mỗi item được identify duy nhất bởi UserID                       │  │
 │  ✓ UserID phải unique trong table                                   │  │
 │  ✓ Query/GetItem chỉ cần UserID                                    │  │
+│                                                                       │  │
+│  ⚠️ CONSTRAINTS:                                                      │  │
+│  ✗ Partition Key KHÔNG được NULL (required)                         │  │
+│  ✗ Partition Key KHÔNG được empty với Binary type                   │  │
+│  ✓ String type có thể empty "" nhưng KHÔNG được null               │  │
+│  → Insert item thiếu PK sẽ lỗi ValidationException                  │  │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -550,6 +540,16 @@ Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để compl
 │  ✓ Combination (CustomerID + OrderTime) phải unique               │  │
 │  ✓ Query có thể filter theo range trên Sort Key                   │  │
 │                                                                       │  │
+│  ⚠️ CONSTRAINTS:                                                      │  │
+│  ✗ Partition Key KHÔNG được NULL (required)                         │  │
+│  ✗ Sort Key KHÔNG được NULL (required)                              │  │
+│  ✗ Primary Key TỐI ĐA 2 attributes (PK + SK), không thể 3+          │  │
+│  → Insert item thiếu PK hoặc SK sẽ lỗi ValidationException          │  │
+│                                                                       │  │
+│  💡 WORKAROUND cho 3+ attributes:                                     │  │
+│  Concatenate nhiều values thành 1 Sort Key:                         │  │
+│  Ví dụ: SK = "2024#01#15" (Year#Month#Day)                           │  │
+│                                                                       │  │
 │  Query Examples:                                                      │  │
 │  • Query(CustomerID="cust_001") → 3 orders                        │  │
 │  • Query(CustomerID="cust_001", SortKey BETWEEN t1 AND t2)        │  │
@@ -559,7 +559,39 @@ Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để compl
 
 ### 2.3 Partition Key Distribution
 
+**Partition Key Distribution** là cách DynamoDB **phân chia data** vào các partitions dựa trên giá trị của Partition Key.
+
 ```
+┌─────────────────────────────────────────────────────────────────────┐
+│              CƠ CHẾ PARTITION (Giống Kafka!)                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│   DynamoDB nhận Partition Key → Hash function → Partition ID         │
+│                                                                       │
+│   "user_001" ──► hash() ──► Partition A                              │
+│   "user_002" ──► hash() ──► Partition B                              │
+│   "user_003" ──► hash() ──► Partition A                              │
+│   "user_004" ──► hash() ──► Partition C                              │
+│                                                                       │
+│   Mỗi Partition:                                                      │
+│   • Tối đa ~10 GB storage                                             │
+│   • Tối đa 3,000 RCU / 1,000 WCU                                      │
+│   • Được lưu trên physical storage riêng                              │
+│   • Auto-split khi vượt limit (không cần manual như Kafka)           │
+│                                                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│   SO SÁNH VỚI KAFKA:                                                 │
+│                                                                       │
+│   Khía cạnh       │ DynamoDB              │ Kafka                    │
+│   ────────────────┼───────────────────────┼──────────────────────    │
+│   Key             │ Partition Key         │ Message Key              │
+│   Cơ chế          │ Hash(PK) → Partition  │ Hash(Key) → Partition    │
+│   Hot Partition   │ ✅ Có thể xảy ra       │ ✅ Có thể xảy ra          │
+│   Ordering        │ Trong partition (SK)  │ Trong partition (offset) │
+│   Scale           │ Auto-split            │ Manual add partitions    │
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+
 ┌─────────────────────────────────────────────────────────────────────┐
 │              PARTITION KEY DISTRIBUTION (Important!)                │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -572,6 +604,7 @@ Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để compl
 │  │  Partition B (2024-01-02) - 5% traffic                      │   │
 │  │  Partition C (2024-01-03) - 5% traffic                      │   │
 │  └─────────────────────────────────────────────────────────────┘   │
+│  → Partition A bị quá tải, requests bị THROTTLE!                    │
 │                                                                       │
 │  ✅ GOOD: Partition Key phân phối đều                               │
 │                                                                       │
@@ -583,15 +616,54 @@ Vì đã hiểu RCU, hãy hiểu thêm **WCU (Write Capacity Unit)** để compl
 │  │  Partition D - 25% traffic ✓                                │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                       │
-│  Tips:                                                                │
+│  💡 BEST PRACTICES:                                                  │
 │  • Sử dụng UUID, hash của natural key, hoặc high-cardinality values  │
 │  • Tránh partition key với low cardinality (date, status, category)  │
-│  • Mỗi partition tối đa ~10 GB và 3,000 RCU/WCU                   │
+│  • Nếu bắt buộc dùng date → thêm suffix random ("2024-01-01#a3f2")  │
+│  • Mỗi partition tối đa ~10 GB và 3,000 RCU / 1,000 WCU             │
 │                                                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nguồn**: [DynamoDB Keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html#HowItWorks.CoreComponents.PrimaryKey)
+
+### 2.4 Partition Storage & Multi-AZ Replication
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              DYNAMODB PARTITION REPLICATION                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│   Mỗi Partition được replicate tự động đến 3 AZs:                   │
+│                                                                       │
+│   Partition A (data của user_001, user_003, ...)                    │
+│   ┌───────────┐    ┌───────────┐    ┌───────────┐                  │
+│   │   AZ-1    │    │   AZ-2    │    │   AZ-3    │                  │
+│   │  (Copy 1) │◄──►│  (Copy 2) │◄──►│  (Copy 3) │                  │
+│   │   ✓       │    │   ✓       │    │   ✓       │                  │
+│   └───────────┘    └───────────┘    └───────────┘                  │
+│        │                │                │                          │
+│        └────────────────┴────────────────┘                          │
+│              Synchronous replication                                │
+│                                                                       │
+│   ✅ Tự động, không cần cấu hình (built-in)                         │
+│   ✅ Synchronous replication (data consistent)                       │
+│   ✅ High availability - 1 AZ fail vẫn hoạt động                    │
+│   ✅ 99.99% SLA (99.999% với Global Tables)                         │
+│   ✅ Durability: 99.999999999% (11 nines)                            │
+│   ✅ Không tính phí thêm - đã bao gồm trong giá                      │
+│                                                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│   SO SÁNH VỚI CÁC SERVICES KHÁC:                                    │
+│                                                                       │
+│   Service      │ Multi-AZ          │ Config                          │
+│   ─────────────┼───────────────────┼──────────────────────────       │
+│   DynamoDB     │ ✅ Luôn 3 AZs     │ Tự động, miễn phí               │
+│   RDS          │ ❌ Phải enable    │ Manual, trả thêm tiền           │
+│   Aurora       │ ✅ 6 copies/3 AZs │ Tự động, bao gồm trong giá     │
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -764,6 +836,46 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 | **Capacity Units** | Separate RCU/WCU | Shares with base table |
 | **Max per table** | 20 | 5 |
 | **Projected attributes** | Any subset | Any subset |
+
+### 4.4 Index Key Structure
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│              INDEX KEY STRUCTURE (Tối đa 2 attributes!)             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│   GSI (Global Secondary Index):                                      │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  Option 1: [New Partition Key]                  → 1 attr     │  │
+│   │  Option 2: [New Partition Key] + [New Sort Key] → 2 attrs    │  │
+│   │                                                               │  │
+│   │  ✓ Sort Key là optional                                       │  │
+│   │  ✓ Partition Key có thể khác hoàn toàn base table            │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│   LSI (Local Secondary Index):                                       │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  Luôn: [Same Partition Key] + [Different Sort Key] → 2 attrs│  │
+│   │                                                               │  │
+│   │  ✗ Partition Key PHẢI giống base table                       │  │
+│   │  ✗ Bắt buộc phải có Sort Key                                  │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│   PROJECTED ATTRIBUTES (Khác với Key Attributes!)                   │
+│                                                                       │
+│   Ngoài 2 key attributes, index có thể project thêm attributes:    │
+│                                                                       │
+│   Projection Type  │ Mô tả                                           │
+│   ─────────────────┼───────────────────────────────────────────────  │
+│   KEYS_ONLY        │ Chỉ key attributes                              │
+│   INCLUDE          │ Keys + chọn attributes cụ thể                   │
+│   ALL              │ Tất cả attributes từ base table                 │
+│                                                                       │
+│   ⚠️ Key structure vẫn chỉ tối đa 2 attributes!                     │
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 > **Nguồn**: [Secondary Indexes](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html)
 
@@ -1003,6 +1115,100 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 ```
 
 > **Nguồn**: [DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html)
+
+### 8.1 BatchWriteItem vs TransactWriteItems
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│         BATCH WRITE vs TRANSACTION (Quan trọng!)                    │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  BatchWriteItem (25 items/request):                                  │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                           │
+│  │ ✓   │ │ ✓   │ │ ✗   │ │ ✓   │ │ ✓   │  ← Partial success       │
+│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘    (một số fail OK)       │
+│  → KHÔNG có ACID                                                     │
+│  → SDK có thể auto-split nếu > 25 items                             │
+│  → Mỗi item write độc lập                                           │
+│                                                                       │
+│  TransactWriteItems (25 items max):                                  │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                           │
+│  │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │  ← ALL or NOTHING        │
+│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘                            │
+│  → CÓ ACID đầy đủ                                                    │
+│  → KHÔNG bao giờ auto-split (hard limit 25)                         │
+│  → Error nếu vượt 25 items                                          │
+│                                                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│   SO SÁNH:                                                           │
+│                                                                       │
+│   Operation           │ Limit        │ Auto-split? │ ACID?          │
+│   ────────────────────┼──────────────┼─────────────┼────────────    │
+│   BatchWriteItem      │ 25/request   │ ✅ Có thể   │ ❌ Không       │
+│   TransactWriteItems  │ 25 total     │ ❌ Không    │ ✅ Có          │
+│                                                                       │
+│   ⚠️ Nếu cần ACID cho > 25 items → KHÔNG THỂ trong 1 transaction!  │
+│   → Phải thiết kế lại data model hoặc chấp nhận eventual consistency│
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 8.2 DynamoDB Operators
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    DYNAMODB OPERATORS                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│   COMPARISON OPERATORS (Filter & Condition Expressions):            │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  Operator          │ Mô tả                    │ Ví dụ        │  │
+│   │  ──────────────────┼──────────────────────────┼────────────  │  │
+│   │  =                 │ Bằng                     │ age = 30     │  │
+│   │  <>                │ Khác                     │ status <> X  │  │
+│   │  <                 │ Nhỏ hơn                  │ price < 100  │  │
+│   │  <=                │ Nhỏ hơn hoặc bằng       │ qty <= 10    │  │
+│   │  >                 │ Lớn hơn                  │ score > 90   │  │
+│   │  >=                │ Lớn hơn hoặc bằng       │ rating >= 4  │  │
+│   │  BETWEEN           │ Trong khoảng             │ BETWEEN 1-10 │  │
+│   │  IN                │ Trong danh sách          │ IN (a, b, c) │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│   LOGICAL OPERATORS:                                                 │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  AND               │ Tất cả conditions true   │ a=1 AND b=2  │  │
+│   │  OR                │ Ít nhất 1 condition true │ a=1 OR b=2   │  │
+│   │  NOT               │ Phủ định condition       │ NOT a=1      │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│   FUNCTION OPERATORS:                                                │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  attribute_exists(path)     │ Attribute tồn tại            │  │
+│   │  attribute_not_exists(path) │ Attribute không tồn tại      │  │
+│   │  attribute_type(path, type) │ Check type (S, N, B, SS...)  │  │
+│   │  begins_with(path, substr)  │ String bắt đầu bằng          │  │
+│   │  contains(path, operand)    │ String/Set chứa value        │  │
+│   │  size(path)                 │ Kích thước attribute         │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│   KEY CONDITION OPERATORS (chỉ cho Query trên Sort Key):            │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  =                         │ Exact match                   │  │
+│   │  <, <=, >, >=              │ Range comparison              │  │
+│   │  BETWEEN                   │ Range (inclusive)             │  │
+│   │  begins_with               │ Prefix match (String only)    │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│   UPDATE EXPRESSION OPERATORS:                                       │
+│   ┌─────────────────────────────────────────────────────────────┐  │
+│   │  SET                       │ Add/modify attributes         │  │
+│   │  REMOVE                    │ Delete attributes             │  │
+│   │  ADD                       │ Add to Number/Set             │  │
+│   │  DELETE                    │ Remove from Set               │  │
+│   └─────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
