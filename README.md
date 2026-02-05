@@ -42,6 +42,8 @@
 ## Database
 
 - [x] [RDS](rds.md) - Relational Database Service, MySQL, PostgreSQL, Aurora, Multi-AZ
+- [x] [RDS Read-Write Splitting](rds-read-write-splitting.md) - Multi-AZ Cluster Endpoints, Read Replica Load Balancing, Spring Boot Examples
+- [x] [Amazon Aurora](aurora.md) - Aurora Architecture, Serverless v2, Global Database, Replicas, Endpoints
 - [x] [DynamoDB](dynamodb.md) - NoSQL key-value và document database, Single-digit millisecond latency, Global Tables, DAX
 - [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
 - [x] [Amazon Redshift](amazon-redshift.md) - Data Warehouse, OLAP, Columnar Storage, MPP, Spectrum, Zero-ETL

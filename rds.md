@@ -5,13 +5,16 @@
 
 - [Tổng quan](#tổng-quan)
 - [Các Database Engine được hỗ trợ](#các-database-engine-được-hỗ-trợ)
+  - [Amazon Aurora](aurora.md) - **Chi tiết về Aurora architecture, Serverless, Global Database**
 - [DB Instance Classes (Loại Instance)](#db-instance-classes-loại-instance)
 - [Storage Types](#storage-types)
 - [Parameter Groups và Option Groups](#parameter-groups-và-option-groups)
+- [RDS Endpoint](#rds-endpoint)
 - [Bảo mật RDS](#bảo-mật-rds)
   - [DB Subnet Group](#db-subnet-group-là-gì)
 - [High Availability với Multi-AZ](#high-availability-với-multi-az)
 - [Read Replicas](#read-replicas)
+- [Read-Write Splitting Patterns](rds-read-write-splitting.md) - **Multi-AZ Cluster, Read Replica endpoints, Spring Boot examples**
 - [RDS Proxy](#rds-proxy)
 - [Scaling Patterns và Real-world Usage](#scaling-patterns-và-real-world-usage)
 - [Backup và Recovery](#backup-và-recovery)
@@ -396,6 +399,156 @@ Khi thay đổi Parameter Group hoặc Option Group, RDS đang chạy sẽ bị 
 
 ---
 
+## RDS Endpoint
+
+### Endpoint là gì?
+
+**RDS Endpoint** = **DNS hostname** dùng để kết nối tới database. Đây KHÔNG phải IP address.
+
+```
+rds-demo.ct8kskq8gl6t.ap-southeast-2.rds.amazonaws.com
+────┬─── ─────┬────── ──────┬─────── ────────┬────────
+    │         │             │                │
+    │         │             │                └── Domain AWS
+    │         │             └── Region (ap-southeast-2)
+    │         └── Account/Resource ID (unique)
+    └── Database name bạn đặt
+```
+
+### Tại sao dùng DNS thay vì IP?
+
+```
+┌───────────────────────────────────────────────────────────────────────┐
+│                          DNS RESOLUTION                                │
+├───────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  Bình thường:                                                          │
+│  rds-demo.xxx.rds.amazonaws.com  ──►  10.0.1.50 (Primary ở AZ-1)      │
+│                                                                        │
+│  Sau failover:                                                         │
+│  rds-demo.xxx.rds.amazonaws.com  ──►  10.0.2.75 (Primary mới ở AZ-2)  │
+│                                                                        │
+│  → App KHÔNG cần thay đổi connection string!                          │
+│                                                                        │
+└───────────────────────────────────────────────────────────────────────┘
+```
+
+- **IP có thể thay đổi** khi failover, scaling, maintenance
+- **DNS cho phép AWS tự động update** routing
+- **Application không cần config lại** khi có thay đổi
+
+---
+
+### DNS được quản lý bởi ai?
+
+**AWS quản lý hoàn toàn - Bạn KHÔNG thể xem/sửa!**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          RDS DNS MANAGEMENT                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   rds-demo.xxx.ap-southeast-2.rds.amazonaws.com                             │
+│                        │                                                     │
+│                        ▼                                                     │
+│   ┌──────────────────────────────────────────────┐                          │
+│   │     AWS INTERNAL DNS SERVICE                 │                          │
+│   │     (Không phải Route 53 của bạn!)           │                          │
+│   │                                              │                          │
+│   │   • AWS tự động tạo khi bạn tạo RDS          │                          │
+│   │   • AWS tự động update khi failover          │                          │
+│   │   • Bạn KHÔNG thể xem trong Route 53         │                          │
+│   │   • Bạn KHÔNG thể modify                     │                          │
+│   └──────────────────────────────────────────────┘                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Chỗ xem | Có thể? |
+|---------|:-------:|
+| **RDS Console** | ✅ Xem endpoint |
+| **Route 53 Console** | ❌ KHÔNG thấy |
+| **VPC DNS settings** | ❌ KHÔNG thấy |
+| **nslookup/dig command** | ✅ Resolve ra IP |
+
+**Thử resolve DNS:**
+```bash
+# Trên EC2 trong cùng VPC
+nslookup rds-demo.xxx.ap-southeast-2.rds.amazonaws.com
+# → Address: 10.0.1.50 (Private IP của RDS)
+
+# Hoặc dùng dig
+dig rds-demo.xxx.ap-southeast-2.rds.amazonaws.com +short
+# → 10.0.1.50
+```
+
+> [!NOTE]
+> **Domain `rds.amazonaws.com`** thuộc về AWS. Họ quản lý tất cả DNS records. Bạn chỉ "nhận" endpoint và sử dụng, không thể can thiệp.
+
+---
+
+### Cách sử dụng Endpoint
+
+```python
+# Python (MySQL example)
+import mysql.connector
+
+connection = mysql.connector.connect(
+    host="rds-demo.xxx.ap-southeast-2.rds.amazonaws.com",  # Endpoint
+    port=3306,           # Port
+    user="admin",        # Master username
+    password="xxxxxxxx", # Password
+    database="mydb"
+)
+```
+
+```bash
+# MySQL CLI
+mysql -h rds-demo.xxx.ap-southeast-2.rds.amazonaws.com \
+      -P 3306 \
+      -u admin \
+      -p
+```
+
+---
+
+### Các loại Endpoint
+
+| Deployment | Endpoints |
+|------------|----------|
+| **Single-AZ** | 1 (Instance endpoint) |
+| **Multi-AZ Instance** | 1 (tự động failover) |
+| **Multi-AZ Cluster** | 2 (Writer + Reader endpoint) |
+| **Read Replicas** | Mỗi replica có endpoint riêng |
+
+**Multi-AZ Cluster Endpoints:**
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    MULTI-AZ CLUSTER ENDPOINTS                        │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   WRITER ENDPOINT (cho writes):                                      │
+│   mydb.cluster-xxx.region.rds.amazonaws.com                         │
+│                        │                                             │
+│                        ▼                                             │
+│                   ┌─────────┐                                        │
+│                   │ WRITER  │                                        │
+│                   └─────────┘                                        │
+│                                                                      │
+│   READER ENDPOINT (cho reads):                                       │
+│   mydb.cluster-ro-xxx.region.rds.amazonaws.com                      │
+│                        │                                             │
+│            ┌───────────┼───────────┐                                 │
+│            ▼           ▼           ▼                                 │
+│       ┌─────────┐ ┌─────────┐                                        │
+│       │ READER 1│ │ READER 2│   (Load balanced)                      │
+│       └─────────┘ └─────────┘                                        │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## Bảo mật RDS
 
 ### 1. Network Security
@@ -578,19 +731,119 @@ Khi tạo DB Subnet Group, số lượng AZs và subnets ảnh hưởng đến d
 | **IAM Auth** | Dùng IAM credentials thay password |
 | **Kerberos** | Active Directory integration (SQL Server, Oracle) |
 
-### IAM Database Authentication:
-```python
-# Không lưu password trong code
-# Dùng IAM token thay thế
-import boto3
+### IAM Database Authentication
 
+Cho phép EC2/Lambda truy cập RDS/Aurora qua **IAM Role** thay vì password.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    IAM DATABASE AUTHENTICATION                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   TRUYỀN THỐNG (Password):                                                  │
+│   ┌─────┐                           ┌─────────────────┐                     │
+│   │ EC2 │ ──── username/password ──► │ RDS / Aurora  │                     │
+│   └─────┘                           └─────────────────┘                     │
+│   ❌ Password hardcode trong code/config                                    │
+│   ❌ Password có thể bị lộ                                                  │
+│                                                                              │
+│   IAM AUTHENTICATION:                                                        │
+│   ┌─────┐       ┌─────┐             ┌─────────────────┐                     │
+│   │ EC2 │ ───►  │ IAM │ ──token──► │ RDS / Aurora   │                     │
+│   │Role │       │ API │             └─────────────────┘                     │
+│   └─────┘       └─────┘                                                     │
+│   ✅ Không cần password                                                     │
+│   ✅ Token tự động expire (15 phút)                                        │
+│   ✅ IAM policies control access                                           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Databases hỗ trợ IAM Auth
+
+| Database | IAM Auth |
+|----------|:--------:|
+| **Aurora MySQL** | ✅ |
+| **Aurora PostgreSQL** | ✅ |
+| **RDS MySQL** | ✅ |
+| **RDS PostgreSQL** | ✅ |
+| **RDS MariaDB** | ✅ |
+| RDS Oracle | ❌ |
+| RDS SQL Server | ❌ |
+
+#### Cách sử dụng
+
+```python
+import boto3
+import mysql.connector
+
+# 1. EC2 có IAM Role với policy rds-db:connect
+# 2. Generate auth token (thay vì password)
 rds_client = boto3.client('rds')
+
 token = rds_client.generate_db_auth_token(
-    DBHostname='mydb.xxxxxxxx.us-east-1.rds.amazonaws.com',
+    DBHostname='mydb.xxx.rds.amazonaws.com',
     Port=3306,
-    DBUsername='myuser'
+    DBUsername='iam_user'
+)
+
+# 3. Connect với token thay password
+conn = mysql.connector.connect(
+    host='mydb.xxx.rds.amazonaws.com',
+    port=3306,
+    user='iam_user',
+    password=token,  # ← Token, không phải password
+    ssl_ca='rds-ca-2019-root.pem'  # SSL required!
 )
 ```
+
+#### Setup IAM Authentication
+
+**1. Enable trên RDS/Aurora:**
+```bash
+aws rds modify-db-instance \
+    --db-instance-identifier mydb \
+    --enable-iam-database-authentication
+```
+
+**2. Tạo Database User:**
+```sql
+-- MySQL
+CREATE USER 'iam_user'@'%' IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS';
+GRANT SELECT, INSERT ON mydb.* TO 'iam_user'@'%';
+
+-- PostgreSQL
+CREATE USER iam_user WITH LOGIN;
+GRANT rds_iam TO iam_user;
+```
+
+**3. IAM Policy cho EC2 Role:**
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "rds-db:connect",
+            "Resource": "arn:aws:rds-db:region:account:dbuser:db-id/iam_user"
+        }
+    ]
+}
+```
+
+#### So sánh Authentication Methods
+
+| Method | Use Case | Auto Rotate |
+|--------|----------|:-----------:|
+| **Password** | Simple, traditional | ❌ Manual |
+| **IAM Auth** | EC2/Lambda with roles | ✅ 15 phút |
+| **Secrets Manager** | Auto-rotate passwords | ✅ Configurable |
+
+> [!TIP]
+> **Best Practice:**
+> - **IAM Auth** nếu connection < 200/giây (có limit)
+> - **Secrets Manager** nếu cần password rotation tự động
+> - **RDS Proxy + IAM Auth** cho Lambda (connection pooling)
 
 ---
 
@@ -767,6 +1020,245 @@ aws rds modify-db-instance --db-instance-identifier my-db --multi-az
 3. Instance type change
 4. Software patching
 5. Manual failover (testing)
+
+---
+
+### Failover Deep Dive
+
+#### Failover mất bao lâu?
+
+| Deployment | Failover Time |
+|------------|---------------|
+| **Multi-AZ Instance** | **1-2 phút** (60-120 giây) |
+| **Multi-AZ Cluster** | **~35 giây** |
+| **Aurora Multi-AZ** | **~30 giây** |
+
+#### Tại sao failover mất 1-2 phút?
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    QUÁ TRÌNH FAILOVER                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1. DETECTION (~10-30s)                                                      │
+│     • AWS phát hiện Primary failed                                          │
+│     • Health checks xác nhận lỗi (tránh false positive)                     │
+│                                                                              │
+│  2. DNS PROPAGATION (~30-60s)                                               │
+│     • DNS endpoint được cập nhật để trỏ đến Standby                         │
+│     • DNS TTL cần thời gian để propagate                                    │
+│                                                                              │
+│  3. DATABASE RECOVERY                                                        │
+│     • Standby replay các transaction logs chưa apply                        │
+│     • Đảm bảo data consistency - không mất transaction                      │
+│     • Database engine "warm up"                                             │
+│                                                                              │
+│  4. CONNECTION RE-ESTABLISHMENT                                             │
+│     • Connections cũ bị đóng                                                │
+│     • Application cần reconnect đến endpoint                                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+> [!TIP]
+> Nếu cần **near-zero downtime**, xem xét **Amazon Aurora** - failover chỉ ~30 giây nhờ kiến trúc shared storage layer, không cần replay logs như RDS truyền thống.
+
+---
+
+#### Sau Failover: Primary cũ thành gì?
+
+**Primary cũ KHÔNG tự động trở lại làm primary!**
+
+```
+Trước failover:                    Sau failover:
+┌─────────────────┐                ┌─────────────────┐
+│      AZ-1       │                │      AZ-1       │
+│   ┌─────────┐   │                │   ┌─────────┐   │
+│   │ PRIMARY │   │    ──────►     │   │ STANDBY │   │  ← Cũ là Primary
+│   └─────────┘   │                │   │  (mới)  │   │
+├─────────────────┤                ├─────────────────┤
+│      AZ-2       │                │      AZ-2       │
+│   ┌─────────┐   │                │   ┌─────────┐   │
+│   │ STANDBY │   │    ──────►     │   │ PRIMARY │   │  ← Cũ là Standby
+│   └─────────┘   │                │   │  (mới)  │   │
+└─────────────────┘                └─────────────────┘
+```
+
+**Quy trình:**
+1. AWS tự động recover/replace instance cũ
+2. Instance cũ được **chuyển thành Standby mới**
+3. Data được **sync lại** từ Primary mới sang Standby mới
+
+> [!NOTE]
+> **Tại sao không failback tự động?**
+> - Tránh downtime không cần thiết (failback cũng mất 1-2 phút)
+> - Data consistency - Primary mới có thể đã có writes mới
+> - Stability - nếu primary cũ unstable, failback có thể gây thêm outage
+
+---
+
+#### Reboot vs Reboot with Failover
+
+Option **"Reboot with failover"** chỉ xuất hiện khi RDS đang ở **Multi-AZ deployment**:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    REBOOT OPTIONS                                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   SINGLE-AZ:                                                                 │
+│   ┌────────────────────────────────────────────┐                            │
+│   │  ○ Reboot                                  │  ← Chỉ có 1 option         │
+│   │  ☐ Reboot with failover (KHÔNG CÓ)        │                            │
+│   └────────────────────────────────────────────┘                            │
+│                                                                              │
+│   MULTI-AZ:                                                                  │
+│   ┌────────────────────────────────────────────┐                            │
+│   │  ○ Reboot                                  │  ← Reboot instance hiện tại│
+│   │  ☑ Reboot with failover                   │  ← Chuyển sang Standby     │
+│   └────────────────────────────────────────────┘                            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+##### Reboot (KHÔNG failover)
+
+```
+PRIMARY đang chạy → SHUTDOWN gracefully → RESTART → PRIMARY tiếp tục
+
+┌─────────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐
+│ PRIMARY │  →   │SHUTTING │  →   │STARTING │  →   │ PRIMARY │
+│ (chạy)  │      │  DOWN   │      │   UP    │      │ (chạy)  │
+└─────────┘      └─────────┘      └─────────┘      └─────────┘
+
+Standby: VẪN LÀ STANDBY (không thay đổi gì)
+Downtime: 5-10 phút (đợi restart xong)
+```
+
+##### Reboot WITH Failover
+
+```
+1. Standby PROMOTE lên Primary (ngay lập tức)
+2. Primary cũ restart và thành Standby mới
+
+TRƯỚC:                          SAU:
+┌─────────┐                     ┌─────────┐
+│ PRIMARY │  ──────────────►    │ STANDBY │  (đang restart)
+└─────────┘                     └─────────┘
+┌─────────┐                     ┌─────────┐
+│ STANDBY │  ──────────────►    │ PRIMARY │  (promoted, đang serve)
+└─────────┘                     └─────────┘
+
+Downtime: 1-2 phút (chỉ đợi DNS update + reconnect)
+```
+
+##### Automatic vs Manual Failover
+
+| Scenario | Ai trigger? | Bạn cần làm gì? |
+|----------|-------------|-----------------|
+| **Primary chết (unplanned)** | **AWS tự động** | ❌ Không cần làm gì |
+| **Reboot with failover** | Bạn trigger | ✅ Chọn option |
+| **Reboot (không failover)** | Bạn trigger | ✅ Không chọn option |
+
+##### Khi nào dùng option nào?
+
+| Scenario | Nên chọn | Lý do |
+|----------|----------|-------|
+| Apply static params vào instance cụ thể | **Reboot (không failover)** | Param apply vào instance đang restart |
+| Giảm downtime | **Reboot with failover** | Traffic chuyển ngay sang Standby |
+| Test failover | **Reboot with failover** | Verify failover hoạt động |
+| Đưa primary về cùng AZ với EC2 | **Reboot with failover** | Sau auto-failover trước đó |
+
+> [!CAUTION]
+> **Cả 2 option đều gây downtime!**
+> - Reboot (không failover): ~5-10 phút
+> - Reboot with failover: ~1-2 phút
+> 
+> Nên thực hiện vào maintenance window!
+
+**Console:**
+```
+RDS → Databases → Select DB → Actions → Reboot → ✅ Reboot with failover
+```
+
+**CLI:**
+```bash
+aws rds reboot-db-instance \
+    --db-instance-identifier my-database \
+    --force-failover
+```
+
+---
+
+#### Cross-AZ sau Failover: Chi phí và Hiệu năng
+
+Nếu EC2 ở AZ-1 và RDS failover sang AZ-2:
+
+```
+Trước failover:                    Sau failover:
+┌─────────────────────┐            ┌─────────────────────┐
+│        AZ-1         │            │        AZ-1         │
+│  ┌─────┐  ┌─────┐   │            │  ┌─────┐            │
+│  │ EC2 │→→│ RDS │   │            │  │ EC2 │────────┐   │
+│  └─────┘  │Primary│ │            │  └─────┘        │   │
+│           └─────┘   │            │                 │   │
+├─────────────────────┤            ├─────────────────│───┤
+│        AZ-2         │            │        AZ-2     ↓   │
+│           ┌─────┐   │            │           ┌─────┐   │
+│           │ RDS │   │            │           │ RDS │   │
+│           │Standby│ │            │           │PRIMARY│ │
+│           └─────┘   │            │           └─────┘   │
+└─────────────────────┘            └─────────────────────┘
+     Same AZ = FREE                   Cross-AZ = $$$
+```
+
+##### Chi phí Cross-AZ Data Transfer
+
+| Traffic | Giá |
+|---------|-----|
+| **Same AZ** | **FREE** |
+| **Cross-AZ** | **$0.01/GB mỗi chiều** ($0.02/GB round-trip) |
+
+**Ví dụ**: EC2 transfer 100GB/tháng với RDS cross-AZ = 100GB × $0.02 = **$2/tháng**
+
+##### Ảnh hưởng Hiệu năng
+
+| Metric | Same AZ | Cross-AZ |
+|--------|---------|----------|
+| **Latency** | ~0.1-0.5ms | **~1-2ms** |
+| **Throughput** | Cao hơn | Thấp hơn một chút |
+
+> [!NOTE]
+> Latency tăng ~2-5x nhưng vẫn rất thấp (1-2ms). Với hầu hết application, **không đáng kể**.
+
+##### Best Practice: Multi-AZ cho cả EC2
+
+```
+                    ┌─────────────────┐
+                    │  Load Balancer  │
+                    └───────┬─────────┘
+                            │
+           ┌────────────────┼────────────────┐
+           ▼                                 ▼
+    ┌─────────────┐                   ┌─────────────┐
+    │   AZ-1      │                   │   AZ-2      │
+    │  ┌──────┐   │                   │  ┌──────┐   │
+    │  │ EC2  │   │                   │  │ EC2  │   │
+    │  └──┬───┘   │                   │  └──┬───┘   │
+    │     │       │                   │     │       │
+    │  ┌──▼───┐   │                   │  ┌──▼───┐   │
+    │  │ RDS  │   │                   │  │ RDS  │   │
+    │  │Primary│  │                   │  │Standby│  │
+    │  └──────┘   │                   │  └──────┘   │
+    └─────────────┘                   └─────────────┘
+```
+
+- EC2 ở **cả 2 AZ** → luôn có instance cùng AZ với RDS primary
+- Load Balancer tự động route traffic đến healthy instances
+- **Cross-AZ traffic minimal** trong điều kiện bình thường
+
+> [!TIP]
+> **Bottom line**: Trong production, **availability quan trọng hơn chi phí cross-AZ**. Chi phí cross-AZ rất nhỏ so với downtime cost. Luôn deploy Multi-AZ cho cả EC2 lẫn RDS!
 
 ---
 
