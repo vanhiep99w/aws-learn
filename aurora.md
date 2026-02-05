@@ -92,9 +92,12 @@ Aurora nhanh hơn **không phải vì thay đổi MySQL/PostgreSQL engine**, mà
 
 ## Aurora Storage Architecture
 
-### 6 Copies Across 3 AZs
+### 6 Copies Across 3 AZs (Cluster Volume)
 
 Khi bạn ghi **1 record** vào Aurora, Aurora **TỰ ĐỘNG sao chép** record đó ra **6 bản**, lưu ở **3 Availability Zones** khác nhau.
+
+> [!NOTE]
+> **Cluster Volume** là tên chính thức của AWS cho storage layer này. Các tên khác: Shared Storage, Aurora Storage, Distributed Storage - đều là cùng 1 thứ!
 
 > [!NOTE]
 > Đây là ở tầng **STORAGE** (ổ đĩa), **MẶC ĐỊNH** và **TỰ ĐỘNG** - bạn KHÔNG cần config gì cả!
@@ -127,9 +130,24 @@ Khi bạn ghi **1 record** vào Aurora, Aurora **TỰ ĐỘNG sao chép** record
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Tại sao cần 6 copies?
+### Tại sao cần 6 copies? (Không phải 3?)
 
-**Để đảm bảo data KHÔNG BAO GIỜ mất!**
+> [!IMPORTANT]
+> **6 copies là MẶC ĐỊNH**, luôn luôn, không đổi được! Dù bạn có 1 Primary hay 15 Replicas → storage vẫn là 6 copies. Bạn CHỈ TRẢ TIỀN 1 LẦN (không x6).
+
+**Nếu chỉ có 3 copies (1 per AZ):**
+
+```
+┌─────────┐   ┌─────────┐   ┌─────────┐
+│  AZ-a   │   │  AZ-b   │   │  AZ-c   │
+│ Copy 1  │   │ Copy 2  │   │ Copy 3  │
+└─────────┘   └─────────┘   └─────────┘
+     │
+     ▼ Mất 1 AZ = còn 2 copies
+     ▼ Mất thêm 1 disk = còn 1 copy = NGUY HIỂM! ⚠️
+```
+
+**Với 6 copies (2 per AZ):**
 
 ```
 Scenario 1: Mất 1 ổ đĩa
@@ -145,8 +163,25 @@ Scenario 2: Mất cả 1 AZ (động đất, mất điện)
 │ Copy 2❌│   │ Copy 4  │   │ Copy 6  │
 └─────────┘   └─────────┘   └─────────┘
    AZ-a DOWN!
-→ Còn 4 copies ở AZ-b và AZ-c → VẪN AN TOÀN ✅
+→ Còn 4 copies → VẪN GHI ĐƯỢC (cần 4/6) ✅
+
+Scenario 3: Mất 1 AZ + 1 disk
+┌─────────┐   ┌─────────┐   ┌─────────┐
+│ Copy 1❌│   │ Copy 3  │   │ Copy 5❌│
+│ Copy 2❌│   │ Copy 4  │   │ Copy 6  │
+└─────────┘   └─────────┘   └─────────┘
+→ Còn 3 copies → VẪN ĐỌC ĐƯỢC (cần 3/6) ✅
 ```
+
+### Tác dụng của 6 copies
+
+| Tác dụng | Chi tiết |
+|----------|----------|
+| 🛡️ **Durability** | Mất 3 copies vẫn an toàn (11 nines: 99.999999999%) |
+| ⚡ **Write Performance** | Chỉ cần 4/6 ACK = không đợi slow disks |
+| 📖 **Read Performance** | Đọc từ copy nào gần/nhanh nhất |
+| 🔧 **Self-healing** | AWS tự động rebuild copy bị hỏng |
+| 🌍 **AZ Failure Tolerance** | Mất cả 1 AZ (2 copies) vẫn hoạt động bình thường |
 
 ### Quorum: 4/6 để ghi, 3/6 để đọc
 
@@ -318,11 +353,13 @@ Aurora có **4 loại endpoints**:
 │     mydb.cluster-ro-xxx.region.rds.amazonaws.com                            │
 │     → Load balance giữa TẤT CẢ Aurora Replicas                              │
 │     → Dùng cho: SELECT (general reads)                                      │
+│     → Nếu không có Replica, trỏ về Primary                                  │
 │                                                                              │
 │  3. CUSTOM ENDPOINTS                                                         │
 │     mydb-analytics.cluster-custom-xxx.region.rds.amazonaws.com              │
 │     → Bạn tự định nghĩa subset of instances                                 │
 │     → Dùng cho: Workload-specific routing                                   │
+│     → Tối đa: 5 custom endpoints per cluster                                │
 │                                                                              │
 │  4. INSTANCE ENDPOINTS                                                       │
 │     mydb-instance-1.xxx.region.rds.amazonaws.com                            │
@@ -331,6 +368,44 @@ Aurora có **4 loại endpoints**:
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Số lượng Endpoints
+
+| Loại Endpoint | Số lượng | Tự động/Manual |
+|---------------|----------|----------------|
+| **Cluster (Writer)** | 1 | Tự động tạo |
+| **Reader** | 1 | Tự động tạo |
+| **Instance** | = số instances | Tự động tạo |
+| **Custom** | Tối đa **5** | Bạn tự tạo |
+
+**Ví dụ: 1 Primary + 2 Replicas**
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│    1 Primary + 2 Replicas = 5 Endpoints mặc định                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   ┌──────────┐      ┌──────────┐      ┌──────────┐                    │
+│   │ PRIMARY  │      │REPLICA 1 │      │REPLICA 2 │                    │
+│   └──────────┘      └──────────┘      └──────────┘                    │
+│        ▲                 ▲                 ▲                           │
+│        │                 │                 │                           │
+│   Instance EP-1     Instance EP-2     Instance EP-3                    │
+│        │                 │                 │                           │
+│        │                 └────────┬────────┘                           │
+│        │                          │                                    │
+│   Cluster EP               Reader EP                                   │
+│   (→ Primary)         (load balance → Replica 1 & 2)                  │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────┤
+│   Mặc định: 1 + 1 + 3 = 5 endpoints                                   │
+│   + Custom: Tối đa 5 (tùy bạn tạo)                                    │
+│   = Tối đa 10 endpoints                                                │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+> [!TIP]
+> **Endpoints hoàn toàn MIỄN PHÍ!** Bạn chỉ trả tiền cho Instances, Storage và I/O. Endpoints chỉ là DNS routing - AWS không charge.
 
 ### Custom Endpoints Use Case
 
@@ -364,6 +439,9 @@ Aurora có **4 loại endpoints**:
 
 ## Aurora Serverless
 
+> [!IMPORTANT]
+> **Serverless scale RESOURCE (CPU/RAM) của instance**, KHÔNG phải số lượng instances! Đây khác với Replica Auto Scaling (thêm/bớt replicas).
+
 ### Aurora Serverless v1 vs v2
 
 | Feature | Serverless v1 | Serverless v2 |
@@ -384,6 +462,48 @@ Ví dụ pricing (us-east-1):
 - Aurora MySQL Serverless v2: $0.12/ACU-hour
 - 8 ACUs chạy 24/7: 8 × $0.12 × 24 × 30 = $691.20/tháng
 ```
+
+### Serverless Scaling - Dựa vào đâu?
+
+Aurora Serverless v2 **tự động** monitor và scale dựa trên:
+
+| Metric | Mô tả |
+|--------|-------|
+| **CPU Utilization** | % CPU đang sử dụng |
+| **Memory Pressure** | RAM cần thiết cho workload |
+| **Active Connections** | Số connections đang hoạt động |
+| **Buffer Pool Usage** | Bộ nhớ đệm cho queries |
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SERVERLESS AUTO SCALING                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Bạn config:  Min ACUs: 0.5  │  Max ACUs: 32                               │
+│                                                                              │
+│   Aurora tự động:                                                           │
+│   ┌───────────────────────────────────────────────────────────────────┐     │
+│   │   CPU ↑ cao   ──────►  Thêm ACUs (trong giây)                    │     │
+│   │   Memory ↑    ──────►  Thêm ACUs                                 │     │
+│   │   Connections ↑ ────►  Thêm ACUs                                 │     │
+│   │                                                                   │     │
+│   │   CPU ↓ thấp  ──────►  Giảm ACUs (từ từ, tránh flapping)        │     │
+│   └───────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│   ✅ Scale UP: Rất nhanh (giây)                                             │
+│   ✅ Scale DOWN: Chậm hơn (tránh scale lên xuống liên tục)                  │
+│   ✅ Số instances KHÔNG ĐỔI - chỉ thay đổi resources!                       │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh: Serverless vs Replica Auto Scaling
+
+| | Serverless (ACU Scaling) | Replica Auto Scaling |
+|--|--------------------------|---------------------|
+| **Scale gì?** | Resources (CPU/RAM) của instance | Số lượng replicas |
+| **Dựa vào** | CPU, Memory, Connections (tự động) | Bạn config: CPU target hoặc Connections |
+| **Hướng** | Vertical (instance mạnh hơn) | Horizontal (thêm instances) |
 
 ### Serverless v2 Architecture
 
@@ -590,29 +710,129 @@ Original cluster                    Clone (copy-on-write)
 
 ## Aurora vs RDS
 
+### So sánh tổng quan
+
 | Tiêu chí | RDS MySQL/PostgreSQL | Aurora |
 |----------|----------------------|--------|
 | **Performance** | Baseline | **5x MySQL, 3x PostgreSQL** |
-| **Storage** | EBS (provision) | **Auto-scaling 10GB-128TB** |
-| **Replication** | Async | **Sync** (~10-20ms lag) |
+| **Storage** | EBS (provision trước) | **Auto-scaling 10GB-128TB** |
+| **Max Storage** | 64TB | **128TB** |
+| **Replication** | Async (lag seconds) | **Sync** (~10-20ms lag) |
 | **Max Replicas** | 5 | **15** |
 | **Failover** | 1-2 phút | **~30 giây** |
 | **Reader Endpoint** | ❌ | ✅ |
 | **Backtrack** | ❌ | ✅ (MySQL only) |
-| **Clone** | ❌ | ✅ (seconds) |
+| **Clone** | ❌ (snapshot restore) | ✅ (seconds) |
 | **Serverless** | ❌ | ✅ v1 và v2 |
 | **Global Database** | ❌ | ✅ |
-| **Giá** | Thấp hơn | **~20% cao hơn** |
+| **Giá** | Thấp hơn ~20% | Cao hơn |
+
+### So sánh High Availability (HA)
+
+| Tiêu chí | RDS Multi-AZ | Aurora |
+|----------|--------------|--------|
+| **Kiến trúc** | Primary + Standby (riêng biệt) | Primary + Shared Storage |
+| **Standby đọc được?** | ❌ Không (chỉ failover) | ✅ Replicas đọc được |
+| **Số lượng standby** | 1 (hoặc 2 với Multi-AZ Cluster) | Tối đa 15 replicas |
+| **Failover time** | 1-2 phút | ~30 giây |
+| **Data sync** | Synchronous block-level | Log-based (nhẹ hơn) |
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    RDS MULTI-AZ                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌───────────────┐              ┌───────────────┐                          │
+│   │   PRIMARY     │  Sync Block  │   STANDBY     │                          │
+│   │               │─────────────▶│               │                          │
+│   │   ┌───────┐   │  Replication │   ┌───────┐   │                          │
+│   │   │  EBS  │   │              │   │  EBS  │   │                          │
+│   │   │ 100GB │   │              │   │ 100GB │   │  ❌ Không đọc được      │
+│   │   └───────┘   │              │   └───────┘   │                          │
+│   └───────────────┘              └───────────────┘                          │
+│        AZ-a                           AZ-b                                   │
+│                                                                              │
+│   → Failover: 1-2 phút (DNS propagation + recovery)                         │
+│   → Storage: 2 × 100GB = 200GB cost                                         │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    AURORA HA                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌───────────┐   ┌───────────┐   ┌───────────┐                             │
+│   │  PRIMARY  │   │ REPLICA 1 │   │ REPLICA 2 │                             │
+│   │  (Writer) │   │  (Reader) │   │  (Reader) │  ✅ Đọc được!              │
+│   └─────┬─────┘   └─────┬─────┘   └─────┬─────┘                             │
+│         │               │               │                                    │
+│         └───────────────┴───────────────┘                                    │
+│                         │                                                    │
+│              ┌──────────▼──────────┐                                        │
+│              │   SHARED STORAGE    │                                        │
+│              │   (6 copies/3 AZs)  │                                        │
+│              │       100GB         │                                        │
+│              └─────────────────────┘                                        │
+│                                                                              │
+│   → Failover: ~30 giây (chỉ promote replica)                               │
+│   → Storage: 100GB cost (shared, trả 1 lần)                                 │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh Replication
+
+| Tiêu chí | RDS Read Replica | Aurora Replica |
+|----------|------------------|----------------|
+| **Cơ chế** | Async binlog replication | Shared storage (không cần copy data) |
+| **Replica lag** | Seconds - minutes | ~10-20ms |
+| **Cross-region** | ✅ (lag cao hơn) | ✅ Global Database (<1 giây) |
+| **Failover tự động** | ❌ Manual promote | ✅ Tự động |
+| **Reader Endpoint** | ❌ Phải tự load balance | ✅ Có sẵn |
+| **Storage cost** | × số replicas | Shared (1 lần) |
+
+### So sánh Storage Architecture
+
+| Tiêu chí | RDS | Aurora |
+|----------|-----|--------|
+| **Storage type** | EBS (gp2, gp3, io1, io2) | Distributed SSD (tự quản lý) |
+| **Provisioning** | Phải chọn trước | Auto-scaling |
+| **Scaling** | Cần modify + có thể downtime | Tự động, không downtime |
+| **Max size** | 64TB | 128TB |
+| **Durability** | EBS: 99.999% | 6 copies/3 AZs: 99.999999999% |
+| **IOPS** | Phải provision (io1/io2) | Included (scale với storage) |
+
+### So sánh Features
+
+| Feature | RDS | Aurora |
+|---------|-----|--------|
+| **Multi-AZ** | ✅ | ✅ (mặc định với replicas) |
+| **Read Replicas** | ✅ (max 5) | ✅ (max 15) |
+| **Automated Backups** | ✅ | ✅ |
+| **Point-in-Time Recovery** | ✅ | ✅ |
+| **Backtrack** | ❌ | ✅ (MySQL) |
+| **Clone** | ❌ | ✅ |
+| **Serverless** | ❌ | ✅ |
+| **Global Database** | ❌ | ✅ |
+| **Blue/Green Deployments** | ✅ | ✅ |
+| **Performance Insights** | ✅ | ✅ |
+| **IAM DB Authentication** | ✅ | ✅ |
+| **Secrets Manager Integration** | ✅ | ✅ |
 
 ### Khi nào chọn gì?
 
-| Scenario | Chọn |
-|----------|------|
-| Budget constrained, performance đủ dùng | **RDS** |
-| Need high performance, low latency | **Aurora** |
-| Cross-region DR | **Aurora Global Database** |
-| Unpredictable workloads | **Aurora Serverless v2** |
-| Simple apps, predictable load | **RDS** |
+| Scenario | Chọn | Lý do |
+|----------|------|-------|
+| Budget constrained | **RDS** | Rẻ hơn ~20% |
+| Simple apps, predictable load | **RDS** | Đủ dùng, tiết kiệm |
+| High performance, low latency | **Aurora** | 5x faster |
+| Need fast failover (<1 phút) | **Aurora** | 30 giây failover |
+| Many read replicas (>5) | **Aurora** | Max 15 replicas |
+| Cross-region DR | **Aurora** | Global Database |
+| Unpredictable workloads | **Aurora Serverless v2** | Auto-scale ACUs |
+| Need to pause DB (dev/test) | **Aurora Serverless v1** | 0 ACUs = $0 |
+| Quick recovery từ human error | **Aurora** | Backtrack (seconds) |
+| Test với production data | **Aurora** | Clone (seconds) |
 
 ---
 
