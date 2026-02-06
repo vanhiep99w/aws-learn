@@ -17,6 +17,7 @@
 - [So sánh với các CDN khác](#so-sánh-với-các-cdn-khác)
 - [Kết hợp với Route 53](#kết-hợp-với-route-53)
 - [Troubleshooting](#troubleshooting)
+- [AWS Global Accelerator](#aws-global-accelerator)
 - [Tham khảo thêm](#tham-khảo-thêm)
 
 ---
@@ -1223,6 +1224,25 @@ Nguyên nhân phổ biến:
 - Origin mất quá lâu để phản hồi (> 30s default)
 - Tăng Origin Response Timeout
 ```
+
+---
+
+## AWS Global Accelerator
+
+Global Accelerator là **SERVICE RIÊNG** của AWS, không phải feature của CloudFront. Cả hai đều dùng AWS Edge Locations nhưng mục đích khác nhau.
+
+📖 **Xem chi tiết:** [AWS Global Accelerator](global-accelerator.md)
+
+**So sánh nhanh:**
+
+| Feature | CloudFront | Global Accelerator |
+|---------|------------|--------------------|
+| **Layer** | Layer 7 (HTTP/HTTPS) | Layer 4 (TCP/UDP) |
+| **Caching** | ✅ Có | ❌ Không |
+| **Static IP** | ❌ Không | ✅ 2 Anycast IPs |
+| **Use case** | Websites, APIs | Gaming, IoT, VoIP |
+
+> ✅ **Exam tip:** "static IP", "UDP", "gaming", "non-HTTP" → Global Accelerator
 
 ---
 

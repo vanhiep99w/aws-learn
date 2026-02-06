@@ -39,6 +39,8 @@
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
 - [x] [Snow Family](snow-family.md) - Snowcone, Snowball Edge, Physical Data Transfer
 - [x] [AWS Storage Gateway](aws-storage-gateway.md) - Hybrid Cloud Storage, S3 File Gateway, Volume Gateway, Tape Gateway
+- [x] [AWS Transfer Family](aws-transfer-family.md) - Managed SFTP/FTPS/FTP/AS2, File Transfer to S3/EFS
+- [x] [AWS DataSync](aws-datasync.md) - Data Migration, Bulk Transfer, On-premises to AWS Sync
 - [x] [AWS Storage Deep Dive](aws-storage-deep-dive.md) - So sánh chi tiết các loại Block, File, Object, Hybrid, Edge
 
 ## Database
@@ -75,6 +77,7 @@
 - [x] [Route 53](route53.md) - DNS Service, Hosted Zones, Routing Policies, Health Checks
 - [x] [DNS Deep Dive](how-dns-works.md) - Giải thích cơ chế DNS, phân biệt Registry/Registrar/Nameserver (quan trọng!)
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
+- [x] [Global Accelerator](global-accelerator.md) - Network Layer, Static Anycast IPs, TCP/UDP, Gaming/IoT
 
 ## Account Management
 
