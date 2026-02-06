@@ -32,6 +32,8 @@
 
 - [x] [S3](s3.md) - Simple Storage Service, Storage Classes, Lifecycle, Security
 - [x] [S3 Transfer Acceleration](s3-transfer-acceleration.md) - Tăng tốc upload/download qua Edge Locations
+- [x] [S3 Storage Lens](s3-storage-lens.md) - Organization-wide Storage Analytics, 60+ Metrics, Cost & Security Recommendations
+- [x] [S3 Security](s3-security.md) - Access Control, Encryption, Block Public Access, Pre-signed URLs, VPC Endpoints
 - [x] [EBS](ebs.md) - Elastic Block Store, Volume Types, Snapshots, Encryption
 - [x] [EFS](efs.md) - Elastic File System, Shared Storage, Storage Classes
 - [x] [FSx](fsx.md) - Managed File Systems (Lustre, NetApp ONTAP, OpenZFS, Windows)
