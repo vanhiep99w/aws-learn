@@ -7,6 +7,7 @@
 - [Kiến trúc tổng quan](#kiến-trúc-tổng-quan)
 - [Các thông số cơ bản](#các-thông-số-cơ-bản)
 - [Launch Template vs Launch Configuration](#launch-template-vs-launch-configuration)
+- [Placement Groups với ASG](#placement-groups-với-asg)
 - [Scaling Policies](#scaling-policies)
 - [Scaling Cooldown](#scaling-cooldown)
 - [Health Checks](#health-checks)
@@ -87,6 +88,52 @@ Ví dụ: Min=2, Desired=3, Max=5
 | **Placement Groups** | Có | Không |
 
 > **Khuyến nghị:** Luôn dùng **Launch Template**
+
+---
+
+## Placement Groups với ASG
+
+**Placement Groups** kiểm soát cách EC2 instances được đặt trên physical hardware. Kết hợp với ASG qua **Launch Template**.
+
+### Cách tích hợp
+
+```
+Tạo Placement Group → Gán vào Launch Template → ASG dùng Template đó
+                                                   ↓
+                                           Instances tự động được đặt theo strategy
+```
+
+### Các kịch bản
+
+| Scenario | Placement Group | Lưu ý |
+|----------|-----------------|--------|
+| **HPC cluster** | Cluster | Low latency, nhưng nếu 1 rack fail → tất cả fail |
+| **HA web servers** | Spread | **Max 7 instances/AZ** - ASG không thể vượt quá! |
+| **Kafka/Cassandra** | Partition | Instances được phân bổ vào các partitions |
+
+### ⚠️ Lưu ý quan trọng
+
+1. **Spread + ASG**: Max 7 instances/AZ. Nếu ASG cố scale lên 8+ → `InsufficientCapacity Error`
+
+2. **Cluster + ASG**: Tốt nhất launch tất cả cùng lúc. Scale thêm sau có thể gặp capacity error
+
+3. **Launch Configuration không hỗ trợ** Placement Groups → bắt buộc dùng **Launch Template**
+
+### Microservice thông thường có cần Placement Groups?
+
+**Không** - 99% microservices chỉ cần **Multi-AZ + ASG** là đủ:
+
+| App Type | Cần Placement Groups? | Lý do |
+|----------|----------------------|-------|
+| **Web API, REST services** | ❌ Không | Latency vài ms là chấp nhận được |
+| **Microservices thường** | ❌ Không | Multi-AZ + ELB đủ HA |
+| **HPC, ML training** | ✅ Cluster | Cần < 10μs latency, 10-25 Gbps |
+| **Critical services (payment)** | ⚠️ Spread (optional) | Muốn hardware-level isolation |
+| **Kafka, Cassandra, HDFS** | ✅ Partition | Cần partition-awareness |
+
+> 💡 **Tóm lại**: Chỉ dùng Placement Groups cho workloads đặc biệt (HPC, Big Data, distributed databases). Backend services bình thường **không cần**.
+
+> Xem chi tiết về Placement Groups tại [EC2 - Placement Groups](ec2.md#placement-groups)
 
 ---
 

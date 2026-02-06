@@ -57,16 +57,6 @@
 
 ---
 
-1. [Core Concepts](#1-core-concepts)
-2. [Subscription Types](#2-subscription-types)
-3. [Message Filtering](#3-message-filtering)
-4. [SNS + SQS Fan-out](#4-sns--sqs-fan-out)
-5. [FIFO Topics](#5-fifo-topics)
-6. [Security](#6-security)
-7. [Best Practices](#7-best-practices)
-
----
-
 ## 1. Core Concepts
 
 ### 1.1 Topic
@@ -268,80 +258,94 @@
 
 ## 4. SNS + SQS Fan-out
 
-### 4.1 Pattern cơ bản
+### 4.1 Vấn đề và Giải pháp
+
+**Vấn đề**: Một event cần trigger **nhiều xử lý độc lập**
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   SNS + SQS FAN-OUT                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Problem: 1 event needs to trigger multiple independent        │
-│            processing pipelines                                 │
-│                                                                 │
-│   Solution:                                                     │
-│   ┌──────────────┐                                              │
-│   │   S3 Bucket  │                                              │
-│   │  (file upload)                                              │
-│   └──────┬───────┘                                              │
-│          │ S3 Event                                             │
-│          ↓                                                      │
-│   ┌──────────────┐                                              │
-│   │  SNS Topic   │                                              │
-│   └──────┬───────┘                                              │
-│          │                                                      │
-│   ┌──────┴──────┬──────────────┬──────────────┐                 │
-│   ↓             ↓              ↓              ↓                 │
-│ ┌─────┐     ┌─────┐        ┌─────┐        ┌─────┐              │
-│ │SQS 1│     │SQS 2│        │SQS 3│        │Lambda│             │
-│ └─────┘     └─────┘        └─────┘        └─────┘              │
-│    ↓           ↓              ↓              ↓                  │
-│ Thumbnail   Analytics      Archive       Real-time             │
-│ Generator   Processing     to Glacier   Notification           │
-│                                                                 │
-│   ✅ Decoupled: Each queue processes independently              │
-│   ✅ Resilient: One failure doesn't affect others               │
-│   ✅ Scalable: Add more subscribers without changing publisher  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+Ví dụ: User upload ảnh → cần làm:
+  1. Tạo thumbnail
+  2. Phân tích AI
+  3. Archive lên Glacier
+  4. Gửi email thông báo
+
+❌ KHÔNG TỐT: 1 Lambda xử lý TẤT CẢ
+   → Nếu step 3 fail → ảnh hưởng cả hệ thống
+   → Không scale được từng phần riêng
 ```
 
-### 4.2 Với Message Filtering
+**Giải pháp: Fan-out = "Phân nhánh" message ra nhiều hướng**
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              FAN-OUT WITH FILTERING                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Order Service publishes:                                      │
-│   {                                                             │
-│     "Message": "Order data...",                                 │
-│     "MessageAttributes": {                                      │
-│       "orderType": "online",                                    │
-│       "priority": "high"                                        │
-│     }                                                           │
-│   }                                                             │
-│                        ↓                                        │
-│                 ┌──────────────┐                                │
-│                 │  SNS Topic   │                                │
-│                 └──────────────┘                                │
-│                        │                                        │
-│   ┌────────────────────┼────────────────────┐                   │
-│   ↓                    ↓                    ↓                   │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
-│ │ SQS: Online  │ │ SQS: In-Store│ │ SQS: High    │             │
-│ │ Orders       │ │ Orders       │ │ Priority     │             │
-│ │              │ │              │ │              │             │
-│ │Filter:       │ │Filter:       │ │Filter:       │             │
-│ │{orderType:   │ │{orderType:   │ │{priority:    │             │
-│ │ ["online"]}  │ │ ["in-store"]}│ │ ["high"]}    │             │
-│ └──────────────┘ └──────────────┘ └──────────────┘             │
-│       ↓                ↓                ↓                       │
-│    RECEIVES         FILTERED        RECEIVES                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+                      S3 (upload ảnh)
+                           │
+                           ↓
+                    ┌─────────────┐
+                    │  SNS Topic  │  ← Nhận 1 event
+                    └─────────────┘
+                           │
+        ┌──────────┬───────┴───────┬──────────┐
+        ↓          ↓               ↓          ↓
+    ┌──────┐   ┌──────┐       ┌──────┐   ┌──────┐
+    │SQS 1 │   │SQS 2 │       │SQS 3 │   │Lambda│
+    └──────┘   └──────┘       └──────┘   └──────┘
+        ↓          ↓               ↓          ↓
+    Thumbnail   AI phân tích   Archive    Email
 ```
 
-### 4.3 Cross-Region Fan-out
+### 4.2 Tại sao dùng SQS thay vì Lambda trực tiếp?
+
+| | SNS → Lambda | SNS → SQS → Consumer |
+|---|---|---|
+| **Buffering** | ❌ Lambda phải sẵn sàng | ✅ SQS giữ message khi app down |
+| **Retry** | Lambda tự handle | ✅ SQS có built-in retry |
+| **DLQ** | Phức tạp hơn | ✅ DLQ dễ config |
+| **Rate limiting** | ❌ Lambda bị overwhelm | ✅ Consumer xử lý theo tốc độ |
+
+### 4.3 Fan-out với Message Filtering
+
+> ⚠️ **QUAN TRỌNG**: Filter xảy ra **ở tầng SNS**, TRƯỚC KHI gửi đến SQS
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MESSAGE FILTERING FLOW                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Publisher gửi: { "orderType": "online" }                                   │
+│                          │                                                   │
+│                          ↓                                                   │
+│                   ┌─────────────┐                                            │
+│                   │  SNS Topic  │                                            │
+│                   └──────┬──────┘                                            │
+│                          │                                                   │
+│        ┌─────────────────┼─────────────────┐                                 │
+│        ↓                 ↓                 ↓                                 │
+│   ┌──────────┐     ┌──────────┐     ┌──────────┐                            │
+│   │Filter:   │     │Filter:   │     │Filter:   │  ← Filter Policy gắn       │
+│   │"online"  │     │"in-store"│     │ (none)   │    VÀO SUBSCRIPTION        │
+│   └────┬─────┘     └────┬─────┘     └────┬─────┘                            │
+│        │                │                │                                   │
+│    ✅ MATCH         ❌ SKIP          ✅ MATCH                                │
+│        │                ✖                │                                   │
+│        ↓                                 ↓                                   │
+│   ┌──────────┐                     ┌──────────┐                             │
+│   │SQS Online│                     │SQS All   │                             │
+│   └──────────┘                     └──────────┘                             │
+│                                                                              │
+│   ⚡ SNS filter TRƯỚC → Không match = KHÔNG gửi → Tiết kiệm cost!           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Tại sao filter ở SNS tốt hơn filter ở SQS/Consumer?**
+
+| | Filter ở Consumer | Filter ở SNS |
+|---|---|---|
+| **Flow** | SQS nhận TẤT CẢ → Consumer đọc rồi bỏ | SNS chỉ gửi message match |
+| **Cost** | ❌ Tốn tiền SQS requests | ✅ Tiết kiệm |
+| **Load** | ❌ Consumer xử lý message không cần | ✅ Giảm load |
+
+### 4.4 Cross-Region Fan-out
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐

@@ -6,6 +6,7 @@
 - [Tổng quan](#tổng-quan)
 - [Các thành phần chính](#các-thành-phần-chính)
 - [Pricing Models](#pricing-models)
+- [Placement Groups](#placement-groups)
 - [Cách truy cập EC2](#cách-truy-cập-ec2)
 - [Các dịch vụ liên quan](#các-dịch-vụ-liên-quan)
 - [Best Practices](#best-practices)
@@ -1021,6 +1022,128 @@ AWS cung cấp Free Tier cho người dùng mới:
 | Critical workload, cần guarantee capacity | **Capacity Reservations** + **RI/SP** |
 
 > **Nguồn**: [Amazon EC2 Pricing](https://aws.amazon.com/ec2/pricing/)
+
+---
+
+## Placement Groups
+
+**Placement Groups** cho phép kiểm soát cách EC2 instances được đặt trên physical hardware để tối ưu performance hoặc high availability.
+
+### 3 Loại Placement Groups
+
+| Loại | Mô tả | Max Instances | Use Cases |
+|------|-------|---------------|----------|
+| **Cluster** | Instances đặt **cùng rack, cùng AZ** | Không giới hạn | HPC, Big Data, ML training |
+| **Spread** | Mỗi instance trên **hardware riêng biệt** | 7 per AZ | Critical apps, isolated failures |
+| **Partition** | Chia thành partitions, mỗi partition trên rack riêng | 7 partitions per AZ | Hadoop, Cassandra, Kafka |
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        PLACEMENT GROUPS                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1. CLUSTER                    2. SPREAD                 3. PARTITION       │
+│  ─────────────                 ─────────────             ─────────────       │
+│                                                                              │
+│  ┌─────────────┐               ┌─────────────┐           ┌─────────────┐    │
+│  │  Same Rack  │               │ Rack1 Rack2 │           │ Part1 Part2 │    │
+│  │ ┌───┐ ┌───┐ │               │ ┌───┐ ┌───┐ │           │ ┌───┐ ┌───┐ │    │
+│  │ │EC2│ │EC2│ │               │ │EC2│ │EC2│ │           │ │EC2│ │EC2│ │    │
+│  │ └───┘ └───┘ │               │ └───┘ └───┘ │           │ │EC2│ │EC2│ │    │
+│  │ ┌───┐ ┌───┐ │               │ Rack3 Rack4 │           │ └───┘ └───┘ │    │
+│  │ │EC2│ │EC2│ │               │ ┌───┐ ┌───┐ │           │ (cùng (cùng │    │
+│  │ └───┘ └───┘ │               │ │EC2│ │EC2│ │           │  rack) rack) │    │
+│  └─────────────┘               │ └───┘ └───┘ │           └─────────────┘    │
+│                                └─────────────┘                               │
+│  Low latency                   High availability         Distributed        │
+│  High throughput               Isolated failures         Big Data           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 1. Cluster Placement Group
+
+- Tất cả instances nằm trên **cùng rack trong cùng AZ**
+- **Low latency** (< 10 microseconds) và **high throughput** (10-25 Gbps)
+- ⚠️ **Risk**: Nếu rack fail → tất cả fail
+
+**Use Cases:**
+- HPC (High Performance Computing)
+- Big Data jobs cần network nhanh
+- ML/AI distributed training
+
+### 2. Spread Placement Group
+
+- Mỗi instance trên **hardware riêng biệt** (khác rack)
+- **Max 7 instances per AZ** (cứ nhân với số AZ)
+- Giảm risk correlated failures
+
+**Use Cases:**
+- Critical applications
+- Database replicas
+- High availability yêu cầu isolate failures
+
+### 3. Partition Placement Group
+
+- Chia instances thành **partitions** (max 7 per AZ)
+- Mỗi partition nằm trên **rack riêng**
+- Instances trong cùng partition chia sẻ rack
+
+**Use Cases:**
+- **Hadoop** (HDFS), **Cassandra**, **Kafka** - distributed big data
+- Cần partition-awareness để đặt replicas khác partition
+
+### Rack là gì?
+
+**Rack** = tủ/khung kim loại trong data center chứa nhiều servers xếp chồng lên nhau:
+
+```
+┌────────────────────────────────┐
+│         RACK (Tủ máy chủ)      │
+│   ┌────────────────────────┐   │
+│   │  Server 1 (EC2)        │   │
+│   ├────────────────────────┤   │  ← Các servers chia sẻ:
+│   │  Server 2 (EC2)        │   │    • Cùng nguồn điện
+│   ├────────────────────────┤   │    • Cùng network switch
+│   │  Server 3 (EC2)        │   │    • Cùng hệ thống làm mát
+│   ├────────────────────────┤   │
+│   │  Network Switch        │   │
+│   └────────────────────────┘   │
+└────────────────────────────────┘
+```
+
+> ⚠️ **Single point of failure**: Nếu rack mất điện/switch hỏng → tất cả servers trong rack bị ảnh hưởng
+
+### Cách cấu hình Placement Groups
+
+**Bước 1: Tạo Placement Group**
+```
+Console: EC2 → Network & Security → Placement Groups → Create
+CLI:     aws ec2 create-placement-group --group-name my-group --strategy cluster
+```
+
+**Bước 2: Gán vào EC2 Instance**
+```
+Launch Instance → Advanced Details → Placement group → Chọn group đã tạo
+```
+
+**Bước 3: Dùng với Launch Template (cho ASG)**
+```
+Create Launch Template → Advanced Details → Placement group name
+```
+
+> ⚠️ **Instance đang chạy** không thể add vào Placement Group → phải **stop** trước hoặc tạo mới
+
+### Lưu ý quan trọng
+
+| Yếu tố | Chi tiết |
+|--------|----------|
+| **Tạo khi nào** | Chỉ có thể add instances khi create/modify |
+| **Instance types** | Nên dùng **cùng instance type** trong Cluster |
+| **Capacity errors** | Cluster có thể gặp `InsufficientCapacity` - launch tất cả cùng lúc để tránh |
+| **Launch Template** | Hỗ trợ Placement Groups (Launch Configuration không hỗ trợ) |
+
+> **Nguồn**: [Placement Groups](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html)
 
 ---
 
