@@ -146,6 +146,79 @@ ElastiCache hỗ trợ **2 engines**:
 | **Cluster Mode Disabled** | 1 primary + up to 5 replicas | ~310 GB |
 | **Cluster Mode Enabled** | Multiple shards, mỗi shard có primary + replicas | Up to 500 nodes, multi-TB |
 
+#### Cluster Mode Disabled
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Cluster Mode Disabled - Endpoints                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────┐         ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │ Primary │────────►│Replica 1│  │Replica 2│  │Replica 3│     │
+│  │  (R/W)  │  Sync   │  (Read) │  │  (Read) │  │  (Read) │     │
+│  └────┬────┘         └────┬────┘  └────┬────┘  └────┬────┘     │
+│       │                   │            │            │           │
+│       ▼                   └────────────┴────────────┘           │
+│  Primary Endpoint                      │                        │
+│  (writes + reads)              Reader Endpoint                  │
+│                            (load-balanced reads)                │
+│                                                                  │
+│  Endpoints:                                                      │
+│  ├── Primary: mycluster.xxx.cache.amazonaws.com                 │
+│  └── Reader:  mycluster-ro.xxx.cache.amazonaws.com              │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+- **Primary Endpoint** (1): Kết nối đến Primary node → R/W
+- **Reader Endpoint** (1): Load-balanced đến **tất cả Replicas** → Read only
+- **Replicas hỗ trợ READ** → Scale reads, giảm load cho Primary
+- **KHÔNG** scale writes (chỉ có 1 Primary)
+
+#### Cluster Mode Enabled (Sharding)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Cluster Mode Enabled - Sharding                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
+│  │    Shard 1     │  │    Shard 2     │  │    Shard 3     │    │
+│  │   (keys A-G)   │  │   (keys H-N)   │  │   (keys O-Z)   │    │
+│  │  ┌──────────┐  │  │  ┌──────────┐  │  │  ┌──────────┐  │    │
+│  │  │Primary(RW)│  │  │  │Primary(RW)│  │  │  │Primary(RW)│  │    │
+│  │  └────┬─────┘  │  │  └────┬─────┘  │  │  └────┬─────┘  │    │
+│  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │    │
+│  │  │Replica(R)│  │  │  │Replica(R)│  │  │  │Replica(R)│  │    │
+│  │  └──────────┘  │  │  └──────────┘  │  │  └──────────┘  │    │
+│  └────────────────┘  └────────────────┘  └────────────────┘    │
+│           ▲                  ▲                  ▲               │
+│           └──────────────────┼──────────────────┘               │
+│                              │                                  │
+│                Configuration Endpoint (1)                       │
+│              mycluster.xxx.clustercfg.cache.amazonaws.com       │
+│                  (auto-route to correct shard)                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+- **Configuration Endpoint** (1): Client chỉ cần **1 endpoint**, Redis tự route
+- **Multiple Primaries** → **Scale WRITES** (mỗi shard có 1 Primary)
+- **Multiple Replicas** → Scale reads
+- Data được **hash** và phân chia qua các shards
+
+#### So sánh Cluster Mode
+
+| Feature | Cluster Mode Disabled | Cluster Mode Enabled |
+|---------|----------------------|----------------------|
+| **Shards** | 1 | 1 - 500 |
+| **Write nodes** | 1 Primary only | **Multiple Primaries** |
+| **Scale writes** | ❌ | ✅ |
+| **Scale reads** | ✅ (Replicas) | ✅ (Replicas) |
+| **Max data** | ~310 GB | Multi-TB |
+| **Endpoints cần dùng** | 2 (Primary + Reader) | **1** (Configuration) |
+| **Replicas per shard** | 0-5 | 0-5 |
+
 ### Data Types trong Redis
 
 ```
@@ -331,34 +404,193 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 ### 1. Lazy Loading (Cache-Aside)
 
 ```
-Read:
-1. Check cache
-2. If MISS → Query DB → Store in cache → Return
-3. If HIT → Return from cache
-
-Pros: Only cache what's needed
-Cons: Cache miss = slow (3 trips)
+┌─────────────────────────────────────────────────────────────────┐
+│                    Lazy Loading Flow                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  CACHE HIT (Fast path):                                          │
+│  ┌─────┐    1.GET     ┌───────┐    2.Return     ┌─────┐         │
+│  │ App │ ───────────► │ Cache │ ───────────────► │ App │         │
+│  └─────┘              └───────┘                  └─────┘         │
+│                                                                  │
+│  CACHE MISS (Slow path):                                         │
+│  ┌─────┐    1.GET     ┌───────┐                                  │
+│  │ App │ ───────────► │ Cache │ ── MISS ──┐                      │
+│  └──┬──┘              └───────┘           │                      │
+│     │                     ▲               ▼                      │
+│     │   4.Return          │ 3.SET    ┌────────┐                  │
+│     │◄────────────────────┴──────────│   DB   │                  │
+│     │                     data       └────────┘                  │
+│                                        2.Query                   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+| Ưu điểm | Nhược điểm |
+|---------|------------|
+| Chỉ cache data thực sự cần | Cache miss = chậm (3 trips) |
+| Tiết kiệm memory | Data có thể stale |
+| Node fail không ảnh hưởng app | Initial request luôn chậm |
+
+---
 
 ### 2. Write-Through
 
 ```
-Write:
-1. Write to DB
-2. Write to cache (immediately)
-
-Pros: Cache always up-to-date
-Cons: Write penalty, unused data cached
+┌─────────────────────────────────────────────────────────────────┐
+│                   Write-Through Flow                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  WRITE:                                                          │
+│  ┌─────┐    1.Write    ┌───────┐    2.Write    ┌────────┐       │
+│  │ App │ ────────────► │ Cache │ ────────────► │   DB   │       │
+│  └─────┘               └───────┘               └────────┘       │
+│                            │                        │            │
+│                            └────────────────────────┘            │
+│                              Both updated together               │
+│                                                                  │
+│  READ (always hit):                                              │
+│  ┌─────┐    1.GET     ┌───────┐    2.Return                     │
+│  │ App │ ───────────► │ Cache │ ───────────► Data (always fresh)│
+│  └─────┘              └───────┘                                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+| Ưu điểm | Nhược điểm |
+|---------|------------|
+| Cache luôn up-to-date | Write chậm hơn (2 writes) |
+| Read không bao giờ miss | Cache data không dùng đến |
+| Không có stale data | Tốn memory hơn |
+
+---
 
 ### 3. TTL (Time-To-Live)
 
 ```
-SET user:123 "John" EX 3600  (expire in 1 hour)
-
-- Ensures stale data is eventually removed
-- Balance between freshness and performance
+┌─────────────────────────────────────────────────────────────────┐
+│                      TTL Flow                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  SET with TTL:                                                   │
+│  ┌─────┐    SET key "value" EX 3600    ┌───────┐                │
+│  │ App │ ─────────────────────────────► │ Cache │                │
+│  └─────┘      (expire in 1 hour)       └───────┘                │
+│                                             │                    │
+│                                             ▼                    │
+│  Timeline:                                                       │
+│  ──────────────────────────────────────────────────────────►    │
+│  │         │                               │                     │
+│  t=0       t=30min                         t=60min               │
+│  SET       GET (HIT)                       EXPIRED → MISS        │
+│            returns "value"                 │                     │
+│                                            ▼                     │
+│                                    Auto-deleted from cache       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+| Ưu điểm | Nhược điểm |
+|---------|------------|
+| Tự động cleanup stale data | Data có thể stale trước TTL |
+| Kết hợp được với Lazy Loading | Cần chọn TTL phù hợp |
+| Giảm memory usage | TTL quá ngắn = nhiều cache miss |
+
+---
+
+### 4. Write-Around (Cache Invalidation)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  Write-Around / Cache Invalidation               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  WRITE (invalidate cache):                                       │
+│  ┌─────┐                  ┌───────┐                             │
+│  │ App │ ── 1.DELETE ───► │ Cache │  (invalidate/xóa cache)     │
+│  └──┬──┘                  └───────┘                             │
+│     │                                                            │
+│     └── 2.Write ──────────────────────► ┌────────┐              │
+│                                         │   DB   │              │
+│                                         └────────┘              │
+│                                                                  │
+│  READ (sau đó - Lazy Loading):                                   │
+│  ┌─────┐   1.GET    ┌───────┐                                   │
+│  │ App │ ─────────► │ Cache │ ── MISS (vì đã bị DELETE)         │
+│  └──┬──┘            └───┬───┘                                   │
+│     │    4.Return       │ 3.SET (data mới từ DB)                │
+│     │◄──────────────────┤                                       │
+│     │                   │                                        │
+│     └── 2.Query DB ─────┴───────────► ┌────────┐                │
+│                                       │   DB   │                │
+│                                       └────────┘                │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Ưu điểm | Nhược điểm |
+|---------|------------|
+| Tránh cache data không dùng | Read sau write sẽ chậm (miss) |
+| Đơn giản, dễ implement | Cần kết hợp với Lazy Loading |
+| Tiết kiệm cache memory | Có thể có race condition |
+
+---
+
+### 5. Write-Behind (Write-Back)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     Write-Behind Flow                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  WRITE (async to DB):                                            │
+│  ┌─────┐   1.Write (sync)   ┌───────┐                           │
+│  │ App │ ──────────────────► │ Cache │                           │
+│  └─────┘    Return fast!    └───┬───┘                           │
+│                                 │                                │
+│                                 │ 2.Async write (background)     │
+│                                 ▼                                │
+│                            ┌────────┐                            │
+│                            │   DB   │                            │
+│                            └────────┘                            │
+│                                                                  │
+│  Timeline:                                                       │
+│  ──────────────────────────────────────────────────────────►    │
+│  │              │                      │                         │
+│  t=0            t=50ms                 t=100ms                   │
+│  Write to       Return to App          Background write to DB   │
+│  Cache (sync)   (fast!)                (async, batched)          │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Ưu điểm | Nhược điểm |
+|---------|------------|
+| Write cực nhanh (chỉ write cache) | Có thể mất data nếu cache fail |
+| Giảm load cho DB | Phức tạp hơn để implement |
+| Có thể batch writes | Data trong DB có thể stale tạm thời |
+
+> [!WARNING]
+> **Write-Behind** có risk mất data nếu cache node fail trước khi sync xuống DB. Chỉ dùng khi chấp nhận được eventual consistency.
+
+---
+
+### 6. So sánh Strategies
+
+| Strategy | On Write | On Read | Data Freshness | Best For |
+|----------|----------|---------|----------------|----------|
+| **Lazy Loading** | - | Miss → Query DB → Cache | Có thể stale | Read-heavy |
+| **Write-Through** | Write Cache + DB | Always hit | Luôn fresh | Data quan trọng |
+| **Write-Around** | Delete Cache + Write DB | Miss → Lazy load | Fresh khi read | Write-heavy |
+| **Write-Behind** | Write Cache only | Always hit | Eventual | High write throughput |
+| **TTL** | - | Auto-expire | Controlled | Kết hợp với strategies khác |
+
+> [!TIP]
+> **Common Patterns:**
+> - **Read-heavy apps**: Lazy Loading + TTL
+> - **Write-heavy apps**: Write-Around + Lazy Loading
+> - **Real-time apps**: Write-Through
+> - **High throughput**: Write-Behind (cẩn thận với data loss)
 
 ---
 

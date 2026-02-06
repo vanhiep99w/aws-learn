@@ -16,6 +16,31 @@
 
 **ENI (Elastic Network Interface)** = "Card mạng ảo" gắn vào EC2 instance.
 
+### Card mạng ảo (Virtual Network Card) là gì?
+
+| | Card mạng vật lý (Laptop) | Card mạng ảo (ENI) |
+|--|---------------------------|-------------------|
+| **Là gì** | Phần cứng thật (chip WiFi, cổng Ethernet) | Phần mềm mô phỏng card mạng |
+| **Ở đâu** | Laptop/Server vật lý | EC2/VM trên cloud |
+| **MAC** | In sẵn trên chip | AWS generate |
+| **IP** | Router cấp | AWS/VPC cấp |
+| **Di chuyển** | Tháo ra cắm máy khác | Detach rồi attach EC2 khác |
+
+### Tại sao cần ENI?
+
+**Không có ENI = Không kết nối được gì cả!**
+
+```
+KHÔNG CÓ ENI:                      CÓ ENI:
+├── ❌ Không có IP                 ├── ✅ Có IP: 10.0.1.50
+├── ❌ Không SSH được              ├── ✅ SSH được
+├── ❌ Không gọi API được          ├── ✅ Gọi API được
+├── ❌ Không connect DB            ├── ✅ Connect RDS được
+└── ❌ Máy bị cô lập               └── ✅ Ra Internet được
+```
+
+> 💡 **Tóm lại:** ENI cho phép EC2 có IP và kết nối mạng. Giống như laptop cần card WiFi để lên mạng, EC2 cần ENI để kết nối trong VPC!
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        EC2 Instance                              │
@@ -280,6 +305,69 @@ Traffic: Private EC2 → eth1 → NAT → eth0 → Internet
 | **ENI và EC2 cùng AZ** | Bắt buộc |
 | **Primary ENI (eth0)** | Không thể detach |
 | **Security Groups per ENI** | Max 5 |
+
+---
+
+## ENI dùng cho service nào?
+
+### Quy tắc đơn giản
+
+> 💡 **Trong VPC + cần IP = cần ENI**
+
+ENI là cầu nối giữa AWS resource và network (VPC). Không có ENI = Không có IP trong VPC = Không kết nối được!
+
+### Phân loại Services
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1️⃣  VPC-BASED SERVICES (Cần ENI trong VPC của BẠN)            │
+│                                                                 │
+│      EC2, RDS, Lambda (VPC), ECS, EKS, ElastiCache,            │
+│      NAT Gateway, ALB/NLB, VPC Endpoints (Interface)...        │
+│                                                                 │
+│      → Nằm TRONG VPC của bạn                                   │
+│      → IP thuộc subnet của bạn (vd: 10.0.1.50)                │
+│      → BẠN quản lý network                                     │
+│      → Cần ENI để có IP trong VPC                              │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  2️⃣  PUBLIC/REGIONAL SERVICES (AWS quản lý IP)                 │
+│                                                                 │
+│      S3, DynamoDB, SQS, SNS, Lambda (không VPC)...             │
+│                                                                 │
+│      → Nằm NGOÀI VPC của bạn                                   │
+│      → Connect qua URL: s3.amazonaws.com                       │
+│      → AWS quản lý IP (bạn không thấy, không control)          │
+│      → KHÔNG cần ENI trong VPC của bạn                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Chi tiết theo Service
+
+| Service | Loại | ENI | Ghi chú |
+|---------|------|-----|---------|
+| **EC2** | VPC-based | ✅ Bạn quản lý | Có thể tạo/attach/detach ENI |
+| **RDS** | VPC-based | ✅ AWS tạo ngầm | ENI trong DB Subnet Group |
+| **Lambda (VPC)** | VPC-based | ✅ AWS tạo ngầm | ENI để access VPC resources |
+| **ECS (awsvpc)** | VPC-based | ✅ AWS tạo ngầm | Mỗi task có ENI riêng |
+| **ALB/NLB** | VPC-based | ✅ AWS tạo ngầm | ENI trong mỗi subnet |
+| **NAT Gateway** | VPC-based | ✅ AWS tạo ngầm | 1 ENI với Elastic IP |
+| **VPC Endpoint (Interface)** | VPC-based | ✅ AWS tạo ngầm | ENI trong subnet bạn chọn |
+| **S3** | Public | ❌ | Connect qua URL/VPC Endpoint |
+| **DynamoDB** | Public | ❌ | Connect qua URL/VPC Endpoint |
+| **SQS/SNS** | Public | ❌ | Connect qua URL |
+| **Lambda (không VPC)** | Public | ❌ | Chạy trong AWS network |
+
+### Ví dụ kết nối
+
+```
+Bạn connect S3:
+   App → Internet/VPC Endpoint → S3 (IP của AWS, không phải VPC bạn)
+
+Bạn connect RDS:
+   App → ENI → RDS (IP 10.0.x.x trong VPC của bạn)
+```
 
 ---
 

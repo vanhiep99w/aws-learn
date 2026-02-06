@@ -223,6 +223,78 @@ Nếu gộp chung → phải dùng io2 cho cả OS (đắt vô ích)
 | Backup | ✅ Snapshots | ❌ Không có |
 | Use case | Database, boot volumes | Cache, temporary data |
 
+### Root Volume: EBS-backed vs Instance Store-backed
+
+EC2 instance có thể có root volume là **EBS** hoặc **Instance Store**, tùy vào AMI:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    EC2 ROOT VOLUME TYPES                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  EBS-BACKED (Phổ biến - 99%)        INSTANCE STORE-BACKED (Hiếm)           │
+│  ───────────────────────────        ────────────────────────────            │
+│                                                                              │
+│  ✅ Stop/Start được                 ❌ KHÔNG Stop được (chỉ Terminate)      │
+│  ✅ Data tồn tại sau Stop           ❌ Data MẤT khi Stop/Terminate          │
+│  ✅ Có thể resize                   ❌ Không resize được                    │
+│  ✅ Snapshot được                   ❌ Không snapshot được                  │
+│  ✅ Hibernate được                  ❌ Không hibernate được                 │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| | EBS-backed Root | Instance Store-backed Root |
+|--|-----------------|---------------------------|
+| **Stop instance** | ✅ Có thể | ❌ Không (chỉ Terminate) |
+| **Data persistence** | ✅ Tồn tại sau Stop | ❌ Mất khi Stop/Terminate |
+| **Boot time** | Chậm hơn (network) | Nhanh hơn (local disk) |
+| **Resize** | ✅ Có thể | ❌ Không |
+| **Snapshot** | ✅ Có | ❌ Không |
+| **AMI support** | Hầu hết AMIs | Một số AMIs cũ/đặc biệt |
+
+> 💡 **Thực tế:** AWS mặc định tạo EBS-backed instances. Instance Store-backed chủ yếu cho workloads đặc biệt cần local disk performance.
+
+### Delete on Termination
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    DELETE ON TERMINATION                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ROOT VOLUME (EBS):                                             │
+│  ├── Delete on Termination = TRUE (MẶC ĐỊNH)                   │
+│  └── → Terminate EC2 → Root EBS bị XÓA                         │
+│                                                                  │
+│  ADDITIONAL VOLUMES (EBS thêm):                                 │
+│  ├── Delete on Termination = FALSE (MẶC ĐỊNH)                  │
+│  └── → Terminate EC2 → Additional EBS vẫn CÒN                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Volume Type | Default DeleteOnTermination | Terminate EC2 → EBS? |
+|-------------|----------------------------|---------------------|
+| **Root Volume** | ✅ TRUE (bật) | **Bị xóa** |
+| **Additional Volumes** | ❌ FALSE (tắt) | **Giữ lại** |
+
+**Cách giữ Root Volume sau Terminate:**
+
+```bash
+# Khi launch EC2 (Console):
+# Add Storage → Root volume → Delete on Termination: ❌ Bỏ tick
+
+# Hoặc sau khi đã launch (AWS CLI):
+aws ec2 modify-instance-attribute \
+  --instance-id i-xxx \
+  --block-device-mappings "[{\"DeviceName\":\"/dev/xvda\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
+```
+
+> ⚠️ **Tóm lại:**
+> - **Stop** → EBS root volume **vẫn còn** ✅
+> - **Terminate** → EBS root volume **bị xóa** (mặc định) 
+> - Muốn giữ sau Terminate → Tắt "Delete on Termination"
+
 ---
 
 ## Các loại EBS Volume
@@ -746,6 +818,76 @@ aws ec2 modify-volume --volume-id vol-xxx --size 200
 ---
 
 ## Sử dụng EBS Volume: Attach, Format, Mount
+
+### Device Name là gì?
+
+**Device Name** = Tên đường dẫn để OS nhận diện ổ đĩa EBS trong EC2.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    DEVICE NAME vs MOUNT POINT                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  DEVICE NAME              MOUNT POINT (FOLDER)                  │
+│  ─────────────            ────────────────────                  │
+│  /dev/xvdb                /home/user/data                       │
+│       │                         │                                │
+│       ▼                         ▼                                │
+│  Đại diện cho ổ đĩa       Folder để TRUY CẬP data              │
+│  (như USB, ổ cứng)        (bạn tự tạo)                          │
+│                                                                  │
+│  Phải MOUNT để nối 2 thứ lại:                                   │
+│  mount /dev/xvdb /home/user/data                                │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Device Name | Ý nghĩa |
+|-------------|---------|
+| `/dev/xvda` | Root volume (OS) - luôn là volume đầu tiên |
+| `/dev/xvdb`, `/dev/xvdc`... | Data volumes bạn thêm vào |
+| `/dev/sdf`, `/dev/sdg`... | Cách đặt tên cũ (AWS tự convert thành xvdf, xvdg) |
+
+> 💡 Device Name = "Địa chỉ" của ổ đĩa trong OS, giống như Disk 0, Disk 1 trong Windows!
+
+### Khi nào cần mount?
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    KHI NÀO CẦN MOUNT?                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1️⃣ ROOT VOLUME (/dev/xvda)                                    │
+│     → AWS TỰ ĐỘNG mount vào /                                   │
+│     → Bạn KHÔNG cần làm gì                                      │
+│                                                                  │
+│  2️⃣ DATA VOLUME MỚI (lần đầu attach)                           │
+│     → Phải FORMAT + MOUNT tay (1 lần)                           │
+│                                                                  │
+│  3️⃣ DATA VOLUME ĐÃ CÓ DATA (attach lại)                        │
+│     → Chỉ cần MOUNT (không format lại)                          │
+│     → Hoặc config /etc/fstab để TỰ ĐỘNG mount                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Trường hợp | Cần mount tay? | Ghi chú |
+|------------|----------------|---------|
+| **Root volume** | ❌ Không | AWS tự động lo |
+| **Data volume lần đầu** | ✅ Cần format + mount | Làm 1 lần duy nhất |
+| **Data volume attach lại** | ✅ Cần mount (hoặc fstab) | Không cần format |
+| **Reboot EC2** | ❌ Nếu có fstab | Tự động mount |
+
+**Tự động mount với /etc/fstab:**
+
+```bash
+# Thêm vào /etc/fstab để tự động mount khi reboot
+echo "/dev/xvdb /data xfs defaults,nofail 0 2" | sudo tee -a /etc/fstab
+
+# Từ giờ mỗi lần EC2 restart → volume tự động mount!
+```
+
+---
 
 ### Vòng đời của EBS Volume
 

@@ -12,9 +12,11 @@
 - [Gateway Load Balancer (GWLB)](#gateway-load-balancer-gwlb)
 - [Các thành phần chính](#các-thành-phần-chính)
 - [Health Checks](#health-checks)
+- [Routing Algorithms](#routing-algorithms)
 - [Cross-Zone Load Balancing](#cross-zone-load-balancing)
 - [Connection Draining (Deregistration Delay)](#connection-draining-deregistration-delay)
 - [SSL/TLS Certificates](#ssltls-certificates)
+- [Sticky Sessions](#sticky-sessions-session-affinity)
 - [Tích hợp với Auto Scaling](#tích-hợp-với-auto-scaling)
 - [Pricing](#pricing)
 - [Liên kết](#liên-kết)
@@ -477,6 +479,167 @@ ELB liên tục kiểm tra sức khỏe của targets:
 
 ---
 
+## Routing Algorithms
+
+ELB sử dụng các **thuật toán routing** khác nhau để phân phối traffic đến targets.
+
+### Tổng quan
+
+| ELB Type | Default Algorithm | Algorithms khác |
+|----------|-------------------|-----------------|
+| **ALB** | Round Robin | Least Outstanding Requests (LOR) |
+| **NLB** | Flow Hash (5-tuple) | - |
+| **CLB** | Round Robin | Least Connections |
+
+### 1. Round Robin (ALB - Default)
+
+**Round Robin** = Gửi requests **lần lượt** đến từng target, xoay vòng.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ROUND ROBIN ALGORITHM                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Request 1 ──▶ ALB ──▶ Instance A                               │
+│  Request 2 ──▶ ALB ──▶ Instance B                               │
+│  Request 3 ──▶ ALB ──▶ Instance C                               │
+│  Request 4 ──▶ ALB ──▶ Instance A  ← Quay lại từ đầu           │
+│  Request 5 ──▶ ALB ──▶ Instance B                               │
+│  Request 6 ──▶ ALB ──▶ Instance C                               │
+│  ...                                                             │
+│                                                                  │
+│  ✅ Ưu điểm: Đơn giản, dễ hiểu, phân phối đều                   │
+│  ❌ Nhược điểm: Không xét đến instance đang bận hay rảnh        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Ví dụ thực tế:**
+
+```
+Cùng 3 requests, nhưng thời gian xử lý khác nhau:
+
+Round Robin:
+├── Request 1 (nhẹ, 10ms) → Instance A → Done!
+├── Request 2 (nặng, 5s)  → Instance B → Đang xử lý...
+├── Request 3 (nhẹ, 10ms) → Instance C → Done!
+├── Request 4 (nhẹ, 10ms) → Instance A → Done!
+├── Request 5 (nhẹ, 10ms) → Instance B → PHẢI CHỜ! (B đang bận)
+└── → Instance B bị quá tải dù A và C rảnh
+```
+
+### 2. Least Outstanding Requests (LOR) - ALB
+
+**LOR** = Gửi request đến instance có **ít requests đang chờ xử lý nhất**.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│               LEAST OUTSTANDING REQUESTS (LOR)                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Tình huống: Instance B đang xử lý request nặng                 │
+│                                                                  │
+│  Instance A: 0 requests đang xử lý                               │
+│  Instance B: 3 requests đang xử lý  ← Đang bận!                 │
+│  Instance C: 1 request đang xử lý                                │
+│                                                                  │
+│  LOR quyết định:                                                 │
+│  Request mới ──▶ ALB ──▶ Instance A  ← Chọn A (0 outstanding)   │
+│                                                                  │
+│  ✅ Ưu điểm: Thông minh hơn, không gửi đến instance đang bận    │
+│  ✅ Tốt cho: Requests có thời gian xử lý KHÁC NHAU              │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Khi nào dùng LOR thay Round Robin?**
+
+| Tình huống | Nên dùng |
+|------------|----------|
+| Requests có thời gian xử lý **giống nhau** | Round Robin |
+| Requests có thời gian xử lý **khác nhau** nhiều | **LOR** |
+| API đơn giản, response nhanh | Round Robin |
+| Processing nặng (image processing, ML inference) | **LOR** |
+
+**Cách enable LOR (ALB):**
+
+```bash
+aws elbv2 modify-target-group-attributes \
+  --target-group-arn <arn> \
+  --attributes Key=load_balancing.algorithm.type,Value=least_outstanding_requests
+```
+
+### 3. Flow Hash (NLB)
+
+**Flow Hash** = Hash dựa trên **5-tuple** (Source IP, Source Port, Dest IP, Dest Port, Protocol).
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FLOW HASH ALGORITHM (NLB)                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  5-tuple = { Source IP, Source Port, Dest IP, Dest Port, Proto }│
+│                                                                  │
+│  Connection từ Client A (1.2.3.4:50123):                        │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │ Hash(1.2.3.4, 50123, 10.0.1.5, 443, TCP) = 12345            ││
+│  │ 12345 % 3 instances = Instance B                            ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                                                                  │
+│  → TẤT CẢ packets của connection này đều đến Instance B        │
+│  → Connection ổn định, không bị chuyển instance giữa chừng     │
+│                                                                  │
+│  ✅ Phù hợp: TCP connections dài (database, gaming)             │
+│  ✅ Preserve connection: Cùng flow luôn đến cùng target        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Tại sao NLB dùng Flow Hash thay vì Round Robin?**
+
+```
+Round Robin KHÔNG phù hợp cho NLB:
+
+TCP Connection (nhiều packets):
+├── Packet 1 (SYN)      → Instance A  ← Bắt đầu connection
+├── Packet 2 (SYN-ACK)  → Instance B  ← LỖI! B không biết connection này!
+├── Packet 3 (ACK)      → Instance C  ← LỖI! Connection broken!
+└── → Connection FAILED
+
+Flow Hash (NLB):
+├── Packet 1 (SYN)      → Instance A  ← Bắt đầu connection
+├── Packet 2 (SYN-ACK)  → Instance A  ← Cùng instance (same hash)
+├── Packet 3 (ACK)      → Instance A  ← Cùng instance
+├── Packet 4 (Data)     → Instance A  ← Cùng instance
+└── → Connection THÀNH CÔNG
+```
+
+### So sánh tổng hợp
+
+| Algorithm | ELB | Quyết định dựa trên | Best for |
+|-----------|-----|---------------------|----------|
+| **Round Robin** | ALB, CLB | Xoay vòng lần lượt | Requests giống nhau |
+| **LOR** | ALB | Instance ít bận nhất | Requests khác nhau về thời gian |
+| **Flow Hash** | NLB | Hash của 5-tuple | TCP/UDP connections |
+| **Least Connections** | CLB | Instance ít connections nhất | Legacy apps |
+
+### Sticky Sessions vs Routing Algorithm
+
+> [!IMPORTANT]
+> **Sticky Sessions** và **Routing Algorithm** là 2 thứ KHÁC NHAU:
+>
+> | | Routing Algorithm | Sticky Sessions |
+> |---|-------------------|-----------------|
+> | **Quyết định** | Request ĐẦU TIÊN đến đâu | Requests TIẾP THEO đến đâu |
+> | **Dựa trên** | Load/Round Robin/Hash | Cookie từ client |
+> | **Scope** | Mỗi request mới | Session của user |
+>
+> ```
+> Ví dụ:
+> Request 1 (no cookie) → Routing Algorithm quyết định → Instance A
+> Request 2 (có cookie) → Sticky Sessions quyết định → Instance A (cùng)
+> ```
+
 ## Cross-Zone Load Balancing
 
 ```
@@ -610,6 +773,171 @@ aws elbv2 modify-target-group-attributes \
 - Hoặc upload certificate từ bên thứ ba lên **IAM**
 - ALB/NLB hỗ trợ **SNI** (multiple certs)
 - Chọn **Security Policy** để define SSL/TLS protocols và ciphers
+
+### Các loại SSL Certificate
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    SSL CERTIFICATE TYPES                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1️⃣ SINGLE DOMAIN CERTIFICATE                                  │
+│     → example.com         (root domain) ✅                      │
+│     → api.example.com     (subdomain)   ✅                      │
+│     → Chỉ cho 1 domain duy nhất                                 │
+│                                                                  │
+│  2️⃣ WILDCARD CERTIFICATE (*.example.com)                       │
+│     → *.example.com       (tất cả subdomains)                   │
+│        ├── api.example.com   ✅                                 │
+│        ├── www.example.com   ✅                                 │
+│        └── example.com       ❌ KHÔNG bao gồm root!            │
+│                                                                  │
+│  3️⃣ SAN CERTIFICATE (Subject Alternative Names)                │
+│     → Nhiều domains trong 1 cert:                               │
+│        ├── example.com       ✅ root domain                     │
+│        ├── *.example.com     ✅ all subdomains                  │
+│        └── example.org       ✅ domain khác                     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Certificate | Covers | Không covers |
+|-------------|--------|--------------|
+| `example.com` | ✅ example.com | Chỉ root domain |
+| `*.example.com` | ✅ api.example.com, www.example.com | ❌ **example.com** (root) |
+| `example.com` + `*.example.com` | ✅ Cả root và subdomains | Request cả 2 trong ACM |
+
+> ⚠️ **Lưu ý quan trọng:** Wildcard certificate (`*.example.com`) **KHÔNG** bao gồm root domain (`example.com`)! Muốn cả hai → request **cả 2** trong 1 ACM certificate.
+
+---
+
+## Sticky Sessions (Session Affinity)
+
+### Sticky Sessions là gì?
+
+**Sticky Sessions** = Đảm bảo requests từ **cùng 1 client** luôn được gửi đến **cùng 1 target** (instance/container).
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    KHÔNG CÓ STICKY SESSIONS                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                   │
+│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance B  ← Khác instance! │
+│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance C  ← Khác nữa!      │
+│                                                                  │
+│  → Mỗi request có thể đến instance khác nhau                    │
+│  → Session data (giỏ hàng, login) có thể BỊ MẤT!               │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                    CÓ STICKY SESSIONS                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                   │
+│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance A  ← Cùng instance! │
+│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance A  ← Cùng instance! │
+│                                                                  │
+│  → Tất cả requests từ client đi đến CÙNG 1 instance             │
+│  → Session data được giữ nguyên                                 │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Các loại Sticky Sessions
+
+| Loại | Cookie Name | Managed by | Duration |
+|------|-------------|------------|----------|
+| **Duration-based** | `AWSALB` | ALB | 1 giây → 7 ngày |
+| **Application-based** | Custom (vd: `JSESSIONID`) | Application | App quyết định |
+
+### Duration-based Stickiness
+
+```
+ALB tự tạo cookie AWSALB:
+
+Client Request → ALB → Instance A
+                  │
+                  └── ALB gửi cookie: Set-Cookie: AWSALB=xxx; Expires=1h
+                  
+Client Request (có cookie AWSALB=xxx) → ALB → Instance A (cùng instance)
+```
+
+**Config:**
+- **Stickiness duration**: 1 giây đến 7 ngày
+- Sau khi hết hạn, ALB có thể route đến instance khác
+
+### Application-based Stickiness
+
+```
+Application tự tạo session cookie:
+
+Client Request → ALB → Instance A
+                        │
+                        └── App gửi: Set-Cookie: JSESSIONID=abc123
+
+Client Request (có JSESSIONID=abc123) → ALB → Instance A
+                                              │
+                                              └── ALB đọc cookie của app để route
+```
+
+**Config:**
+- Bạn define **cookie name** (vd: `JSESSIONID`, `PHPSESSID`)
+- ALB thêm cookie riêng `AWSALBAPP` để track
+
+### Khi nào cần Sticky Sessions?
+
+| Cần | Không cần |
+|-----|-----------|
+| App lưu session **local** (trong memory) | Stateless apps (JWT, API) |
+| Legacy apps không hỗ trợ distributed session | Session lưu **external** (Redis, DB) |
+| WebSocket connections | Microservices |
+
+### Nhược điểm
+
+```
+⚠️ NHƯỢC ĐIỂM CỦA STICKY SESSIONS:
+
+1. Imbalanced Load
+   Instance A: 80% traffic (nhiều sticky clients)
+   Instance B: 20% traffic
+   → Load không đều!
+
+2. Failover Issues  
+   Instance A chết → Client mất session
+   → Phải login lại, mất giỏ hàng
+
+3. Scale-in Problems
+   Terminate instance → Nhiều clients mất session
+```
+
+### Best Practice
+
+```
+KHUYẾN NGHỊ:
+├── ❌ Tránh dùng Sticky Sessions nếu có thể
+├── ✅ Dùng External Session Store (Redis, ElastiCache, DynamoDB)  
+│      → Session được share giữa tất cả instances
+│      → Client có thể đến bất kỳ instance nào
+└── ✅ Dùng Stateless Authentication (JWT tokens)
+```
+
+```
+External Session Store (Best Practice):
+┌──────────┐     ┌──────────┐     ┌──────────┐
+│Instance A│     │Instance B│     │Instance C│
+└────┬─────┘     └────┬─────┘     └────┬─────┘
+     │                │                │
+     └────────────────┼────────────────┘
+                      ▼
+              ┌──────────────┐
+              │    Redis     │  ← Session được share
+              │ (ElastiCache)│
+              └──────────────┘
+
+→ Client có thể đến bất kỳ instance nào
+→ Session vẫn đọc được từ Redis
+→ Instance chết? Không mất session!
+```
 
 ---
 

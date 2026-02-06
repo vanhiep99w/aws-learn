@@ -524,44 +524,151 @@ dig ANY example.com     # Query tất cả records
 *   **Hành động:** Tìm "Sếp Hiệp" -> Thấy ghi chú -> Tìm "Anh Hiệp" -> Ra số -> Gọi.
 *   **Đặc điểm:** Đi lòng vòng 2 bước (Hỏi tên giả -> Ra tên thật -> Mới ra IP).
 
+### Zone Apex (Root Domain) là gì?
+
+**Zone Apex** = **Root Domain** = Domain **không có subdomain** phía trước.
+
+```
+                    Zone Apex (Root Domain)
+                            │
+                            ▼
+                    ┌───────────────┐
+                    │  example.com  │  ← Đây là Zone Apex
+                    └───────┬───────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        ▼                   ▼                   ▼
+  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+  │ www.example │    │ api.example │    │blog.example │  ← Subdomains
+  │    .com     │    │    .com     │    │    .com     │     (KHÔNG phải Zone Apex)
+  └─────────────┘    └─────────────┘    └─────────────┘
+```
+
+| Domain | Là Zone Apex? |
+|--------|---------------|
+| `example.com` | ✅ Có |
+| `www.example.com` | ❌ Không (subdomain) |
+| `api.example.com` | ❌ Không (subdomain) |
+
 ### Hạn chế chí mạng của CNAME
 
-> **Nguyên tắc:** Nếu một cái tên là **CNAME**, nó **KHÔNG ĐƯỢC** làm gì khác nữa (không được chứa MX, TXT, NS...).
+> **RFC DNS quy định:** Nếu một domain có **CNAME record**, thì nó **KHÔNG ĐƯỢC có bất kỳ record nào khác** (NS, MX, TXT, SOA...).
 
-**Zone Apex (Root Domain) `example.com`:**
-*   Bắt buộc phải chứa `NS` (Name Server) và `SOA` records.
-*   👉 **Xung đột:** Không thể gán CNAME cho Root Domain vì nó sẽ đá bay NS/SOA records.
-*   **Giải pháp:** Dùng **A Record** hoặc **Alias Record**.
+```
+┌─────────────────────────────────────────────────────────────────┐
+│            Tại sao CNAME bị "cấm" ở Zone Apex?                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Zone Apex (example.com) BẮT BUỘC phải có:                      │
+│  ├── NS Record  (ai quản lý domain này)                         │
+│  ├── SOA Record (metadata zone)                                 │
+│  └── Thường có MX Record (nhận email @example.com)              │
+│                                                                  │
+│  Nếu đặt CNAME cho example.com:                                 │
+│  ├── CNAME sẽ "đá bay" tất cả NS, SOA, MX records               │
+│  └── → Domain KHÔNG hoạt động được!                             │
+│                                                                  │
+│  ❌ KHÔNG THỂ:                                                   │
+│     example.com  CNAME  myapp.elb.amazonaws.com                 │
+│     example.com  NS     ns-123.awsdns.com   ← BỊ XÓA!           │
+│     example.com  MX     mail.google.com     ← BỊ XÓA!           │
+│                                                                  │
+│  ✅ CÓ THỂ (subdomain không có NS/SOA bắt buộc):                 │
+│     www.example.com  CNAME  myapp.elb.amazonaws.com             │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Giải pháp:** Dùng **A Record** hoặc **Alias Record** cho Zone Apex.
 
 ---
 
 ## Alias Records (Route 53 Exclusive)
 
-**Alias Record** là tính năng **"Vũ khí bí mật"** của Route 53 để lách luật "Cấm dùng CNAME cho Root Domain".
+**Alias Record** là loại record **riêng của AWS Route 53**, giải quyết vấn đề "không thể dùng CNAME ở Zone Apex".
 
-### Alias hoạt động như thế nào? (CNAME trá hình)
+### Alias là gì? (Hybrid = CNAME + A Record)
 
-1.  **Với thế giới bên ngoài:** Alias nói dối là **A Record** (trả về IP trực tiếp). -> **Hợp lệ** để đứng chung với NS/SOA tại Root Domain.
-2.  **Với nội bộ AWS:** Alias hoạt động giống CNAME, trỏ đến AWS Resource (ELB, CloudFront...). Route 53 sẽ tự động check IP của resource đó và trả về cho client.
+**Alias KHÔNG PHẢI là A record, KHÔNG PHẢI là CNAME** - nó là loại record riêng:
 
-### So sánh Alias vs CNAME
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     ALIAS = Hybrid!                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Bên trong (cách cấu hình):     Giống CNAME                    │
+│   └── Trỏ đến domain: myapp.elb.amazonaws.com                   │
+│                                                                  │
+│   Bên ngoài (trả về cho client): Giống A RECORD                 │
+│   └── Trả về IP: 54.231.12.45                                   │
+│                                                                  │
+│   → Alias = "CNAME trá hình thành A record"                     │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-| Tiêu chí | CNAME | Alias (Nên dùng) |
-|----------|-------|-------|
-| **Zone Apex** (`example.com`) | ❌ CẤM | ✅ **ĐƯỢC** |
-| **Cơ chế** | Trỏ đến tên khác (2 lookups) | Trả về IP (1 lookup - nhanh hơn) |
-| **Chi phí** | Tính phí query | **Miễn phí** (với AWS Resources) |
-| **Cập nhật IP** | Tự động | Tự động (Real-time) |
-| **Target** | Bất kỳ đâu (AWS, GitHub...) | Chỉ AWS Resources (ELB, S3, CloudFront...) |
+### Tại sao Alias dùng được ở Zone Apex?
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CNAME Flow                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Client query: example.com                                       │
+│       │                                                          │
+│       ▼                                                          │
+│  Route 53 trả về: "example.com CNAME myapp.elb.amazonaws.com"   │
+│       │                    ↑                                     │
+│       │         Client thấy "CNAME" → XÓA NS/SOA!               │
+│       ▼                                                          │
+│  Client query tiếp: myapp.elb.amazonaws.com → 54.231.12.45      │
+│                                                                  │
+│  → 2 LOOKUPS + DNS thấy "CNAME" → ❌ XUNG ĐỘT với NS/SOA        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        ALIAS Flow                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Client query: example.com (type A)                              │
+│       │                                                          │
+│       ▼                                                          │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  Route 53 NỘI BỘ (client KHÔNG thấy):                     │   │
+│  │  1. Biết example.com ALIAS → myapp.elb.amazonaws.com     │   │
+│  │  2. Tự động query IP của ELB: 54.231.12.45               │   │
+│  │  3. Trả về cho client như là A RECORD!                   │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│       │                                                          │
+│       ▼                                                          │
+│  Client nhận: "example.com A 54.231.12.45"                       │
+│                            ↑                                     │
+│            Client thấy "A record" → KHÔNG xung đột NS/SOA!      │
+│                                                                  │
+│  → 1 LOOKUP + DNS thấy "A record" → ✅ HỢP LỆ                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh A vs CNAME vs Alias
+
+| Góc nhìn | A Record | CNAME | Alias |
+|----------|----------|-------|-------|
+| **Cấu hình trỏ đến** | IP trực tiếp | Domain khác | Domain khác (AWS) |
+| **Client nhận được** | IP | Domain (rồi query tiếp) | **IP** (1 step) |
+| **Zone Apex** | ✅ OK | ❌ Cấm | ✅ OK |
+| **Số lookups** | 1 | 2 | 1 |
+| **Chi phí query** | Có phí | Có phí | **Miễn phí** (AWS) |
 
 ### Khi nào dùng cái nào?
 
 | Trường hợp | Dùng loại gì? | Ví dụ |
 | :--- | :--- | :--- |
-| **Root Domain** (`example.com`) trỏ vào AWS Resource | **Alias** (Bắt buộc) | `example.com` → ALB |
-| **Subdomain** (`www`) trỏ vào AWS Resource | **Alias** (Nên dùng) | `www` → CloudFront (Free & Nhanh) |
-| Trỏ domain sang dịch vụ **NGOÀI AWS** (Heroku, GitHub) | **CNAME** | `blog` → `github.io` |
+| **Zone Apex** trỏ vào AWS Resource | **Alias** (Bắt buộc) | `example.com` → ALB |
+| **Subdomain** trỏ vào AWS Resource | **Alias** (Nên dùng) | `www` → CloudFront (Free & Nhanh) |
+| Trỏ sang dịch vụ **NGOÀI AWS** | **CNAME** | `blog` → `github.io` |
 | Trỏ vào **IP tĩnh** cụ thể | **A Record** | `server` → `1.2.3.4` |
+
+> [!TIP]
+> **Tóm lại:** Alias = "CNAME nói dối là A record" → Client thấy A record nên không xung đột với NS/SOA!
 
 ---
 
@@ -635,6 +742,22 @@ Route 53 trả về: example.com = 1.2.3.4, TTL = 300s
 
 Route 53 cung cấp **8 routing policies** để điều khiển cách traffic được định tuyến.
 
+### Record Types hỗ trợ Routing Policies
+
+| Record Type | Hỗ trợ Routing Policy? | Ghi chú |
+|-------------|------------------------|---------|
+| **A** (IPv4) | ✅ Có | Phổ biến nhất |
+| **AAAA** (IPv6) | ✅ Có | |
+| **CNAME** | ✅ Có | Không dùng được ở Zone Apex |
+| **Alias** | ✅ Có | **Khuyên dùng** (miễn phí, tự động update IP) |
+| **MX** | ✅ Có | Email routing |
+| **TXT** | ✅ Có | |
+| **NS** | ❌ Không | Chỉ Simple routing |
+| **SOA** | ❌ Không | Tự động, không edit |
+
+> [!TIP]
+> **Alias record** được khuyên dùng với Routing Policies vì miễn phí query và tự động cập nhật IP của AWS resources.
+
 ### 1. Simple Routing
 
 **Trường hợp cơ bản nhất**: 1 domain → 1 hoặc nhiều IP addresses.
@@ -696,7 +819,7 @@ User ở Tokyo                         User ở Paris
     │                                    │
     ▼                                    ▼
    ┌─────────────────────────────────────────────────────┐
-   │              Route 53 đo latency                    │
+   │              Route 53 tra bảng latency              │
    │   Tokyo → ap-northeast-1: 20ms                     │
    │   Tokyo → eu-west-1: 250ms                         │
    │   Paris → ap-northeast-1: 300ms                    │
@@ -708,13 +831,61 @@ User ở Tokyo                         User ở Paris
  (Japan)                             (Ireland)
 ```
 
+#### AWS đo latency như thế nào?
+
+**AWS KHÔNG đo latency real-time.** Thay vào đó, họ dùng **bảng latency data đã được tính toán trước**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Cách AWS xác định latency                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1️⃣ AWS đã đo sẵn (cập nhật định kỳ):                            │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Latency Table (pre-computed)                           │    │
+│  │                                                         │    │
+│  │  Vietnam → ap-southeast-1 (Singapore): ~30ms           │    │
+│  │  Vietnam → us-east-1 (N. Virginia): ~200ms             │    │
+│  │  Vietnam → eu-west-1 (Ireland): ~250ms                 │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│  2️⃣ Khi user query DNS:                                          │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  User query → Route 53 xem IP nguồn (DNS Resolver)     │    │
+│  │       │                                                 │    │
+│  │       ▼                                                 │    │
+│  │  Xác định user ở đâu → Tra bảng latency                │    │
+│  │       │                                                 │    │
+│  │       ▼                                                 │    │
+│  │  Trả về IP của server có latency thấp nhất            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Bước | Mô tả |
+|------|-------|
+| **1. Thu thập data** | AWS đo latency từ nhiều điểm trên thế giới đến các AWS Regions |
+| **2. Xây dựng latency table** | Tạo mapping: Location → Region → Latency |
+| **3. Cập nhật định kỳ** | Data được refresh thường xuyên (không real-time) |
+| **4. Sử dụng IP nguồn** | Route 53 dùng IP của DNS resolver để xác định vị trí |
+
+> [!WARNING]
+> **Latency dựa trên IP của DNS Resolver**, không phải IP của user!
+> ```
+> User ở Vietnam dùng Google DNS (8.8.8.8 - server ở US):
+> → Route 53 thấy IP từ US → Có thể trả về server US!
+> 
+> Giải pháp: Dùng DNS resolver gần với bạn (ISP DNS)
+> ```
+
 **Lưu ý:** Latency-based routing đo **network latency**, không phải geographic distance.
 
 ---
 
-### 4. Failover Routing
+### 4. Failover Routing (Active-Passive)
 
-**Disaster recovery**: Primary → Secondary khi primary fails.
+**Disaster recovery**: Primary → Secondary khi primary fails. Còn gọi là **Active-Passive HA**.
 
 ```
                     Health Check
@@ -853,22 +1024,83 @@ Client nhận 3 IPs, tự chọn random → load balancing ở client-side
 
 ### So sánh Routing Policies
 
-| Policy | Use Case | Health Check | Điểm nổi bật |
-|--------|----------|--------------|--------------|
-| **Simple** | Đơn giản, 1 resource | ❌ | Cơ bản nhất |
-| **Weighted** | Phân phối theo % | ✅ | Canary, A/B testing |
-| **Latency** | Performance tốt nhất | ✅ | Multi-region apps |
-| **Failover** | Disaster recovery | ✅ (bắt buộc) | Active-passive HA |
-| **Geolocation** | Content localization | ✅ | Compliance, localization |
-| **Geoproximity** | Flexible geo routing | ✅ | Bias adjustment |
-| **IP-based** | ISP/Network routing | ✅ | Enterprise routing |
-| **Multivalue** | Simple load balancing | ✅ | Client-side LB |
+| Policy | HA Pattern | Use Case | Health Check |
+|--------|------------|----------|-------------|
+| **Simple** | - | Đơn giản, 1 resource | ❌ |
+| **Weighted** | **Active-Active** | Canary, A/B testing | ✅ |
+| **Latency** | **Active-Active** | Performance tốt nhất | ✅ |
+| **Failover** | **Active-Passive** | Disaster recovery | ✅ (bắt buộc) |
+| **Geolocation** | **Active-Active** | Content localization | ✅ |
+| **Geoproximity** | **Active-Active** | Flexible geo routing | ✅ |
+| **IP-based** | **Active-Active** | ISP/Network routing | ✅ |
+| **Multivalue** | **Active-Active** | Client-side LB | ✅ |
+
+> [!TIP]
+> **Active-Passive** = Chỉ 1 server hoạt động, server kia standby (Failover)
+> **Active-Active** = Tất cả servers cùng hoạt động, chia sẻ traffic (Weighted, Latency, Geo...)
 
 ---
 
 ## Health Checks
 
-Route 53 Health Checks giám sát sức khỏe của resources và tích hợp với routing policies.
+Route 53 Health Checks giám sát sức khỏe của resources và **tích hợp trực tiếp với routing policies** để tự động loại bỏ unhealthy endpoints.
+
+### Health Checks + Routing Policies
+
+| Routing Policy | Hỗ trợ Health Check? | Hành vi khi endpoint unhealthy |
+|----------------|---------------------|-------------------------------|
+| **Simple** | ❌ Không | Vẫn trả về IP dù server chết |
+| **Weighted** | ✅ Có | Loại endpoint unhealthy khỏi pool |
+| **Latency** | ✅ Có | Chuyển sang region có latency thấp tiếp theo |
+| **Failover** | ✅ **Bắt buộc** | Chuyển từ Primary → Secondary |
+| **Geolocation** | ✅ Có | Fallback sang location khác hoặc default |
+| **Geoproximity** | ✅ Có | Chuyển sang endpoint gần nhất còn healthy |
+| **Multivalue** | ✅ Có | Chỉ trả về các IP healthy |
+| **IP-based** | ✅ Có | Loại endpoint unhealthy |
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│          Health Check + Weighted Routing                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Cấu hình:                                                       │
+│  ├── Server A: Weight 50, Health Check ✅                        │
+│  ├── Server B: Weight 30, Health Check ✅                        │
+│  └── Server C: Weight 20, Health Check ✅                        │
+│                                                                  │
+│  Khi Server B unhealthy:                                         │
+│  ├── Route 53 loại Server B khỏi pool                           │
+│  ├── Traffic phân bổ lại: A=71%, C=29%                          │
+│  └── (Công thức: 50/(50+20)=71%, 20/(50+20)=29%)                │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│          Health Check + Failover Routing                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────┐  Healthy?   ┌──────────────┐                      │
+│  │  Route53 │ ──────────► │   Primary    │ → Trả về Primary IP  │
+│  └──────────┘      │      └──────────────┘                      │
+│                    │                                             │
+│               Unhealthy?                                         │
+│                    │      ┌──────────────┐                      │
+│                    └────► │  Secondary   │ → Trả về Secondary IP│
+│                           └──────────────┘                      │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│          Health Check + Latency Routing                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  User ở Vietnam, latency: Singapore 30ms, Tokyo 50ms, Sydney 100ms│
+│                                                                  │
+│  Bình thường:     Singapore (30ms) ← Lowest latency             │
+│  Singapore down:  Tokyo (50ms) ← Next lowest còn healthy        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### Các loại Health Checks
 
