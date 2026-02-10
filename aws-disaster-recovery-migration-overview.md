@@ -235,18 +235,18 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  💾 BACKUP & RESTORE          RPO: Hours | RTO: 24+ hours | Cost: $        │
+│  💾 BACKUP & RESTORE          RPO: Hours | RTO: 24+ hours | Cost: $         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  PRIMARY REGION                         DR REGION                           │
-│  ┌─────────────────────┐               ┌─────────────────────┐             │
-│  │ ✅ App Servers       │               │ ❌ KHÔNG CÓ GÌ CHẠY │             │
-│  │ ✅ Database          │  ──backup──►  │                     │             │
-│  │ ✅ Storage           │               │ 📦 Chỉ lưu:        │             │
-│  └─────────────────────┘               │ • AMIs              │             │
+│  ┌─────────────────────┐                ┌─────────────────────┐             │
+│  │ ✅ App Servers      │                │ ❌ KHÔNG CÓ GÌ CHẠY │             │
+│  │ ✅ Database         │  ──backup──►   │                     │             │
+│  │ ✅ Storage          │                │ 📦 Chỉ lưu:         │             │
+│  └─────────────────────┘                │ • AMIs              │             │
 │                                         │ • DB Snapshots      │             │
 │  AWS Services dùng:                     │ • S3 backups        │             │
-│  • S3 Cross-Region Replication         └─────────────────────┘             │
+│  • S3 Cross-Region Replication          └─────────────────────┘             │
 │  • EBS Snapshot cross-region copy                                           │
 │  • RDS automated backups                                                    │
 │  • AWS Backup (centralized)                                                 │
@@ -257,9 +257,9 @@ graph TB
 │  3. Deploy application code             (⏱️ 15-30 min)                      │
 │  4. Update Route 53 DNS                 (⏱️ 5-15 min)                       │
 │  5. Test & validate                     (⏱️ 30+ min)                        │
-│  → Tổng: vài giờ đến 1 ngày                                                │
+│  → Tổng: vài giờ đến 1 ngày                                                 │
 │                                                                             │
-│  ✅ Ưu điểm: Chi phí thấp nhất, đơn giản                                   │
+│  ✅ Ưu điểm: Chi phí thấp nhất, đơn giản                                    │
 │  ❌ Nhược điểm: Recovery time rất dài                                       │
 │  🎯 Use case: Dev/Test, non-critical workloads, archival systems            │
 │                                                                             │
@@ -270,18 +270,18 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  🔥 PILOT LIGHT                RPO: Minutes | RTO: 10-30 min | Cost: $$    │
+│  🔥 PILOT LIGHT                RPO: Minutes | RTO: 10-30 min | Cost: $$     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  PRIMARY REGION                         DR REGION                           │
-│  ┌─────────────────────┐               ┌─────────────────────┐             │
-│  │ ✅ App Servers       │               │ ❌ App servers OFF   │             │
-│  │ ✅ Database (Write)  │ ──replicate─► │ ✅ DB replica (Read) │             │
-│  │ ✅ Storage           │               │ 📦 AMIs sẵn sàng    │             │
-│  └─────────────────────┘               └─────────────────────┘             │
+│  ┌─────────────────────┐               ┌─────────────────────┐              │
+│  │ ✅ App Servers      │               │ ❌ App servers OFF  │              │
+│  │ ✅ Database (Write) │ ──replicate─► │ ✅ DB replica (Read)│              │
+│  │ ✅ Storage          │               │ 📦 AMIs sẵn sàng    │              │
+│  └─────────────────────┘               └─────────────────────┘              │
 │                                                                             │
-│  📌 "Pilot Light" = ngọn lửa nhỏ trong lò gas                              │
-│  → Core (DB) luôn chạy, sẵn sàng "bật cháy" lên                           │
+│  📌 "Pilot Light" = ngọn lửa nhỏ trong lò gas                               │
+│  → Core (DB) luôn chạy, sẵn sàng "bật cháy" lên                             │
 │  → App servers CHỈ start khi có disaster                                    │
 │                                                                             │
 │  AWS Services dùng:                                                         │
@@ -294,12 +294,12 @@ graph TB
 │  1. Promote DB replica → primary        (⏱️ 1-5 min)                        │
 │  2. Launch app servers từ AMI           (⏱️ 5-15 min)                       │
 │  3. Scale to production size            (⏱️ 5-10 min)                       │
-│  4. Route 53 tự failover (health check) (⏱️ auto)                          │
-│  → Tổng: 10-30 phút                                                        │
+│  4. Route 53 tự failover (health check) (⏱️ auto)                           │
+│  → Tổng: 10-30 phút                                                         │
 │                                                                             │
-│  ✅ Ưu điểm: DB luôn sync, fast DB failover                                │
-│  ❌ Nhược điểm: App servers cần thời gian start & scale                    │
-│  🎯 Use case: Core business apps, e-commerce backend                       │
+│  ✅ Ưu điểm: DB luôn sync, fast DB failover                                 │
+│  ❌ Nhược điểm: App servers cần thời gian start & scale                     │
+│  🎯 Use case: Core business apps, e-commerce backend                        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -308,36 +308,36 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  🌡️ WARM STANDBY             RPO: Seconds | RTO: Minutes | Cost: $$$      │
+│  🌡️ WARM STANDBY             RPO: Seconds | RTO: Minutes | Cost: $$$        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  PRIMARY REGION                         DR REGION                           │
-│  ┌─────────────────────┐               ┌─────────────────────┐             │
-│  │ ✅ App Servers 100%  │               │ ✅ App Servers 25%   │             │
-│  │ ✅ Database (Write)  │ ──replicate─► │ ✅ DB replica (Read) │             │
-│  │ ✅ ALB + ASG         │               │ ✅ ALB + ASG (min)   │             │
-│  └─────────────────────┘               └─────────────────────┘             │
+│  ┌─────────────────────┐               ┌─────────────────────┐              │
+│  │ ✅ App Servers 100% │               │ ✅ App Servers 25%  │              │
+│  │ ✅ Database (Write) │ ──replicate─► │ ✅ DB replica (Read)│              │
+│  │ ✅ ALB + ASG        │               │ ✅ ALB + ASG (min)  │              │
+│  └─────────────────────┘               └─────────────────────┘              │
 │                                                                             │
 │  📌 Toàn bộ infrastructure CHẠY nhưng SCALED-DOWN                           │
-│  → Có thể handle một ít traffic ngay lập tức                               │
-│  → Chỉ cần SCALE UP, không cần START từ đầu                               │
+│  → Có thể handle một ít traffic ngay lập tức                                │
+│  → Chỉ cần SCALE UP, không cần START từ đầu                                 │
 │                                                                             │
 │  AWS Services dùng:                                                         │
-│  • RDS Multi-AZ + Read Replica cross-region                                │
+│  • RDS Multi-AZ + Read Replica cross-region                                 │
 │  • Aurora Global Database                                                   │
-│  • ASG với min capacity thấp (1-2 instances)                               │
-│  • ALB đã configured sẵn                                                   │
+│  • ASG với min capacity thấp (1-2 instances)                                │
+│  • ALB đã configured sẵn                                                    │
 │  • Route 53 weighted/failover routing                                       │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
 │  1. Promote DB replica → primary        (⏱️ 1-5 min)                        │
 │  2. ASG scale up (25% → 100%)           (⏱️ 3-10 min)                       │
-│  3. Route 53 tự failover (health check) (⏱️ auto, < 1 min)                 │
-│  → Tổng: vài phút                                                          │
+│  3. Route 53 tự failover (health check) (⏱️ auto, < 1 min)                  │
+│  → Tổng: vài phút                                                           │
 │                                                                             │
-│  ✅ Ưu điểm: Recovery nhanh, app đã running sẵn                            │
-│  ❌ Nhược điểm: Tốn tiền hơn (25% infra luôn chạy)                        │
-│  🎯 Use case: Business-critical apps, SaaS platforms                       │
+│  ✅ Ưu điểm: Recovery nhanh, app đã running sẵn                             │
+│  ❌ Nhược điểm: Tốn tiền hơn (25% infra luôn chạy)                          │
+│  🎯 Use case: Business-critical apps, SaaS platforms                        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -346,41 +346,41 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$              │
+│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  REGION A (Active)                      REGION B (Active)                   │
-│  ┌─────────────────────┐               ┌─────────────────────┐             │
-│  │ ✅ App Servers 100%  │               │ ✅ App Servers 100%  │             │
-│  │ ✅ Database (R/W)    │ ◄─replicate─► │ ✅ Database (R/W)    │             │
-│  │ ✅ ALB + ASG 100%    │               │ ✅ ALB + ASG 100%    │             │
-│  └─────────────────────┘               └─────────────────────┘             │
+│  ┌─────────────────────┐               ┌─────────────────────┐              │
+│  │ ✅ App Servers 100% │               │ ✅ App Servers 100% │              │
+│  │ ✅ Database (R/W)   │ ◄─replicate─► │ ✅ Database (R/W)   │              │
+│  │ ✅ ALB + ASG 100%   │               │ ✅ ALB + ASG 100%   │              │
+│  └─────────────────────┘               └─────────────────────┘              │
 │           ↑                                      ↑                          │
 │           └──── Route 53 (Latency/Weighted) ─────┘                          │
 │                        Users                                                │
 │                                                                             │
 │  📌 CẢ HAI regions đều SERVE TRAFFIC đồng thời                              │
-│  → Không có "primary" hay "secondary"                                      │
-│  → Khi 1 region down → traffic tự chuyển sang region còn lại              │
-│  → ZERO downtime                                                           │
+│  → Không có "primary" hay "secondary"                                       │
+│  → Khi 1 region down → traffic tự chuyển sang region còn lại                │
+│  → ZERO downtime                                                            │
 │                                                                             │
 │  AWS Services dùng:                                                         │
-│  • DynamoDB Global Tables (active-active, < 1s sync)                       │
+│  • DynamoDB Global Tables (active-active, < 1s sync)                        │
 │  • Aurora Global Database (write forwarding)                                │
-│  • Route 53 latency-based / weighted routing                               │
-│  • Global Accelerator (optional, static IPs)                               │
-│  • CloudFormation StackSets (deploy đồng bộ)                               │
+│  • Route 53 latency-based / weighted routing                                │
+│  • Global Accelerator (optional, static IPs)                                │
+│  • CloudFormation StackSets (deploy đồng bộ)                                │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
 │  1. Route 53 health check phát hiện     (⏱️ auto, seconds)                  │
-│  2. Traffic tự route sang region healthy (⏱️ auto, seconds)                  │
+│  2. Traffic tự route sang region healthy (⏱️ auto, seconds)                 │
 │  3. KHÔNG cần action thủ công           (⏱️ 0)                              │
 │  → Tổng: gần như 0s                                                         │
 │                                                                             │
-│  ✅ Ưu điểm: Zero downtime, best user experience                           │
-│  ❌ Nhược điểm: Chi phí gấp đôi, phức tạp data consistency                │
+│  ✅ Ưu điểm: Zero downtime, best user experience                            │
+│  ❌ Nhược điểm: Chi phí gấp đôi, phức tạp data consistency                  │
 │  ⚠️ Challenge: Conflict resolution (last writer wins - DynamoDB)            │
-│  🎯 Use case: Mission-critical (banking, healthcare, global SaaS)          │
+│  🎯 Use case: Mission-critical (banking, healthcare, global SaaS)           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -608,25 +608,25 @@ graph LR
 │                   DMS: Homogeneous vs Heterogeneous                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ✅ HOMOGENEOUS (same engine) → KHÔNG cần SCT                              │
+│  ✅ HOMOGENEOUS (same engine) → KHÔNG cần SCT                               │
 │  ═══════════════════════════════════════════                                │
 │  MySQL → RDS MySQL                                                          │
 │  PostgreSQL → Aurora PostgreSQL                                             │
 │  Oracle → RDS Oracle                                                        │
 │                                                                             │
-│  ⚠️ HETEROGENEOUS (khác engine) → CẦN SCT trước                           │
+│  ⚠️ HETEROGENEOUS (khác engine) → CẦN SCT trước                             │
 │  ═══════════════════════════════════════════                                │
-│  Oracle → Aurora PostgreSQL     (SCT convert schema trước)                 │
-│  SQL Server → Aurora MySQL      (SCT convert schema trước)                 │
-│  Oracle → DynamoDB              (SCT convert schema trước)                 │
+│  Oracle → Aurora PostgreSQL     (SCT convert schema trước)                  │
+│  SQL Server → Aurora MySQL      (SCT convert schema trước)                  │
+│  Oracle → DynamoDB              (SCT convert schema trước)                  │
 │                                                                             │
 │  📌 SCT Workflow:                                                           │
-│  Source Schema → SCT convert → Target Schema → DMS migrate data            │
+│  Source Schema → SCT convert → Target Schema → DMS migrate data             │
 │                                                                             │
 │  📌 DMS Features:                                                           │
 │  • Source DB KHÔNG bị downtime trong migration                              │
 │  • CDC (Change Data Capture) = continuous replication                       │
-│  • Full load + CDC = initial migration + ongoing sync                      │
+│  • Full load + CDC = initial migration + ongoing sync                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -683,19 +683,19 @@ graph TB
 │                                                                             │
 │  📋 Backup Plan:                                                            │
 │  • Schedule: Hourly / Daily / Weekly / Monthly / Custom cron                │
-│  • Retention: 1 day → Forever                                              │
-│  • Lifecycle: Move to cold storage sau X ngày                              │
-│  • Cross-Region Copy: Tự động copy backup sang DR region                   │
-│  • Cross-Account Copy: Copy sang account khác (security)                   │
+│  • Retention: 1 day → Forever                                               │
+│  • Lifecycle: Move to cold storage sau X ngày                               │
+│  • Cross-Region Copy: Tự động copy backup sang DR region                    │
+│  • Cross-Account Copy: Copy sang account khác (security)                    │
 │                                                                             │
 │  🗃️ Backup Vault:                                                           │
-│  • Encrypted với KMS                                                       │
-│  • Vault Lock: WORM (Write Once Read Many) — không xóa được               │
+│  • Encrypted với KMS                                                        │
+│  • Vault Lock: WORM (Write Once Read Many) — không xóa được                 │
 │  • Resource-based access policies                                           │
 │                                                                             │
 │  ✅ PITR (Point-in-Time Recovery):                                          │
-│  • RDS, Aurora, DynamoDB                                                   │
-│  • Restore DB đến bất kỳ thời điểm nào trong retention window             │
+│  • RDS, Aurora, DynamoDB                                                    │
+│  • Restore DB đến bất kỳ thời điểm nào trong retention window               │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -818,31 +818,31 @@ graph TB
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  1️⃣  DISASTER RECOVERY                                                      │
-│  ├── ✅ Xác định RPO/RTO TRƯỚC KHI chọn DR pattern                         │
-│  ├── ✅ Dùng AWS Backup cho centralized, cross-region backup               │
-│  ├── ✅ Test DR plan định kỳ (quarterly DR drills)                         │
-│  ├── ✅ Automate failover với Route53 + Lambda                             │
-│  └── ✅ Dùng Infrastructure as Code (CloudFormation) cho DR region         │
+│  ├── ✅ Xác định RPO/RTO TRƯỚC KHI chọn DR pattern                          │
+│  ├── ✅ Dùng AWS Backup cho centralized, cross-region backup                │
+│  ├── ✅ Test DR plan định kỳ (quarterly DR drills)                          │
+│  ├── ✅ Automate failover với Route53 + Lambda                              │
+│  └── ✅ Dùng Infrastructure as Code (CloudFormation) cho DR region          │
 │                                                                             │
 │  2️⃣  MIGRATION (6Rs)                                                        │
-│  ├── ✅ Assessment phase: xác định workloads + dependencies                │
-│  ├── ✅ Bắt đầu với Rehost (nhanh), optimize sau                          │
-│  ├── ✅ Dùng DMS + CDC cho zero-downtime DB migration                      │
-│  ├── ✅ Retire 10-20% workloads không cần thiết                            │
-│  └── ✅ Dùng AWS Migration Hub để track progress                           │
+│  ├── ✅ Assessment phase: xác định workloads + dependencies                 │
+│  ├── ✅ Bắt đầu với Rehost (nhanh), optimize sau                            │
+│  ├── ✅ Dùng DMS + CDC cho zero-downtime DB migration                       │
+│  ├── ✅ Retire 10-20% workloads không cần thiết                             │
+│  └── ✅ Dùng AWS Migration Hub để track progress                            │
 │                                                                             │
 │  3️⃣  DATA TRANSFER                                                          │
-│  ├── ✅ > 10 TB offline → Snow Family                                      │
-│  ├── ✅ < 10 TB online → DataSync                                         │
-│  ├── ✅ Hybrid ongoing → Storage Gateway                                   │
-│  ├── ✅ Enable versioning trước khi replicate S3                           │
-│  └── ✅ Encrypt data in transit + at rest                                  │
+│  ├── ✅ > 10 TB offline → Snow Family                                       │
+│  ├── ✅ < 10 TB online → DataSync                                           │
+│  ├── ✅ Hybrid ongoing → Storage Gateway                                    │
+│  ├── ✅ Enable versioning trước khi replicate S3                            │
+│  └── ✅ Encrypt data in transit + at rest                                   │
 │                                                                             │
 │  4️⃣  MONITORING                                                             │
-│  ├── ✅ Route 53 health checks cho failover                                │
+│  ├── ✅ Route 53 health checks cho failover                                 │
 │  ├── ✅ CloudWatch alarms cho replication lag                               │
-│  ├── ✅ AWS Config rules cho backup compliance                             │
-│  └── ✅ EventBridge alerts cho DMS task failures                           │
+│  ├── ✅ AWS Config rules cho backup compliance                              │
+│  └── ✅ EventBridge alerts cho DMS task failures                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
