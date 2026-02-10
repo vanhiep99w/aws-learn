@@ -55,6 +55,7 @@
 
 ## Migration
 
+- [x] [Disaster Recovery & Migration Overview](aws-disaster-recovery-migration-overview.md) - Tổng quan DR Patterns, 6Rs, DMS, Snow Family, DataSync, Storage Gateway, Backup (Diagram)
 - [x] [AWS DMS](aws-dms.md) - Database Migration Service, SCT, 6Rs Migration Strategies, CDC
 
 ## Data Integration
@@ -86,6 +87,8 @@
 
 ## Security
 
+- [x] [IAM Management Overview](aws-iam-management-overview.md) - Tổng quan Account, Users, Groups, Roles, Policies, Best Practices (Diagram)
+- [x] [Security & Encryption Overview](aws-security-encryption-overview.md) - Tổng quan KMS, Shield, WAF, GuardDuty, Inspector, Macie, ACM, Cognito (Diagram)
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
 - [x] [IAM Identity Center](iam-identity-center.md) - Single Sign-On (SSO), Multi-Account Access, Identity Providers, Permission Sets
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
@@ -109,6 +112,7 @@
 
 ## Monitoring & Management
 
+- [x] [Monitoring & Audit Overview](aws-monitoring-audit-overview.md) - Tổng quan CloudWatch, CloudTrail, Config, X-Ray, Best Practices (Diagram)
 - [x] [AWS Systems Manager (SSM)](aws-systems-manager.md) - Run Command, Session Manager, Patch Manager, Parameter Store, Automation
 - [x] [SSM Deep Dive](ssm.md) - SSM Agent, Session Manager, Run Command, Patch Manager chi tiết
 - [x] [AWS AppConfig](aws-appconfig.md) - Dynamic Configuration, Feature Flags, Gradual Deployment, Rollback
