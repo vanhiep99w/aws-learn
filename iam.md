@@ -921,6 +921,9 @@ AmazonS3FullAccess       → Full access S3
 AmazonEC2ReadOnlyAccess  → Chỉ đọc EC2
 ```
 
+> [!TIP]
+> Xem chi tiết tất cả 6 loại IAM Policy Types (Identity-based, Resource-based, Permissions Boundaries, SCPs, ACLs, Session Policies) tại [IAM JSON Policy Types](./iam-json-policy-types.md)
+
 ---
 
 ## Policy Evaluation Logic
