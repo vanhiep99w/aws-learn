@@ -106,6 +106,7 @@
 - [x] [AWS Shield](aws-shield.md) - DDoS Protection, Shield Standard (Free), Shield Advanced, DRT, Cost Protection
 - [x] [AWS Artifact](aws-artifact.md) - Compliance Reports (SOC, PCI, ISO), Agreements (HIPAA BAA, GDPR DPA)
 - [x] [AWS ACM](aws-acm.md) - AWS Certificate Manager, SSL/TLS Certificates, DNS/Email Validation, Auto Renewal
+- [x] [AWS Audit Manager](aws-audit-manager.md) - Automated Evidence Collection, Compliance Frameworks (GDPR, HIPAA, PCI DSS, SOC 2), Assessment Reports
 
 ## Partner & Marketplace
 
@@ -162,6 +163,10 @@
 ## AI/ML Services
 
 - [x] [AWS AI/ML Services](aws-ai-ml-services.md) - Rekognition, Textract, Polly, Transcribe, Translate, Comprehend, Lex, Kendra, Personalize, Forecast, Bedrock, SageMaker
+
+## End User Computing
+
+- [x] [Amazon WorkSpaces](amazon-workspaces.md) - DaaS (Desktop as a Service), Virtual Desktops, Personal/Pools, PCoIP/DCV Protocols
 
 ## Application Integration
 
