@@ -429,32 +429,73 @@ graph LR
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  1️⃣  REHOST ("Lift & Shift")                                                │
-│     └── Chuyển nguyên xi lên cloud, KHÔNG thay đổi gì                      │
-│     └── VD: MySQL on-prem → MySQL trên EC2                                 │
-│     └── Dùng AWS Application Migration Service                             │
+│     └── Chuyển nguyên xi lên cloud, KHÔNG thay đổi gì                       │
+│     └── VD: MySQL on-prem → MySQL trên EC2                                  │
+│     └── Dùng AWS Application Migration Service                              │
 │                                                                             │
 │  2️⃣  REPLATFORM ("Lift & Reshape")                                          │
-│     └── Thay đổi NHỎ để dùng managed services                             │
-│     └── VD: MySQL on-prem → RDS MySQL (AWS quản lý)                       │
-│     └── ⭐ "Reduce operational burden" = REPLATFORM                        │
+│     └── Thay đổi NHỎ để dùng managed services                               │
+│     └── VD: MySQL on-prem → RDS MySQL (AWS quản lý)                         │
+│     └── ⭐ "Reduce operational burden" = REPLATFORM                         │
 │                                                                             │
 │  3️⃣  REPURCHASE ("Drop & Shop")                                             │
-│     └── Mua SaaS thay thế                                                  │
-│     └── VD: CRM tự build → Salesforce                                      │
-│     └── VD: Email server → Amazon WorkMail                                 │
+│     └── Mua SaaS thay thế                                                   │
+│     └── VD: CRM tự build → Salesforce                                       │
+│     └── VD: Email server → Amazon WorkMail                                  │
 │                                                                             │
 │  4️⃣  REFACTOR ("Re-architect")                                              │
-│     └── Viết lại code để cloud-native                                      │
-│     └── VD: Monolith → Microservices + Lambda + DynamoDB                   │
-│     └── Effort cao nhất, benefit lớn nhất                                  │
+│     └── Viết lại code để cloud-native                                       │
+│     └── VD: Monolith → Microservices + Lambda + DynamoDB                    │
+│     └── Effort cao nhất, benefit lớn nhất                                   │
 │                                                                             │
 │  5️⃣  RETIRE                                                                 │
-│     └── Không cần nữa → tắt đi, decommission                             │
-│     └── Tiết kiệm cost, giảm complexity                                   │
+│     └── Không cần nữa → tắt đi, decommission                                │
+│     └── Tiết kiệm cost, giảm complexity                                     │
 │                                                                             │
 │  6️⃣  RETAIN (Revisit)                                                       │
-│     └── Chưa migrate, giữ lại on-prem                                     │
-│     └── VD: App sắp EOL, compliance yêu cầu on-prem                       │
+│     └── Chưa migrate, giữ lại on-prem                                       │
+│     └── VD: App sắp EOL, compliance yêu cầu on-prem                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### So sánh Thời gian & Chi phí 6Rs
+
+| Strategy | Thời gian Migration | Chi phí Migration | Effort | Long-term Cost | Long-term Benefit |
+|----------|--------------------:|------------------:|-------:|---------------:|-------------------|
+| **Rehost** | ⏱️ Ngắn (days-weeks) | 💰 Thấp | ★☆☆☆☆ | Cao (chạy EC2 raw) | Nhanh lên cloud |
+| **Replatform** | ⏱️ Trung bình (weeks) | 💰 Thấp-TB | ★★☆☆☆ | TB (managed svc) | Giảm ops burden |
+| **Repurchase** | ⏱️ Trung bình (weeks) | 💰 TB (license SaaS) | ★★☆☆☆ | TB (subscription) | Zero maintenance |
+| **Refactor** | ⏱️ Dài (months) | 💰 Cao (dev cost) | ★★★★★ | Thấp nhất | Cloud-native, scale tốt |
+| **Retire** | ⏱️ Ngắn (days) | 💰 Không tốn | ★☆☆☆☆ | 💲0 | Giảm complexity |
+| **Retain** | ⏱️ Không migrate | 💰 Không tốn | ★☆☆☆☆ | Giữ nguyên | Chờ plan sau |
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│          6Rs: Trade-off Migration Effort vs Long-term Benefit                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Migration    │                                                             │
+│  Effort ▲     │                                                             │
+│  (time+cost)  │                                                             │
+│         5 ────│──────────────────────── ⭐ REFACTOR ──────────────── max     │
+│               │                        (months, high dev cost)              │
+│         4 ────│                                                             │
+│               │                                                             │
+│         3 ────│                                                             │
+│               │                                                             │
+│         2 ────│──── REPLATFORM ──── REPURCHASE                              │
+│               │    (weeks, low)     (weeks, license)                        │
+│         1 ────│── REHOST ──────────────────────────────────── min           │
+│               │  (days, lowest)   RETIRE     RETAIN                        │
+│         0 ────┼─────────┬─────────┬─────────┬─────────┬──────► Long-term   │
+│               │  Thấp   │   TB    │   Cao   │ Rất cao │        Benefit     │
+│                                                                             │
+│  📌 REHOST  = nhanh nhất, rẻ nhất lúc migrate, nhưng chưa optimize         │
+│  📌 REFACTOR = lâu nhất, đắt nhất lúc migrate, nhưng benefit lâu dài tốt  │
+│  📌 RETIRE/RETAIN = không tốn effort migrate, nhưng lý do khác nhau       │
+│     → Retire = không cần nữa, tắt đi tiết kiệm                           │
+│     → Retain = chưa migrate được, giữ lại on-prem chờ plan sau            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

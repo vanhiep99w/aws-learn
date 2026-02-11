@@ -83,6 +83,7 @@
 ## Account Management
 
 - [x] [AWS Organizations](aws-organizations.md) - Multi-Account Management, OUs, SCPs, Consolidated Billing
+- [x] [AWS Control Tower](aws-control-tower.md) - Landing Zone, Guardrails (Preventive/Detective/Proactive), Account Factory, Automated Governance
 - [x] [AWS Service Catalog](aws-service-catalog.md) - Self-Service Product Catalog, Portfolios, Launch Constraints, Governance
 
 ## Security
