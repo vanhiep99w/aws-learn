@@ -5,11 +5,18 @@
 
 - [Tổng quan](#tổng-quan)
 - [1. Queue Types](#1-queue-types)
+  - [FIFO - Message Group Processing](#14-fifo---message-group-processing)
+  - [FIFO - Hot Partition Problem](#15-fifo---hot-partition-problem)
+  - [FIFO - Head-of-Line Blocking](#16-fifo---head-of-line-blocking)
 - [2. Message Lifecycle](#2-message-lifecycle)
 - [3. SQS Features](#3-sqs-features)
+  - [Long Polling vs Short Polling](#31-long-polling-vs-short-polling)
+  - [Message Failure và Retry Flow](#32-message-failure--retry-flow)
+  - [Dead Letter Queue](#33-dead-letter-queue-dlq)
 - [4. Security](#4-security)
 - [5. Integration Patterns](#5-integration-patterns)
 - [6. Best Practices](#6-best-practices)
+  - [Auto Scaling Consumers với CloudWatch Alarms](#64-auto-scaling-consumers-với-cloudwatch-alarms)
 - [7. Spring Boot Integration](#7-spring-boot-integration)
 - [8. SQS vs SNS vs Kinesis](#8-sqs-vs-sns-vs-kinesis)
 - [8. SQS Message Distribution & So sánh với Kafka](#8-sqs-message-distribution-so-sánh-với-kafka)
@@ -52,15 +59,6 @@
 
 ---
 
-1. [Queue Types](#1-queue-types)
-2. [Message Lifecycle](#2-message-lifecycle)
-3. [SQS Features](#3-sqs-features)
-4. [Security](#4-security)
-5. [Integration Patterns](#5-integration-patterns)
-6. [Best Practices](#6-best-practices)
-
----
-
 ## 1. Queue Types
 
 ### 1.1 Standard Queue vs FIFO Queue
@@ -100,6 +98,32 @@
 | **Queue Name** | Any | Must end with `.fifo` |
 | **Use Case** | High throughput | Ordering important |
 
+> [!WARNING]
+> **Best-effort Ordering nghĩa là gì?**
+>
+> SQS Standard Queue là **distributed system** (nhiều servers). Messages phân tán trên nhiều servers nên thứ tự **KHÔNG ĐẢM BẢO**:
+> ```
+> Gửi:  [1] → [2] → [3] → [4] → [5]
+> Nhận: [2] → [1] → [4] → [3] → [5]  (có thể sai thứ tự!)
+> ```
+> "Best-effort" = SQS **cố gắng** giữ thứ tự, nhưng **không hứa**.
+
+> [!CAUTION]
+> **Duplicate Processing - Khi Visibility Timeout hết trong lúc đang xử lý**
+>
+> ```
+> T=0s: Consumer A nhận message, bắt đầu xử lý
+> T=30s: Visibility Timeout HẾT HẠN (A vẫn đang xử lý)
+> T=31s: Message VISIBLE lại → Consumer B nhận được
+> 
+> KẾT QUẢ: CẢ A VÀ B ĐANG XỬ LÝ CÙNG 1 MESSAGE!
+> ```
+>
+> **Giải pháp:**
+> 1. Set `Visibility Timeout` > thời gian xử lý
+> 2. Gọi `ChangeMessageVisibility` API để extend timeout
+> 3. Code consumer phải **IDEMPOTENT** (chạy 2 lần = kết quả giống nhau)
+
 ### 1.3 FIFO Queue Features
 
 ```
@@ -130,7 +154,70 @@
 1. **Content-based**: SQS tự hash message body
 2. **Message Deduplication ID**: Developer tự đặt ID
 
----
+### 1.4 FIFO - Message Group Processing
+
+> [!IMPORTANT]
+> **1 Message Group = Chỉ 1 message "in-flight" tại 1 thời điểm**
+>
+> ```
+> Group "OrderA": [1] [2] [3]
+>                  ↓
+> Consumer nhận [1] → [2] và [3] bị BLOCK!
+>                  ↓
+> Consumer xử lý xong [1], xóa → [2] mới available
+> ```
+>
+> | Điều kiện | Xử lý song song? |
+> |-----------|-----------------|
+> | **Cùng Group** | ❌ KHÔNG - phải tuần tự |
+> | **Khác Group** | ✅ CÓ - song song được |
+
+### 1.5 FIFO - Hot Partition Problem
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    HOT PARTITION PROBLEM                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Group "VIP-Customer": [1][2][3]...[1000]  ← HOT! 🔥           │
+│   Group "Normal-1":     [1][2]              ← bình thường       │
+│   Group "Normal-2":     [1]                 ← bình thường       │
+│                                                                 │
+│   Vấn đề: VIP-Customer có 1000 msgs nhưng chỉ xử lý 1 lúc 1!   │
+│   → BOTTLENECK!                                                 │
+│                                                                 │
+│   Giải pháp: Chia nhỏ Group ID                                  │
+│   ───────────────────────────                                   │
+│   ❌ Trước: Group ID = "customer-123"                           │
+│   ✅ Sau:   Group ID = "customer-123-order-456"                 │
+│                                                                 │
+│   → Mỗi order là 1 group riêng → scale tốt hơn                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 1.6 FIFO - Head-of-Line Blocking
+
+> [!CAUTION]
+> **Message đầu fail → BLOCK tất cả messages phía sau trong cùng Group!**
+>
+> ```
+> Group "OrderA": [1] [2] [3] [4] [5]
+>                  ↓
+> [1] fail, retry... fail, retry... fail
+>                  ↓
+> [2] [3] [4] [5] VẪN BỊ BLOCK! 🚫
+> ```
+>
+> **Giải pháp: Dead Letter Queue (DLQ)**
+> ```
+> [1] fail > maxReceiveCount → [1] vào DLQ
+>                            → [2] bây giờ available! ✅
+> ```
+
+> [!WARNING]
+> **FIFO Queue BẮT BUỘC phải có DLQ!**
+> Nếu không → 1 message lỗi có thể block cả group mãi mãi!
 
 ## 2. Message Lifecycle
 
@@ -242,7 +329,56 @@
 - Queue level: `ReceiveMessageWaitTimeSeconds` > 0
 - API level: `WaitTimeSeconds` parameter (1-20 seconds)
 
-### 3.2 Dead Letter Queue (DLQ)
+**Polling Limits:**
+
+| Parameter | Value | Mô tả |
+|-----------|-------|-------|
+| **MaxNumberOfMessages** | 1-10 | Số messages tối đa mỗi lần poll |
+| **WaitTimeSeconds** | 0-20s | Thời gian chờ Long Polling |
+| **VisibilityTimeout** | 0s - 12h | Thời gian message bị "lock" |
+
+### 3.2 Message Failure & Retry Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              KHI CONSUMER XỬ LÝ MESSAGE FAIL                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Timeline:                                                     │
+│   ┌─────────┬──────────────────────────┬──────────────────────┐│
+│   │ Receive │   Visibility Timeout     │ Message visible lại  ││
+│   │ Message │   (message invisible)    │ trong queue          ││
+│   └─────────┴──────────────────────────┴──────────────────────┘│
+│       ↓                                        ↓               │
+│   Consumer nhận                          Consumer khác         │
+│   message & FAIL                         có thể nhận lại       │
+│                                                                 │
+│   Retry Flow:                                                   │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │  Receive 1 → Fail → Visible lại                         │  │
+│   │  Receive 2 → Fail → Visible lại                         │  │
+│   │  Receive 3 → Fail → Visible lại                         │  │
+│   │  ...                                                     │  │
+│   │  Receive N (= maxReceiveCount) → Fail → CHUYỂN ĐẾN DLQ  │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   ⚠️ Lưu ý:                                                    │
+│   • Message KHÔNG tự động bị xóa khi fail                      │
+│   • Visibility Timeout hết → message quay lại queue            │
+│   • Consumer khác (hoặc chính nó) có thể nhận lại              │
+│   • Sau maxReceiveCount lần fail → chuyển sang DLQ             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Scenario | Hành vi |
+|----------|---------|
+| **Consumer xử lý SUCCESS** | Gọi `DeleteMessage` → Message bị xóa |
+| **Consumer xử lý FAIL** | Visibility Timeout hết → Message visible lại |
+| **Consumer crash** | Visibility Timeout hết → Message visible lại |
+| **Fail > maxReceiveCount lần** | Message chuyển sang DLQ |
+
+### 3.3 Dead Letter Queue (DLQ)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -598,7 +734,305 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 6.4 Cost Optimization
+### 6.4 Auto Scaling Consumers với CloudWatch Alarms
+
+> [!IMPORTANT]
+> **Tự động scale consumer** là key pattern để SQS hoạt động hiệu quả với workload biến động. AWS cung cấp các SQS metrics trong CloudWatch để bạn có thể setup Auto Scaling.
+
+#### 6.4.1 SQS Metrics trong CloudWatch
+
+| Metric | Mô tả | Use Case |
+|--------|-------|----------|
+| **ApproximateNumberOfMessagesVisible** | Số messages sẵn sàng để receive | Scale-out trigger chính |
+| **ApproximateNumberOfMessagesNotVisible** | Số messages đang "in-flight" (đang xử lý) | Monitor processing capacity |
+| **ApproximateAgeOfOldestMessage** | Tuổi của message cũ nhất (giây) | Phát hiện bottleneck |
+| **NumberOfMessagesSent** | Số messages gửi vào queue | Monitor producer throughput |
+| **NumberOfMessagesDeleted** | Số messages xóa khỏi queue | Monitor consumer throughput |
+| **NumberOfMessagesReceived** | Số messages được consumer nhận | Monitor polling activity |
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│           CLOUDWATCH METRICS FLOW                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   SQS Queue                                                     │
+│   ┌───────────────────────────────────────────────────────┐    │
+│   │ [A] [B] [C] [D] [E] [F] [G] [H] [I] [J]               │    │
+│   │      ↓                                                │    │
+│   │ ApproximateNumberOfMessagesVisible = 10               │    │
+│   │ ApproximateAgeOfOldestMessage = 300s                  │    │
+│   └───────────────────────────────────────────────────────┘    │
+│                       ↓                                         │
+│              CloudWatch Metrics                                 │
+│                       ↓                                         │
+│   ┌───────────────────────────────────────────────────────┐    │
+│   │ CloudWatch Alarm: "Queue depth > 100 for 2 periods"   │    │
+│   │                       ↓                               │    │
+│   │ Trigger → Auto Scaling Group → Launch new EC2         │    │
+│   └───────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### 6.4.2 Custom Metric: Messages Per Consumer (Backlog Per Instance)
+
+> [!TIP]
+> **AWS Recommended Metric:** Thay vì dùng `ApproximateNumberOfMessagesVisible` đơn thuần, AWS khuyến nghị tính **Backlog per Instance** để scale chính xác hơn.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│           BACKLOG PER INSTANCE                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   Công thức:                                                    │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │                 ApproximateNumberOfMessagesVisible      │  │
+│   │   Backlog = ─────────────────────────────────────────   │  │
+│   │                   Current Number of Consumers           │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   Ví dụ:                                                        │
+│   • Queue có 1000 messages                                      │
+│   • Có 5 consumers                                              │
+│   • Backlog per instance = 1000 / 5 = 200 msgs/consumer         │
+│                                                                 │
+│   Target:                                                       │
+│   • Nếu mỗi consumer xử lý 50 msgs/phút                         │
+│   • Target backlog = 100 (≈ 2 phút xử lý)                       │
+│   • Khi backlog > 100 → Scale OUT                               │
+│   • Khi backlog < 100 → Scale IN                                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Publish Custom Metric Example (Lambda):**
+```python
+import boto3
+
+def publish_backlog_metric():
+    cloudwatch = boto3.client('cloudwatch')
+    sqs = boto3.client('sqs')
+    asg = boto3.client('autoscaling')
+    
+    # Get queue depth
+    response = sqs.get_queue_attributes(
+        QueueUrl='https://sqs.region.amazonaws.com/account/my-queue',
+        AttributeNames=['ApproximateNumberOfMessagesVisible']
+    )
+    queue_depth = int(response['Attributes']['ApproximateNumberOfMessagesVisible'])
+    
+    # Get current ASG capacity
+    asg_response = asg.describe_auto_scaling_groups(
+        AutoScalingGroupNames=['my-consumer-asg']
+    )
+    capacity = asg_response['AutoScalingGroups'][0]['DesiredCapacity']
+    
+    # Calculate backlog per instance
+    backlog = queue_depth / max(capacity, 1)
+    
+    # Publish custom metric
+    cloudwatch.put_metric_data(
+        Namespace='Custom/SQS',
+        MetricData=[{
+            'MetricName': 'BacklogPerInstance',
+            'Value': backlog,
+            'Unit': 'Count',
+            'Dimensions': [
+                {'Name': 'QueueName', 'Value': 'my-queue'},
+                {'Name': 'AutoScalingGroupName', 'Value': 'my-consumer-asg'}
+            ]
+        }]
+    )
+```
+
+#### 6.4.3 CloudWatch Alarm Setup
+
+**Scale-Out Alarm:**
+```yaml
+# CloudFormation Example
+ScaleOutAlarm:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: SQS-HighBacklog-ScaleOut
+    AlarmDescription: Scale out when queue depth is high
+    MetricName: ApproximateNumberOfMessagesVisible
+    Namespace: AWS/SQS
+    Dimensions:
+      - Name: QueueName
+        Value: !Ref MyQueue
+    Statistic: Average
+    Period: 60                    # Check mỗi 60s
+    EvaluationPeriods: 2          # Cần 2 periods liên tiếp
+    Threshold: 100                # > 100 messages
+    ComparisonOperator: GreaterThanThreshold
+    AlarmActions:
+      - !Ref ScaleOutPolicy       # Trigger scale-out policy
+
+ScaleInAlarm:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: SQS-LowBacklog-ScaleIn
+    MetricName: ApproximateNumberOfMessagesVisible
+    Namespace: AWS/SQS
+    Dimensions:
+      - Name: QueueName
+        Value: !Ref MyQueue
+    Statistic: Average
+    Period: 300                   # Check mỗi 5 phút
+    EvaluationPeriods: 3          # Cần 3 periods (15 phút)
+    Threshold: 10                 # < 10 messages
+    ComparisonOperator: LessThanThreshold
+    AlarmActions:
+      - !Ref ScaleInPolicy        # Trigger scale-in policy
+```
+
+#### 6.4.4 Auto Scaling Policies
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│           AUTO SCALING POLICY TYPES                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   1. TARGET TRACKING SCALING (Recommended):                     │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │ "Giữ backlog per instance = 100"                        │  │
+│   │                                                         │  │
+│   │ • AWS tự động scale để duy trì target                   │  │
+│   │ • Tự động tạo CloudWatch alarms                         │  │
+│   │ • Cooldown tự động                                      │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   2. STEP SCALING:                                              │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │ IF queue_depth 100-500   → Add 1 instance               │  │
+│   │ IF queue_depth 500-1000  → Add 2 instances              │  │
+│   │ IF queue_depth > 1000    → Add 5 instances              │  │
+│   │                                                         │  │
+│   │ • Scale theo mức độ severity                            │  │
+│   │ • Cần define CloudWatch alarms riêng                    │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│   3. SIMPLE SCALING:                                            │
+│   ┌─────────────────────────────────────────────────────────┐  │
+│   │ IF alarm triggered → Add/Remove X instances             │  │
+│   │                                                         │  │
+│   │ • Đơn giản nhất                                         │  │
+│   │ • Có cooldown cứng                                      │  │
+│   │ • Không linh hoạt                                       │  │
+│   └─────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Target Tracking Policy Example (CloudFormation):**
+```yaml
+TargetTrackingPolicy:
+  Type: AWS::AutoScaling::ScalingPolicy
+  Properties:
+    AutoScalingGroupName: !Ref MyConsumerASG
+    PolicyType: TargetTrackingScaling
+    TargetTrackingConfiguration:
+      TargetValue: 100                    # Target: 100 msgs/consumer
+      CustomizedMetricSpecification:
+        MetricName: BacklogPerInstance
+        Namespace: Custom/SQS
+        Dimensions:
+          - Name: QueueName
+            Value: !Ref MyQueue
+        Statistic: Average
+      ScaleOutCooldown: 60                # Wait 60s trước khi scale-out tiếp
+      ScaleInCooldown: 300                # Wait 5 phút trước khi scale-in
+```
+
+**Step Scaling Policy Example:**
+```yaml
+StepScalingPolicy:
+  Type: AWS::AutoScaling::ScalingPolicy
+  Properties:
+    AutoScalingGroupName: !Ref MyConsumerASG
+    PolicyType: StepScaling
+    AdjustmentType: ChangeInCapacity
+    StepAdjustments:
+      - MetricIntervalLowerBound: 0
+        MetricIntervalUpperBound: 400     # 100-500 msgs
+        ScalingAdjustment: 1              # Add 1 instance
+      - MetricIntervalLowerBound: 400
+        MetricIntervalUpperBound: 900     # 500-1000 msgs
+        ScalingAdjustment: 2              # Add 2 instances
+      - MetricIntervalLowerBound: 900     # > 1000 msgs
+        ScalingAdjustment: 5              # Add 5 instances
+```
+
+#### 6.4.5 Kiến trúc hoàn chỉnh
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    SQS AUTO SCALING ARCHITECTURE                         │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   ┌──────────────┐         ┌──────────────────────────────────────────┐ │
+│   │   Producer   │────────→│              SQS Queue                   │ │
+│   └──────────────┘         │  ApproximateNumberOfMessagesVisible: 500 │ │
+│                            └─────────────────┬────────────────────────┘ │
+│                                              │                           │
+│                                              ↓                           │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
+│   │                      CloudWatch                                   │  │
+│   │  ┌────────────────────────────────────────────────────────────┐ │  │
+│   │  │ Metric: ApproximateNumberOfMessagesVisible = 500           │ │  │
+│   │  │ Custom Metric: BacklogPerInstance = 500/2 = 250            │ │  │
+│   │  └────────────────────────────────────────────────────────────┘ │  │
+│   │         │                                                        │  │
+│   │         ↓                                                        │  │
+│   │  ┌────────────────────────────────────────────────────────────┐ │  │
+│   │  │ Alarm: BacklogPerInstance > 100 for 2 periods → ALARM!     │ │  │
+│   │  └────────────────────────────────────────────────────────────┘ │  │
+│   └───────────┬──────────────────────────────────────────────────────┘  │
+│               │                                                          │
+│               ↓                                                          │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
+│   │                   Auto Scaling Group                              │  │
+│   │  ┌─────────────────────────────────────────────────────────────┐ │  │
+│   │  │ Target Tracking Policy: BacklogPerInstance = 100            │ │  │
+│   │  │                                                             │ │  │
+│   │  │ Min: 1    Desired: 2 → 5    Max: 20                         │ │  │
+│   │  │                 ↓                                           │ │  │
+│   │  │ Launch 3 new EC2 instances!                                 │ │  │
+│   │  └─────────────────────────────────────────────────────────────┘ │  │
+│   │                                                                   │  │
+│   │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐    │  │
+│   │  │Consumer1│ │Consumer2│ │Consumer3│ │Consumer4│ │Consumer5│    │  │
+│   │  │  (old)  │ │  (old)  │ │  (new)  │ │  (new)  │ │  (new)  │    │  │
+│   │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘    │  │
+│   └──────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+│   Sau khi scale: BacklogPerInstance = 500/5 = 100 ✓ (đạt target)        │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 6.4.6 Best Practices cho Auto Scaling
+
+| Practice | Mô tả |
+|----------|-------|
+| **Use Target Tracking** | AWS tự động tính toán scale, ít phức tạp hơn |
+| **Custom Metric (Backlog/Instance)** | Chính xác hơn raw queue depth |
+| **Longer Scale-In Cooldown** | 5-10 phút để tránh flapping |
+| **Short Scale-Out Cooldown** | 60s để phản ứng nhanh với traffic burst |
+| **Set Min Capacity ≥ 1** | Luôn có consumer để xử lý message |
+| **Monitor OldestMessage Age** | Alert nếu messages quá cũ → bottleneck |
+| **Use Predictive Scaling** | Cho workload có pattern (vd: daily peak) |
+
+> [!WARNING]
+> **Đừng scale dựa trên CPU/Memory!**
+>
+> Với SQS consumers, CPU/Memory thường KHÔNG phản ánh đúng workload:
+> - Consumer có thể idle (chờ messages) → CPU thấp, nhưng cần scale OUT
+> - Consumer đang xử lý → CPU cao, nhưng queue depth thấp → KHÔNG cần scale
+>
+> **Luôn scale dựa trên Queue Depth hoặc Backlog per Instance!**
+
+### 6.5 Cost Optimization
 
 | Strategy | Description |
 |----------|-------------|

@@ -52,6 +52,8 @@
 - [x] [ElastiCache](elasticache.md) - In-Memory Caching, Redis, Memcached, Session Store
 - [x] [Amazon Redshift](amazon-redshift.md) - Data Warehouse, OLAP, Columnar Storage, MPP, Spectrum, Zero-ETL
 - [x] [Amazon Neptune](amazon-neptune.md) - Graph Database, Gremlin, SPARQL, Social Networks, Fraud Detection
+- [x] [Amazon DocumentDB](documentdb.md) - MongoDB-compatible Document Database, Flexible Schema, JSON Documents
+- [x] [Amazon Timestream](amazon-timestream.md) - Time Series Database, IoT, DevOps Monitoring, Serverless
 
 ## Migration
 

@@ -199,6 +199,118 @@ cloudwatch.put_metric_data(
 )
 ```
 
+### 6. Namespace và Dimensions Chi Tiết
+
+#### Namespace là gì?
+
+**Namespace** là **container/category** để nhóm các metrics liên quan lại với nhau. Nó giống như một "thư mục" để tổ chức metrics.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         CLOUDWATCH NAMESPACES                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  NAMESPACE: AWS/EC2                                                   │ │
+│   │  ├── CPUUtilization                                                   │ │
+│   │  ├── NetworkIn / NetworkOut                                           │ │
+│   │  └── StatusCheckFailed                                                │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  NAMESPACE: AWS/Lambda                                                │ │
+│   │  ├── Invocations                                                      │ │
+│   │  ├── Duration                                                         │ │
+│   │  └── Errors                                                           │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  NAMESPACE: MyCompany/OrderService  ← Custom namespace                │ │
+│   │  ├── OrdersProcessed                                                  │ │
+│   │  └── PaymentSuccess                                                   │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| AWS Service | Namespace |
+|-------------|-----------|
+| EC2 | `AWS/EC2` |
+| RDS | `AWS/RDS` |
+| Lambda | `AWS/Lambda` |
+| ALB | `AWS/ApplicationELB` |
+| DynamoDB | `AWS/DynamoDB` |
+| S3 | `AWS/S3` |
+| SQS | `AWS/SQS` |
+| Custom | `MyCompany/MyApp` (tự đặt, KHÔNG dùng `AWS/` prefix) |
+
+#### Dimensions là gì?
+
+**Dimensions** là **key-value pairs** dùng để **xác định và phân loại** một metric cụ thể. Nó giống như "filters/tags" để phân biệt các metrics cùng tên.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         METRIC DIMENSIONS                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   MetricName: CPUUtilization (cùng tên)                                     │
+│                                                                             │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  Dimension: InstanceId = i-abc123  → CPU của instance abc123          │ │
+│   │  Dimension: InstanceId = i-xyz789  → CPU của instance xyz789          │ │
+│   │                                                                        │ │
+│   │  Dimension: AutoScalingGroupName = web-asg → Tất cả trong ASG         │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│   MULTI-DIMENSION (combine):                                                │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  Dimensions:                                                           │ │
+│   │    - InstanceId = i-abc123                                            │ │
+│   │    - AutoScalingGroupName = web-asg                                   │ │
+│   │  → CPU của instance abc123 TRONG ASG web-asg                          │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Service | Common Dimensions |
+|---------|-------------------|
+| **EC2** | `InstanceId`, `AutoScalingGroupName`, `ImageId` |
+| **RDS** | `DBInstanceIdentifier`, `DBClusterIdentifier` |
+| **Lambda** | `FunctionName`, `Resource`, `Version` |
+| **ALB** | `LoadBalancer`, `TargetGroup`, `AvailabilityZone` |
+| **SQS** | `QueueName` |
+| **DynamoDB** | `TableName`, `GlobalSecondaryIndexName` |
+
+#### Tổng hợp: Namespace + MetricName + Dimensions
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                 UNIQUE METRIC IDENTIFICATION                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   CloudWatch Metric = Namespace + MetricName + Dimensions                   │
+│                       ─────────   ──────────   ──────────                   │
+│                       Thư mục     Tên file     Tags/Filters                 │
+│                                                                             │
+│   Ví dụ:                                                                    │
+│   ┌───────────────────────────────────────────────────────────────────────┐ │
+│   │  Namespace:   AWS/EC2                                                 │ │
+│   │  MetricName:  CPUUtilization                                          │ │
+│   │  Dimensions:  InstanceId = i-abc123                                   │ │
+│   │              Environment = Production                                  │ │
+│   │  ─────────────────────────────────────────────────────────            │ │
+│   │  → 1 UNIQUE time series (CPU của i-abc123 trong Production)           │ │
+│   └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│   KEY RULES:                                                                │
+│   • Max 30 dimensions per metric                                            │
+│   • Mỗi unique combination = 1 custom metric (tính phí riêng!)             │
+│   • Custom namespace: KHÔNG dùng prefix "AWS/"                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## CloudWatch Logs

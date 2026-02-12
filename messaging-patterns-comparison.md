@@ -253,7 +253,63 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 | **Scaling** | Auto | Auto | Provision shards | Auto |
 | **Max message size** | 256 KB | 256 KB | 1 MB | 256 KB |
 
-### 2.1.1 Alternatives ngoài AWS
+### 2.1.1 Pull vs Push - Giới hạn chi tiết
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    PULL vs PUSH - LIMITS & BATCH BEHAVIOR                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🔽 PULL MODEL (Consumer chủ động lấy)                                      │
+│   ─────────────────────────────────────                                      │
+│                                                                              │
+│   SQS:                                                                       │
+│   • Max 10 messages/request (MaxNumberOfMessages)                            │
+│   • Long polling: chờ tối đa 20 giây                                         │
+│   • Batch send: tối đa 10 messages (SendMessageBatch)                        │
+│   • FIFO: 300 msg/s (3000 msg/s với batching)                                │
+│   • Standard: Unlimited throughput                                           │
+│                                                                              │
+│   Kinesis:                                                                   │
+│   • Max 10,000 records hoặc 10 MB per GetRecords call                        │
+│   • 5 GetRecords calls/second per shard (shared giữa consumers)              │
+│   • Enhanced Fan-Out: 2 MB/s dedicated per consumer                          │
+│   • Write: 1000 records/s hoặc 1 MB/s per shard                              │
+│                                                                              │
+│   📤 PUSH MODEL (Service chủ động gửi)                                       │
+│   ────────────────────────────────────                                       │
+│                                                                              │
+│   SNS:                                                                       │
+│   • Push TỪNG MESSAGE MỘT đến mỗi subscriber                                 │
+│   • Push SONG SONG đến tất cả subscribers (không đợi nhau)                   │
+│   • Throughput: 300 msg/s (10 MB/s với batching)                             │
+│   • Max 12,500,000 subscribers per topic                                     │
+│                                                                              │
+│   EventBridge:                                                               │
+│   • Push TỪNG EVENT MỘT đến mỗi target                                       │
+│   • Push đến TẤT CẢ matching targets (theo rules)                            │
+│   • Throughput: ~10,000 events/s (có thể request tăng)                       │
+│   • Max 5 targets per rule, 300 rules per event bus                          │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Model | Service | Messages per Request | Throughput | Batch? |
+|-------|---------|---------------------|------------|--------|
+| **Pull** | SQS | 10 msgs/request | Unlimited (Standard) | ✅ Consumer pull batch |
+| **Pull** | Kinesis | 10,000 records/request | 1 MB/s per shard (write) | ✅ Consumer pull batch |
+| **Push** | SNS | 1 msg/subscriber | 300 msg/s | ❌ Push từng cái |
+| **Push** | EventBridge | 1 event/target | 10,000 events/s | ❌ Push từng cái |
+
+> [!TIP]
+> **SNS/EventBridge push từng event một**, nhưng nếu target là **SQS**, thì downstream consumer (như Lambda) có thể **poll batch** từ SQS đó.
+>
+> Pattern phổ biến để batch processing:
+> ```
+> SNS/EventBridge → SQS → Lambda (batch poll tối đa 10 msgs)
+> ```
+
+### 2.1.2 Alternatives ngoài AWS
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
