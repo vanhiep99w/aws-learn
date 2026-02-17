@@ -19,6 +19,8 @@
 - [x] [Load Balancing Patterns](load-balancing-patterns.md) - So sánh AWS vs K8s vs Spring Cloud
 - [x] [Lambda](lambda.md) - Serverless Functions, Triggers, Cold Start, Pricing
 - [x] [API Gateway](api-gateway.md) - REST/HTTP/WebSocket APIs, Lambda Integration
+- [x] [AWS AppSync](aws-appsync.md) - GraphQL APIs, Real-time Subscriptions, Offline Sync, Multiple Data Sources
+- [x] [AWS Step Functions](aws-step-functions.md) - Serverless Workflow Orchestration, State Machines, Standard/Express, 200+ AWS Integrations
 - [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
 - [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
 - [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
@@ -54,11 +56,11 @@
 - [x] [Amazon Neptune](amazon-neptune.md) - Graph Database, Gremlin, SPARQL, Social Networks, Fraud Detection
 - [x] [Amazon DocumentDB](documentdb.md) - MongoDB-compatible Document Database, Flexible Schema, JSON Documents
 - [x] [Amazon Timestream](amazon-timestream.md) - Time Series Database, IoT, DevOps Monitoring, Serverless
+- [x] [Database Scaling](database-scaling.md) - Vertical/Horizontal Scaling, Replication vs Sharding, NoSQL Data Modeling (Embed vs Reference), Consistency Deep-Dive, SQL vs MongoDB vs DynamoDB
 
 ## Migration
 
 - [x] [Disaster Recovery & Migration Overview](aws-disaster-recovery-migration-overview.md) - Tổng quan DR Patterns, 6Rs, DMS, Snow Family, DataSync, Storage Gateway, Backup (Diagram)
-- [x] [Application Discovery Service](aws-application-discovery-service.md) - Discover On-Premises Servers, Agentless/Agent-based, Migration Hub Integration
 - [x] [AWS DMS](aws-dms.md) - Database Migration Service, SCT, 6Rs Migration Strategies, CDC
 
 ## Data Integration
@@ -123,7 +125,6 @@
 - [x] [SSM Deep Dive](ssm.md) - SSM Agent, Session Manager, Run Command, Patch Manager chi tiết
 - [x] [AWS AppConfig](aws-appconfig.md) - Dynamic Configuration, Feature Flags, Gradual Deployment, Rollback
 - [x] [AWS OpsWorks](aws-opsworks.md) - Configuration Management, Chef/Puppet, Stacks, Layers
-- [x] [AWS Launch Wizard](aws-launch-wizard.md) - Guided Deployment cho SAP, SQL Server, Active Directory, Cost Estimation
 - [x] [CloudWatch](cloudwatch.md) - Metrics, Alarms, Logs, Dashboards, Insights
 - [x] [CloudTrail](cloudtrail.md) - API Logging, Audit, Security Analysis, Event History
 - [x] [X-Ray](aws-xray.md) - Distributed Tracing, Service Map, Performance Analysis
