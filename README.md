@@ -57,6 +57,7 @@
 - [x] [Amazon DocumentDB](documentdb.md) - MongoDB-compatible Document Database, Flexible Schema, JSON Documents
 - [x] [Amazon Timestream](amazon-timestream.md) - Time Series Database, IoT, DevOps Monitoring, Serverless
 - [x] [Database Scaling](database-scaling.md) - Vertical/Horizontal Scaling, Replication vs Sharding, NoSQL Data Modeling (Embed vs Reference), Consistency Deep-Dive, SQL vs MongoDB vs DynamoDB
+- [x] [Consistent Hashing](consistent-hashing.md) - Hash Ring, Virtual Nodes, Distributed Data Partitioning, DynamoDB/Redis/ELB
 
 ## Migration
 
