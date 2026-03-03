@@ -112,20 +112,20 @@ graph TB
 │                     MONITORING vs AUDIT vs ADVISORY                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  📊 MONITORING (Real-time)       📝 AUDIT (Historical)                    │
+│  📊 MONITORING (Real-time)       📝 AUDIT (Historical)                      │
 │  ════════════════════════        ════════════════════                       │
-│  "Hệ thống đang chạy sao?"      "Ai đã làm gì? Đúng chuẩn ko?"          │
+│  "Hệ thống đang chạy sao?"      "Ai đã làm gì? Đúng chuẩn ko?"              │
 │                                                                             │
-│  • CloudWatch  → Metrics/Logs    • CloudTrail → API logs                   │
-│  • X-Ray       → Traces          • Config     → Compliance                 │
+│  • CloudWatch  → Metrics/Logs    • CloudTrail → API logs                    │
+│  • X-Ray       → Traces          • Config     → Compliance                  │
 │                                                                             │
-│  💡 ADVISORY (Recommendations)   🚨 RESPONSE (Automation)                 │
+│  💡 ADVISORY (Recommendations)   🚨 RESPONSE (Automation)                   │
 │  ════════════════════════════    ════════════════════════                   │
-│  "Có gì cần cải thiện?"         "Tự động xử lý khi có vấn đề"            │
+│  "Có gì cần cải thiện?"         "Tự động xử lý khi có vấn đề"               │
 │                                                                             │
-│  • Trusted Advisor → 5 pillars   • EventBridge → Route events             │
-│  • Health Dashboard → Incidents  • SNS         → Notify                    │
-│  • Compute Optimizer → Sizing    • Lambda      → Auto-remediate            │
+│  • Trusted Advisor → 5 pillars   • EventBridge → Route events               │
+│  • Health Dashboard → Incidents  • SNS         → Notify                     │
+│  • Compute Optimizer → Sizing    • Lambda      → Auto-remediate             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -188,18 +188,18 @@ graph TB
 │  📊 CLOUDWATCH KEY POINTS                                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ⚠️ EC2 Default Metrics:                                                   │
-│  ├── ✅ CÓ sẵn: CPU, Network, Disk I/O, Status Checks                     │
-│  ├── ❌ KHÔNG có: Memory, Disk space (cần CloudWatch Agent)                │
-│  └── Default period: 5 phút (Detailed: 1 phút, có phí)                    │
+│  ⚠️ EC2 Default Metrics:                                                    │
+│  ├── ✅ CÓ sẵn: CPU, Network, Disk I/O, Status Checks                       │
+│  ├── ❌ KHÔNG có: Memory, Disk space (cần CloudWatch Agent)                 │
+│  └── Default period: 5 phút (Detailed: 1 phút, có phí)                      │
 │                                                                             │
-│  🔔 Alarm States: OK → ALARM → INSUFFICIENT_DATA                          │
+│  🔔 Alarm States: OK → ALARM → INSUFFICIENT_DATA                            │
 │                                                                             │
-│  📋 Log Retention: Mặc định NEVER EXPIRE (phải set manually)              │
+│  📋 Log Retention: Mặc định NEVER EXPIRE (phải set manually)                │
 │                                                                             │
-│  📈 High-Resolution Metrics: Xuống tới 1 giây (custom metrics)            │
+│  📈 High-Resolution Metrics: Xuống tới 1 giây (custom metrics)              │
 │                                                                             │
-│  💡 Composite Alarms: Kết hợp nhiều alarms bằng AND/OR                    │
+│  💡 Composite Alarms: Kết hợp nhiều alarms bằng AND/OR                      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -375,29 +375,29 @@ graph LR
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  🔍 X-RAY KEY CONCEPTS                                                     │
+│  🔍 X-RAY KEY CONCEPTS                                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  Trace    = Toàn bộ journey của 1 request (end-to-end)                     │
-│  Segment  = 1 service xử lý request đó                                     │
-│  Subsegment = Chi tiết bên trong segment (DB call, HTTP call)              │
+│  Trace    = Toàn bộ journey của 1 request (end-to-end)                      │
+│  Segment  = 1 service xử lý request đó                                      │
+│  Subsegment = Chi tiết bên trong segment (DB call, HTTP call)               │
 │                                                                             │
-│  ┌─── TRACE ─────────────────────────────────────────────────────────┐     │
-│  │                                                                    │     │
-│  │  ┌─ Segment: API GW ─┐ ┌─ Segment: Lambda ──────────────────┐   │     │
-│  │  │    12ms            │ │    45ms                              │   │     │
-│  │  └────────────────────┘ │  ┌─ Sub: DynamoDB ─┐                │   │     │
-│  │                         │  │    8ms           │                │   │     │
-│  │                         │  └──────────────────┘                │   │     │
-│  │                         │  ┌─ Sub: SQS ──────┐                │   │     │
-│  │                         │  │    3ms           │                │   │     │
-│  │                         │  └──────────────────┘                │   │     │
-│  │                         └─────────────────────────────────────────┘     │
-│  └────────────────────────────────────────────────────────────────────┘     │
+│  ┌─── TRACE ─────────────────────────────────────────────────────────┐      │
+│  │                                                                   │      │
+│  │  ┌─ Segment: API GW  ─┐ ┌─ Segment: Lambda ──────────────────┐    │      │
+│  │  │    12ms            │ │    45ms                            │    │      │
+│  │  └────────────────────┘ │  ┌─ Sub: DynamoDB ─┐               │    │      │
+│  │                         │  │    8ms          │               │    │      │
+│  │                         │  └─────────────────┘               │    │      │
+│  │                         │  ┌─ Sub: SQS ──────┐               │    │      │
+│  │                         │  │    3ms          │               │    │      │
+│  │                         │  └─────────────────┘               │    │      │
+│  │                         └────────────────────────────────────┘    │      |
+│  └───────────────────────────────────────────────────────────────────┘      │
 │                                                                             │
-│  Annotations = Key-value pairs để SEARCH traces                            │
-│  Metadata    = Key-value pairs KHÔNG searchable (thêm context)             │
-│  Sampling    = Chỉ trace 1 phần requests (tiết kiệm cost)                 │
+│  Annotations = Key-value pairs để SEARCH traces                             │
+│  Metadata    = Key-value pairs KHÔNG searchable (thêm context)              │
+│  Sampling    = Chỉ trace 1 phần requests (tiết kiệm cost)                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -525,37 +525,37 @@ graph TB
 │                    MONITORING & AUDIT BEST PRACTICES                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  1️⃣  CLOUDWATCH                                                            │
-│  ├── ✅ Cài CloudWatch Agent cho Memory & Disk metrics                     │
-│  ├── ✅ Set Alarms cho critical metrics (CPU, Memory, Error rate)          │
-│  ├── ✅ Dùng Composite Alarms tránh false positives                        │
-│  ├── ✅ Set Log Retention (tránh lưu vĩnh viễn tốn phí)                   │
-│  └── ✅ Dùng Logs Insights để query thay vì đọc raw logs                  │
+│  1️⃣  CLOUDWATCH                                                             │
+│  ├── ✅ Cài CloudWatch Agent cho Memory & Disk metrics                      │
+│  ├── ✅ Set Alarms cho critical metrics (CPU, Memory, Error rate)           │
+│  ├── ✅ Dùng Composite Alarms tránh false positives                         │
+│  ├── ✅ Set Log Retention (tránh lưu vĩnh viễn tốn phí)                     │
+│  └── ✅ Dùng Logs Insights để query thay vì đọc raw logs                    │
 │                                                                             │
-│  2️⃣  CLOUDTRAIL                                                            │
-│  ├── ✅ Enable cho ALL REGIONS (không chỉ region đang dùng)               │
-│  ├── ✅ Lưu logs vào S3 với encryption + versioning                        │
-│  ├── ✅ Enable Log File Validation (chống tamper)                          │
-│  ├── ✅ Enable Insights cho unusual activity detection                     │
-│  └── ❌ KHÔNG tắt CloudTrail (audit requirement)                           │
+│  2️⃣  CLOUDTRAIL                                                             │
+│  ├── ✅ Enable cho ALL REGIONS (không chỉ region đang dùng)                 │
+│  ├── ✅ Lưu logs vào S3 với encryption + versioning                         │
+│  ├── ✅ Enable Log File Validation (chống tamper)                           │
+│  ├── ✅ Enable Insights cho unusual activity detection                      │
+│  └── ❌ KHÔNG tắt CloudTrail (audit requirement)                            │
 │                                                                             │
-│  3️⃣  AWS CONFIG                                                            │
-│  ├── ✅ Enable cho tất cả resource types                                   │
-│  ├── ✅ Dùng Conformance Packs cho compliance frameworks                   │
-│  ├── ✅ Set up Auto Remediation cho critical rules                         │
-│  └── ✅ Dùng Aggregator cho multi-account visibility                      │
+│  3️⃣  AWS CONFIG                                                             │
+│  ├── ✅ Enable cho tất cả resource types                                    │
+│  ├── ✅ Dùng Conformance Packs cho compliance frameworks                    │
+│  ├── ✅ Set up Auto Remediation cho critical rules                          │
+│  └── ✅ Dùng Aggregator cho multi-account visibility                        │
 │                                                                             │
-│  4️⃣  X-RAY                                                                │
-│  ├── ✅ Enable cho production workloads                                    │
-│  ├── ✅ Dùng Sampling Rules (không trace 100% requests)                    │
-│  ├── ✅ Thêm Annotations cho searchable metadata                          │
-│  └── ✅ Kết hợp với CloudWatch ServiceLens                                │
+│  4️⃣  X-RAY                                                                  │
+│  ├── ✅ Enable cho production workloads                                     │
+│  ├── ✅ Dùng Sampling Rules (không trace 100% requests)                     │
+│  ├── ✅ Thêm Annotations cho searchable metadata                            │
+│  └── ✅ Kết hợp với CloudWatch ServiceLens                                  │
 │                                                                             │
-│  5️⃣  GENERAL                                                               │
-│  ├── ✅ Dùng EventBridge để kết nối tất cả services                       │
-│  ├── ✅ Centralized logging account (Organizations)                        │
-│  ├── ✅ Set up automated responses cho security events                     │
-│  └── ✅ Review dashboards và reports định kỳ                              │
+│  5️⃣  GENERAL                                                                │
+│  ├── ✅ Dùng EventBridge để kết nối tất cả services                         │
+│  ├── ✅ Centralized logging account (Organizations)                         │
+│  ├── ✅ Set up automated responses cho security events                      │
+│  └── ✅ Review dashboards và reports định kỳ                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

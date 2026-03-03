@@ -336,7 +336,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Decision Guide                               │
+│                     Decision Guide                              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Dùng Secrets Manager khi:                                      │
@@ -350,7 +350,7 @@
 │  ✅ Configuration values (không phải secrets)                   │
 │  ✅ Feature flags                                               │
 │  ✅ Budget constraint (free tier)                               │
-│  ✅ Hierarchical organization (/app/prod/db/host)              │
+│  ✅ Hierarchical organization (/app/prod/db/host)               │
 │  ✅ Không cần rotation                                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -367,10 +367,10 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│           Cách 1: Secrets Manager (Username/Password)                        │
+│           Cách 1: Secrets Manager (Username/Password)                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  App ──► Secrets Manager ──► Get credentials ──► Connect RDS với password  │
+│  App ──► Secrets Manager ──► Get credentials ──► Connect RDS với password   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -378,7 +378,7 @@
 │           Cách 2: IAM Database Authentication (Không password!)             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  App ──► IAM Role ──► Generate Auth Token ──► Connect RDS với token        │
+│  App ──► IAM Role ──► Generate Auth Token ──► Connect RDS với token         │
 │                                                                             │
 │  ✅ Không cần Secrets Manager!                                              │
 │  ✅ Không cần lưu password!                                                 │

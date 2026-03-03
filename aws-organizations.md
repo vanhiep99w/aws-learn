@@ -43,7 +43,7 @@ Với Organizations, bạn có thể:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AWS Organizations                                  │
+│                           AWS Organizations                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │                              ┌─────────────┐                                │
@@ -63,9 +63,9 @@ Với Organizations, bạn có thể:
 │               │  Account  │  │  Account  │  │           │                   │
 │               └───────────┘  └───────────┘  └───────────┘                   │
 │                                                                             │
-│    ┌─────────────────────────────────────────────────────────────────┐     │
-│    │  Policies: SCPs, RCPs, Tag Policies, Backup Policies, etc.      │     │
-│    └─────────────────────────────────────────────────────────────────┘     │
+│    ┌─────────────────────────────────────────────────────────────────┐      │
+│    │  Policies: SCPs, RCPs, Tag Policies, Backup Policies, etc.      │      │
+│    └─────────────────────────────────────────────────────────────────┘      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -76,29 +76,29 @@ Với Organizations, bạn có thể:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         ORGANIZATION                                 │
+│                         ORGANIZATION                                │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │                          ROOT                                  │  │
+│  │                          ROOT                                 │  │
 │  │  ┌─────────────────────────────────────────────────────────┐  │  │
-│  │  │              Management Account (Payer)                  │  │  │
-│  │  │  • Owns the organization                                 │  │  │
-│  │  │  • Consolidated billing                                  │  │  │
-│  │  │  • Apply SCPs (but NOT affected by SCPs)                 │  │  │
+│  │  │              Management Account (Payer)                 │  │  │
+│  │  │  • Owns the organization                                │  │  │
+│  │  │  • Consolidated billing                                 │  │  │
+│  │  │  • Apply SCPs (but NOT affected by SCPs)                │  │  │
 │  │  └─────────────────────────────────────────────────────────┘  │  │
-│  │                              │                                 │  │
+│  │                              │                                │  │
 │  │          ┌───────────────────┼───────────────────┐            │  │
 │  │          ▼                   ▼                   ▼            │  │
-│  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    │  │
-│  │  │  OU: Prod    │    │  OU: Dev     │    │  OU: Security│    │  │
-│  │  │  ┌────────┐  │    │  ┌────────┐  │    │  ┌────────┐  │    │  │
-│  │  │  │Account1│  │    │  │Account3│  │    │  │Log     │  │    │  │
-│  │  │  └────────┘  │    │  └────────┘  │    │  │Archive │  │    │  │
-│  │  │  ┌────────┐  │    │  ┌────────┐  │    │  └────────┘  │    │  │
-│  │  │  │Account2│  │    │  │Account4│  │    │  ┌────────┐  │    │  │
-│  │  │  └────────┘  │    │  └────────┘  │    │  │Security│  │    │  │
-│  │  └──────────────┘    └──────────────┘    │  │Audit   │  │    │  │
-│  │                                          │  └────────┘  │    │  │
-│  │                                          └──────────────┘    │  │
+│  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐     │  │
+│  │  │  OU: Prod    │    │  OU: Dev     │    │  OU: Security│     │  │
+│  │  │  ┌────────┐  │    │  ┌────────┐  │    │  ┌────────┐  │     │  │
+│  │  │  │Account1│  │    │  │Account3│  │    │  │Log     │  │     │  │
+│  │  │  └────────┘  │    │  └────────┘  │    │  │Archive │  │     │  │
+│  │  │  ┌────────┐  │    │  ┌────────┐  │    │  └────────┘  │     │  │
+│  │  │  │Account2│  │    │  │Account4│  │    │  ┌────────┐  │     │  │
+│  │  │  └────────┘  │    │  └────────┘  │    │  │Security│  │     │  │
+│  │  └──────────────┘    └──────────────┘    │  │Audit   │  │     │  │
+│  │                                          │  └────────┘  │     │  │
+│  │                                          └──────────────┘     │  │
 │  └───────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -191,37 +191,37 @@ AWS Organizations hỗ trợ 2 feature sets:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Feature Sets Comparison                              │
+│                         Feature Sets Comparison                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Consolidated Billing Only              All Features                       │
-│   ┌─────────────────────────────┐       ┌─────────────────────────────┐    │
-│   │                             │       │                             │    │
-│   │  💰 BILLING ONLY            │       │  💰 BILLING                 │    │
-│   │  ────────────────────────   │       │  ────────────────────────   │    │
-│   │  • Single bill              │       │  • Single bill              │    │
-│   │  • Volume discounts         │       │  • Volume discounts         │    │
-│   │  • Share RIs                │       │  • Share RIs                │    │
-│   │  • Share Savings Plans      │       │  • Share Savings Plans      │    │
-│   │                             │       │                             │    │
-│   │                             │       │  🔐 GOVERNANCE              │    │
-│   │                             │       │  ────────────────────────   │    │
-│   │  ❌ No SCPs                 │       │  • SCPs                     │    │
-│   │  ❌ No RCPs                 │       │  • RCPs                     │    │
-│   │  ❌ No Tag Policies         │       │  • Tag Policies             │    │
-│   │  ❌ No Backup Policies      │       │  • Backup Policies          │    │
-│   │                             │       │                             │    │
-│   │                             │       │  🔗 INTEGRATIONS            │    │
-│   │                             │       │  ────────────────────────   │    │
-│   │  ❌ No service integrations │       │  • GuardDuty                │    │
-│   │                             │       │  • Security Hub             │    │
-│   │                             │       │  • CloudTrail Org           │    │
-│   │                             │       │  • IAM Identity Center      │    │
-│   │                             │       │  • + 50 more services       │    │
-│   └─────────────────────────────┘       └─────────────────────────────┘    │
+│   ┌─────────────────────────────┐       ┌─────────────────────────────┐     │
+│   │                             │       │                             │     │
+│   │  💰 BILLING ONLY            │       │  💰 BILLING                 │     │
+│   │  ────────────────────────   │       │  ────────────────────────   │     │
+│   │  • Single bill              │       │  • Single bill              │     │
+│   │  • Volume discounts         │       │  • Volume discounts         │     │
+│   │  • Share RIs                │       │  • Share RIs                │     │
+│   │  • Share Savings Plans      │       │  • Share Savings Plans      │     │
+│   │                             │       │                             │     │
+│   │                             │       │  🔐 GOVERNANCE              │     │
+│   │                             │       │  ────────────────────────   │     │
+│   │  ❌ No SCPs                 │       │  • SCPs                     │     │
+│   │  ❌ No RCPs                 │       │  • RCPs                     │     │
+│   │  ❌ No Tag Policies         │       │  • Tag Policies             │     │
+│   │  ❌ No Backup Policies      │       │  • Backup Policies          │     │
+│   │                             │       │                             │     │
+│   │                             │       │  🔗 INTEGRATIONS            │     │
+│   │                             │       │  ────────────────────────   │     │
+│   │  ❌ No service integrations │       │  • GuardDuty                │     │
+│   │                             │       │  • Security Hub             │     │
+│   │                             │       │  • CloudTrail Org           │     │
+│   │                             │       │  • IAM Identity Center      │     │
+│   │                             │       │  • + 50 more services       │     │
+│   └─────────────────────────────┘       └─────────────────────────────┘     │
 │                                                                             │
 │   ⚠️ Legacy mode                        ✅ Recommended                      │
-│   (Không nên sử dụng cho new orgs)      (Default cho new organizations)    │
+│   (Không nên sử dụng cho new orgs)      (Default cho new organizations)     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -264,13 +264,13 @@ Nếu organization của bạn đang ở mode **Consolidated Billing Only**, b�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Organization Policies                                 │
+│                        Organization Policies                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │                    AUTHORIZATION POLICIES                              │  │
-│  │  Kiểm soát quyền truy cập                                              │  │
-│  │                                                                        │  │
+│  │                    AUTHORIZATION POLICIES                             │  │
+│  │  Kiểm soát quyền truy cập                                             │  │
+│  │                                                                       │  │
 │  │  ┌─────────────────────────┐     ┌─────────────────────────┐          │  │
 │  │  │  Service Control        │     │  Resource Control       │          │  │
 │  │  │  Policies (SCPs)        │     │  Policies (RCPs)        │          │  │
@@ -281,13 +281,13 @@ Nếu organization của bạn đang ở mode **Consolidated Billing Only**, b�
 │  └───────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │                    MANAGEMENT POLICIES                                 │  │
-│  │  Cấu hình và quản lý AWS services                                      │  │
-│  │                                                                        │  │
+│  │                    MANAGEMENT POLICIES                                │  │
+│  │  Cấu hình và quản lý AWS services                                     │  │
+│  │                                                                       │  │
 │  │  • Backup Policies        • Tag Policies                              │  │
 │  │  • AI Services Opt-out    • Chat Applications Policies                │  │
 │  │  • Declarative Policies   • Security Hub Policies                     │  │
-│  │  • Amazon Inspector       • Amazon Bedrock Policies                    │  │
+│  │  • Amazon Inspector       • Amazon Bedrock Policies                   │  │
 │  └───────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -306,7 +306,7 @@ Nếu organization của bạn đang ở mode **Consolidated Billing Only**, b�
 **SCPs đặt ra "trần" (ceiling)** cho những permissions mà IAM users/roles **có thể có** - nhưng **KHÔNG tự động cấp** permissions đó.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    EFFECTIVE PERMISSIONS                         │
 │                                                                  │
 │   ┌─────────────┐                                                │
@@ -325,7 +325,7 @@ Nếu organization của bạn đang ở mode **Consolidated Billing Only**, b�
 │   ║  EFFECTIVE  ║  = Intersection của SCP và IAM Policy          │
 │   ║ PERMISSIONS ║                                                │
 │   ╚═════════════╝                                                │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Ví dụ cụ thể
@@ -666,10 +666,10 @@ Ví dụ thực tế:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  AWS mặc định:                                                              │
-│  → Có thể dùng data từ Lex, Polly, Rekognition để improve AI models        │
+│  → Có thể dùng data từ Lex, Polly, Rekognition để improve AI models         │
 │                                                                             │
 │  Với Opt-out Policy:                                                        │
-│  → Bạn có thể nói "KHÔNG, đừng dùng data của tôi để train AI"              │
+│  → Bạn có thể nói "KHÔNG, đừng dùng data của tôi để train AI"               │
 │  → Apply cho toàn bộ organization                                           │
 │  → Quan trọng cho compliance (GDPR, HIPAA, etc.)                            │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -742,7 +742,7 @@ Ví dụ thực tế:
 │                                                                             │
 │  Với Policy bạn có thể:                                                     │
 │  • Enable Security Hub cho tất cả accounts                                  │
-│  • Chọn security standards nào cần comply (CIS, PCI-DSS, etc.)             │
+│  • Chọn security standards nào cần comply (CIS, PCI-DSS, etc.)              │
 │  • Aggregate findings về delegated admin account                            │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -781,29 +781,29 @@ Ví dụ thực tế:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    CONSOLIDATED BILLING                          │
-│                                                                  │
+│                    CONSOLIDATED BILLING                         │
+│                                                                 │
 │  ┌─────────────────┐                                            │
-│  │ Management      │ ◄─── Receives ONE combined bill             │
+│  │ Management      │ ◄─── Receives ONE combined bill            │
 │  │ Account (Payer) │                                            │
 │  └────────┬────────┘                                            │
-│           │                                                      │
-│    Aggregates usage from:                                        │
-│           │                                                      │
+│           │                                                     │
+│    Aggregates usage from:                                       │
+│           │                                                     │
 │  ┌────────┼────────┬──────────────┬──────────────┐              │
 │  ▼        ▼        ▼              ▼              ▼              │
-│ ┌───┐   ┌───┐    ┌───┐         ┌───┐         ┌───┐             │
-│ │Dev│   │Stg│    │Prod│        │QA │         │DR │             │
-│ │$50│   │$30│    │$500│        │$20│         │$100│            │
-│ └───┘   └───┘    └───┘         └───┘         └───┘             │
-│                                                                  │
+│ ┌───┐   ┌───┐    ┌───┐         ┌───┐         ┌───┐              │
+│ │Dev│   │Stg│    │Prod│        │QA │         │DR │              │
+│ │$50│   │$30│    │$500│        │$20│         │$100│             │
+│ └───┘   └───┘    └───┘         └───┘         └───┘              │
+│                                                                 │
 │ TOTAL = $50 + $30 + $500 + $20 + $100 = $700/month              │
-│                                                                  │
-│ BENEFITS:                                                        │
-│ • Volume discounts (aggregated usage)                            │
-│ • Shared Reserved Instances                                      │
-│ • Shared Savings Plans                                           │
-│ • Single payment method                                          │
+│                                                                 │
+│ BENEFITS:                                                       │
+│ • Volume discounts (aggregated usage)                           │
+│ • Shared Reserved Instances                                     │
+│ • Shared Savings Plans                                          │
+│ • Single payment method                                         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -852,22 +852,22 @@ Khi một service **integrate với Organizations**, nghĩa là service đó có
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        2-Step Process                                        │
+│                        2-Step Process                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   BƯỚC 1: Enable Trusted Access (Organizations Console)                    │
+│   BƯỚC 1: Enable Trusted Access (Organizations Console)                     │
 │   ─────────────────────────────────────────────────────────                 │
-│   → Cho phép service có quyền hoạt động ở cấp organization                 │
-│   → Chỉ là "mở cửa" cho service thôi, CHƯA BẬT service                     │
+│   → Cho phép service có quyền hoạt động ở cấp organization                  │
+│   → Chỉ là "mở cửa" cho service thôi, CHƯA BẬT service                      │
 │                                                                             │
 │                              ↓                                              │
 │                                                                             │
-│   BƯỚC 2: Enable/Configure (Service Console)                               │
+│   BƯỚC 2: Enable/Configure (Service Console)                                │
 │   ─────────────────────────────────────────────────────────                 │
-│   → Vào console của service đó (GuardDuty, Security Hub, etc.)             │
+│   → Vào console của service đó (GuardDuty, Security Hub, etc.)              │
 │   → Enable organization-wide                                                │
 │   → Configure settings                                                      │
-│   → Bây giờ mới THỰC SỰ bật!                                               │
+│   → Bây giờ mới THỰC SỰ bật!                                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -906,15 +906,15 @@ Scenario: Công ty có 50 accounts
 
 KHÔNG có Organizations Integration:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  → Phải enable GuardDuty trong 50 accounts RIÊNG LẺ                        │
-│  → Phải check security findings ở 50 dashboards KHÁC NHAU                  │
+│  → Phải enable GuardDuty trong 50 accounts RIÊNG LẺ                         │
+│  → Phải check security findings ở 50 dashboards KHÁC NHAU                   │
 │  → 😱 Nightmare management!                                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 VỚI Organizations Integration:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  → Enable GuardDuty 1 LẦN từ management account                            │
-│  → Tất cả findings aggregate về 1 DASHBOARD                                │
+│  → Enable GuardDuty 1 LẦN từ management account                             │
+│  → Tất cả findings aggregate về 1 DASHBOARD                                 │
 │  → Delegate Security Team account làm admin                                 │
 │  → 😊 Easy centralized management!                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -924,7 +924,7 @@ VỚI Organizations Integration:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Delegated Administrator                               │
+│                        Delegated Administrator                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │    ┌─────────────────────┐                                                  │
@@ -937,13 +937,13 @@ VỚI Organizations Integration:
 │               │                                                             │
 │               │ Delegate                                                    │
 │               ▼                                                             │
-│    ┌─────────────────────┐     ┌─────────────────────────────────────────┐ │
-│    │  Security Account   │     │  Benefits:                              │ │
-│    │  (Delegated Admin)  │     │  • Giảm tải cho Management Account     │ │
-│    │                     │     │  • Phân quyền theo chuyên môn          │ │
-│    │  → Manages Security │     │  • Separation of duties                 │ │
-│    │    Hub for all      │     │  • Better security                      │ │
-│    │    member accounts  │     └─────────────────────────────────────────┘ │
+│    ┌─────────────────────┐     ┌─────────────────────────────────────────┐  │
+│    │  Security Account   │     │  Benefits:                              │  │
+│    │  (Delegated Admin)  │     │  • Giảm tải cho Management Account      │  │
+│    │                     │     │  • Phân quyền theo chuyên môn           │  │
+│    │  → Manages Security │     │  • Separation of duties                 │  │
+│    │    Hub for all      │     │  • Better security                      │  │
+│    │    member accounts  │     └─────────────────────────────────────────┘  │
 │    └─────────────────────┘                                                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -964,13 +964,13 @@ VỚI Organizations Integration:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Account Lifecycle                                    │
+│                         Account Lifecycle                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────┐    ┌─────────┐    ┌─────────────┐    ┌───────────────────┐    │
-│  │ Create  │ →  │ Active  │ →  │ Suspended   │ →  │ Closed/Removed    │    │
-│  │         │    │         │    │ (90 days)   │    │                   │    │
-│  └─────────┘    └─────────┘    └─────────────┘    └───────────────────┘    │
+│  ┌─────────┐    ┌─────────┐    ┌─────────────┐    ┌───────────────────┐     │
+│  │ Create  │ →  │ Active  │ →  │ Suspended   │ →  │ Closed/Removed    │     │
+│  │         │    │         │    │ (90 days)   │    │                   │     │
+│  └─────────┘    └─────────┘    └─────────────┘    └───────────────────┘     │
 │                                                                             │
 │  Khi tạo account mới trong Organizations:                                   │
 │  • Email unique cho root user                                               │
@@ -1066,21 +1066,21 @@ Root
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          SCP Best Practices                                  │
+│                          SCP Best Practices                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ✅ DO:                                                                     │
-│     • Test SCPs trong sandbox trước khi apply production                   │
-│     • Use deny-list strategy (mặc định allow all, deny specific)           │
-│     • Attach FullAWSAccess ở root                                          │
+│     • Test SCPs trong sandbox trước khi apply production                    │
+│     • Use deny-list strategy (mặc định allow all, deny specific)            │
+│     • Attach FullAWSAccess ở root                                           │
 │     • Document all SCPs                                                     │
 │     • Version control SCP JSON                                              │
 │                                                                             │
 │  ❌ DON'T:                                                                  │
-│     • Rely solely on SCPs cho security (vẫn cần IAM policies)              │
+│     • Rely solely on SCPs cho security (vẫn cần IAM policies)               │
 │     • Lock yourself out (always test first)                                 │
 │     • Forget that Management Account is exempt                              │
-│     • Remove FullAWSAccess without replacement allow policy                │
+│     • Remove FullAWSAccess without replacement allow policy                 │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

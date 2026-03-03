@@ -26,19 +26,19 @@ AWS IAM sử dụng **JSON documents** để định nghĩa permissions. Có **6
 │                         IAM Policy Types Overview                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  1. Identity-based Policies  → Gắn vào Users, Groups, Roles       │   │
-│   ├─────────────────────────────────────────────────────────────────────┤   │
-│   │  2. Resource-based Policies  → Gắn vào Resources (S3, SQS...)     │   │
-│   ├─────────────────────────────────────────────────────────────────────┤   │
-│   │  3. Permissions Boundaries   → Giới hạn max permissions           │   │
-│   ├─────────────────────────────────────────────────────────────────────┤   │
-│   │  4. Organizations SCPs       → Giới hạn quyền cho Account/OU      │   │
-│   ├─────────────────────────────────────────────────────────────────────┤   │
-│   │  5. Access Control Lists     → Cross-account access (legacy)       │   │
-│   ├─────────────────────────────────────────────────────────────────────┤   │
-│   │  6. Session Policies         → Giới hạn quyền của session tạm      │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  1. Identity-based Policies  → Gắn vào Users, Groups, Roles         │    │
+│   ├─────────────────────────────────────────────────────────────────────┤    │
+│   │  2. Resource-based Policies  → Gắn vào Resources (S3, SQS...)       │    │
+│   ├─────────────────────────────────────────────────────────────────────┤    │
+│   │  3. Permissions Boundaries   → Giới hạn max permissions             │    │
+│   ├─────────────────────────────────────────────────────────────────────┤    │
+│   │  4. Organizations SCPs       → Giới hạn quyền cho Account/OU        │    │
+│   ├─────────────────────────────────────────────────────────────────────┤    │
+│   │  5. Access Control Lists     → Cross-account access (legacy)        │    │
+│   ├─────────────────────────────────────────────────────────────────────┤    │
+│   │  6. Session Policies         → Giới hạn quyền của session tạm       │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -205,9 +205,9 @@ Gắn vào USER/ROLE                Gắn vào RESOURCE
 KHÔNG có "Principal"             CÓ "Principal" (ai được access)
 "User A được làm gì?"           "Resource X cho phép ai?"
 
-    ┌──────────┐                     ┌──────────┐
+    ┌──────────┐                     ┌───────────┐
     │  User A  │──── Policy          │  S3 Bucket│──── Bucket Policy
-    └──────────┘  "Được đọc S3"      └──────────┘  "Account B được đọc"
+    └──────────┘  "Được đọc S3"      └───────────┘  "Account B được đọc"
 ```
 
 > [!IMPORTANT]
@@ -221,24 +221,24 @@ KHÔNG có "Principal"             CÓ "Principal" (ai được access)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Permissions Boundary                                  │
+│                         Permissions Boundary                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Identity Policy cho phép:     Permissions Boundary cho phép:               │
-│   ┌───────────────────────┐     ┌───────────────────────┐                   │
+│   ┌───────────────────────┐     ┌────────────────────────┐                   │
 │   │  S3:*                 │     │  S3:GetObject          │                   │
 │   │  EC2:*                │     │  S3:ListBucket         │                   │
 │   │  DynamoDB:*           │     │  EC2:Describe*         │                   │
-│   └───────────────────────┘     └───────────────────────┘                   │
+│   └───────────────────────┘     └────────────────────────┘                   │
 │                                                                              │
 │   Effective permissions = INTERSECTION (phần giao)                           │
 │   ┌───────────────────────┐                                                  │
-│   │  S3:GetObject      ✅ │  ← Có trong CẢ HAI                              │
-│   │  S3:ListBucket     ✅ │  ← Có trong CẢ HAI                              │
-│   │  EC2:Describe*     ✅ │  ← Có trong CẢ HAI                              │
-│   │  S3:PutObject      ❌ │  ← Boundary KHÔNG cho phép                      │
-│   │  EC2:RunInstances  ❌ │  ← Boundary KHÔNG cho phép                      │
-│   │  DynamoDB:*        ❌ │  ← Boundary KHÔNG cho phép                      │
+│   │  S3:GetObject      ✅ │  ← Có trong CẢ HAI                               │
+│   │  S3:ListBucket     ✅ │  ← Có trong CẢ HAI                               │
+│   │  EC2:Describe*     ✅ │  ← Có trong CẢ HAI                               │
+│   │  S3:PutObject      ❌ │  ← Boundary KHÔNG cho phép                       │
+│   │  EC2:RunInstances  ❌ │  ← Boundary KHÔNG cho phép                       │
+│   │  DynamoDB:*        ❌ │  ← Boundary KHÔNG cho phép                       │
 │   └───────────────────────┘                                                  │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -371,19 +371,19 @@ S3 ACLs cho phép:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          Session Policies                                     │
+│                          Session Policies                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Khi assume role, bạn có thể truyền thêm Session Policy:                   │
+│   Khi assume role, bạn có thể truyền thêm Session Policy:                    │
 │                                                                              │
 │   Role's Permission Policy:    Session Policy:                               │
-│   ┌───────────────────────┐    ┌───────────────────────┐                    │
+│   ┌───────────────────────┐    ┌────────────────────────┐                    │
 │   │  S3:*                 │    │  S3:GetObject          │                    │
 │   │  EC2:*                │    │  (chỉ bucket-A/*)      │                    │
-│   └───────────────────────┘    └───────────────────────┘                    │
+│   └───────────────────────┘    └────────────────────────┘                    │
 │                                                                              │
 │   Effective = INTERSECTION                                                   │
-│   → Chỉ được S3:GetObject trên bucket-A/*                                   │
+│   → Chỉ được S3:GetObject trên bucket-A/*                                    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -435,46 +435,46 @@ Effective Permissions = Grant ∩ Restrict (phần giao)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Complete Policy Evaluation Flow                             │
+│                    Complete Policy Evaluation Flow                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Request đến                                                                │
 │       │                                                                      │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 1. Explicit DENY anywhere? │──── Yes ─→ ❌ DENIED                       │
-│   │    (bất kỳ policy nào)     │                                            │
-│   └─────────────────────────────┘                                           │
+│   ┌─────────────────────────────┐                                            │
+│   │ 1. Explicit DENY anywhere?  │──── Yes ─→ ❌ DENIED                       │
+│   │    (bất kỳ policy nào)      │                                            │
+│   └─────────────────────────────┘                                            │
 │       │ No                                                                   │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 2. SCP allows?             │──── No ──→ ❌ DENIED (implicit)            │
+│   ┌─────────────────────────────┐                                            │
+│   │ 2. SCP allows?              │──── No ──→ ❌ DENIED (implicit)            │
 │   │    (nếu trong Org)          │                                            │
-│   └─────────────────────────────┘                                           │
+│   └─────────────────────────────┘                                            │
 │       │ Yes                                                                  │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 3. Resource-based policy   │──── Yes ─→ ✅ ALLOWED                      │
-│   │    allows? (nếu có)        │    (resource-based policy đủ)              │
-│   └─────────────────────────────┘                                           │
+│   ┌─────────────────────────────┐                                            │
+│   │ 3. Resource-based policy    │──── Yes ─→ ✅ ALLOWED                      │
+│   │    allows? (nếu có)         │    (resource-based policy đủ)              │
+│   └─────────────────────────────┘                                            │
 │       │ No / N/A                                                             │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 4. Identity-based policy   │──── No ──→ ❌ DENIED (implicit)            │
+│   ┌─────────────────────────────┐                                            │
+│   │ 4. Identity-based policy    │──── No ──→ ❌ DENIED (implicit)            │
 │   │    allows?                  │                                            │
-│   └─────────────────────────────┘                                           │
+│   └─────────────────────────────┘                                            │
 │       │ Yes                                                                  │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 5. Permissions Boundary    │──── No ──→ ❌ DENIED (implicit)            │
-│   │    allows? (nếu có)        │                                            │
-│   └─────────────────────────────┘                                           │
+│   ┌─────────────────────────────┐                                            │
+│   │ 5. Permissions Boundary     │──── No ──→ ❌ DENIED (implicit)            │
+│   │    allows? (nếu có)         │                                            │
+│   └─────────────────────────────┘                                            │
 │       │ Yes                                                                  │
 │       ▼                                                                      │
-│   ┌─────────────────────────────┐                                           │
-│   │ 6. Session policy allows?  │──── No ──→ ❌ DENIED (implicit)            │
+│   ┌─────────────────────────────┐                                            │
+│   │ 6. Session policy allows?   │──── No ──→ ❌ DENIED (implicit)            │
 │   │    (nếu có)                 │                                            │
-│   └─────────────────────────────┘                                           │
+│   └─────────────────────────────┘                                            │
 │       │ Yes                                                                  │
 │       ▼                                                                      │
 │   ✅ ALLOWED                                                                 │

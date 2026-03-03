@@ -51,16 +51,23 @@ graph TB
         IAM_AUTH["🛡️ IAM<br/>Users, Roles, Policies"]
     end
 
+    subgraph COMPLIANCE["📋 COMPLIANCE - Tuân thủ & Audit"]
+        ARTIFACT["📄 Artifact<br/>Download AWS Compliance Reports<br/>SOC, PCI, ISO, HIPAA BAA"]
+        AUDIT_MGR["📝 Audit Manager<br/>Automated Evidence Collection<br/>GDPR, HIPAA, PCI DSS Frameworks"]
+    end
+
     PERIMETER -->|"chặn trước"| DETECT
     DETECT -->|"phát hiện sau"| SECHUB
     ENCRYPT -.->|"mã hóa data"| KMS
-    SECRETS -.->|"dùng KMS encrypt"| KMS
+    SECRETS -.-|"dùng KMS encrypt"| KMS
+    DETECT -.-|"evidence cho"| AUDIT_MGR
 
     style PERIMETER fill:#3b1520,color:#ecf0f1,stroke:#e74c3c,stroke-width:2px
     style DETECT fill:#2c1810,color:#ecf0f1,stroke:#e67e22,stroke-width:2px
     style ENCRYPT fill:#1a332a,color:#ecf0f1,stroke:#2ecc71,stroke-width:2px
     style SECRETS fill:#1a2740,color:#ecf0f1,stroke:#3498db,stroke-width:2px
     style AUTH fill:#2c1830,color:#ecf0f1,stroke:#8e44ad,stroke-width:2px
+    style COMPLIANCE fill:#1a2740,color:#ecf0f1,stroke:#f39c12,stroke-width:2px
 
     style SHIELD fill:#c0392b,color:#fff,stroke:#e74c3c,stroke-width:2px
     style WAF fill:#943126,color:#fff,stroke:#e74c3c,stroke-width:2px
@@ -76,6 +83,8 @@ graph TB
     style SSM_PS fill:#1a5276,color:#fff,stroke:#2980b9,stroke-width:2px
     style COGNITO fill:#6c3483,color:#fff,stroke:#8e44ad,stroke-width:2px
     style IAM_AUTH fill:#6c3483,color:#fff,stroke:#8e44ad,stroke-width:2px
+    style ARTIFACT fill:#d4ac0d,color:#fff,stroke:#f1c40f,stroke-width:2px
+    style AUDIT_MGR fill:#b7950b,color:#fff,stroke:#f39c12,stroke-width:2px
 ```
 
 ### Bảng so sánh nhanh
@@ -93,6 +102,8 @@ graph TB
 | **ACM** | SSL/TLS certificates? | HTTPS cho ALB, CloudFront |
 | **Secrets Manager** | Lưu passwords? | DB credentials, API keys |
 | **Cognito** | User authentication? | Login, social auth, JWT |
+| **Artifact** | AWS compliance reports? | Download SOC, PCI, ISO certs từ AWS |
+| **Audit Manager** | Chuẩn bị audit? | Thu thập evidence tự động cho GDPR, HIPAA, PCI DSS |
 
 ---
 
@@ -482,6 +493,8 @@ graph TB
     Q -->|"User auth?"| A11["🧠 Cognito"]
     Q -->|"Tổng hợp findings?"| A12["📊 Security Hub"]
     Q -->|"WAF multi-account?"| A13["📋 Firewall Manager"]
+    Q -->|"AWS compliance<br/>reports/certs?"| A14["📄 Artifact<br/>Download SOC, PCI, ISO"]
+    Q -->|"Chuẩn bị audit<br/>evidence?"| A15["📝 Audit Manager<br/>Automated Evidence"]
 
     style Q fill:#6c3483,color:#fff,stroke:#8e44ad,stroke-width:3px
     style DDOS7 fill:#78281f,color:#fff,stroke:#c0392b,stroke-width:2px
@@ -501,6 +514,8 @@ graph TB
     style A11 fill:#6c3483,color:#fff,stroke:#8e44ad,stroke-width:2px
     style A12 fill:#6c3483,color:#fff,stroke:#8e44ad,stroke-width:2px
     style A13 fill:#78281f,color:#fff,stroke:#c0392b,stroke-width:2px
+    style A14 fill:#d4ac0d,color:#fff,stroke:#f1c40f,stroke-width:2px
+    style A15 fill:#b7950b,color:#fff,stroke:#f39c12,stroke-width:2px
 ```
 
 > [!NOTE]
@@ -527,6 +542,8 @@ graph TB
 | "Mobile access S3 directly?" | **Cognito Identity Pool** |
 | "Tổng hợp security findings?" | **Security Hub** |
 | "Quản lý WAF multi-account?" | **Firewall Manager** |
+| "Download AWS compliance reports?" | **Artifact** (AWS's certs) |
+| "Thu thập evidence cho audit?" | **Audit Manager** (YOUR compliance) |
 
 ---
 
@@ -648,6 +665,8 @@ graph TB
 > - **Inspector** = vulnerability scanning (CVE)
 > - **Macie** = PII discovery trong S3
 > - **Cognito** = user authentication (User Pool + Identity Pool)
+> - **Artifact** = download AWS's compliance reports (SOC, PCI, ISO)
+> - **Audit Manager** = thu thập evidence tự động cho YOUR audit
 
 > [!CAUTION]
 > **Dễ nhầm lẫn:**
@@ -659,6 +678,7 @@ graph TB
 > - User Pool vs Identity Pool? → UP = authentication / IP = AWS credentials
 > - ACM region cho CloudFront? → **us-east-1 ONLY!**
 > - SSE-S3 vs SSE-KMS? → KMS có audit trail + key control
+> - Artifact vs Audit Manager? → Artifact = AWS's reports / Audit Manager = YOUR evidence
 
 ---
 
@@ -674,5 +694,7 @@ graph TB
 - [Inspector chi tiết](./amazon-inspector.md)
 - [Macie chi tiết](./amazon-macie.md)
 - [Cognito chi tiết](./amazon-cognito.md)
+- [Artifact chi tiết](./aws-artifact.md)
+- [Audit Manager chi tiết](./aws-audit-manager.md)
 - [IAM Overview](./aws-iam-management-overview.md)
 - [Security Groups](./security-groups.md)

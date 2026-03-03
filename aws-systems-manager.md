@@ -86,7 +86,7 @@
 │   ┌─────────────────────┐                                                   │
 │   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                 │
 │   │   (trên cloud)      │                                                   │
-│   └──────────▲──────────┘                                                   │
+│   └──────────▲──────────┘                        p                           │
 │              │                                                               │
 │              │  WebSocket (Agent GỌI RA, giữ connection)                    │
 │              │                                                               │

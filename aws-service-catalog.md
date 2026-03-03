@@ -22,36 +22,36 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    KHÔNG có Service Catalog                                   │
+│                    KHÔNG có Service Catalog                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Developer muốn tạo EC2 + RDS:                                              │
 │                                                                              │
-│   ┌─────────────┐     "Anh ơi, em cần         ┌─────────────┐               │
-│   │  Developer  │ ─────────────────────────►  │    Ops/     │               │
-│   └─────────────┘     EC2 + RDS với spec      │    Admin    │               │
-│                       như này..."              └──────┬──────┘               │
-│                                                       │                      │
-│                                                       ▼                      │
-│   ❌ Mất thời gian chờ đợi                    ┌─────────────┐               │
-│   ❌ Ops phải làm thủ công                    │   Manual    │               │
-│   ❌ Dễ sai cấu hình                          │   Setup     │               │
-│   ❌ Không consistent                         └─────────────┘               │
+│   ┌─────────────┐     "Anh ơi, em cần         ┌─────────────┐                │
+│   │  Developer  │ ─────────────────────────►  │    Ops/     │                │
+│   └─────────────┘     EC2 + RDS với spec      │    Admin    │                │
+│                       như này..."             └──────┬──────┘                │
+│                                                      │                       │
+│                                                      ▼                       │
+│   ❌ Mất thời gian chờ đợi                    ┌─────────────┐                │
+│   ❌ Ops phải làm thủ công                    │   Manual    │                │
+│   ❌ Dễ sai cấu hình                          │   Setup     │                │
+│   ❌ Không consistent                         └─────────────┘                │
 │   ❌ Khó audit/track                                                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    CÓ Service Catalog                                         │
+│                    CÓ Service Catalog                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ┌─────────────┐                         ┌─────────────────────────────┐   │
+│   ┌─────────────┐                          ┌─────────────────────────────┐   │
 │   │  Developer  │ ───► Service Catalog ───►│  Pre-approved Templates     │   │
 │   └─────────────┘      (Self-service)      │                             │   │
-│                                             │  ☐ Web App (EC2+RDS)       │   │
-│   ✅ Self-service                          │  ☐ Data Analytics Stack    │   │
-│   ✅ Pre-approved, compliant               │  ☐ Dev Environment         │   │
-│   ✅ Consistent deployments                │  ☐ ML Training Env         │   │
+│                                            │  ☐ Web App (EC2+RDS)        │   │
+│   ✅ Self-service                          │  ☐ Data Analytics Stack     │   │
+│   ✅ Pre-approved, compliant               │  ☐ Dev Environment          │   │
+│   ✅ Consistent deployments                │  ☐ ML Training Env          │   │
 │   ✅ Automated                             └─────────────────────────────┘   │
 │   ✅ Easy to audit                                                           │
 │                                                                              │
@@ -76,40 +76,40 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     AWS Service Catalog Architecture                          │
+│                     AWS Service Catalog Architecture                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │                          ADMIN (IT/Platform Team)                            │
 │                                   │                                          │
 │                                   ▼                                          │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                         PORTFOLIO                                    │   │
-│   │   "Data Science Tools"                                               │   │
-│   │                                                                      │   │
-│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │   │
-│   │   │  PRODUCT 1  │  │  PRODUCT 2  │  │  PRODUCT 3  │                │   │
-│   │   │  ─────────  │  │  ─────────  │  │  ─────────  │                │   │
-│   │   │  SageMaker  │  │  EMR        │  │  Redshift   │                │   │
-│   │   │  Notebook   │  │  Cluster    │  │  Cluster    │                │   │
-│   │   │             │  │             │  │             │                │   │
-│   │   │ CFN Template│  │ CFN Template│  │ CFN Template│                │   │
-│   │   └─────────────┘  └─────────────┘  └─────────────┘                │   │
-│   │                                                                      │   │
-│   │   + Constraints (Launch, Template, Notification)                     │   │
-│   │   + Tags                                                             │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                         PORTFOLIO                                   │    │
+│   │   "Data Science Tools"                                              │    │
+│   │                                                                     │    │
+│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │    │
+│   │   │  PRODUCT 1  │  │  PRODUCT 2  │  │  PRODUCT 3  │                 │    │
+│   │   │  ─────────  │  │  ─────────  │  │  ─────────  │                 │    │
+│   │   │  SageMaker  │  │  EMR        │  │  Redshift   │                 │    │
+│   │   │  Notebook   │  │  Cluster    │  │  Cluster    │                 │    │
+│   │   │             │  │             │  │             │                 │    │
+│   │   │ CFN Template│  │ CFN Template│  │ CFN Template│                 │    │
+│   │   └─────────────┘  └─────────────┘  └─────────────┘                 │    │
+│   │                                                                     │    │
+│   │   + Constraints (Launch, Template, Notification)                    │    │
+│   │   + Tags                                                            │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                   │                                          │
 │                         Share with IAM Users/Groups                          │
 │                                   │                                          │
 │                                   ▼                                          │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                      END USERS (Developers)                          │   │
-│   │                                                                      │   │
-│   │   ┌───────────┐    Browse Catalog     ┌─────────────────────────┐   │   │
-│   │   │   User    │ ─────────────────────►│  Available Products     │   │   │
-│   │   └───────────┘    Launch Product     │  from shared Portfolios │   │   │
-│   │                                        └─────────────────────────┘   │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                      END USERS (Developers)                         │    │
+│   │                                                                     │    │
+│   │   ┌───────────┐    Browse Catalog     ┌─────────────────────────┐   │    │
+│   │   │   User    │ ─────────────────────►│  Available Products     │   │    │
+│   │   └───────────┘    Launch Product     │  from shared Portfolios │   │    │
+│   │                                       └─────────────────────────┘   │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -133,45 +133,45 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Service Catalog Workflow                              │
+│                         Service Catalog Workflow                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   STEP 1: Admin tạo Portfolio + Products                                     │
 │   ─────────────────────────────────────                                      │
 │                                                                              │
-│   ┌─────────────┐     ┌──────────────────────────────────────────────────┐  │
-│   │   Admin     │────►│  Portfolio: "Development Environments"           │  │
-│   └─────────────┘     │                                                  │  │
-│                       │  Products:                                       │  │
-│                       │  ├── Dev EC2 Instance (t3.micro - t3.large)     │  │
-│                       │  ├── Dev RDS MySQL (db.t3.micro)                │  │
-│                       │  └── Dev S3 Bucket (encrypted, versioned)       │  │
-│                       │                                                  │  │
-│                       │  Constraints:                                    │  │
-│                       │  └── Only us-east-1 and us-west-2               │  │
-│                       └──────────────────────────────────────────────────┘  │
+│   ┌─────────────┐     ┌──────────────────────────────────────────────────┐   │
+│   │   Admin     │────►│  Portfolio: "Development Environments"           │   │
+│   └─────────────┘     │                                                  │   │
+│                       │  Products:                                       │   │
+│                       │  ├── Dev EC2 Instance (t3.micro - t3.large)      │   │
+│                       │  ├── Dev RDS MySQL (db.t3.micro)                 │   │
+│                       │  └── Dev S3 Bucket (encrypted, versioned)        │   │
+│                       │                                                  │   │
+│                       │  Constraints:                                    │   │
+│                       │  └── Only us-east-1 and us-west-2                │   │
+│                       └──────────────────────────────────────────────────┘   │
 │                                                                              │
-│   STEP 2: Admin share Portfolio với Users/Groups                            │
-│   ──────────────────────────────────────────────                            │
+│   STEP 2: Admin share Portfolio với Users/Groups                             │
+│   ──────────────────────────────────────────────                             │
 │                                                                              │
 │   Portfolio ───────► IAM Group: "Developers"                                 │
 │                                                                              │
 │   STEP 3: User browse và launch Product                                      │
 │   ─────────────────────────────────────                                      │
 │                                                                              │
-│   ┌─────────────┐     ┌──────────────────────────────────────────────────┐  │
-│   │  Developer  │────►│  Service Catalog Console                         │  │
-│   └─────────────┘     │                                                  │  │
-│                       │  Available Products:                             │  │
-│                       │  ├── [Launch] Dev EC2 Instance                  │  │
-│                       │  ├── [Launch] Dev RDS MySQL                     │  │
-│                       │  └── [Launch] Dev S3 Bucket                     │  │
-│                       └──────────────────────────────────────────────────┘  │
+│   ┌─────────────┐     ┌──────────────────────────────────────────────────┐   │
+│   │  Developer  │────►│  Service Catalog Console                         │   │
+│   └─────────────┘     │                                                  │   │
+│                       │  Available Products:                             │   │
+│                       │  ├── [Launch] Dev EC2 Instance                   │   │
+│                       │  ├── [Launch] Dev RDS MySQL                      │   │
+│                       │  └── [Launch] Dev S3 Bucket                      │   │
+│                       └──────────────────────────────────────────────────┘   │
 │                                                                              │
 │   STEP 4: CloudFormation creates resources                                   │
 │   ────────────────────────────────────────                                   │
 │                                                                              │
-│   Service Catalog ──► CloudFormation ──► EC2, RDS, S3, etc.                 │
+│   Service Catalog ──► CloudFormation ──► EC2, RDS, S3, etc.                  │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -180,26 +180,26 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│              Key Concept: Launch Constraint (IAM Role)                        │
+│              Key Concept: Launch Constraint (IAM Role)                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   User (Developer)                                                           │
-│   └── IAM Policy: ONLY "servicecatalog:*"                                   │
-│       └── KHÔNG có quyền ec2:*, rds:*, s3:*                                 │
+│   └── IAM Policy: ONLY "servicecatalog:*"                                    │
+│       └── KHÔNG có quyền ec2:*, rds:*, s3:*                                  │
 │                                                                              │
 │   Nhưng vẫn launch được??                                                    │
 │                                                                              │
-│   ┌─────────────┐    Launch     ┌──────────────────────────────────────┐    │
-│   │  Developer  │──────────────►│  Service Catalog                      │    │
-│   │  (No EC2    │               │                                       │    │
-│   │   perms)    │               │  Uses: Launch Constraint IAM Role     │    │
-│   └─────────────┘               │         (has EC2, RDS, S3 perms)      │    │
-│                                 └──────────────────┬─────────────────────┘    │
-│                                                    │                          │
-│                                                    ▼                          │
-│                                           ┌──────────────┐                    │
-│                                           │     EC2      │  ✅ Created!       │
-│                                           └──────────────┘                    │
+│   ┌─────────────┐    Launch     ┌────────────────────────────────────────┐   │
+│   │  Developer  │──────────────►│  Service Catalog                       │   │
+│   │  (No EC2    │               │                                        │   │
+│   │   perms)    │               │  Uses: Launch Constraint IAM Role      │   │
+│   └─────────────┘               │         (has EC2, RDS, S3 perms)       │   │
+│                                 └──────────────────┬─────────────────────┘   │
+│                                                    │                         │
+│                                                    ▼                         │
+│                                           ┌──────────────┐                   │
+│                                           │     EC2      │  ✅ Created!      │
+│                                           └──────────────┘                   │
 │                                                                              │
 │   🎯 User không cần quyền AWS trực tiếp, chỉ cần quyền Service Catalog!      │
 │                                                                              │
@@ -216,16 +216,16 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Portfolio Examples                            │
+│                    Portfolio Examples                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Portfolio: "Web Applications"                                  │
-│  ├── 3-Tier Web App (EC2 + ALB + RDS)                          │
-│  ├── Serverless API (Lambda + API Gateway + DynamoDB)          │
-│  └── Static Website (S3 + CloudFront)                          │
+│  ├── 3-Tier Web App (EC2 + ALB + RDS)                           │
+│  ├── Serverless API (Lambda + API Gateway + DynamoDB)           │
+│  └── Static Website (S3 + CloudFront)                           │
 │                                                                 │
 │  Portfolio: "Data & Analytics"                                  │
-│  ├── Data Lake (S3 + Glue + Athena)                            │
+│  ├── Data Lake (S3 + Glue + Athena)                             │
 │  ├── EMR Cluster                                                │
 │  └── Redshift Cluster                                           │
 │                                                                 │
@@ -243,21 +243,21 @@ Mỗi Product có thể có **nhiều versions**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Product Versioning                            │
+│                    Product Versioning                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Product: "3-Tier Web App"                                      │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Version 1.0 (deprecated)                                │   │
-│  │  └── EC2: t2.micro, RDS: db.t2.micro                    │   │
-│  │                                                          │   │
-│  │  Version 2.0 (active)                                    │   │
-│  │  └── EC2: t3.micro, RDS: db.t3.micro, ALB added         │   │
-│  │                                                          │   │
-│  │  Version 3.0 (active - default)                          │   │
-│  │  └── EC2: t3.small, RDS: db.t3.small, CloudWatch added  │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Version 1.0 (deprecated)                               │    │
+│  │  └── EC2: t2.micro, RDS: db.t2.micro                    │    │
+│  │                                                         │    │
+│  │  Version 2.0 (active)                                   │    │
+│  │  └── EC2: t3.micro, RDS: db.t3.micro, ALB added         │    │
+│  │                                                         │    │
+│  │  Version 3.0 (active - default)                         │    │
+│  │  └── EC2: t3.small, RDS: db.t3.small, CloudWatch added  │    │
+│  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 │  • Users có thể chọn version khi launch                         │
 │  • Admin có thể deprecate/delete old versions                   │

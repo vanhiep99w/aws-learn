@@ -70,7 +70,7 @@ Framework này được xây dựng từ kinh nghiệm của AWS Solutions Archi
 
 ---
 
-## 1. Operational Excellence (Vận hành xuất sắc) 🔧
+## 1. Operational Excellence (Vận hành xuất sắc)
 
 ### Định nghĩa
 
@@ -123,7 +123,7 @@ Khả năng build software đúng cách và consistently deliver trải nghiệm
 
 ---
 
-## 2. Security (Bảo mật) 🔒
+## 2. Security (Bảo mật)
 
 ### Định nghĩa
 
@@ -174,7 +174,7 @@ Khả năng bảo vệ data, systems, và assets để tận dụng cloud techno
 
 ---
 
-## 3. Reliability (Độ tin cậy) 🛡️
+## 3. Reliability (Độ tin cậy)
 
 ### Định nghĩa
 
@@ -229,7 +229,7 @@ Khả năng của workload thực hiện đúng chức năng một cách correct
 
 ---
 
-## 4. Performance Efficiency (Hiệu năng) ⚡
+## 4. Performance Efficiency (Hiệu năng)
 
 ### Định nghĩa
 
@@ -282,7 +282,7 @@ Khả năng sử dụng tài nguyên cloud hiệu quả để đáp ứng perfor
 
 ---
 
-## 5. Cost Optimization (Tối ưu chi phí) 💰
+## 5. Cost Optimization (Tối ưu chi phí)
 
 ### Định nghĩa
 
@@ -338,7 +338,7 @@ Khả năng run systems để deliver business value với chi phí thấp nhấ
 
 ---
 
-## 6. Sustainability (Bền vững) 🌱
+## 6. Sustainability (Bền vững)
 
 ### Định nghĩa
 

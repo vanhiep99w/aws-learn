@@ -38,60 +38,89 @@
 │   "Continuously audit your AWS usage to simplify                            │
 │    how you assess risk and compliance"                                      │
 │                                                                             │
-│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      │
-│   │  Prebuilt   │  │  Automated  │  │  Delegation  │  │  Assessment │      │
-│   │  Frameworks │  │  Evidence   │  │  & Review    │  │  Reports    │      │
-│   │             │  │  Collection │  │  Workflow    │  │             │      │
-│   │  GDPR       │  │  Config     │  │  Assign to  │  │  Audit-     │      │
-│   │  HIPAA      │  │  CloudTrail │  │  experts     │  │  ready      │      │
-│   │  PCI DSS    │  │  Sec Hub    │  │  for review  │  │  reports    │      │
-│   │  SOC 2      │  │  API calls  │  │              │  │             │      │
-│   └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘      │
+│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│   │  Prebuilt   │  │  Automated  │  │  Delegation │  │  Assessment │        │
+│   │  Frameworks │  │  Evidence   │  │  & Review   │  │  Reports    │        │
+│   │             │  │  Collection │  │  Workflow   │  │             │        │
+│   │  GDPR       │  │  Config     │  │  Assign to  │  │  Audit-     │        │
+│   │  HIPAA      │  │  CloudTrail │  │  experts    │  │  ready      │        │
+│   │  PCI DSS    │  │  Sec Hub    │  │  for review │  │  reports    │        │
+│   │  SOC 2      │  │  API calls  │  │             │  │             │        │
+│   └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Evidence là gì? (Ví dụ thực tế)
+
+**Evidence** = **bằng chứng chứng minh bạn đang tuân thủ (comply) các tiêu chuẩn bảo mật**.
+
+Giả sử công ty bạn phải tuân thủ **PCI DSS** (bảo mật thanh toán). Auditor sẽ hỏi:
+
+| Auditor hỏi | Evidence Audit Manager tự thu thập | Nguồn |
+|---|---|---|
+| "S3 buckets có encrypt không?" | `my-bucket → Encryption: AES-256 ✅` | **AWS Config** |
+| "Ai đã truy cập database?" | `User admin called DescribeDBInstances at 10:30am` | **CloudTrail** |
+| "Security Groups có mở port thừa không?" | `SG-xxx → Port 22 open to 0.0.0.0/0 ❌` | **Security Hub** |
+| "EBS volumes có encrypt?" | `vol-xxx → Encrypted: true ✅` | **AWS Config** |
+
+```
+KHÔNG có Audit Manager:
+  Auditor: "Chứng minh S3 đã encrypt!"
+  Bạn: 😰 Vào console check từng bucket, chụp screenshot, copy vào Excel...
+       → Mất hàng TUẦN
+
+CÓ Audit Manager:
+  Auditor: "Chứng minh S3 đã encrypt!"
+  Bạn: 😎 Mở Audit Manager → Download Assessment Report → Gửi auditor
+       → Mất vài PHÚT
+```
+
+> [!IMPORTANT]
+> Audit Manager **KHÔNG kiểm tra** gì cả — nó chỉ **tự động gom bằng chứng** từ Config, CloudTrail, Security Hub vào **1 report gọn gàng** để đưa cho auditor.
+> Giống như một **thư ký** giúp sắp xếp hồ sơ trước khi đi audit! 📋
 
 ---
 
 ## 2. Kiến trúc & Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       Audit Manager Workflow                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  STEP 1: Choose Framework                                                   │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       Audit Manager Workflow                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  STEP 1: Choose Framework                                                    │
 │  ┌────────────────────────────────────────────────────────────┐              │
-│  │  Prebuilt (GDPR, HIPAA, PCI DSS, SOC 2, ...)             │              │
-│  │  hoặc Custom framework                                    │              │
+│  │  Prebuilt (GDPR, HIPAA, PCI DSS, SOC 2, ...)               │              │
+│  │  hoặc Custom framework                                     │              │
 │  └──────────────────────────┬─────────────────────────────────┘              │
-│                             ▼                                               │
-│  STEP 2: Create Assessment                                                  │
+│                             ▼                                                │
+│  STEP 2: Create Assessment                                                   │
 │  ┌────────────────────────────────────────────────────────────┐              │
-│  │  Chọn framework + AWS accounts + services trong scope     │              │
+│  │  Chọn framework + AWS accounts + services trong scope      │              │
 │  └──────────────────────────┬─────────────────────────────────┘              │
-│                             ▼                                               │
-│  STEP 3: Automated Evidence Collection                                      │
+│                             ▼                                                │
+│  STEP 3: Automated Evidence Collection                                       │
 │  ┌────────────────────────────────────────────────────────────┐              │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │              │
-│  │  │ Config   │  │CloudTrail│  │ Sec Hub  │  │ API Calls│  │              │
-│  │  │ Rules    │  │ Logs     │  │ Checks   │  │ Snapshots│  │              │
-│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘  │              │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │              │
+│  │  │ Config   │  │CloudTrail│  │ Sec Hub  │  │ API Calls│    │              │
+│  │  │ Rules    │  │ Logs     │  │ Checks   │  │ Snapshots│    │              │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │              │
 │  └──────────────────────────┬─────────────────────────────────┘              │
-│                             ▼                                               │
-│  STEP 4: Review & Delegate                                                  │
+│                             ▼                                                │
+│  STEP 4: Review & Delegate                                                   │
 │  ┌────────────────────────────────────────────────────────────┐              │
-│  │  Delegate control sets → Subject matter experts review    │              │
-│  │  Add comments, mark controls as reviewed                  │              │
+│  │  Delegate control sets → Subject matter experts review     │              │
+│  │  Add comments, mark controls as reviewed                   │              │
 │  └──────────────────────────┬─────────────────────────────────┘              │
-│                             ▼                                               │
-│  STEP 5: Generate Assessment Report                                         │
+│                             ▼                                                │
+│  STEP 5: Generate Assessment Report                                          │
 │  ┌────────────────────────────────────────────────────────────┐              │
-│  │  → Summary + organized evidence folders                   │              │
-│  │  → Share with auditors                                    │              │
+│  │  → Summary + organized evidence folders                    │              │
+│  │  → Share with auditors                                     │              │
 │  └────────────────────────────────────────────────────────────┘              │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -127,9 +156,9 @@
 │  │  • Tự động update                │  │  • Kết hợp manual + automated    │ │
 │  │                                  │  │                                  │ │
 │  │  Ví dụ:                          │  │  Ví dụ:                          │ │
-│  │  → GDPR, HIPAA, PCI DSS         │  │  → Internal security policy      │ │
-│  │  → SOC 2, ISO 27001             │  │  → Custom compliance program     │ │
-│  │  → CIS Benchmarks               │  │  → Hybrid on-prem + cloud        │ │
+│  │  → GDPR, HIPAA, PCI DSS          │  │  → Internal security policy      │ │
+│  │  → SOC 2, ISO 27001              │  │  → Custom compliance program     │ │
+│  │  → CIS Benchmarks                │  │  → Hybrid on-prem + cloud        │ │
 │  │  → NIST 800-53                   │  │                                  │ │
 │  │  → AWS Best Practices            │  │                                  │ │
 │  │  → Generative AI Best Practices  │  │                                  │ │
@@ -191,13 +220,13 @@
 │  │ AWS Config   │ ──── Rules ────►    │                                 │   │
 │  └──────────────┘   compliance        │   Assessment                    │   │
 │  ┌──────────────┐                     │                                 │   │
-│  │ CloudTrail   │ ──── Logs ─────►    │   ┌──────────┐ ┌──────────┐    │   │
-│  └──────────────┘   user activity     │   │Control 1 │ │Control 2 │    │   │
-│  ┌──────────────┐                     │   │ Evidence │ │ Evidence │    │   │
-│  │ Security Hub │ ──── Findings ──►   │   │ ✅ ✅ ❌  │ │ ✅ ✅ ✅  │    │   │
-│  └──────────────┘   compliance        │   └──────────┘ └──────────┘    │   │
+│  │ CloudTrail   │ ──── Logs ─────►    │   ┌──────────┐ ┌──────────┐     │   │
+│  └──────────────┘   user activity     │   │Control 1 │ │Control 2 │     │   │
+│  ┌──────────────┐                     │   │ Evidence │ │ Evidence │     │   │
+│  │ Security Hub │ ──── Findings ──►   │   │ ✅ ✅ ❌ │ │ ✅ ✅ ✅ │     │   │
+│  └──────────────┘   compliance        │   └──────────┘ └──────────┘     │   │
 │  ┌──────────────┐                     │                                 │   │
-│  │ Manual       │ ──── Upload ────►   │   → Assessment Report          │   │
+│  │ Manual       │ ──── Upload ────►   │   → Assessment Report           │   │
 │  │ Evidence     │                     │                                 │   │
 │  └──────────────┘                     └─────────────────────────────────┘   │
 │                                                                             │
@@ -248,18 +277,18 @@
 │        └───────┬───────┘                                                    │
 │                ▼                                                            │
 │  ┌──────────────────────┐                                                   │
-│  │   AUDIT MANAGER      │  ← Thu thập, tổ chức, report                     │
+│  │   AUDIT MANAGER      │  ← Thu thập, tổ chức, report                      │
 │  │   (Assessment)       │                                                   │
 │  └──────────┬───────────┘                                                   │
 │             ▼                                                               │
 │  ┌──────────────────────┐                                                   │
-│  │  Assessment Report   │  ← Giao cho Auditor                              │
+│  │  Assessment Report   │  ← Giao cho Auditor                               │
 │  │  (S3)                │                                                   │
 │  └──────────────────────┘                                                   │
 │                                                                             │
 │  ┌──────────────────────┐                                                   │
-│  │   AWS Artifact       │  ← Riêng biệt: download AWS's OWN               │
-│  │                      │    compliance certs (SOC, PCI, ISO)              │
+│  │   AWS Artifact       │  ← Riêng biệt: download AWS's OWN                 │
+│  │                      │    compliance certs (SOC, PCI, ISO)               │
 │  └──────────────────────┘                                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘

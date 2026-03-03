@@ -31,23 +31,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          AWS Control Tower                                    │
+│                          AWS Control Tower                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌────────────┐  │
-│  │  Landing     │   │  Guardrails  │   │   Account    │   │ Dashboard  │  │
-│  │  Zone        │   │  (Controls)  │   │   Factory    │   │            │  │
-│  │              │   │              │   │              │   │            │  │
-│  │  Pre-built   │   │  Preventive  │   │  Automated   │   │ Compliance │  │
-│  │  multi-acct  │   │  Detective   │   │  account     │   │ overview   │  │
-│  │  environment │   │  Proactive   │   │  creation    │   │            │  │
-│  └──────────────┘   └──────────────┘   └──────────────┘   └────────────┘  │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌────────────┐    │
+│  │  Landing     │   │  Guardrails  │   │   Account    │   │ Dashboard  │    │
+│  │  Zone        │   │  (Controls)  │   │   Factory    │   │            │    │
+│  │              │   │              │   │              │   │            │    │
+│  │  Pre-built   │   │  Preventive  │   │  Automated   │   │ Compliance │    │
+│  │  multi-acct  │   │  Detective   │   │  account     │   │ overview   │    │
+│  │  environment │   │  Proactive   │   │  creation    │   │            │    │
+│  └──────────────┘   └──────────────┘   └──────────────┘   └────────────┘    │
 │                                                                             │
 │  Built on top of:                                                           │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  AWS Organizations │ AWS Service Catalog │ AWS IAM Identity Center  │   │
-│  │  AWS Config        │ AWS CloudTrail      │ AWS CloudFormation       │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  AWS Organizations │ AWS Service Catalog │ AWS IAM Identity Center  │    │
+│  │  AWS Config        │ AWS CloudTrail      │ AWS CloudFormation       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -62,7 +62,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Landing Zone Structure                               │
+│                         Landing Zone Structure                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │                         ┌───────────────────┐                               │
@@ -70,23 +70,23 @@
 │                         │  Management Acct  │                               │
 │                         └────────┬──────────┘                               │
 │                                  │                                          │
-│            ┌─────────────────────┼──────────────────────┐                  │
-│            │                     │                      │                  │
-│     ┌──────▼──────┐     ┌───────▼───────┐     ┌───────▼───────┐          │
-│     │ Security OU │     │  Sandbox OU   │     │ Custom OUs... │          │
-│     │  (Required) │     │  (Optional)   │     │               │          │
-│     └──────┬──────┘     └───────┬───────┘     └───────────────┘          │
-│            │                    │                                          │
-│     ┌──────┴──────┐     ┌──────┴──────┐                                   │
-│     │             │     │             │                                   │
-│  ┌──▼──────────┐ ┌▼────────────┐  ┌──▼──────────┐                        │
-│  │ Log Archive │ │Security    │  │  Developer  │                        │
-│  │ Account     │ │Audit Acct  │  │  Accounts   │                        │
-│  │             │ │(optional)  │  │             │                        │
-│  │ CloudTrail  │ │ GuardDuty  │  │             │                        │
-│  │ Config Logs │ │ Sec Hub    │  │             │                        │
-│  │ (Immutable) │ │ Inspector  │  │             │                        │
-│  └─────────────┘ └────────────┘  └─────────────┘                        │
+│            ┌─────────────────────┼──────────────────────┐                   │
+│            │                     │                      │                   │
+│     ┌──────▼──────┐     ┌───────▼───────┐     ┌───────▼───────┐             │
+│     │ Security OU │     │  Sandbox OU   │     │ Custom OUs... │             │
+│     │  (Required) │     │  (Optional)   │     │               │             │
+│     └──────┬──────┘     └───────┬───────┘     └───────────────┘             │
+│            │                    │                                           │
+│     ┌──────┴──────┐     ┌──────┴──────┐                                     │
+│     │             │     │             │                                     │
+│  ┌──▼──────────┐ ┌▼────────────┐  ┌──▼──────────┐                           │
+│  │ Log Archive │ │Security     │  │  Developer  │                           │
+│  │ Account     │ │Audit Acct   │  │  Accounts   │                           │
+│  │             │ │(optional)   │  │             │                           │
+│  │ CloudTrail  │ │ GuardDuty   │  │             │                           │
+│  │ Config Logs │ │ Sec Hub     │  │             │                           │
+│  │ (Immutable) │ │ Inspector   │  │             │                           │
+│  └─────────────┘ └─────────────┘  └─────────────┘                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -117,35 +117,35 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Guardrails (Controls)                                 │
+│                        Guardrails (Controls)                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  🚫 PREVENTIVE                                                      │   │
-│  │  ───────────────────────────────────────────────────────────        │   │
-│  │  Implemented via: SCPs / Declarative Policies                       │   │
-│  │  Action: NGĂN CHẶN hành động trước khi xảy ra                      │   │
-│  │  Example: "Không cho phép tạo S3 bucket không encrypt"              │   │
-│  │  Status: Enforced / Not enabled                                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  🚫 PREVENTIVE                                                      │    │
+│  │  ───────────────────────────────────────────────────────────        │    │
+│  │  Implemented via: SCPs / Declarative Policies                       │    │
+│  │  Action: NGĂN CHẶN hành động trước khi xảy ra                       │    │
+│  │  Example: "Không cho phép tạo S3 bucket không encrypt"              │    │
+│  │  Status: Enforced / Not enabled                                     │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  🔍 DETECTIVE                                                       │   │
-│  │  ───────────────────────────────────────────────────────────        │   │
-│  │  Implemented via: AWS Config Rules                                  │   │
-│  │  Action: PHÁT HIỆN vi phạm sau khi xảy ra (alert)                  │   │
-│  │  Example: "Phát hiện S3 bucket có public access"                    │   │
-│  │  Status: Clear / In violation                                       │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  🔍 DETECTIVE                                                       │    │
+│  │  ───────────────────────────────────────────────────────────        │    │
+│  │  Implemented via: AWS Config Rules                                  │    │
+│  │  Action: PHÁT HIỆN vi phạm sau khi xảy ra (alert)                   │    │
+│  │  Example: "Phát hiện S3 bucket có public access"                    │    │
+│  │  Status: Clear / In violation                                       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ⚡ PROACTIVE                                                       │   │
-│  │  ───────────────────────────────────────────────────────────        │   │
-│  │  Implemented via: CloudFormation Hooks                              │   │
-│  │  Action: CHẶN resource creation nếu không comply                   │   │
-│  │  Example: "Block CloudFormation stack nếu RDS không encrypt"       │   │
-│  │  Status: Pass / Fail                                                │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ⚡ PROACTIVE                                                        │    │
+│  │  ───────────────────────────────────────────────────────────        │    │
+│  │  Implemented via: CloudFormation Hooks                              │    │
+│  │  Action: CHẶN resource creation nếu không comply                    │    │
+│  │  Example: "Block CloudFormation stack nếu RDS không encrypt"        │    │
+│  │  Status: Pass / Fail                                                │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -181,31 +181,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          Account Factory                                     │
+│                          Account Factory                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Request New Account                                                        │
-│  ┌──────────────────────────────────────────────────────┐                  │
-│  │  Input:                                               │                  │
-│  │  • Account Name                                       │                  │
-│  │  • Email (unique)                                     │                  │
-│  │  • Target OU                                          │                  │
-│  │  • IAM Identity Center config                         │                  │
-│  │  • VPC configuration (optional)                       │                  │
-│  └──────────────────────┬───────────────────────────────┘                  │
+│  ┌──────────────────────────────────────────────────────┐                   │
+│  │  Input:                                              │                   │
+│  │  • Account Name                                      │                   │
+│  │  • Email (unique)                                    │                   │
+│  │  • Target OU                                         │                   │
+│  │  • IAM Identity Center config                        │                   │
+│  │  • VPC configuration (optional)                      │                   │
+│  └──────────────────────┬───────────────────────────────┘                   │
 │                         │                                                   │
 │                         ▼                                                   │
 │  Automated Provisioning                                                     │
-│  ┌──────────────────────────────────────────────────────┐                  │
-│  │  Control Tower automatically:                         │                  │
-│  │  ✅ Creates AWS account                               │                  │
-│  │  ✅ Applies guardrails from target OU                 │                  │
-│  │  ✅ Sets up CloudTrail logging                        │                  │
-│  │  ✅ Enables AWS Config recording                      │                  │
-│  │  ✅ Configures IAM Identity Center access             │                  │
-│  │  ✅ Creates VPC (if configured)                       │                  │
-│  │  ✅ Baseline security settings                        │                  │
-│  └──────────────────────────────────────────────────────┘                  │
+│  ┌──────────────────────────────────────────────────────┐                   │
+│  │  Control Tower automatically:                        │                   │
+│  │  ✅ Creates AWS account                              │                   │
+│  │  ✅ Applies guardrails from target OU                │                   │
+│  │  ✅ Sets up CloudTrail logging                       │                   │
+│  │  ✅ Enables AWS Config recording                     │                   │
+│  │  ✅ Configures IAM Identity Center access            │                   │
+│  │  ✅ Creates VPC (if configured)                      │                   │
+│  │  ✅ Baseline security settings                       │                   │
+│  └──────────────────────────────────────────────────────┘                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -222,19 +222,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   Account Factory for Terraform (AFT)                        │
+│                   Account Factory for Terraform (AFT)                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                  │
-│  │ Git Repo    │ ──► │ Terraform   │ ──► │ Control     │                  │
-│  │ (Account    │     │ Pipeline    │     │ Tower       │                  │
-│  │  Requests)  │     │ (CodePipe)  │     │ (Provision) │                  │
-│  └─────────────┘     └─────────────┘     └─────────────┘                  │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                    │
+│  │ Git Repo    │ ──► │ Terraform   │ ──► │ Control     │                    │
+│  │ (Account    │     │ Pipeline    │     │ Tower       │                    │
+│  │  Requests)  │     │ (CodePipe)  │     │ (Provision) │                    │
+│  └─────────────┘     └─────────────┘     └─────────────┘                    │
 │                                                                             │
 │  ✅ GitOps-driven (GitHub, GitLab, CodeCommit)                              │
 │  ✅ Batch account creation                                                  │
-│  ✅ Advanced customization (VPC deletion, CloudTrail data events)          │
-│  ✅ Full Terraform pipeline integration                                    │
+│  ✅ Advanced customization (VPC deletion, CloudTrail data events)           │
+│  ✅ Full Terraform pipeline integration                                     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -261,17 +261,17 @@ Control Tower cung cấp **dashboard tổng quan** để theo dõi:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Drift Examples                                       │
+│                         Drift Examples                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ⚠️  Ai đó xóa OU qua AWS Organizations Console                            │
-│  ⚠️  Ai đó sửa SCP mà Control Tower quản lý                                │
-│  ⚠️  Ai đó xóa CloudTrail trail                                            │
-│  ⚠️  Ai đó thay đổi cấu hình Log Archive account                           │
+│  ⚠️  Ai đó xóa OU qua AWS Organizations Console                             │
+│  ⚠️  Ai đó sửa SCP mà Control Tower quản lý                                 │
+│  ⚠️  Ai đó xóa CloudTrail trail                                             │
+│  ⚠️  Ai đó thay đổi cấu hình Log Archive account                            │
 │                                                                             │
 │  → Control Tower PHÁT HIỆN drift                                            │
 │  → Alert trên Dashboard                                                     │
-│  → Bạn có thể "Repair" để đưa về trạng thái đúng                           │
+│  → Bạn có thể "Repair" để đưa về trạng thái đúng                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -298,26 +298,26 @@ Control Tower cung cấp **dashboard tổng quan** để theo dõi:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Relationship between Services                             │
+│                    Relationship between Services                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │              AWS CONTROL TOWER (Higher-Level)                       │   │
-│  │                                                                     │   │
-│  │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│  │  │           AWS ORGANIZATIONS (Foundation)                      │ │   │
-│  │  │                                                               │ │   │
-│  │  │  • Root, OUs, Accounts                                       │ │   │
-│  │  │  • SCPs                                                       │ │   │
-│  │  │  • Consolidated Billing                                       │ │   │
-│  │  └───────────────────────────────────────────────────────────────┘ │   │
-│  │                                                                     │   │
-│  │  + Landing Zone       + Account Factory                            │   │
-│  │  + Guardrails         + Dashboard                                  │   │
-│  │  + Drift Detection    + Blueprints                                 │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │              AWS CONTROL TOWER (Higher-Level)                       │    │
+│  │                                                                     │    │
+│  │  ┌───────────────────────────────────────────────────────────────┐  │    │
+│  │  │           AWS ORGANIZATIONS (Foundation)                      │  │    │
+│  │  │                                                               │  │    │
+│  │  │  • Root, OUs, Accounts                                        │  │    │
+│  │  │  • SCPs                                                       │  │    │
+│  │  │  • Consolidated Billing                                       │  │    │
+│  │  └───────────────────────────────────────────────────────────────┘  │    │
+│  │                                                                     │    │
+│  │  + Landing Zone       + Account Factory                             │    │
+│  │  + Guardrails         + Dashboard                                   │    │
+│  │  + Drift Detection    + Blueprints                                  │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  Control Tower = Organizations + Automation + Best Practices               │
+│  Control Tower = Organizations + Automation + Best Practices                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

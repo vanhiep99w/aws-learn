@@ -543,48 +543,48 @@ graph TB
 │                    AWS IAM BEST PRACTICES                               │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  1️⃣  ROOT USER                                                         │
-│  ├── ✅ Enable MFA (dùng hardware key nếu được)                        │
-│  ├── ✅ Xóa root access keys                                           │
+│  1️⃣  ROOT USER                                                          │
+│  ├── ✅ Enable MFA (dùng hardware key nếu được)                         │
+│  ├── ✅ Xóa root access keys                                            │
 │  ├── ❌ KHÔNG dùng root cho daily tasks                                 │
 │  └── ❌ KHÔNG share root credentials                                    │
 │                                                                         │
-│  2️⃣  USERS & GROUPS                                                    │
-│  ├── ✅ 1 user = 1 người thật (KHÔNG share accounts)                   │
-│  ├── ✅ Dùng Groups để gán permissions (không gán trực tiếp cho user)  │
-│  ├── ✅ Enable MFA cho tất cả users                                    │
-│  └── ✅ Tạo strong password policy                                     │
+│  2️⃣  USERS & GROUPS                                                     │
+│  ├── ✅ 1 user = 1 người thật (KHÔNG share accounts)                    │
+│  ├── ✅ Dùng Groups để gán permissions (không gán trực tiếp cho user)   │
+│  ├── ✅ Enable MFA cho tất cả users                                     │
+│  └── ✅ Tạo strong password policy                                      │
 │                                                                         │
-│  3️⃣  PERMISSIONS                                                       │
-│  ├── ✅ Least Privilege: chỉ cấp quyền TỐI THIỂU cần thiết           │
-│  ├── ✅ Dùng AWS Managed Policies khi có thể                           │
-│  ├── ✅ Review permissions định kỳ (IAM Access Analyzer)               │
-│  ├── ✅ Dùng Conditions trong policies (IP, MFA, time...)              │
-│  └── ❌ KHÔNG dùng wildcard (*) cho Actions và Resources               │
+│  3️⃣  PERMISSIONS                                                        │
+│  ├── ✅ Least Privilege: chỉ cấp quyền TỐI THIỂU cần thiết              │
+│  ├── ✅ Dùng AWS Managed Policies khi có thể                            │
+│  ├── ✅ Review permissions định kỳ (IAM Access Analyzer)                │
+│  ├── ✅ Dùng Conditions trong policies (IP, MFA, time...)               │
+│  └── ❌ KHÔNG dùng wildcard (*) cho Actions và Resources                │
 │                                                                         │
-│  4️⃣  ROLES                                                             │
+│  4️⃣  ROLES                                                              │
 │  ├── ✅ Dùng Roles cho AWS services (EC2, Lambda...) thay vì Access Keys│
-│  ├── ✅ Dùng Roles cho cross-account access                            │
-│  ├── ✅ Dùng Roles cho federated users (SSO)                           │
-│  └── ✅ Dùng External ID để chống Confused Deputy                      │
+│  ├── ✅ Dùng Roles cho cross-account access                             │
+│  ├── ✅ Dùng Roles cho federated users (SSO)                            │
+│  └── ✅ Dùng External ID để chống Confused Deputy                       │
 │                                                                         │
-│  5️⃣  ACCESS KEYS                                                       │
-│  ├── ✅ Rotate định kỳ (90 ngày)                                       │
+│  5️⃣  ACCESS KEYS                                                        │
+│  ├── ✅ Rotate định kỳ (90 ngày)                                        │
 │  ├── ✅ Remove unused keys                                              │
 │  ├── ❌ KHÔNG commit vào source code                                    │
 │  └── ❌ KHÔNG embed trong AMI/container                                 │
 │                                                                         │
-│  6️⃣  MONITORING & AUDITING                                             │
-│  ├── ✅ Enable CloudTrail (log tất cả API calls)                       │
-│  ├── ✅ Dùng IAM Access Analyzer (phát hiện unintended access)         │
-│  ├── ✅ Review IAM Credential Report định kỳ                           │
-│  └── ✅ Set up CloudWatch Alarms cho suspicious activities             │
+│  6️⃣  MONITORING & AUDITING                                              │
+│  ├── ✅ Enable CloudTrail (log tất cả API calls)                        │
+│  ├── ✅ Dùng IAM Access Analyzer (phát hiện unintended access)          │
+│  ├── ✅ Review IAM Credential Report định kỳ                            │
+│  └── ✅ Set up CloudWatch Alarms cho suspicious activities              │
 │                                                                         │
-│  7️⃣  ORGANIZATIONS (Multi-Account)                                     │
-│  ├── ✅ Tách accounts theo môi trường (Dev/Staging/Prod)               │
-│  ├── ✅ Dùng SCPs để enforce security guardrails                       │
+│  7️⃣  ORGANIZATIONS (Multi-Account)                                      │
+│  ├── ✅ Tách accounts theo môi trường (Dev/Staging/Prod)                │
+│  ├── ✅ Dùng SCPs để enforce security guardrails                        │
 │  ├── ✅ Centralized logging account                                     │
-│  └── ✅ Dùng IAM Identity Center cho SSO                               │
+│  └── ✅ Dùng IAM Identity Center cho SSO                                │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```

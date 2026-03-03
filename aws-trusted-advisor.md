@@ -73,13 +73,13 @@
 ```
 Ví dụ:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚠️ Warning: You have 5 unassociated Elastic IP addresses                  │
+│  ⚠️ Warning: You have 5 unassociated Elastic IP addresses                   │
 │                                                                             │
 │  EIP: eip-abc123 - Not attached - $3.50/month wasted                        │
 │  EIP: eip-def456 - Not attached - $3.50/month wasted                        │
 │  ...                                                                        │
 │                                                                             │
-│  💡 Recommendation: Release unused EIPs to save $17.50/month               │
+│  💡 Recommendation: Release unused EIPs to save $17.50/month                │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -119,7 +119,7 @@ Ví dụ:
 │  sg-abc123: Port 22 open to 0.0.0.0/0                                       │
 │  sg-def456: Port 22 open to 0.0.0.0/0                                       │
 │                                                                             │
-│  💡 Recommendation: Restrict SSH access to specific IP ranges              │
+│  💡 Recommendation: Restrict SSH access to specific IP ranges               │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -156,12 +156,12 @@ Ví dụ:
 ```
 Ví dụ:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚠️ Warning: Service Quota Approaching Limit                               │
+│  ⚠️ Warning: Service Quota Approaching Limit                                │
 │                                                                             │
 │  VPCs per Region: 4/5 (80%)                                                 │
 │  On-Demand EC2 Instances: 18/20 (90%)                                       │
 │                                                                             │
-│  💡 Recommendation: Request quota increase trước khi hết                   │
+│  💡 Recommendation: Request quota increase trước khi hết                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -174,36 +174,36 @@ Ví dụ:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                 Trusted Advisor Access by Support Plan                       │
+│                 Trusted Advisor Access by Support Plan                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  BASIC / DEVELOPER SUPPORT:                                         │   │
-│   │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│   │  │  ✅ Service Limits (ALL checks)                               │ │   │
-│   │  │  ✅ Security (SELECTED checks only)                           │ │   │
-│   │  │     • S3 Bucket Permissions                                   │ │   │
-│   │  │     • Security Groups - SSH                                   │ │   │
-│   │  │     • IAM Use                                                 │ │   │
-│   │  │     • MFA on Root Account                                     │ │   │
-│   │  │     • EBS Public Snapshots                                    │ │   │
-│   │  │     • RDS Public Snapshots                                    │ │   │
-│   │  │  ❌ Cost Optimization                                         │ │   │
-│   │  │  ❌ Performance                                               │ │   │
-│   │  │  ❌ Fault Tolerance (full)                                    │ │   │
-│   │  │  ❌ API access                                                │ │   │
-│   │  │  ❌ Auto-refresh                                              │ │   │
-│   │  └───────────────────────────────────────────────────────────────┘ │   │
+│   │  ┌───────────────────────────────────────────────────────────────┐  │   │
+│   │  │  ✅ Service Limits (ALL checks)                               │  │   │
+│   │  │  ✅ Security (SELECTED checks only)                           │  │   │
+│   │  │     • S3 Bucket Permissions                                   │  │   │
+│   │  │     • Security Groups - SSH                                   │  │   │
+│   │  │     • IAM Use                                                 │  │   │
+│   │  │     • MFA on Root Account                                     │  │   │
+│   │  │     • EBS Public Snapshots                                    │  │   │
+│   │  │     • RDS Public Snapshots                                    │  │   │
+│   │  │  ❌ Cost Optimization                                         │  │   │
+│   │  │  ❌ Performance                                               │  │   │
+│   │  │  ❌ Fault Tolerance (full)                                    │  │   │
+│   │  │  ❌ API access                                                │  │   │
+│   │  │  ❌ Auto-refresh                                              │  │   │
+│   │  └───────────────────────────────────────────────────────────────┘  │   │
 │   │                                                                     │   │
 │   │  BUSINESS SUPPORT+ / ENTERPRISE:                                    │   │
-│   │  ┌───────────────────────────────────────────────────────────────┐ │   │
-│   │  │  ✅ ALL Checks (100+ checks)                                  │ │   │
-│   │  │  ✅ API access                                                │ │   │
-│   │  │  ✅ Auto-refresh                                              │ │   │
-│   │  │  ✅ EventBridge integration                                   │ │   │
-│   │  │  ✅ Organizational view                                       │ │   │
-│   │  └───────────────────────────────────────────────────────────────┘ │   │
+│   │  ┌───────────────────────────────────────────────────────────────┐  │   │
+│   │  │  ✅ ALL Checks (100+ checks)                                  │  │   │
+│   │  │  ✅ API access                                                │  │   │
+│   │  │  ✅ Auto-refresh                                              │  │   │
+│   │  │  ✅ EventBridge integration                                   │  │   │
+│   │  │  ✅ Organizational view                                       │  │   │
+│   │  └───────────────────────────────────────────────────────────────┘  │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -229,22 +229,22 @@ Ví dụ:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Trusted Advisor Integrations                              │
+│                    Trusted Advisor Integrations                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Trusted Advisor                                                           │
 │        │                                                                    │
-│        ├──────────► EventBridge                                            │
-│        │            → Trigger automation khi có recommendation mới         │
+│        ├──────────► EventBridge                                             │
+│        │            → Trigger automation khi có recommendation mới          │
 │        │            → Notify via SNS                                        │
 │        │                                                                    │
-│        ├──────────► Organizations                                          │
-│        │            → Organizational view across all accounts              │
+│        ├──────────► Organizations                                           │
+│        │            → Organizational view across all accounts               │
 │        │                                                                    │
-│        ├──────────► AWS Config                                             │
-│        │            → Some checks powered by Config rules                  │
+│        ├──────────► AWS Config                                              │
+│        │            → Some checks powered by Config rules                   │
 │        │                                                                    │
-│        └──────────► Security Hub                                           │
+│        └──────────► Security Hub                                            │
 │                     → View findings in Security Hub                         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -264,7 +264,7 @@ Ví dụ:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         When to Use What?                                    │
+│                         When to Use What?                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  "Tôi muốn biết AWS best practices chung?"                                  │
@@ -336,14 +336,14 @@ Dành cho **Enterprise Support** - AWS Technical Account Manager (TAM) sẽ:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Trusted Advisor Summary                               │
+│                    AWS Trusted Advisor Summary                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  🎯 WHAT: Best practices recommendations service                            │
 │                                                                             │
 │  📊 5 CATEGORIES:                                                           │
 │     💰 Cost Optimization - Tìm cách tiết kiệm                               │
-│     ⚡ Performance - Cải thiện hiệu suất                                    │
+│     ⚡ Performance - Cải thiện hiệu suất                                     │
 │     🔐 Security - Phát hiện lỗ hổng                                         │
 │     🔄 Fault Tolerance - Tăng availability                                  │
 │     📊 Service Limits - Check quotas                                        │
@@ -362,7 +362,7 @@ Dành cho **Enterprise Support** - AWS Technical Account Manager (TAM) sẽ:
 │                                                                             │
 │  💡 KEY INSIGHT:                                                            │
 │     Trusted Advisor = "AWS Cloud Expert giving you advice"                  │
-│     (dựa trên best practices từ hàng trăm ngàn customers)                  │
+│     (dựa trên best practices từ hàng trăm ngàn customers)                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

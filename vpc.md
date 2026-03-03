@@ -444,12 +444,12 @@ VPC Dashboard
 | 4 | [Elastic IP](#4-elastic-ip-eip) | IP tĩnh | 💰 $3.6/tháng | ⭐ Tùy chọn |
 | 5 | [VPC Peering](#5-vpc-peering) | Nối 2 VPC | ✅ Free | ⭐ Khi cần |
 | 6 | [Transit Gateway](#6-transit-gateway) | Hub nhiều VPC | 💰 $36+/tháng | ⭐ Khi cần |
-| 7 | [VPN Connection](#7-vpn-connection-site-to-site-vpn) | Nối on-premise | 💰 $36+/tháng | ⭐ Khi cần |
+| 7 | [VPN Connection (Site-to-Site VPN)](#7-vpn-connection-site-to-site-vpn) | Nối on-premise | 💰 $36+/tháng | ⭐ Khi cần |
 | 8 | [Client VPN](#8-aws-client-vpn) | VPN cá nhân | 💰 $0.05/giờ | ⭐ Khi cần |
 | 9 | [Security Group](#9-security-groups) | Firewall instance | ✅ Free | ⭐⭐⭐ Bắt buộc |
 | 10 | [Network ACL](#10-network-acls-nacls) | Firewall subnet | ✅ Free | ⭐ Tùy chọn |
 | 11 | [VPC Endpoint](#11-vpc-endpoints) | Nối AWS services | ✅/💰 | ⭐⭐ Nên dùng |
-| 12 | [PrivateLink](#12-aws-privatelink) | Expose service | 💰 $0.01/giờ | ⭐ Khi cần |
+| 12 | [PrivateLink (Endpoint Service)](#12-aws-privatelink-endpoint-service) | Expose service | 💰 $0.01/giờ | ⭐ Khi cần |
 | 13 | [Flow Logs](#13-vpc-flow-logs) | Audit traffic | 💰 | ⭐ Production |
 | 14 | [DHCP Option Sets](#14-dhcp-option-sets) | Cấu hình DNS | ✅ Free | ⭐ Tùy chọn |
 
