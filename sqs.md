@@ -91,12 +91,33 @@
 
 | Feature | Standard Queue | FIFO Queue |
 |---------|---------------|------------|
-| **Throughput** | Unlimited | 300 msg/s (batch: 3000) |
+| **Throughput** | Unlimited | 300 API calls/s per action (batch 10: ~3000 msg/s) |
 | **Ordering** | Best-effort | Guaranteed (FIFO) |
 | **Delivery** | At-least-once | Exactly-once |
 | **Deduplication** | No | Yes (5 min window) |
 | **Queue Name** | Any | Must end with `.fifo` |
 | **Use Case** | High throughput | Ordering important |
+
+> [!TIP]
+> **`Per action` trong FIFO nghĩa là gì?**
+>
+> `300 API calls/s per action` nghĩa là mỗi nhóm API có quota riêng:
+> - `SendMessage` / `SendMessageBatch`
+> - `ReceiveMessage`
+> - `DeleteMessage` / `DeleteMessageBatch`
+> - Trong AWS docs, quota mặc định này áp trên từng partition của FIFO queue (non-high throughput mode)
+>
+> Throughput messages phụ thuộc `batch size`:
+> - Batch 1 (không batch): ~`300 msg/s`
+> - Batch 2: ~`600 msg/s`
+> - Batch 4: ~`1200 msg/s`
+> - Batch 10: ~`3000 msg/s`
+>
+> Công thức nhanh: `messages/s ≈ requests/s × batch_size`
+
+> [!NOTE]
+> Các con số trên là baseline FIFO thường dùng trong exam (non-high throughput FIFO).
+> SQS FIFO High Throughput mode có quota cao hơn và phụ thuộc Region.
 
 > [!WARNING]
 > **Best-effort Ordering nghĩa là gì?**
@@ -1334,7 +1355,7 @@ Sử dụng **SNS + SQS Pattern**:
 ## 9. Common Exam Questions
 
 ### Q1: Standard vs FIFO Queue?
-**A:** Standard = unlimited throughput, at-least-once, best-effort ordering. FIFO = 300 msg/s, exactly-once, guaranteed ordering.
+**A:** Standard = unlimited throughput, at-least-once, best-effort ordering. FIFO = 300 API calls/s per action (~300 msg/s không batch, ~3000 msg/s khi batch 10), exactly-once, guaranteed ordering.
 
 ### Q2: Visibility Timeout default?
 **A:** 30 seconds (min: 0s, max: 12 hours)
@@ -1356,5 +1377,7 @@ Sử dụng **SNS + SQS Pattern**:
 ## Tài liệu tham khảo
 
 - [Amazon SQS Developer Guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/)
+- [Amazon SQS message quotas](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html)
+- [Amazon SQS FIFO and high throughput mode](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html)
 - [SQS Best Practices](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-best-practices.html)
 - [SQS FAQs](https://aws.amazon.com/sqs/faqs/)

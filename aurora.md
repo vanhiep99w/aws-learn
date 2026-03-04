@@ -551,6 +551,20 @@ Aurora Serverless v2 **tự động** monitor và scale dựa trên:
 
 ## Aurora Global Database
 
+### Aurora Global Database là gì?
+
+**Aurora Global Database** là mô hình triển khai Aurora trên nhiều AWS Region:
+
+- 1 **primary Region** (đọc/ghi chính)
+- Tối đa **10 secondary Regions** (read-only)
+- Dữ liệu từ primary được replicate sang secondary qua hạ tầng chuyên dụng của Aurora, độ trễ replication thường **dưới 1 giây**
+
+Mục tiêu chính:
+
+1. **Global reads với local latency** (người dùng ở EU đọc từ EU, APAC đọc từ APAC)
+2. **Disaster Recovery cấp Region** (khi primary Region gặp sự cố có thể promote secondary)
+3. Giữ nguyên mô hình **RDBMS Aurora (SQL, transaction, engine compatibility)**
+
 ### Cross-Region Replication
 
 ```
@@ -570,26 +584,57 @@ Aurora Serverless v2 **tự động** monitor và scale dựa trên:
 │   └─────────────────────────┘         └─────────────────────────┘           │
 │                                                                              │
 │   Replication lag: < 1 giây (typically ~100ms)                              │
-│   Failover to secondary: < 1 phút                                           │
+│   Switchover/failover: promote secondary thành primary khi cần               │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Cách hoạt động (ngắn gọn)
+
+1. Ứng dụng ghi dữ liệu vào **writer endpoint** của global database (luôn trỏ về primary writer)
+2. Aurora replicate thay đổi từ primary sang các secondary Region ở tầng storage
+3. Ứng dụng gần người dùng đọc từ reader endpoint ở Region gần nhất
+4. Khi cần DR:
+   - **Switchover**: chuyển primary có kế hoạch
+   - **Failover**: chuyển primary khi primary Region lỗi
+
+> Lưu ý quan trọng cho thiết kế:
+> Aurora Global Database replicate ở mức **cluster/database**, không phải chọn riêng từng table trong cùng cluster để global.
 
 ### Key Features
 
 | Feature | Value |
 |---------|-------|
-| **Replication lag** | < 1 giây (typically ~100ms) |
-| **Secondary regions** | Tối đa 5 |
+| **Replication lag** | Thường < 1 giây |
+| **Secondary regions** | Tối đa 10 |
 | **Replicas per region** | Tối đa 16 |
-| **Cross-region failover** | < 1 phút (manual hoặc planned) |
-| **Write forwarding** | Secondary có thể forward writes về Primary |
+| **Write endpoint** | Global writer endpoint luôn trỏ primary writer |
+| **Switchover/Failover** | Hỗ trợ chuyển primary cross-Region |
+| **Write forwarding** | Secondary có thể forward write về primary (nếu bật) |
 
 ### Use Cases
 
-1. **Disaster Recovery**: Failover sang region khác khi primary region down
-2. **Low-latency reads**: Users ở EU đọc từ EU region
-3. **Data locality**: Compliance requirements (GDPR)
+1. **Gaming/SaaS toàn cầu**: người dùng nhiều châu lục cần read latency thấp
+2. **Region-level DR**: yêu cầu RTO/RPO tốt hơn replication truyền thống
+3. **Mở rộng quốc tế nhưng muốn ít refactor**: vẫn dùng Aurora SQL thay vì chuyển NoSQL
+
+### Khi nào KHÔNG nên dùng?
+
+1. Cần **multi-master write độc lập ở nhiều Region** (Global DB có 1 primary writer tại một thời điểm)
+2. Chỉ chạy trong 1 Region, không cần global reads/DR cross-Region
+3. Workload chủ yếu key-value đơn giản, không cần relational features (có thể cân nhắc DynamoDB)
+
+### Ví dụ thực tế dễ hình dung
+
+- Công ty game hiện chạy ở `us-east-1`, mở rộng sang EU và APAC
+- Đặt primary ở `us-east-1`, tạo secondary ở `eu-west-1` và `ap-southeast-1`
+- Người chơi EU đọc leaderboard/profiles từ `eu-west-1` để giảm latency
+- Nếu primary Region gặp sự cố, secondary Region có thể được promote thành primary để tiếp tục phục vụ
+
+### Nguồn AWS chính thức
+
+- Aurora Global Database (User Guide): https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html
+- Aurora Global Database (Product page): https://aws.amazon.com/rds/aurora/global-database/
 
 ---
 

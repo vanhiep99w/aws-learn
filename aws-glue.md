@@ -7,6 +7,7 @@
 - [Kiến trúc tổng quan](#kiến-trúc-tổng-quan)
 - [Thành phần chính (Core Components)](#thành-phần-chính-core-components)
 - [AWS Glue Studio](#aws-glue-studio)
+- [AWS Glue DataBrew](#aws-glue-databrew)
 - [AWS Glue Features](#aws-glue-features)
 - [Job Bookmarks (Incremental Processing)](#job-bookmarks-incremental-processing)
 - [Streaming ETL](#streaming-etl)
@@ -89,27 +90,27 @@
 │                     AWS Glue Data Catalog                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │                      Databases                           │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │   │
-│  │  │ sales_db    │  │ users_db    │  │ logs_db     │     │   │
-│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘     │   │
-│  │         │                │                │             │   │
-│  │         ▼                ▼                ▼             │   │
-│  │    ┌─────────┐      ┌─────────┐      ┌─────────┐       │   │
-│  │    │ Tables  │      │ Tables  │      │ Tables  │       │   │
-│  │    │ • orders│      │ • users │      │ • access│       │   │
-│  │    │ • items │      │ • prefs │      │ • errors│       │   │
-│  │    └─────────┘      └─────────┘      └─────────┘       │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │   │
+│  │  │ sales_db    │  │ users_db    │  │ logs_db     │       │   │
+│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘       │   │
+│  │         │                │                │              │   │
+│  │         ▼                ▼                ▼              │   │
+│  │    ┌─────────┐      ┌─────────┐      ┌─────────┐         │   │
+│  │    │ Tables  │      │ Tables  │      │ Tables  │         │   │
+│  │    │ • orders│      │ • users │      │ • access│         │   │
+│  │    │ • items │      │ • prefs │      │ • errors│         │   │
+│  │    └─────────┘      └─────────┘      └─────────┘         │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │  Mỗi Table chứa:                                         │   │
 │  │  • Column names & data types                             │   │
 │  │  • Partition information                                 │   │
 │  │  • Location của data (S3, RDS, etc.)                     │   │
 │  │  • Classification (JSON, Parquet, CSV, etc.)             │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -120,6 +121,28 @@
 - Data thực tế vẫn ở data store gốc (S3, RDS, etc.)
 - Sử dụng được với: **Amazon Athena, Amazon EMR, Amazon Redshift Spectrum**
 
+### Metadata dùng để làm gì?
+
+Metadata trong Glue Data Catalog giúp:
+
+- **Định vị dữ liệu**: biết dataset nằm ở path nào (`s3://...`)
+- **Mô tả schema**: biết cột nào, kiểu dữ liệu gì, partition theo trường nào
+- **Cho phép query dạng table**: Athena/EMR/Spectrum dùng metadata để query dữ liệu ở nguồn
+- **Dùng chung giữa services**: nhiều dịch vụ AWS đọc cùng một catalog metadata
+
+**Ví dụ cụ thể (data lake trên S3):**
+
+1. Bạn có dữ liệu thật ở S3: `s3://health-lake-raw/patient/date=2026-03-04/data.parquet`
+2. Glue Crawler scan folder và tạo table `raw_db.patient_events` trong Data Catalog
+3. Table metadata chứa:
+   - columns: `patient_id`, `heart_rate`, `event_time`
+   - format: `Parquet`
+   - location: `s3://health-lake-raw/patient/`
+4. Khi chạy Athena: `SELECT * FROM raw_db.patient_events LIMIT 10;`
+   - Athena đọc **metadata từ Data Catalog**
+   - rồi đọc **data thật từ S3**
+5. Nếu xóa table external trong Athena/Glue, bạn xóa metadata table definition; file S3 vẫn còn
+
 ---
 
 ### 2. Crawlers
@@ -128,7 +151,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Crawler Workflow                         │
+│                         Crawler Workflow                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────┐                                                │
@@ -145,8 +168,8 @@
 │              │    Crawler      │                                │
 │              │ ─────────────── │                                │
 │              │ 1. Connect      │                                │
-│              │ 2. Classify     │ ← Xác định format (CSV, JSON..│
-│              │ 3. Infer Schema │ ← Tự động detect columns      │
+│              │ 2. Classify     │ ← Xác định format (CSV, JSON.. │
+│              │ 3. Infer Schema │ ← Tự động detect columns       │
 │              │ 4. Write to     │                                │
 │              │    Catalog      │                                │
 │              └────────┬────────┘                                │
@@ -209,28 +232,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Connection Types                          │
+│                        Connection Types                         │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │  JDBC Connections                                        │   │
-│  │  • Amazon RDS (MySQL, PostgreSQL, Oracle, SQL Server)   │   │
+│  │  • Amazon RDS (MySQL, PostgreSQL, Oracle, SQL Server)    │   │
 │  │  • Amazon Redshift                                       │   │
-│  │  • On-premises databases (qua VPN/Direct Connect)       │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  │  • On-premises databases (qua VPN/Direct Connect)        │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │  Network Connections                                     │   │
-│  │  • VPC configuration (subnet, security group)           │   │
-│  │  • AWS Secrets Manager for credentials                  │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  │  • VPC configuration (subnet, security group)            │   │
+│  │  • AWS Secrets Manager for credentials                   │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │  Native Connections (70+ sources)                        │   │
 │  │  • MongoDB, DocumentDB                                   │   │
 │  │  • Kafka, Amazon MSK                                     │   │
-│  │  • Salesforce, SAP, Snowflake                           │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  │  • Salesforce, SAP, Snowflake                            │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -440,6 +463,75 @@
 
 ---
 
+## AWS Glue DataBrew
+
+**AWS Glue DataBrew** là dịch vụ **visual data preparation** giúp làm sạch, chuẩn hóa và biến đổi dữ liệu với giao diện point-and-click, **không cần viết code**.
+
+### Khi nào nên dùng DataBrew?
+
+| Nhu cầu | DataBrew fit? | Ghi chú |
+|---------|---------------|---------|
+| Data engineer + business analyst cùng chuẩn bị dữ liệu | ✅ | Workflow trực quan, dễ cộng tác |
+| Cần chuẩn hóa dữ liệu nhanh (null handling, datetime, dedup, normalize text) | ✅ | Dùng recipe steps thay vì code |
+| Cần data profiling trước khi transform | ✅ | Có profile job và thống kê theo cột |
+| Cần custom ETL logic phức tạp bằng Spark code | ⚠️ | Nên dùng Glue Studio/Glue ETL jobs |
+
+### Core Concepts (DataBrew)
+
+| Thành phần | Mô tả |
+|------------|-------|
+| **Project** | Workspace tương tác để chuẩn bị dữ liệu |
+| **Dataset** | Tập dữ liệu nguồn (S3, Glue Data Catalog, JDBC...) |
+| **Recipe** | Danh sách các bước transform có thể lưu và tái sử dụng |
+| **Job** | Job chạy recipe hoặc chạy data profile |
+| **Data lineage** | Theo dõi nguồn gốc và luồng biến đổi dữ liệu |
+| **Data profile** | Tóm tắt chất lượng dữ liệu theo cột (distribution, nulls, data type...) |
+
+### Pattern thực tế: S3 Data Lake (Parquet) + DataBrew
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              DataBrew cho Data Lake Parquet trên S3             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  s3://health-lake/raw/parquet/                                  │
+│              │                                                  │
+│              ▼                                                  │
+│       DataBrew Dataset                                          │
+│              │                                                  │
+│              ▼                                                  │
+│       DataBrew Project                                          │
+│         ├── Step 1: Filter anomalies                            │
+│         ├── Step 2: Normalize datetime                          │
+│         └── Step 3: Aggregate theo patient cohort               │
+│              │                                                  │
+│              ▼                                                  │
+│     Recipe (versioned, shareable)                               │
+│              │                                                  │
+│              ├── Profile Job (column stats, null patterns)      │
+│              └── Recipe Job  ──► s3://health-lake/curated/      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### DataBrew vs Glue Studio (chọn nhanh)
+
+| Tiêu chí | DataBrew | Glue Studio |
+|----------|----------|-------------|
+| Mục tiêu chính | Data preparation không code | ETL pipeline/engineering |
+| Người dùng chính | Analyst + Data Engineer | Data Engineer |
+| Cách làm việc | Recipe-based, point-and-click | Visual nodes + generated Spark script |
+| Phù hợp nhất khi | Cần profiling + chuẩn hóa nhanh + chia sẻ logic | Cần orchestrated ETL jobs phức tạp |
+
+**Nguồn chính thức (AWS):**
+- [Core concepts and terms in AWS Glue DataBrew](https://docs.aws.amazon.com/databrew/latest/dg/core-concepts-and-terms.html)
+- [Connecting to data with AWS Glue DataBrew](https://docs.aws.amazon.com/databrew/latest/dg/datasets.html)
+- [Supported file types and integrations](https://docs.aws.amazon.com/databrew/latest/dg/databrew-integrations.html)
+- [Getting started with AWS Glue DataBrew](https://docs.aws.amazon.com/databrew/latest/dg/getting-started.html)
+- [AWS Prescriptive Guidance: AWS Glue DataBrew](https://docs.aws.amazon.com/prescriptive-guidance/latest/serverless-etl-aws-glue/databrew.html)
+
+---
+
 ## AWS Glue Features
 
 ### Data Discovery & Organization
@@ -631,6 +723,7 @@ job.commit()  # ← Lưu bookmark state
 | Complex ML + Spark with custom control | Consider EMR |
 | Need central metadata catalog | ✅ AWS Glue Data Catalog |
 | Visual ETL development | ✅ AWS Glue Studio |
+| Code-free data prep + profiling + recipe sharing | ✅ AWS Glue DataBrew |
 | Real-time streaming ETL | ✅ AWS Glue Streaming |
 
 ---
@@ -839,6 +932,7 @@ aws glue get-crawler --name my-s3-crawler \
 | **Crawlers** | Auto-discover schemas |
 | **ETL Jobs** | Transform data (Spark/Python/Ray) |
 | **Glue Studio** | Visual ETL development |
+| **Glue DataBrew** | Code-free data preparation + profiling |
 | **Triggers** | Schedule/event-based execution |
 | **Workflows** | Orchestrate complex pipelines |
 | **Job Bookmarks** | Incremental processing |

@@ -219,8 +219,25 @@ const downloadUrl = await getSignedUrl(client, command, {
 
 ### Cách tính phí
 
-- **Chỉ charge khi THỰC SỰ nhanh hơn** - nếu không cải thiện, AWS bypass và không charge
 - **~$0.04-0.08/GB** (tuỳ regions) - **CỘNG THÊM** vào standard S3 fees
+- Chỉ áp dụng khi transfer **THỰC SỰ được accelerated**
+
+> ⚠️ **QUAN TRỌNG — Exam tip:**
+>
+> Nếu S3TA **KHÔNG nhanh hơn** so với direct upload:
+> - ❌ **Không charge phí S3TA** — AWS tự bypass, không tính phí acceleration
+> - ❌ **Không charge phí S3 Data Transfer IN** — Upload vào S3 **luôn miễn phí** ($0.00/GB)
+> - ✅ **Kết quả: Không mất bất kỳ phí transfer nào**
+>
+> ```
+> S3TA NHANH HƠN:           S3TA KHÔNG NHANH HƠN:
+> ┌──────────────────┐       ┌──────────────────┐
+> │ S3 Data IN: $0   │       │ S3 Data IN: $0   │
+> │ S3TA fee: $0.04/GB│      │ S3TA fee: $0     │ ← Waived!
+> │ ─────────────── │       │ ──────────────── │
+> │ TOTAL: $0.04/GB  │       │ TOTAL: $0.00     │
+> └──────────────────┘       └──────────────────┘
+> ```
 
 ### Bảng giá theo Region và Direction
 
