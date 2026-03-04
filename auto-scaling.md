@@ -373,6 +373,17 @@ Khi ASG được attach với Target Group, việc register/deregister instances
 > [!IMPORTANT]
 > Khi sử dụng với Load Balancer, nên bật **ELB Health Check** để ASG có thể thay thế instances mà application không responsive.
 
+### Thứ tự replace instance unhealthy (default behavior)
+
+Với health check failure, hành vi mặc định của EC2 Auto Scaling là `terminate and launch`:
+
+1. Tạo scaling activity để **terminate instance unhealthy**
+2. Đồng thời tạo scaling activity khác để **launch instance thay thế** (trong lúc terminate diễn ra)
+
+Muốn đổi sang hướng ưu tiên availability (launch trước rồi terminate), cần cấu hình **instance maintenance policy**.
+
+> **Nguồn:** [View the reason for health check failures](https://docs.aws.amazon.com/autoscaling/ec2/userguide/replace-unhealthy-instance.html), [Instance maintenance policy for Auto Scaling group](https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-maintenance-policy-overview-and-considerations.html)
+
 ### Health Check Grace Period
 
 ```
@@ -467,6 +478,17 @@ ASG tự động phân phối instances đều giữa các Availability Zones:
 
 > [!NOTE]
 > Khi một AZ gặp vấn đề, ASG sẽ tự động launch instances ở các AZ còn lại.
+
+### Thứ tự hành động khi AZ bị lệch (AZ rebalancing)
+
+Khi distribution giữa các AZ bị lệch (ví dụ terminate thủ công nhiều instance ở một AZ), ASG sẽ rebalance theo thứ tự:
+
+1. **Launch instance mới** ở AZ đang thiếu
+2. **Terminate instance cũ** ở AZ dư
+
+Thiết kế này giúp hạn chế ảnh hưởng đến hiệu năng và độ sẵn sàng. Trong quá trình rebalancing, ASG có thể tạm thời vượt `max capacity` (tối đa 10% hoặc ít nhất 1 instance).
+
+> **Nguồn:** [Control which Auto Scaling instances terminate during scale in](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html)
 
 ---
 

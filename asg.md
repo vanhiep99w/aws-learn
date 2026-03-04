@@ -9,6 +9,13 @@
 - [Launch Template vs Launch Configuration](#launch-template-vs-launch-configuration)
 - [Placement Groups với ASG](#placement-groups-với-asg)
 - [Scaling Policies](#scaling-policies)
+  - [Manual Scaling](#1-manual-scaling)
+  - [Dynamic Scaling](#2-dynamic-scaling)
+    - [Target Tracking Scaling](#a-target-tracking-scaling)
+    - [Step Scaling](#b-step-scaling)
+    - [Simple Scaling](#c-simple-scaling)
+  - [Scheduled Scaling](#3-scheduled-scaling)
+  - [Predictive Scaling](#4-predictive-scaling)
 - [Scaling Cooldown](#scaling-cooldown)
 - [Health Checks](#health-checks)
 - [Instance Refresh](#instance-refresh)
@@ -39,19 +46,19 @@
                          ┌─────────────────────────────────────┐
                          │        Auto Scaling Group           │
                          │                                     │
-    ┌────────────┐       │   Min: 2    Desired: 3    Max: 5   │
+    ┌────────────┐       │   Min: 2    Desired: 3    Max: 5    │
     │ CloudWatch │◀──────│                                     │
-    │   Alarms   │       │  ┌────┐   ┌────┐   ┌────┐          │
-    └─────┬──────┘       │  │EC2 │   │EC2 │   │EC2 │          │
-          │              │  └────┘   └────┘   └────┘          │
-          ▼              │     │        │        │            │
-    ┌────────────┐       │     └────────┴────────┘            │
-    │  Scaling   │──────▶│              │                     │
-    │  Policies  │       │              ▼                     │
-    └────────────┘       │    ┌─────────────────┐             │
-                         │    │ Target Group    │             │
-                         │    │ (ELB)           │             │
-                         │    └─────────────────┘             │
+    │   Alarms   │       │  ┌────┐   ┌────┐   ┌────┐           │
+    └─────┬──────┘       │  │EC2 │   │EC2 │   │EC2 │           │
+          │              │  └────┘   └────┘   └────┘           │
+          ▼              │     │        │        │             │
+    ┌────────────┐       │     └────────┴────────┘             │
+    │  Scaling   │──────▶│              │                      │
+    │  Policies  │       │              ▼                      │
+    └────────────┘       │    ┌─────────────────┐              │
+                         │    │ Target Group    │              │
+                         │    │ (ELB)           │              │
+                         │    └─────────────────┘              │
                          └─────────────────────────────────────┘
 ```
 
@@ -182,9 +189,60 @@ CPU > 90%   → Add 3 instances
 
 #### c) Simple Scaling
 
-- Scale với 1 adjustment duy nhất
-- Có **cooldown period** (default 300s)
-- **Không khuyến nghị** - dùng Step/Target Tracking thay thế
+- Dạng scaling cơ bản nhất — **1 CloudWatch Alarm → 1 scaling action cố định**
+- Khi alarm triggered → thực hiện **đúng 1 adjustment**, sau đó **chờ hết cooldown** mới xử lý alarm tiếp
+- **Không phản ứng theo mức độ** của metric (khác với Step Scaling)
+
+```
+CloudWatch Alarm: CPU > 70%
+         │
+         ▼
+    Add 1 instance
+         │
+         ▼
+    ┌─────────────────────┐
+    │  Cooldown (300s)    │ ← Mọi alarm mới bị IGNORE
+    └─────────────────────┘
+         │
+         ▼
+    Sẵn sàng scale tiếp
+```
+
+```bash
+# Tạo Simple Scaling Policy
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name my-asg \
+  --policy-name scale-out-simple \
+  --policy-type SimpleScaling \
+  --adjustment-type ChangeInCapacity \
+  --scaling-adjustment 1 \
+  --cooldown 300
+```
+
+**Adjustment Types:**
+
+| Type | Ví dụ | Mô tả |
+|------|-------|-------|
+| `ChangeInCapacity` | `+2` | Thêm/bớt số lượng cố định |
+| `ExactCapacity` | `5` | Set desired capacity = 5 |
+| `PercentChangeInCapacity` | `+50%` | Thêm/bớt theo % |
+
+**So sánh Simple vs Step Scaling:**
+
+```
+Simple Scaling:                    Step Scaling:
+CPU > 70% → Add 1 (luôn luôn)     CPU 50-70%  → Add 1
+                                   CPU 70-90%  → Add 2
+                                   CPU > 90%   → Add 3
+                                   (phản ứng theo mức độ)
+```
+
+> ⚠️ **Không khuyến nghị** dùng Simple Scaling vì:
+> 1. **Cooldown chặn alarm** — trong thời gian cooldown, mọi alarm mới bị bỏ qua dù CPU đang 100%
+> 2. **Không linh hoạt** — luôn add/remove cùng số lượng bất kể mức độ nghiêm trọng
+> 3. **Phản ứng chậm** — phải chờ cooldown xong mới scale tiếp
+>
+> → Dùng **Target Tracking** hoặc **Step Scaling** thay thế
 
 ### 3. Scheduled Scaling
 
@@ -252,6 +310,19 @@ Health Check Flow:
 
 **Grace Period:** Thời gian chờ sau khi launch instance mới trước khi bắt đầu health check (default: 300s)
 
+### Hành vi mặc định khi instance unhealthy (quan trọng)
+
+Khi ASG xác định instance `InService` là unhealthy (EC2/ELB/custom health check), **mặc định**:
+
+1. ASG tạo scaling activity để **terminate unhealthy instance** trước
+2. Trong lúc đó, ASG tạo scaling activity khác để **launch instance thay thế**
+
+Điều này là hành vi mặc định `terminate and launch`.
+
+Nếu muốn ưu tiên availability để launch trước rồi mới terminate, cấu hình **instance maintenance policy** theo kiểu `launch before terminating`.
+
+> **Nguồn:** [View the reason for health check failures](https://docs.aws.amazon.com/autoscaling/ec2/userguide/replace-unhealthy-instance.html), [Instance maintenance policy for Auto Scaling group](https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-maintenance-policy-overview-and-considerations.html)
+
 ---
 
 ## Instance Refresh
@@ -278,17 +349,17 @@ Pre-initialize instances để giảm thời gian launch:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                 Auto Scaling Group                   │
+│                 Auto Scaling Group                  │
 │                                                     │
 │  Active Pool          Warm Pool                     │
-│  ┌────┐ ┌────┐       ┌────┐ ┌────┐                 │
-│  │Run │ │Run │       │Stop│ │Stop│                 │
-│  └────┘ └────┘       └────┘ └────┘                 │
+│  ┌────┐ ┌────┐       ┌────┐ ┌────┐                  │
+│  │Run │ │Run │       │Stop│ │Stop│                  │
+│  └────┘ └────┘       └────┘ └────┘                  │
 │                         │                           │
 │                         │ Scale Out                 │
 │                         ▼                           │
 │                    ┌────────┐                       │
-│                    │ Start  │ (nhanh hơn launch)   │
+│                    │ Start  │ (nhanh hơn launch)    │
 │                    └────────┘                       │
 └─────────────────────────────────────────────────────┘
 ```
@@ -341,6 +412,13 @@ ASG tự động phân bổ instances across AZs:
 - **Rebalancing**: ASG tự động rebalance khi có AZ imbalance
 - **Availability Zone Distribution**: Phân bố đều instances
 
+**Thứ tự khi AZ rebalancing (mặc định):**
+- ASG **launch instance mới trước**, sau đó mới **terminate instance cũ**
+- Mục tiêu: không làm giảm performance/availability trong lúc cân bằng lại AZ
+- ASG có thể tạm thời vượt `max capacity` (tối đa 10% hoặc ít nhất 1 instance) để hoàn tất rebalancing
+
+> **Nguồn:** [Control which Auto Scaling instances terminate during scale in](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html)
+
 ---
 
 ## Termination Policies
@@ -378,8 +456,8 @@ Thực hiện custom actions trong quá trình launch/terminate:
 │InService  │───▶│Terminating:Wait     │───▶│Terminated │
 └───────────┘    │(Lifecycle Hook)     │    └───────────┘
                  │ - Drain connections │
-                 │ - Save logs        │
-                 │ - Deregister DNS   │
+                 │ - Save logs         │
+                 │ - Deregister DNS    │
                  └─────────────────────┘
 ```
 
