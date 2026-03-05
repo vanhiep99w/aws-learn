@@ -1,4 +1,4 @@
-# AWS Direct Connect
+   # AWS Direct Connect
 
 ## Mục lục
 - [Giới thiệu](#giới-thiệu)
@@ -616,6 +616,10 @@ AWS Direct Connect sử dụng mô hình **pay-as-you-go**, không có upfront f
    - Direct Connect không encrypted by default
    - MACsec cho 10/100/400 Gbps
    - Private IP VPN for end-to-end encryption
+   - **Exam note:** Khi đề nhấn mạnh đồng thời **encrypted + dedicated**, đáp án thường là **Direct Connect + Site-to-Site VPN** (IPsec over DX), trừ khi đề nêu rõ dùng MACsec.
+   - Tham chiếu AWS:
+     - Direct Connect encryption in transit: https://docs.aws.amazon.com/directconnect/latest/UserGuide/encryption-in-transit.html
+     - Direct Connect + Site-to-Site VPN (VPC Connectivity Options): https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/aws-direct-connect-site-to-site-vpn.html
 
 6. **High Availability**
    - Minimum 2 connections cho resilience
@@ -629,7 +633,7 @@ AWS Direct Connect sử dụng mô hình **pay-as-you-go**, không có upfront f
 | Cần kết nối nhanh, budget thấp | VPN |
 | Cần consistent bandwidth cao | Direct Connect |
 | Kết nối on-prem đến nhiều VPCs | Direct Connect Gateway |
-| Encrypted traffic qua dedicated connection | Private IP VPN over DX hoặc MACsec |
+| Encrypted traffic + dedicated connection (exam default) | Direct Connect + Site-to-Site VPN (hoặc MACsec nếu đề nêu rõ điều kiện hỗ trợ) |
 | Cần gộp nhiều connections | LAG (chỉ Dedicated) |
 | Office-to-office qua AWS backbone | SiteLink |
 
