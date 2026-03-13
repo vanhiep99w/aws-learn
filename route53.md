@@ -1,6 +1,5 @@
 # Amazon Route 53
 
-
 ## Mục lục
 
 - [Tổng quan](#tổng-quan)
@@ -9,6 +8,7 @@
 - [Hosted Zones](#hosted-zones)
   - [DNS Zone là gì?](#dns-zone-là-gì)
   - [Records tự động tạo khi tạo Hosted Zone](#records-tự-động-tạo-khi-tạo-hosted-zone)
+- [Route 53 Resolver cho Hybrid DNS (On-premises va VPC)](#route-53-resolver-cho-hybrid-dns-on-premises-va-vpc)
 - [Record Types](#record-types)
 - [Alias Records (Route 53 Exclusive)](#alias-records-route-53-exclusive)
 - [TTL (Time To Live)](#ttl-time-to-live)
@@ -53,11 +53,11 @@ Route 53 cung cấp **3 chức năng chính**:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-| Chức năng | Mô tả | Ví dụ |
-|-----------|-------|-------|
-| **Domain Registration** | Đăng ký và quản lý tên miền | `example.com`, `myapp.io` |
-| **DNS Routing** | Phân giải domain → IP address | `example.com` → `54.231.12.45` |
-| **Health Checks** | Giám sát sức khỏe của resources | Kiểm tra endpoint còn sống không |
+| Chức năng               | Mô tả                           | Ví dụ                            |
+| ----------------------- | ------------------------------- | -------------------------------- |
+| **Domain Registration** | Đăng ký và quản lý tên miền     | `example.com`, `myapp.io`        |
+| **DNS Routing**         | Phân giải domain → IP address   | `example.com` → `54.231.12.45`   |
+| **Health Checks**       | Giám sát sức khỏe của resources | Kiểm tra endpoint còn sống không |
 
 ---
 
@@ -69,10 +69,10 @@ Route 53 cung cấp **3 chức năng chính**:
 
 ### Ai quản lý DNS?
 
-| Thành phần | Ai quản lý? |
-|------------|-------------|
-| **Root DNS** (.) | 13 tổ chức toàn cầu (ICANN, Verisign, NASA...) |
-| **TLD** (.com, .vn...) | Domain registries (Verisign, VNNIC...) |
+| Thành phần                             | Ai quản lý?                                                  |
+| -------------------------------------- | ------------------------------------------------------------ |
+| **Root DNS** (.)                       | 13 tổ chức toàn cầu (ICANN, Verisign, NASA...)               |
+| **TLD** (.com, .vn...)                 | Domain registries (Verisign, VNNIC...)                       |
 | **Authoritative DNS** (domain của bạn) | **Bạn chọn** - có thể là Route 53, Cloudflare, Google DNS... |
 
 ### DNS Resolution Flow (Chi tiết)
@@ -233,10 +233,10 @@ Browser gõ example.com
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Thuật ngữ | Ý nghĩa |
-|-----------|---------|
-| **DNS Zone** | Khái niệm tổng quát - "vùng quản lý DNS" |
-| **Hosted Zone** | Tên gọi của DNS Zone trong Route 53 |
+| Thuật ngữ       | Ý nghĩa                                  |
+| --------------- | ---------------------------------------- |
+| **DNS Zone**    | Khái niệm tổng quát - "vùng quản lý DNS" |
+| **Hosted Zone** | Tên gọi của DNS Zone trong Route 53      |
 
 ### Hosted Zone trong Route 53
 
@@ -298,6 +298,7 @@ Khi bạn tạo một Hosted Zone, AWS **tự động tạo 2 loại records b�
 ```
 
 **Khi nào cần dùng NS Record?**
+
 - Khi bạn mua domain ở nhà cung cấp khác (GoDaddy, Namecheap...) và muốn dùng Route 53 quản lý DNS
 - **→ Copy 4 NS này** vào cài đặt nameserver của domain tại registrar
 
@@ -337,29 +338,30 @@ ns-123.awsdns-45.com. hostmaster.example.com. 1 7200 900 1209600 86400
 └─────────────────────────────────────────────────────────────────── Primary NS
 ```
 
-| Thành phần | Ý nghĩa |
-|------------|---------|
-| **Primary NS** | Name server chính quản lý zone |
-| **Admin Email** | Email admin (dấu `.` thay cho `@`) |
-| **Serial** | Version number, tăng mỗi khi có thay đổi |
-| **Refresh** | Secondary NS check updates sau bao lâu |
-| **Retry** | Nếu refresh fail, thử lại sau bao lâu |
-| **Expire** | Secondary NS ngừng phục vụ nếu không liên lạc được primary |
-| **Minimum TTL** | TTL mặc định cho negative caching |
+| Thành phần      | Ý nghĩa                                                    |
+| --------------- | ---------------------------------------------------------- |
+| **Primary NS**  | Name server chính quản lý zone                             |
+| **Admin Email** | Email admin (dấu `.` thay cho `@`)                         |
+| **Serial**      | Version number, tăng mỗi khi có thay đổi                   |
+| **Refresh**     | Secondary NS check updates sau bao lâu                     |
+| **Retry**       | Nếu refresh fail, thử lại sau bao lâu                      |
+| **Expire**      | Secondary NS ngừng phục vụ nếu không liên lạc được primary |
+| **Minimum TTL** | TTL mặc định cho negative caching                          |
 
 > [!TIP]
 > **Đối với bạn (người dùng Route 53):**
+>
 > - **NS Record**: Cần biết để cấu hình domain registrar
 > - **SOA Record**: **AWS lo hết** - bạn không cần sửa gì cả
-> 
+>
 > Chỉ cần tập trung tạo A, AAAA, CNAME, Alias records!
 
 ### Loại Hosted Zone
 
-| Loại | Ai có thể query? | Use Case |
-|------|------------------|----------|
-| **Public Hosted Zone** | Cả thế giới qua Internet | Website, API công khai |
-| **Private Hosted Zone** | Chỉ trong VPC của bạn | Database, microservices nội bộ |
+| Loại                    | Ai có thể query?         | Use Case                       |
+| ----------------------- | ------------------------ | ------------------------------ |
+| **Public Hosted Zone**  | Cả thế giới qua Internet | Website, API công khai         |
+| **Private Hosted Zone** | Chỉ trong VPC của bạn    | Database, microservices nội bộ |
 
 ```
 Public Hosted Zone:                    Private Hosted Zone:
@@ -384,25 +386,63 @@ Public Hosted Zone:                    Private Hosted Zone:
 
 ---
 
+## Route 53 Resolver cho Hybrid DNS (On-premises va VPC)
+
+Khi workload trong VPC cần resolve domain private của hệ thống on-premises (qua Site-to-Site VPN/Direct Connect), bạn dùng **Route 53 Resolver endpoints + forwarding rules**.
+
+### Khi nào dùng Outbound vs Inbound Endpoint?
+
+| Nhu cầu                                                                                | Endpoint đúng                           |
+| -------------------------------------------------------------------------------------- | --------------------------------------- |
+| **VPC -> on-prem DNS** (EC2/app trong VPC cần resolve `corp.internal`)                 | **Outbound endpoint** + forwarding rule |
+| **On-prem -> AWS private DNS** (DNS on-prem cần resolve private hosted zone trong AWS) | **Inbound endpoint**                    |
+
+### Luồng chuẩn cho bài toán VPC resolve on-prem
+
+```
+EC2/App trong VPC
+   -> VPC Resolver (VPC+2)
+   -> Rule forward cho domain on-prem (vd: corp.internal)
+   -> Route 53 Resolver Outbound Endpoint
+   -> On-prem DNS server (qua Site-to-Site VPN / DX)
+   -> Trả kết quả ngược lại về ứng dụng
+```
+
+### Các bước cấu hình tối thiểu (VPC -> on-prem)
+
+1. Tạo **Route 53 Resolver outbound endpoint** trong VPC.
+2. Gắn security group cho endpoint, cho phép DNS (UDP/TCP port `53`) outbound đến DNS server on-prem.
+3. Tạo **Resolver forwarding rule** cho domain on-prem (ví dụ `corp.internal`) và chỉ định IP DNS server on-prem.
+4. Associate rule với VPC chứa ứng dụng.
+
+### Lưu ý bảo mật và vận hành
+
+- Không dùng **Private Hosted Zone** để "thay thế" DNS on-prem. PHZ chỉ chứa record do Route 53 quản lý trong AWS.
+- Dùng ít nhất 2 IP endpoint ở 2 AZ để tăng HA cho Resolver endpoint.
+- Giới hạn security group/routing chỉ cho đúng DNS servers on-prem cần thiết.
+
+---
+
 ## Record Types
 
 DNS Records = **"Danh bạ"** với nhiều loại thông tin khác nhau.
 
 ### Các loại DNS Records phổ biến
 
-| Record Type | Trỏ đến | Use case thực tế |
-|-------------|---------|------------------|
-| **A** | IPv4 | Website: `example.com` → EC2 |
-| **AAAA** | IPv6 | Website hỗ trợ IPv6 |
-| **CNAME** | Domain khác | `www` → `example.com`, CDN |
-| **MX** | Mail server | Nhận email @example.com |
-| **NS** | Name servers | Route 53 quản lý domain |
-| **TXT** | Văn bản | SPF, DKIM, xác minh domain |
-| **SOA** | Zone metadata | Thông tin Hosted Zone (tự động) |
+| Record Type | Trỏ đến       | Use case thực tế                |
+| ----------- | ------------- | ------------------------------- |
+| **A**       | IPv4          | Website: `example.com` → EC2    |
+| **AAAA**    | IPv6          | Website hỗ trợ IPv6             |
+| **CNAME**   | Domain khác   | `www` → `example.com`, CDN      |
+| **MX**      | Mail server   | Nhận email @example.com         |
+| **NS**      | Name servers  | Route 53 quản lý domain         |
+| **TXT**     | Văn bản       | SPF, DKIM, xác minh domain      |
+| **SOA**     | Zone metadata | Thông tin Hosted Zone (tự động) |
 
 ### Chi tiết từng loại Record
 
 **1️⃣ A Record** - Trỏ domain → IPv4
+
 ```
 "example.com có địa chỉ IP là gì?"
 
@@ -411,6 +451,7 @@ example.com  ──────▶  54.231.12.45
 ```
 
 **2️⃣ CNAME Record** - Alias (Biệt danh)
+
 ```
 "www là tên khác của example.com"
 
@@ -419,6 +460,7 @@ www.example.com ──▶ example.com ──▶ 54.231.12.45
 ```
 
 **3️⃣ MX Record** - Mail Exchange
+
 ```
 "Email gửi đến @example.com thì đi đâu?"
 
@@ -427,6 +469,7 @@ hello@example.com ──▶ mail.google.com (priority 10)
 ```
 
 **4️⃣ NS Record** - Name Server
+
 ```
 "Domain này dùng Name Server nào?"
 
@@ -434,6 +477,7 @@ example.com ──▶ ns-123.awsdns-45.com (Route 53)
 ```
 
 **5️⃣ TXT Record** - Text
+
 ```
 "Ghi chú thông tin cho domain"
 
@@ -491,38 +535,41 @@ Query: "Cho tôi MX record của example.com"
 → DNS trả về: mail.google.com
 ```
 
-| Ứng dụng | Query Type | Tại sao? |
-|----------|------------|----------|
-| **Browser** (Chrome, Firefox) | A hoặc AAAA | Cần IP để kết nối |
-| **Email client** (Gmail, Outlook) | MX | Cần mail server |
-| **DNS tools** (dig, nslookup) | Bạn chỉ định | Debug |
+| Ứng dụng                          | Query Type   | Tại sao?          |
+| --------------------------------- | ------------ | ----------------- |
+| **Browser** (Chrome, Firefox)     | A hoặc AAAA  | Cần IP để kết nối |
+| **Email client** (Gmail, Outlook) | MX           | Cần mail server   |
+| **DNS tools** (dig, nslookup)     | Bạn chỉ định | Debug             |
 
 ```bash
 # Test với dig command
 dig A example.com       # Query A record
-dig MX example.com      # Query MX record  
+dig MX example.com      # Query MX record
 dig NS example.com      # Query NS record
 dig ANY example.com     # Query tất cả records
 ```
 
 ### Giải thích dễ hiểu: A Record vs CNAME
-*(Ví dụ danh bạ điện thoại)*
+
+_(Ví dụ danh bạ điện thoại)_
 
 **1️⃣ A Record (Address Record)**
+
 > Giống như **lưu số điện thoại** trong danh bạ.
 
-*   **Tên:** Anh Hiệp (`example.com`)
-*   **Số ĐT:** 0901.234.567 (`1.2.3.4`)
-*   **Hành động:** Gọi -> Bấm số luôn.
-*   **Đặc điểm:** Đi thẳng đến đích (IP), tốc độ nhanh nhất.
+- **Tên:** Anh Hiệp (`example.com`)
+- **Số ĐT:** 0901.234.567 (`1.2.3.4`)
+- **Hành động:** Gọi -> Bấm số luôn.
+- **Đặc điểm:** Đi thẳng đến đích (IP), tốc độ nhanh nhất.
 
 **2️⃣ CNAME Record (Canonical Name Record)**
+
 > Giống như **ghi chú Alias/Biệt danh** ("Hãy gọi cho...").
 
-*   **Tên:** Sếp Hiệp (`www.example.com`)
-*   **Ghi chú:** *"Hãy gọi vào số của **Anh Hiệp**"*
-*   **Hành động:** Tìm "Sếp Hiệp" -> Thấy ghi chú -> Tìm "Anh Hiệp" -> Ra số -> Gọi.
-*   **Đặc điểm:** Đi lòng vòng 2 bước (Hỏi tên giả -> Ra tên thật -> Mới ra IP).
+- **Tên:** Sếp Hiệp (`www.example.com`)
+- **Ghi chú:** _"Hãy gọi vào số của **Anh Hiệp**"_
+- **Hành động:** Tìm "Sếp Hiệp" -> Thấy ghi chú -> Tìm "Anh Hiệp" -> Ra số -> Gọi.
+- **Đặc điểm:** Đi lòng vòng 2 bước (Hỏi tên giả -> Ra tên thật -> Mới ra IP).
 
 ### Zone Apex (Root Domain) là gì?
 
@@ -544,9 +591,9 @@ dig ANY example.com     # Query tất cả records
   └─────────────┘    └─────────────┘    └─────────────┘
 ```
 
-| Domain | Là Zone Apex? |
-|--------|---------------|
-| `example.com` | ✅ Có |
+| Domain            | Là Zone Apex?        |
+| ----------------- | -------------------- |
+| `example.com`     | ✅ Có                |
 | `www.example.com` | ❌ Không (subdomain) |
 | `api.example.com` | ❌ Không (subdomain) |
 
@@ -650,22 +697,22 @@ dig ANY example.com     # Query tất cả records
 
 ### So sánh A vs CNAME vs Alias
 
-| Góc nhìn | A Record | CNAME | Alias |
-|----------|----------|-------|-------|
-| **Cấu hình trỏ đến** | IP trực tiếp | Domain khác | Domain khác (AWS) |
-| **Client nhận được** | IP | Domain (rồi query tiếp) | **IP** (1 step) |
-| **Zone Apex** | ✅ OK | ❌ Cấm | ✅ OK |
-| **Số lookups** | 1 | 2 | 1 |
-| **Chi phí query** | Có phí | Có phí | **Miễn phí** (AWS) |
+| Góc nhìn             | A Record     | CNAME                   | Alias              |
+| -------------------- | ------------ | ----------------------- | ------------------ |
+| **Cấu hình trỏ đến** | IP trực tiếp | Domain khác             | Domain khác (AWS)  |
+| **Client nhận được** | IP           | Domain (rồi query tiếp) | **IP** (1 step)    |
+| **Zone Apex**        | ✅ OK        | ❌ Cấm                  | ✅ OK              |
+| **Số lookups**       | 1            | 2                       | 1                  |
+| **Chi phí query**    | Có phí       | Có phí                  | **Miễn phí** (AWS) |
 
 ### Khi nào dùng cái nào?
 
-| Trường hợp | Dùng loại gì? | Ví dụ |
-| :--- | :--- | :--- |
-| **Zone Apex** trỏ vào AWS Resource | **Alias** (Bắt buộc) | `example.com` → ALB |
+| Trường hợp                         | Dùng loại gì?        | Ví dụ                             |
+| :--------------------------------- | :------------------- | :-------------------------------- |
+| **Zone Apex** trỏ vào AWS Resource | **Alias** (Bắt buộc) | `example.com` → ALB               |
 | **Subdomain** trỏ vào AWS Resource | **Alias** (Nên dùng) | `www` → CloudFront (Free & Nhanh) |
-| Trỏ sang dịch vụ **NGOÀI AWS** | **CNAME** | `blog` → `github.io` |
-| Trỏ vào **IP tĩnh** cụ thể | **A Record** | `server` → `1.2.3.4` |
+| Trỏ sang dịch vụ **NGOÀI AWS**     | **CNAME**            | `blog` → `github.io`              |
+| Trỏ vào **IP tĩnh** cụ thể         | **A Record**         | `server` → `1.2.3.4`              |
 
 > [!TIP]
 > **Tóm lại:** Alias = "CNAME nói dối là A record" → Client thấy A record nên không xung đột với NS/SOA!
@@ -676,7 +723,7 @@ dig ANY example.com     # Query tất cả records
 
 **TTL** = "Thời hạn sử dụng" của một DNS record (tính bằng giây).
 
-> **Ví dụ:** Route 53 trả về: *"`example.com` = `1.2.3.4`, TTL = 300"*. Nghĩa là: *"Nhớ địa chỉ này trong 300 giây nhé, sau đó hỏi lại tao."*
+> **Ví dụ:** Route 53 trả về: _"`example.com` = `1.2.3.4`, TTL = 300"_. Nghĩa là: _"Nhớ địa chỉ này trong 300 giây nhé, sau đó hỏi lại tao."_
 
 ### Ai cache? (Quan trọng!)
 
@@ -722,18 +769,18 @@ Route 53 trả về: example.com = 1.2.3.4, TTL = 300s
 
 ### Trade-off TTL
 
-| TTL | Ưu điểm | Nhược điểm |
-|-----|---------|------------|
-| **Cao (24h)** | Ít queries → giảm chi phí, truy cập nhanh (từ cache) | Đổi IP mất **cả ngày** mới cập nhật xong |
-| **Thấp (60s)** | Thay đổi IP được áp dụng **gần như ngay** | Nhiều queries → tốn tiền hơn |
+| TTL            | Ưu điểm                                              | Nhược điểm                               |
+| -------------- | ---------------------------------------------------- | ---------------------------------------- |
+| **Cao (24h)**  | Ít queries → giảm chi phí, truy cập nhanh (từ cache) | Đổi IP mất **cả ngày** mới cập nhật xong |
+| **Thấp (60s)** | Thay đổi IP được áp dụng **gần như ngay**            | Nhiều queries → tốn tiền hơn             |
 
 ### Best Practice
 
 1.  **Bình thường:** TTL 300s - 3600s.
 2.  **Trước khi migrate/đổi IP:**
-    *   Vài giờ trước: Hạ TTL xuống **60s**.
-    *   Thực hiện đổi IP.
-    *   Sau khi ổn định: Tăng TTL trở lại.
+    - Vài giờ trước: Hạ TTL xuống **60s**.
+    - Thực hiện đổi IP.
+    - Sau khi ổn định: Tăng TTL trở lại.
 3.  **Alias records:** TTL tự động theo AWS resource (không set được).
 
 ---
@@ -744,16 +791,16 @@ Route 53 cung cấp **8 routing policies** để điều khiển cách traffic �
 
 ### Record Types hỗ trợ Routing Policies
 
-| Record Type | Hỗ trợ Routing Policy? | Ghi chú |
-|-------------|------------------------|---------|
-| **A** (IPv4) | ✅ Có | Phổ biến nhất |
-| **AAAA** (IPv6) | ✅ Có | |
-| **CNAME** | ✅ Có | Không dùng được ở Zone Apex |
-| **Alias** | ✅ Có | **Khuyên dùng** (miễn phí, tự động update IP) |
-| **MX** | ✅ Có | Email routing |
-| **TXT** | ✅ Có | |
-| **NS** | ❌ Không | Chỉ Simple routing |
-| **SOA** | ❌ Không | Tự động, không edit |
+| Record Type     | Hỗ trợ Routing Policy? | Ghi chú                                       |
+| --------------- | ---------------------- | --------------------------------------------- |
+| **A** (IPv4)    | ✅ Có                  | Phổ biến nhất                                 |
+| **AAAA** (IPv6) | ✅ Có                  |                                               |
+| **CNAME**       | ✅ Có                  | Không dùng được ở Zone Apex                   |
+| **Alias**       | ✅ Có                  | **Khuyên dùng** (miễn phí, tự động update IP) |
+| **MX**          | ✅ Có                  | Email routing                                 |
+| **TXT**         | ✅ Có                  |                                               |
+| **NS**          | ❌ Không               | Chỉ Simple routing                            |
+| **SOA**         | ❌ Không               | Tự động, không edit                           |
 
 > [!TIP]
 > **Alias record** được khuyên dùng với Routing Policies vì miễn phí query và tự động cập nhật IP của AWS resources.
@@ -795,12 +842,14 @@ example.com
 ```
 
 **Use cases:**
+
 - Load balancing giữa các regions
 - **Canary deployment** (test tính năng mới với % nhỏ users)
 - A/B testing
 - Blue-green deployment
 
 **Công thức tính %:**
+
 ```
 Traffic % = (Weight của record) / (Tổng tất cả weights) × 100
 
@@ -863,19 +912,20 @@ User ở Tokyo                         User ở Paris
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Bước | Mô tả |
-|------|-------|
-| **1. Thu thập data** | AWS đo latency từ nhiều điểm trên thế giới đến các AWS Regions |
-| **2. Xây dựng latency table** | Tạo mapping: Location → Region → Latency |
-| **3. Cập nhật định kỳ** | Data được refresh thường xuyên (không real-time) |
-| **4. Sử dụng IP nguồn** | Route 53 dùng IP của DNS resolver để xác định vị trí |
+| Bước                          | Mô tả                                                          |
+| ----------------------------- | -------------------------------------------------------------- |
+| **1. Thu thập data**          | AWS đo latency từ nhiều điểm trên thế giới đến các AWS Regions |
+| **2. Xây dựng latency table** | Tạo mapping: Location → Region → Latency                       |
+| **3. Cập nhật định kỳ**       | Data được refresh thường xuyên (không real-time)               |
+| **4. Sử dụng IP nguồn**       | Route 53 dùng IP của DNS resolver để xác định vị trí           |
 
 > [!WARNING]
 > **Latency dựa trên IP của DNS Resolver**, không phải IP của user!
+>
 > ```
 > User ở Vietnam dùng Google DNS (8.8.8.8 - server ở US):
 > → Route 53 thấy IP từ US → Có thể trả về server US!
-> 
+>
 > Giải pháp: Dùng DNS resolver gần với bạn (ISP DNS)
 > ```
 
@@ -899,6 +949,7 @@ example.com ───▶ Primary (Active)
 ```
 
 **Cấu hình:**
+
 - Primary record + Health check
 - Secondary record (failover target)
 
@@ -931,6 +982,7 @@ example.com ───▶ Primary (Active)
 ```
 
 **Use cases:**
+
 - Phục vụ content theo ngôn ngữ/region
 - Tuân thủ regulations (GDPR - data phải ở EU)
 - Restricting content distribution
@@ -966,8 +1018,9 @@ Server A: Bias = +50          Server B: Bias = -25
 ```
 
 **Bias range:** -99 đến +99
+
 - **Positive bias** (+): Mở rộng phạm vi, thu hút nhiều traffic hơn
-- **Negative bias** (-)**: Thu hẹp phạm vi, giảm traffic
+- **Negative bias** (-)\*\*: Thu hẹp phạm vi, giảm traffic
 
 **Yêu cầu:** Phải sử dụng **Route 53 Traffic Flow** để configure.
 
@@ -988,6 +1041,7 @@ Server A: Bias = +50          Server B: Bias = -25
 ```
 
 **Use cases:**
+
 - ISP-specific routing
 - Enterprise customer routing
 - Migrating traffic từ network này sang network khác
@@ -1015,6 +1069,7 @@ Client nhận 3 IPs, tự chọn random → load balancing ở client-side
 ```
 
 **So sánh với Simple Routing:**
+
 - Simple: Không health checks, trả về tất cả values
 - Multivalue: Có health checks, chỉ trả về healthy values
 
@@ -1024,16 +1079,16 @@ Client nhận 3 IPs, tự chọn random → load balancing ở client-side
 
 ### So sánh Routing Policies
 
-| Policy | HA Pattern | Use Case | Health Check |
-|--------|------------|----------|-------------|
-| **Simple** | - | Đơn giản, 1 resource | ❌ |
-| **Weighted** | **Active-Active** | Canary, A/B testing | ✅ |
-| **Latency** | **Active-Active** | Performance tốt nhất | ✅ |
-| **Failover** | **Active-Passive** | Disaster recovery | ✅ (bắt buộc) |
-| **Geolocation** | **Active-Active** | Content localization | ✅ |
-| **Geoproximity** | **Active-Active** | Flexible geo routing | ✅ |
-| **IP-based** | **Active-Active** | ISP/Network routing | ✅ |
-| **Multivalue** | **Active-Active** | Client-side LB | ✅ |
+| Policy           | HA Pattern         | Use Case             | Health Check  |
+| ---------------- | ------------------ | -------------------- | ------------- |
+| **Simple**       | -                  | Đơn giản, 1 resource | ❌            |
+| **Weighted**     | **Active-Active**  | Canary, A/B testing  | ✅            |
+| **Latency**      | **Active-Active**  | Performance tốt nhất | ✅            |
+| **Failover**     | **Active-Passive** | Disaster recovery    | ✅ (bắt buộc) |
+| **Geolocation**  | **Active-Active**  | Content localization | ✅            |
+| **Geoproximity** | **Active-Active**  | Flexible geo routing | ✅            |
+| **IP-based**     | **Active-Active**  | ISP/Network routing  | ✅            |
+| **Multivalue**   | **Active-Active**  | Client-side LB       | ✅            |
 
 > [!TIP]
 > **Active-Passive** = Chỉ 1 server hoạt động, server kia standby (Failover)
@@ -1047,16 +1102,16 @@ Route 53 Health Checks giám sát sức khỏe của resources và **tích hợp
 
 ### Health Checks + Routing Policies
 
-| Routing Policy | Hỗ trợ Health Check? | Hành vi khi endpoint unhealthy |
-|----------------|---------------------|-------------------------------|
-| **Simple** | ❌ Không | Vẫn trả về IP dù server chết |
-| **Weighted** | ✅ Có | Loại endpoint unhealthy khỏi pool |
-| **Latency** | ✅ Có | Chuyển sang region có latency thấp tiếp theo |
-| **Failover** | ✅ **Bắt buộc** | Chuyển từ Primary → Secondary |
-| **Geolocation** | ✅ Có | Fallback sang location khác hoặc default |
-| **Geoproximity** | ✅ Có | Chuyển sang endpoint gần nhất còn healthy |
-| **Multivalue** | ✅ Có | Chỉ trả về các IP healthy |
-| **IP-based** | ✅ Có | Loại endpoint unhealthy |
+| Routing Policy   | Hỗ trợ Health Check? | Hành vi khi endpoint unhealthy               |
+| ---------------- | -------------------- | -------------------------------------------- |
+| **Simple**       | ❌ Không             | Vẫn trả về IP dù server chết                 |
+| **Weighted**     | ✅ Có                | Loại endpoint unhealthy khỏi pool            |
+| **Latency**      | ✅ Có                | Chuyển sang region có latency thấp tiếp theo |
+| **Failover**     | ✅ **Bắt buộc**      | Chuyển từ Primary → Secondary                |
+| **Geolocation**  | ✅ Có                | Fallback sang location khác hoặc default     |
+| **Geoproximity** | ✅ Có                | Chuyển sang endpoint gần nhất còn healthy    |
+| **Multivalue**   | ✅ Có                | Chỉ trả về các IP healthy                    |
+| **IP-based**     | ✅ Có                | Loại endpoint unhealthy                      |
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1139,16 +1194,17 @@ Route 53 Health Checkers (15+ locations)
 
 **Cấu hình quan trọng:**
 
-| Parameter | Default | Mô tả |
-|-----------|---------|-------|
-| **Interval** | 30s | Tần suất check (10s = Fast, chi phí cao hơn) |
-| **Failure Threshold** | 3 | Số lần fail liên tiếp để coi là unhealthy |
-| **Protocol** | HTTP | HTTP, HTTPS, TCP |
-| **Port** | 80/443 | Port để kiểm tra |
-| **Path** | / | URL path cho HTTP/HTTPS |
-| **String Matching** | - | Kiểm tra response body chứa text cụ thể |
+| Parameter             | Default | Mô tả                                        |
+| --------------------- | ------- | -------------------------------------------- |
+| **Interval**          | 30s     | Tần suất check (10s = Fast, chi phí cao hơn) |
+| **Failure Threshold** | 3       | Số lần fail liên tiếp để coi là unhealthy    |
+| **Protocol**          | HTTP    | HTTP, HTTPS, TCP                             |
+| **Port**              | 80/443  | Port để kiểm tra                             |
+| **Path**              | /       | URL path cho HTTP/HTTPS                      |
+| **String Matching**   | -       | Kiểm tra response body chứa text cụ thể      |
 
 **Điều kiện Healthy:**
+
 - HTTP/HTTPS: Response code 2xx hoặc 3xx
 - TCP: Connection successful
 - String matching: Response body chứa expected string (trong 5120 bytes đầu)
@@ -1196,6 +1252,7 @@ Private Resource (không thể access từ Internet)
 ```
 
 **Use cases:**
+
 - Private resources trong VPC
 - DynamoDB throttles
 - Custom application metrics
@@ -1230,6 +1287,7 @@ Private Resource (không thể access từ Internet)
 ```
 
 **Tại sao dùng Alias cho ELB?**
+
 - ✅ Hỗ trợ zone apex (`example.com`)
 - ✅ Không tốn phí query
 - ✅ Tự động update khi ELB IP thay đổi
@@ -1261,13 +1319,13 @@ Route 53 có thể đăng ký và quản lý domain names.
 
 ### Chi phí (ví dụ)
 
-| TLD | Chi phí/năm |
-|-----|-------------|
-| .com | $12 |
-| .net | $11 |
-| .org | $12 |
-| .io | $39 |
-| .dev | $12 |
+| TLD  | Chi phí/năm |
+| ---- | ----------- |
+| .com | $12         |
+| .net | $11         |
+| .org | $12         |
+| .io  | $39         |
+| .dev | $12         |
 
 ---
 
@@ -1343,16 +1401,16 @@ Với DNSSEC:
 
 ## Pricing
 
-| Component | Chi phí |
-|-----------|---------|
-| **Hosted Zone** | $0.50/hosted zone/tháng |
-| **Queries (Standard)** | $0.40/1M queries (first 1B) |
-| **Queries (Latency-based)** | $0.60/1M queries |
-| **Queries (Geo DNS)** | $0.70/1M queries |
-| **Health Checks (basic)** | $0.50/health check/tháng |
-| **Health Checks (HTTPS/String)** | $0.75/health check/tháng |
-| **Health Checks (Fast, 10s)** | $1.00/health check/tháng |
-| **Traffic Flow Policy** | $50/policy record/tháng |
+| Component                        | Chi phí                     |
+| -------------------------------- | --------------------------- |
+| **Hosted Zone**                  | $0.50/hosted zone/tháng     |
+| **Queries (Standard)**           | $0.40/1M queries (first 1B) |
+| **Queries (Latency-based)**      | $0.60/1M queries            |
+| **Queries (Geo DNS)**            | $0.70/1M queries            |
+| **Health Checks (basic)**        | $0.50/health check/tháng    |
+| **Health Checks (HTTPS/String)** | $0.75/health check/tháng    |
+| **Health Checks (Fast, 10s)**    | $1.00/health check/tháng    |
+| **Traffic Flow Policy**          | $50/policy record/tháng     |
 
 > **Nguồn:** [Route 53 Pricing](https://aws.amazon.com/route53/pricing/)
 
@@ -1425,15 +1483,15 @@ T+24h: Tăng TTL lên 3600s
 
 ## Exam Tips (AWS Certification)
 
-| Keyword trong câu hỏi | Routing Policy |
-|----------------------|----------------|
-| "lowest latency" | Latency-based |
-| "disaster recovery", "active-passive" | Failover |
-| "localized content", "compliance", "restrict by country" | Geolocation |
-| "canary deployment", "A/B testing", "gradually shift" | Weighted |
-| "expand/shrink traffic region" | Geoproximity với Bias |
-| "route based on client IP range" | IP-based |
-| "return multiple healthy IPs" | Multivalue Answer |
+| Keyword trong câu hỏi                                    | Routing Policy        |
+| -------------------------------------------------------- | --------------------- |
+| "lowest latency"                                         | Latency-based         |
+| "disaster recovery", "active-passive"                    | Failover              |
+| "localized content", "compliance", "restrict by country" | Geolocation           |
+| "canary deployment", "A/B testing", "gradually shift"    | Weighted              |
+| "expand/shrink traffic region"                           | Geoproximity với Bias |
+| "route based on client IP range"                         | IP-based              |
+| "return multiple healthy IPs"                            | Multivalue Answer     |
 
 ---
 
@@ -1441,12 +1499,12 @@ T+24h: Tăng TTL lên 3600s
 
 Cả hai đều có khả năng "routing", nhưng hoạt động ở **tầng khác nhau**:
 
-| Tiêu chí | Route 53 | API Gateway |
-| :--- | :--- | :--- |
-| **Tầng hoạt động** | **DNS Level** (trước khi kết nối) | **Application Level** (HTTP/HTTPS) |
-| **Thời điểm quyết định** | Khi browser hỏi "IP là gì?" | Sau khi đã kết nối, khi request đến |
-| **Nhận biết request** | Chỉ biết **IP client, location** | Biết **headers, body, path, token...** |
-| **Phạm vi** | Chọn **region/server nào** | Chọn **function/service nào trong server** |
+| Tiêu chí                 | Route 53                          | API Gateway                                |
+| :----------------------- | :-------------------------------- | :----------------------------------------- |
+| **Tầng hoạt động**       | **DNS Level** (trước khi kết nối) | **Application Level** (HTTP/HTTPS)         |
+| **Thời điểm quyết định** | Khi browser hỏi "IP là gì?"       | Sau khi đã kết nối, khi request đến        |
+| **Nhận biết request**    | Chỉ biết **IP client, location**  | Biết **headers, body, path, token...**     |
+| **Phạm vi**              | Chọn **region/server nào**        | Chọn **function/service nào trong server** |
 
 > **Lưu ý:** API Gateway là dịch vụ **regional**. Nếu muốn multi-region, phải tạo API Gateway ở mỗi region và dùng Route 53 để điều phối.
 
@@ -1472,11 +1530,13 @@ Cả hai đều có khả năng "routing", nhưng hoạt động ở **tầng kh
 ```
 
 **Bình thường:**
+
 - User Việt Nam → Singapore (latency thấp hơn)
 - User Nhật → Tokyo (latency thấp hơn)
 - **Cả 2 region cùng hoạt động**
 
 **Khi Singapore sập:**
+
 ```
 Route 53 Health Check phát hiện Singapore ❌ Unhealthy
                 │
@@ -1487,12 +1547,12 @@ TẤT CẢ traffic tự động chuyển về Tokyo ✅
 
 ### So sánh các mức độ HA
 
-| Kiến trúc | Mô tả | Mức HA |
-| :--- | :--- | :---: |
-| **Single AZ** | 1 server, 1 datacenter | ❌ Không HA |
-| **Multi-AZ** (cùng region) | 2+ AZs trong 1 region | ✅ HA cơ bản |
-| **Active-Passive** (2 regions) | 1 region chạy, 1 region standby | ✅✅ HA tốt |
-| **Active-Active** (2+ regions) | Tất cả regions cùng chạy | ✅✅✅ **HA cao nhất** |
+| Kiến trúc                      | Mô tả                           |         Mức HA         |
+| :----------------------------- | :------------------------------ | :--------------------: |
+| **Single AZ**                  | 1 server, 1 datacenter          |      ❌ Không HA       |
+| **Multi-AZ** (cùng region)     | 2+ AZs trong 1 region           |      ✅ HA cơ bản      |
+| **Active-Passive** (2 regions) | 1 region chạy, 1 region standby |      ✅✅ HA tốt       |
+| **Active-Active** (2+ regions) | Tất cả regions cùng chạy        | ✅✅✅ **HA cao nhất** |
 
 > **Key insight:** "Độc lập" = mỗi region **tự chạy được**. Chính vì vậy khi 1 region chết, region còn lại vẫn sống và tiếp nhận traffic. Route 53 Health Checks là "người gác cổng" tự động chuyển hướng.
 

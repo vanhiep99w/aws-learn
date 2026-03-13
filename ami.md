@@ -206,7 +206,7 @@ AMI (snap-111, snap-222)
 
 ```
 ┌─────────────────────────────────┐     ┌─────────────────────────────────┐
-│  S3 (AWS managed, internal)    │  ≠  │  S3 Bucket của bạn              │
+│  S3 (AWS managed, internal)     │  ≠  │  S3 Bucket của bạn              │
 ├─────────────────────────────────┤     ├─────────────────────────────────┤
 │                                 │     │                                 │
 │  Snapshots lưu ở đây            │     │  Bạn KHÔNG thấy snapshots       │
