@@ -29,16 +29,16 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - **Border radius**: 8-12px for cards, 6px for buttons/inputs
 - **Shadows**: Subtle box-shadows for cards on hover
 
-## Page Structure (8 Sections)
+## Page Structure
 
-### 1. Navbar (sticky)
+### Navbar (sticky)
 
 - Logo: "CloudPro Consulting" with cloud icon
 - Navigation links: Dich vu, Quy trinh, Vi sao chon, Khach hang
 - CTA button: "Lien he" (blue, scrolls to contact form)
 - Mobile: hamburger menu
 
-### 2. Hero Section
+### 1. Hero Section
 
 - Background: Subtle gradient (light blue to white)
 - Headline: "Toi uu ha tang AWS — Tiet kiem chi phi, tang toc phat trien"
@@ -48,7 +48,7 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
   - Secondary (outlined blue): "Xem dich vu" → scrolls to services section
 - Optional: Abstract cloud/architecture illustration or pattern
 
-### 3. Pain Points — "Ban dang gap van de nay?"
+### 2. Pain Points — "Ban dang gap van de nay?"
 
 - 3 cards in a row (stack on mobile):
   - Chi phi AWS tang khong kiem soat (icon: money)
@@ -57,7 +57,7 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - Each card: icon + short title + 1-2 sentence description
 - Purpose: Empathy-driven, show understanding of customer problems
 
-### 4. Services — "Dich vu chinh"
+### 3. Services — "Dich vu chinh"
 
 - 3 service cards with colored top border:
   - **Cloud Architecture** (blue border): Thiet ke kien truc AWS toi uu cho startup
@@ -66,7 +66,7 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - Each card: icon + title + description + bullet points of specifics
 - Cards have hover effect (subtle shadow elevation)
 
-### 5. Process — "Quy trinh lam viec"
+### 4. Process — "Quy trinh lam viec"
 
 - 4-step horizontal timeline (vertical on mobile):
   1. Danh gia (Assessment) — Review current infrastructure
@@ -76,7 +76,7 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - Visual: numbered circles connected by lines/arrows
 - Brief description under each step
 
-### 6. Why CloudPro — "Vi sao chon CloudPro?"
+### 5. Why CloudPro — "Vi sao chon CloudPro?"
 
 - Key metrics row:
   - 50+ du an hoan thanh
@@ -85,13 +85,13 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - Below metrics: 3-4 trust signals (AWS certifications, years of experience, customer satisfaction)
 - Optional: AWS Partner badge if applicable
 
-### 7. Testimonials — "Khach hang noi gi?"
+### 6. Testimonials — "Khach hang noi gi?"
 
 - 2-3 testimonial cards in carousel or grid
 - Each card: quote text + customer name + role + company
 - Clean design with quotation marks and subtle card styling
 
-### 8. Contact Form — "Dat lich tu van mien phi"
+### 7. Contact Form — "Dat lich tu van mien phi"
 
 - Background: Light blue (#EFF6FF) to stand out
 - Form fields:
@@ -103,7 +103,7 @@ Single-page landing page for **CloudPro Consulting**, an AWS consulting service 
 - Form submits via mailto or simple backend (Formspree/Netlify Forms for MVP)
 - Side note: Response time commitment ("Chung toi se lien he trong 24h")
 
-### 9. Footer
+### 8. Footer
 
 - Dark background (#0F172A)
 - Left: Copyright + company name
