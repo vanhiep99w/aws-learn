@@ -10,6 +10,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'AWS Learning',
+      favicon: '/favicon.svg',
       locales: {
         root: { label: 'Tiếng Việt', lang: 'vi' },
       },
