@@ -175,41 +175,104 @@ S3 Security dựa trên nguyên tắc **Defense in Depth** - nhiều lớp bảo
 
 ### S3 Access Points
 
-Simplify access management cho shared datasets:
+Simplify access management cho shared datasets - tạo **nhiều "cổng vào" riêng** cho cùng 1 bucket.
+
+### Vấn đề: 1 Bucket Policy cho nhiều teams
+
+Khi nhiều teams cùng dùng 1 bucket, bạn phải viết **1 bucket policy rất dài và phức tạp**:
+
+```json
+// Bucket policy KHỔNG LỒ - khó maintain, giới hạn 20KB!
+{
+  "Statement": [
+    { "Sid": "DataScienceRead", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
+    { "Sid": "DataScienceWrite", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
+    { "Sid": "AnalyticsRead", "Principal": {"AWS": "role/analytics"}, "Resource": ".../analytics/*" },
+    { "Sid": "MarketingRead", "Principal": {"AWS": "role/marketing"}, "Resource": ".../mkt/*" }
+    // ... 50 statements nữa cho các team khác
+  ]
+}
+```
+
+### Giải pháp: Mỗi team có Access Point riêng
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    S3 ACCESS POINTS                              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  Thay vì 1 bucket policy phức tạp cho nhiều teams:              │
+│  Không có Access Points:                                        │
+│  ═══════════════════════                                        │
+│    Team A ──┐                                                   │
+│    Team B ──┼──► [ 1 cửa vào + 1 policy dài ] ──► Bucket       │
+│    Team C ──┘                                                   │
 │                                                                  │
-│                    ┌─────────────┐                               │
-│                    │   Bucket    │                               │
-│                    │  (1 policy  │                               │
-│                    │  rất dài)   │                               │
-│                    └─────────────┘                               │
-│                                                                  │
-│  Dùng Access Points - mỗi team có riêng endpoint:               │
-│                                                                  │
-│  ┌───────────┐    ┌───────────┐    ┌───────────┐                │
-│  │ AP: data- │    │ AP: data- │    │ AP: data- │                │
-│  │ science   │    │ analytics │    │ marketing │                │
-│  │           │    │           │    │           │                │
-│  │ Policy:   │    │ Policy:   │    │ Policy:   │                │
-│  │ Read /ml/ │    │ Read /all/│    │ Read /mkt/│                │
-│  └─────┬─────┘    └─────┬─────┘    └─────┬─────┘                │
-│        │                │                │                       │
-│        └────────────────┼────────────────┘                       │
-│                         ▼                                        │
-│                  ┌─────────────┐                                 │
-│                  │   Bucket    │                                 │
-│                  └─────────────┘                                 │
+│  Có Access Points:                                              │
+│  ═════════════════                                              │
+│    Team A ──► [ Cửa A + policy A ] ──┐                          │
+│    Team B ──► [ Cửa B + policy B ] ──┼──► Bucket                │
+│    Team C ──► [ Cửa C + policy C ] ──┘                          │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Ví dụ cụ thể
+
+Bucket `company-data` chứa 3 folders: `/ml/`, `/analytics/`, `/mkt/`
+
+**Access Point cho team Data Science** - chỉ được đọc/ghi `/ml/`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {"AWS": "arn:aws:iam::123456789012:role/data-science"},
+    "Action": ["s3:GetObject", "s3:PutObject"],
+    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/data-science/object/ml/*"
+  }]
+}
+```
+
+**Access Point cho team Marketing** - chỉ được đọc `/mkt/`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {"AWS": "arn:aws:iam::123456789012:role/marketing"},
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/marketing/object/mkt/*"
+  }]
+}
+```
+
+### Cách team sử dụng
+
+Mỗi team gọi qua access point của mình thay vì bucket trực tiếp:
+
+```bash
+# Trước: tất cả team dùng chung endpoint
+aws s3 cp s3://company-data/ml/model.pkl .
+
+# Sau: mỗi team dùng access point riêng
+aws s3 cp s3://arn:aws:s3:us-east-1:123456789012:accesspoint/data-science/ml/model.pkl .
+```
+
 **Endpoint format:** `https://<access-point-name>-<account-id>.s3-accesspoint.<region>.amazonaws.com`
+
+### So sánh có và không có Access Points
+
+| Không có Access Points | Có Access Points |
+|----------------------|-----------------|
+| 1 bucket policy cho tất cả | Mỗi team có policy riêng |
+| Policy dài, phức tạp | Mỗi policy ngắn, đơn giản |
+| Giới hạn 20KB | Không lo giới hạn |
+| Thay đổi ảnh hưởng tất cả | Thay đổi chỉ ảnh hưởng 1 team |
+| Khó debug khi có lỗi | Dễ xác định lỗi ở team nào |
+
+> 💡 **Hiểu đơn giản:** Access Point giống như tạo **nhiều "cổng vào" cho cùng 1 kho hàng**, mỗi cổng có bảo vệ riêng, quy định riêng về ai được vào và lấy gì.
 
 ---
 
