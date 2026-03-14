@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --sl-font: 'Inter', system-ui, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', monospace;
+  --sl-content-width: 50rem;
+}
+
+/* Vietnamese text readability */
+.sl-markdown-content {
+  line-height: 1.8;
+}
+
+.sl-markdown-content h1 {
+  line-height: 1.3;
+}
+
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4 {
+  line-height: 1.4;
+}
+
+/* Code blocks */
+.sl-markdown-content pre {
+  font-size: 0.875rem;
+}
+
+/* Tables */
+.sl-markdown-content table {
+  font-size: 0.9rem;
+}

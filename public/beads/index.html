@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Beads</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧿</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg:#1b1f2a;
+    --surface:#242938;
+    --surface2:#2d3345;
+    --surface3:#363d52;
+    --border:#3a4159;
+    --border-hi:#4e5672;
+    --text:#e8ecf4;
+    --text2:#a0a9c0;
+    --text3:#6b7490;
+    --accent:#a78bfa;
+    --accent-dim:rgba(167,139,250,.12);
+    --teal:#5eead4;
+    --teal-dim:rgba(94,234,212,.12);
+    --teal-mid:rgba(94,234,212,.18);
+    --rose:#fda4af;
+    --rose-dim:rgba(253,164,175,.1);
+    --correct:#34d399;
+    --correct-dim:rgba(52,211,153,.1);
+    --correct-border:rgba(52,211,153,.3);
+    --wrong:#f87171;
+    --wrong-dim:rgba(248,113,113,.08);
+    --wrong-border:rgba(248,113,113,.2);
+    --cite-bg:rgba(167,139,250,.06);
+    --cite-border:rgba(167,139,250,.25);
+  }
+
+  html{font-size:17px}
+
+  body{
+    font-family:'Outfit',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ── Header ── */
+  .header{
+    padding:14px 24px;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .header-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{
+    width:34px;height:34px;border-radius:8px;
+    background:linear-gradient(135deg,var(--accent),#7c3aed);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;color:#fff;
+  }
+  .header h1{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .header h1 span{color:var(--accent)}
+  .toolbar-sep{width:1px;height:24px;background:var(--border);margin:0 4px}
+  .header select{
+    background:var(--surface2);color:var(--text);border:1px solid var(--border);
+    border-radius:6px;padding:7px 30px 7px 12px;font-size:.88rem;cursor:pointer;
+    font-family:'Outfit',sans-serif;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a0a9c0'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;transition:border-color .15s;
+  }
+  .header select:hover{border-color:var(--border-hi)}
+  .header select:focus{outline:none;border-color:var(--accent)}
+  .header select option{background:var(--surface2);color:var(--text)}
+  .refresh-info{margin-left:auto;display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--text3)}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(94,234,212,.5);animation:pulse-dot 2s ease-in-out infinite}
+  .live-dot.off{background:var(--text3);box-shadow:none;animation:none}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+  .live-label{color:var(--teal);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .live-label.off{color:var(--text3)}
+  .toggle-wrap{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.76rem;color:var(--text3)}
+  .toggle{width:34px;height:18px;background:var(--surface3);border-radius:9px;position:relative;cursor:pointer;transition:background .25s}
+  .toggle.on{background:rgba(94,234,212,.25)}
+  .toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--text2);border-radius:50%;transition:transform .25s,background .25s}
+  .toggle.on::after{transform:translateX(16px);background:var(--teal)}
+
+  /* ── Main layout ── */
+  .main{flex:1;display:flex;overflow:hidden}
+
+  /* ── List panel ── */
+  .list-panel{
+    width:400px;min-width:300px;flex-shrink:0;
+    border-right:1px solid var(--border);
+    background:var(--surface);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .list-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .list-header h2{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
+  .list-count{font-family:'JetBrains Mono',monospace;background:var(--accent-dim);color:var(--accent);font-size:.75rem;padding:2px 8px;border-radius:6px;font-weight:600}
+  .list-scroll{flex:1;overflow-y:auto;padding:6px}
+
+  /* ── Card ── */
+  .card{background:var(--surface2);border:1px solid transparent;border-radius:8px;padding:14px 16px;cursor:pointer;transition:background .12s,border-color .12s;margin-bottom:4px}
+  .card:hover{background:var(--surface3);border-color:var(--border)}
+  .card.active{background:var(--accent-dim);border-color:var(--accent);border-left:3px solid var(--accent)}
+  .card-title{font-size:1rem;font-weight:500;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-badges{display:flex;flex-wrap:wrap;gap:4px}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:2px 8px;border-radius:4px;font-weight:500;background:var(--accent-dim);color:var(--accent)}
+  .badge.domain{background:var(--rose-dim);color:var(--rose)}
+  .badge.qtype{background:var(--teal-dim);color:var(--teal)}
+  @keyframes card-flash{0%{box-shadow:0 0 0 2px var(--accent)}100%{box-shadow:none}}
+  .card.flash{animation:card-flash 1s ease-out 2}
+
+  /* ── Detail panel ── */
+  .detail-panel{flex:1;overflow-y:auto;background:var(--bg);min-width:0}
+  .detail-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:1.05rem}
+  .detail-inner{padding:28px 32px 48px}
+  .detail-inner>h2{font-size:1.3rem;font-weight:600;line-height:1.4;margin-bottom:12px}
+  .detail-badges-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+  .detail-meta{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--text3);margin-bottom:24px;display:flex;gap:16px;flex-wrap:wrap}
+
+  /* ── Question options ── */
+  .q-stem{font-size:1.05rem;line-height:1.75;margin-bottom:16px;color:var(--text)}
+  .q-options{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .q-opt{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:12px 16px;border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    font-size:1rem;line-height:1.6;
+    transition:border-color .15s;
+  }
+  .q-opt .opt-id{
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.82rem;
+    min-width:28px;height:28px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface3);color:var(--text2);flex-shrink:0;margin-top:1px;
+  }
+  .q-opt.correct{border-color:var(--correct-border);background:var(--correct-dim)}
+  .q-opt.correct .opt-id{background:rgba(52,211,153,.2);color:var(--correct)}
+  .q-opt.wrong{border-color:var(--wrong-border);background:var(--wrong-dim);opacity:.7}
+  .q-opt.wrong .opt-id{background:rgba(248,113,113,.15);color:var(--wrong)}
+  .q-answer{
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;
+    color:var(--correct);margin-top:12px;font-weight:500;
+  }
+
+  /* ── Section cards ── */
+  .detail-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:22px 24px;margin-bottom:14px;
+  }
+  .detail-card h3{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--text3);margin-bottom:14px;font-weight:600;
+  }
+
+  /* collapsible section */
+  .section-toggle{
+    display:flex;align-items:center;justify-content:space-between;
+    cursor:pointer;user-select:none;
+  }
+  .section-toggle .chevron{
+    font-size:.7rem;color:var(--text3);transition:transform .2s;
+  }
+  .section-toggle.open .chevron{transform:rotate(180deg)}
+  .section-body{overflow:hidden;transition:max-height .3s ease}
+  .section-body.collapsed{max-height:0 !important;padding-top:0}
+
+  /* Section type indicators */
+  .detail-card.correct-section{border-left:3px solid var(--correct)}
+  .detail-card.correct-section h3{color:var(--correct)}
+  .detail-card.wrong-section{border-left:3px solid var(--wrong)}
+  .detail-card.wrong-section h3{color:var(--wrong)}
+  .detail-card.core-section{border-left:3px solid var(--accent)}
+  .detail-card.core-section h3{color:var(--accent)}
+  .detail-card.source-section{border-left:3px solid var(--teal)}
+  .detail-card.source-section h3{color:var(--teal)}
+
+  /* ── Markdown content ── */
+  .md{font-size:1.05rem;line-height:1.8;color:var(--text)}
+  .md p{margin-bottom:.7em}
+  .md h2{font-family:'JetBrains Mono',monospace;font-size:1.05rem;margin-top:1.4em;margin-bottom:.5em;color:var(--accent);font-weight:600}
+  .md h3{font-size:1rem;margin-top:1.2em;margin-bottom:.4em;font-weight:600}
+  .md ul,.md ol{padding-left:1.4em;margin-bottom:.7em}
+  .md li{margin-bottom:.4em}
+  .md li::marker{color:var(--text3)}
+  .md code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--accent)}
+  .md pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:.8em 0}
+  .md pre code{background:none;padding:0;font-size:.85rem;color:var(--text)}
+  .md a{color:var(--accent);text-decoration:none;transition:opacity .15s}
+  .md a:hover{opacity:.8;text-decoration:underline}
+  .md strong{color:var(--text);font-weight:600}
+  /* citation blockquote */
+  .md blockquote{
+    background:var(--cite-bg);
+    border-left:3px solid var(--cite-border);
+    border-radius:0 8px 8px 0;
+    padding:12px 16px;
+    margin:.8em 0;
+    color:var(--text2);
+    font-size:.95rem;
+    line-height:1.7;
+  }
+  .md blockquote p{margin-bottom:.3em}
+
+  /* ── Loading / Empty ── */
+  .loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px 0;color:var(--text3);font-size:.9rem;font-family:'JetBrains Mono',monospace}
+  .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .empty{color:var(--text3);font-size:.9rem;text-align:center;padding:40px 0}
+  .load-more{padding:16px 0}
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--border-hi)}
+
+  /* ── Responsive ── */
+  @media(max-width:800px){
+    .main{flex-direction:column}
+    .list-panel{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);max-height:40vh}
+    .detail-inner{padding:20px 16px 32px}
+    .detail-card{padding:16px}
+    .toolbar-sep{display:none}
+    .header-row{gap:8px}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <div class="logo-icon">B</div>
+      <h1>AWS <span>Beads</span></h1>
+    </div>
+    <div class="toolbar-sep"></div>
+    <select id="filter-service"><option value="">All Services</option></select>
+    <select id="filter-domain"><option value="">All Domains</option></select>
+    <select id="filter-qtype"><option value="">All Types</option></select>
+    <div class="refresh-info">
+      <div class="live-dot on" id="live-dot"></div>
+      <span class="live-label" id="live-label">LIVE</span>
+      <span id="last-updated"></span>
+      <div class="toggle-wrap" id="auto-toggle-wrap">
+        <span>Auto</span>
+        <div class="toggle on" id="auto-toggle"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="list-panel">
+    <div class="list-header">
+      <h2>Beads</h2>
+      <span class="list-count" id="list-count">0</span>
+    </div>
+    <div class="list-scroll" id="list-scroll">
+      <div class="loading"><div class="spinner"></div>Loading...</div>
+    </div>
+  </div>
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-empty">Select a bead to view details</div>
+  </div>
+</div>
+
+<script>
+const API = 'https://www.dolthub.com/api/v1alpha1/vanhiep99w/aws-learn';
+const POLL_MS = 5000;
+
+let issues = [];
+let labelsMap = {};
+let prevUpdatedMap = {};
+let autoRefresh = true;
+let pollTimer = null;
+let selectedId = null;
+let collapsedSections = {};  // { issueId: Set of collapsed section titles }
+const PAGE_SIZE = 20;
+let loadedCount = 0;
+let hasMore = true;
+let loadingMore = false;
+
+async function query(sql) {
+  const res = await fetch(`${API}?q=${encodeURIComponent(sql)}`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+async function fetchData() {
+  const limit = Math.max(loadedCount, PAGE_SIZE);
+  const [issuesRes, labelsRes] = await Promise.all([
+    query(`SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at FROM issues WHERE status = 'open' ORDER BY updated_at DESC LIMIT ${limit}`),
+    query('SELECT issue_id, label FROM labels'),
+  ]);
+  labelsMap = {};
+  for (const r of labelsRes.rows) (labelsMap[r.issue_id] ||= []).push(r.label);
+
+  const changedIds = new Set();
+  const newMap = {};
+  for (const r of issuesRes.rows) {
+    newMap[r.id] = r.updated_at;
+    if (prevUpdatedMap[r.id] && prevUpdatedMap[r.id] !== r.updated_at) changedIds.add(r.id);
+    if (!prevUpdatedMap[r.id] && Object.keys(prevUpdatedMap).length > 0) changedIds.add(r.id);
+  }
+  prevUpdatedMap = newMap;
+
+  issues = issuesRes.rows.map(r => {
+    let meta = {};
+    try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
+    return { ...r, meta, labels: labelsMap[r.id] || [] };
+  });
+  loadedCount = issues.length;
+  hasMore = issuesRes.rows.length >= limit;
+
+  populateFilters();
+  renderList(changedIds);
+  if (selectedId) {
+    const still = issues.find(i => i.id === selectedId);
+    if (still) showDetail(still);
+  }
+  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+}
+
+async function loadMore() {
+  if (loadingMore || !hasMore) return;
+  loadingMore = true;
+  try {
+    const res = await query(`SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at FROM issues WHERE status = 'open' ORDER BY updated_at DESC LIMIT ${PAGE_SIZE} OFFSET ${loadedCount}`);
+    if (res.rows.length === 0) { hasMore = false; return; }
+    if (res.rows.length < PAGE_SIZE) hasMore = false;
+
+    const newIssues = res.rows.map(r => {
+      let meta = {};
+      try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
+      return { ...r, meta, labels: labelsMap[r.id] || [] };
+    });
+    issues.push(...newIssues);
+    loadedCount = issues.length;
+    for (const r of res.rows) prevUpdatedMap[r.id] = r.updated_at;
+    populateFilters();
+    renderList();
+  } finally {
+    loadingMore = false;
+  }
+}
+
+function populateFilters() {
+  const services = new Set(), domains = new Set(), qtypes = new Set();
+  for (const i of issues) {
+    for (const l of i.labels) { if (l !== 'aws') services.add(l); }
+    if (i.meta.domain) domains.add(i.meta.domain);
+    if (i.meta.question_type) qtypes.add(i.meta.question_type);
+  }
+  fillSelect('filter-service', [...services].sort(), 'All Services');
+  fillSelect('filter-domain', [...domains].sort(), 'All Domains');
+  fillSelect('filter-qtype', [...qtypes].sort(), 'All Types');
+}
+
+function fillSelect(id, values, def) {
+  const el = document.getElementById(id);
+  const cur = el.value;
+  el.innerHTML = `<option value="">${def}</option>` + values.map(v =>
+    `<option value="${v}"${v === cur ? ' selected' : ''}>${v}</option>`).join('');
+}
+
+function getFiltered() {
+  const svc = document.getElementById('filter-service').value;
+  const dom = document.getElementById('filter-domain').value;
+  const qt = document.getElementById('filter-qtype').value;
+  return issues.filter(i => {
+    if (svc && !i.labels.includes(svc)) return false;
+    if (dom && i.meta.domain !== dom) return false;
+    if (qt && i.meta.question_type !== qt) return false;
+    return true;
+  });
+}
+
+function renderList(changedIds = new Set()) {
+  const filtered = getFiltered();
+  const el = document.getElementById('list-scroll');
+  const prevScroll = el.scrollTop;
+  document.getElementById('list-count').textContent = filtered.length;
+  if (filtered.length === 0) { el.innerHTML = '<div class="empty">No beads found</div>'; return; }
+  el.innerHTML = filtered.map(i => {
+    const svc = i.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('');
+    const dom = i.meta.domain ? `<span class="badge domain">${i.meta.domain}</span>` : '';
+    const qt = i.meta.question_type ? `<span class="badge qtype">${i.meta.question_type}</span>` : '';
+    return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}" data-id="${i.id}">
+        <div class="card-title">${esc(i.title)}</div>
+        <div class="card-badges">${svc}${dom}${qt}</div>
+      </div>`;
+  }).join('') + (hasMore ? '<div class="loading load-more"><div class="spinner"></div></div>' : '');
+  el.querySelectorAll('.card').forEach(c => {
+    c.addEventListener('click', () => {
+      const issue = issues.find(i => i.id === c.dataset.id);
+      if (issue) selectCard(issue);
+    });
+  });
+  el.scrollTop = prevScroll;
+}
+
+function selectCard(issue) {
+  selectedId = issue.id;
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id === selectedId));
+  showDetail(issue, true);
+}
+
+// ── Parse description into stem + options ──
+function parseQuestion(desc, meta) {
+  if (!desc) return { stem: '', options: [], answerLine: '' };
+  const lines = desc.split('\n');
+  const stemLines = [];
+  const options = [];
+  let answerLine = '';
+  let inOptions = false;
+  let currentOpt = null;
+
+  for (const line of lines) {
+    const optMatch = line.match(/^#(\d+)\s*[—–-]\s*(.+)/);
+    const ansMatch = line.match(/^Answer:\s*(.+)/i);
+    if (ansMatch) {
+      answerLine = ansMatch[1].trim();
+      continue;
+    }
+    if (optMatch) {
+      inOptions = true;
+      if (currentOpt) options.push(currentOpt);
+      currentOpt = { id: optMatch[1], text: optMatch[2].trim() };
+    } else if (inOptions && currentOpt && line.trim()) {
+      currentOpt.text += ' ' + line.trim();
+    } else if (!inOptions) {
+      if (line.trim() !== 'Options:') stemLines.push(line);
+    }
+  }
+  if (currentOpt) options.push(currentOpt);
+
+  // determine correct answers from metadata
+  const correctIds = [];
+  if (meta.answer) {
+    const matches = meta.answer.match(/#(\d+)/g);
+    if (matches) matches.forEach(m => correctIds.push(m.replace('#', '')));
+  }
+  options.forEach(o => {
+    o.correct = correctIds.includes(o.id);
+    o.wrong = correctIds.length > 0 && !o.correct;
+  });
+
+  return { stem: stemLines.join('\n').replace(/^Q:\s*/i, '').trim(), options, answerLine };
+}
+
+// ── Parse notes into sections by ## headers ──
+function parseNotes(notes) {
+  if (!notes) return [];
+  const sections = [];
+  const lines = notes.split('\n');
+  let current = null;
+
+  for (const line of lines) {
+    const h2Match = line.match(/^##\s+(.+)/);
+    if (h2Match) {
+      if (current) sections.push(current);
+      current = { title: h2Match[1].trim(), lines: [] };
+    } else if (current) {
+      current.lines.push(line);
+    }
+  }
+  if (current) sections.push(current);
+
+  return sections.map(s => ({
+    title: s.title,
+    markdown: s.lines.join('\n').trim(),
+  }));
+}
+
+function sectionMeta(title) {
+  const t = title.toLowerCase();
+  if (t.includes('vì sao đúng') || t.includes('why correct'))
+    return { cls: 'correct-section', icon: '&#10003;', defaultOpen: true };
+  if (t.includes('đáp án khác sai') || t.includes('sao sai') || t.includes('why wrong'))
+    return { cls: 'wrong-section', icon: '&#10007;', defaultOpen: true };
+  if (t.includes('kiến thức') || t.includes('cốt lõi') || t.includes('core'))
+    return { cls: 'core-section', icon: '&#9670;', defaultOpen: true };
+  if (t.includes('nguồn') || t.includes('source') || t.includes('tham khảo'))
+    return { cls: 'source-section', icon: '&#9741;', defaultOpen: true };
+  return { cls: '', icon: '', defaultOpen: true };
+}
+
+function showDetail(issue, scrollToTop = false) {
+  const panel = document.getElementById('detail-panel');
+  const prevScroll = panel.scrollTop;
+  const badges = issue.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('')
+    + (issue.meta.domain ? `<span class="badge domain">${issue.meta.domain}</span>` : '')
+    + (issue.meta.question_type ? `<span class="badge qtype">${issue.meta.question_type}</span>` : '');
+
+  // Question
+  const q = parseQuestion(issue.description, issue.meta);
+  let questionHTML = '';
+  if (q.stem) questionHTML += `<div class="q-stem">${esc(q.stem)}</div>`;
+  if (q.options.length > 0) {
+    questionHTML += '<div class="q-options">' + q.options.map(o => {
+      const cls = o.correct ? ' correct' : o.wrong ? ' wrong' : '';
+      return `<div class="q-opt${cls}">
+        <span class="opt-id">#${o.id}</span>
+        <span>${esc(o.text)}</span>
+      </div>`;
+    }).join('') + '</div>';
+  } else if (issue.description) {
+    questionHTML = `<div class="q-stem">${esc(issue.description).replace(/\n/g, '<br>')}</div>`;
+  }
+
+  // Notes sections
+  const sections = parseNotes(issue.notes);
+  let notesHTML = '';
+  if (sections.length > 0) {
+    notesHTML = sections.map((s, i) => {
+      const m = sectionMeta(s.title);
+      const bodyId = `section-${i}`;
+      const saved = collapsedSections[issue.id];
+      const isOpen = saved ? !saved.has(s.title) : m.defaultOpen;
+      const openCls = isOpen ? ' open' : '';
+      const collapsedCls = isOpen ? '' : ' collapsed';
+      const rendered = marked.parse(s.markdown);
+      return `<div class="detail-card ${m.cls}">
+        <div class="section-toggle${openCls}" data-target="${bodyId}" data-title="${esc(s.title)}">
+          <h3>${s.title}</h3>
+          <span class="chevron">&#9660;</span>
+        </div>
+        <div class="section-body${collapsedCls}" id="${bodyId}">
+          <div class="md">${rendered}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } else if (issue.notes) {
+    notesHTML = `<div class="detail-card"><h3>Notes</h3><div class="md">${marked.parse(issue.notes)}</div></div>`;
+  }
+
+  panel.innerHTML = `
+    <div class="detail-inner">
+      <h2>${esc(issue.title)}</h2>
+      <div class="detail-badges-row">${badges}</div>
+      <div class="detail-meta">
+        <span>${issue.id}</span>
+        <span>${issue.created_at || '—'}</span>
+      </div>
+      <div class="detail-card">
+        <h3>Question</h3>
+        ${questionHTML}
+      </div>
+      ${notesHTML}
+    </div>`;
+
+  // wire up collapsible toggles
+  panel.querySelectorAll('.section-toggle').forEach(tog => {
+    tog.addEventListener('click', () => {
+      const body = document.getElementById(tog.dataset.target);
+      tog.classList.toggle('open');
+      body.classList.toggle('collapsed');
+      if (!body.classList.contains('collapsed')) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      } else {
+        body.style.maxHeight = '0';
+      }
+      // persist collapse state
+      const title = tog.dataset.title;
+      if (!collapsedSections[issue.id]) collapsedSections[issue.id] = new Set();
+      if (body.classList.contains('collapsed')) {
+        collapsedSections[issue.id].add(title);
+      } else {
+        collapsedSections[issue.id].delete(title);
+      }
+    });
+    // set initial max-height for open sections
+    if (tog.classList.contains('open')) {
+      const body = document.getElementById(tog.dataset.target);
+      requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + 'px'; });
+    }
+  });
+
+  panel.scrollTop = scrollToTop ? 0 : prevScroll;
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+['filter-service', 'filter-domain', 'filter-qtype'].forEach(id =>
+  document.getElementById(id).addEventListener('change', () => {
+    loadedCount = 0; hasMore = true;
+    fetchData().catch(console.error);
+  })
+);
+
+document.getElementById('list-scroll').addEventListener('scroll', e => {
+  const el = e.target;
+  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) {
+    loadMore().catch(console.error);
+  }
+});
+
+document.getElementById('auto-toggle-wrap').addEventListener('click', () => {
+  autoRefresh = !autoRefresh;
+  document.getElementById('auto-toggle').classList.toggle('on', autoRefresh);
+  document.getElementById('live-dot').classList.toggle('off', !autoRefresh);
+  document.getElementById('live-label').classList.toggle('off', !autoRefresh);
+  document.getElementById('live-label').textContent = autoRefresh ? 'LIVE' : 'PAUSED';
+  if (autoRefresh) startPoll(); else stopPoll();
+});
+
+function startPoll() { stopPoll(); pollTimer = setInterval(() => fetchData().catch(console.error), POLL_MS); }
+function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+fetchData().catch(err => {
+  document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
+});
+startPoll();
+</script>
+</body>
+</html>
