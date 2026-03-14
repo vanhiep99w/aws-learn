@@ -215,6 +215,14 @@ BEAD_EOF
 
 ### Sau khi tạo bead
 
+Push dolt lên DoltHub (bd dolt push bị lỗi PermissionDenied qua SQL server, dùng dolt CLI trực tiếp):
+
+```bash
+(cd /home/hieptran/Desktop/aws-learn/.beads/dolt/aws_learn && dolt push origin main)
+```
+
+Sau đó hiển thị:
+
 ```
 📝 Đã lưu → <bead-id> | Labels: aws, <service> | bd show <bead-id>
 ```
