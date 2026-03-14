@@ -415,7 +415,7 @@ async function fetchData() {
 
   populateFilters();
   renderList(changedIds);
-  if (selectedId) {
+  if (selectedId && changedIds.has(selectedId)) {
     const still = issues.find(i => i.id === selectedId);
     if (still) showDetail(still);
   }
