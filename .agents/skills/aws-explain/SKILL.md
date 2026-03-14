@@ -135,101 +135,89 @@ Viết dạng ghi nhớ, dễ ôn tập lại.>
 
 ## Quy trình lưu beads
 
-Mỗi câu hỏi AWS sau khi phân tích xong → tạo một bead lưu trữ.
+Sau khi phân tích xong, lưu Q&A bằng **đúng 1 lệnh `bd create`** (bao gồm cả description và notes).
 
-### Kiểm tra beads đã init chưa
+**Quan trọng — format newline**: Dùng **blank line** (double newline) giữa mỗi option và mỗi section. BD UI không tôn trọng single newline.
 
-```bash
-bd list --json 2>/dev/null || bd init --quiet
-```
+### Lệnh tạo bead (1 lệnh duy nhất)
 
-### Tạo bead cho Q&A
-
-Xác định service chính từ câu hỏi (ví dụ: S3, EC2, Lambda, IAM...) và tạo bead:
+Dùng `--stdin` cho description + `--notes` cho giải thích chi tiết, tất cả trong cùng 1 lệnh:
 
 ```bash
-bd create "<Tóm tắt câu hỏi ngắn gọn (~60 ký tự)>" \
-  -t decision \
-  -p 3 \
+bd create "<Tóm tắt câu hỏi (~60 ký tự)>" \
+  -t decision -p 3 \
   -l "aws,<service>,<domain>" \
-  -d "<Nội dung mô tả>" \
-  --notes "<Giải thích chi tiết>" \
-  --metadata '{"type":"aws-qa","service":"<service>","answer":"<#X>","verification":"<mức xác minh>"}'
-```
+  --metadata '{"type":"aws-qa","service":"<service>","answer":"#X","verification":"direct","question_type":"single","domain":"<domain>"}' \
+  --notes "$(cat <<'NOTES_EOF'
+## Vì sao đúng
 
-Trong đó:
-- **title**: Tóm tắt câu hỏi, ví dụ: `"S3 versioning: cách xóa object trong versioned bucket"`
-- **type**: Luôn dùng `decision`
-- **priority**: `3` (normal knowledge, không urgent)
-- **labels**: Bắt buộc có `aws`, thêm service name (lowercase: `s3`, `ec2`, `lambda`, `iam`, `vpc`...) và domain nếu rõ (`security`, `networking`, `compute`, `storage`, `database`, `serverless`, `monitoring`)
-- **description** (`-d`): Câu hỏi đầy đủ + các phương án (nếu có). Format:
+#X — <option đúng>
 
-```
+<Giải thích chi tiết 3-5 câu. Trích dẫn tài liệu AWS.>
+
+Trích dẫn: "<quote từ tài liệu AWS>"
+— <Tên tài liệu> (<URL>)
+
+## Vì sao các đáp án khác sai
+
+#Y — <option sai 1>
+
+❌ <Giải thích 2-3 câu. Nêu rõ misconception.>
+
+#Z — <option sai 2>
+
+❌ <Giải thích 2-3 câu.>
+
+#W — <option sai 3>
+
+❌ <Giải thích 2-3 câu.>
+
+## Kiến thức cốt lõi
+
+- <Rule/pattern 1 — viết dạng ghi nhớ>
+
+- <Rule/pattern 2>
+
+- <Rule/pattern 3>
+
+## Nguồn
+
+- <Tên tài liệu> — <URL>
+NOTES_EOF
+)" \
+  --stdin <<'BEAD_EOF'
 Q: <Câu hỏi đầy đủ>
 
 Options:
+
 #1 — <option 1>
+
 #2 — <option 2>
+
 #3 — <option 3>
+
 #4 — <option 4>
 
 Answer: #X — <nội dung đáp án đúng>
+BEAD_EOF
 ```
 
-- **notes** (`--notes`): Giải thích chi tiết vì sao đúng/sai, kiến thức cốt lõi, và nguồn tham khảo. Format:
+### Yêu cầu chất lượng notes
 
-```
-## Vì sao đúng
-<giải thích>
+- Mỗi option sai: heading riêng, blank line trước `#ID`
+- Giải thích đủ chi tiết để đọc lại hiểu ngay
+- Trích dẫn tài liệu AWS cho đáp án đúng
+- Kiến thức cốt lõi viết dạng rule/pattern ôn tập
 
-## Vì sao các đáp án khác sai
-<giải thích từng cái>
+### Tham số bead
 
-## Kiến thức cốt lõi
-<bullet points>
-
-## Nguồn
-<danh sách URL>
-```
-
-- **metadata**: JSON chứa thông tin cấu trúc để dễ query sau:
-  - `type`: luôn là `"aws-qa"`
-  - `service`: tên service chính (lowercase)
-  - `answer`: đáp án đúng (`"#1"`, `"#1,#4"`)
-  - `verification`: `"direct"` | `"inferred"` | `"unverified"`
-  - `question_type`: `"single"` | `"multi-select"`
-  - `domain`: domain chính nếu có
-
-### Nếu description hoặc notes quá dài
-
-Dùng `--stdin` hoặc `--body-file -` để tránh lỗi shell escaping:
-
-```bash
-bd create "S3 versioning: delete object behavior" \
-  -t decision -p 3 -l "aws,s3,storage" \
-  --metadata '{"type":"aws-qa","service":"s3","answer":"#2","verification":"direct"}' \
-  --stdin <<'BEAD_DESC'
-Q: Khi xóa object trong versioned S3 bucket mà không chỉ định version ID, điều gì xảy ra?
-
-Options:
-#1 — Object bị xóa vĩnh viễn
-#2 — S3 tạo delete marker, object vẫn còn
-#3 — S3 trả lỗi 403
-#4 — Object bị move sang Glacier
-
-Answer: #2 — S3 tạo delete marker, object vẫn còn
-BEAD_DESC
-```
-
-Sau đó thêm notes riêng:
-
-```bash
-bd update <bead-id> --notes "## Vì sao đúng ..."
-```
+- **title**: Tóm tắt câu hỏi (~60 ký tự)
+- **type**: `decision`
+- **priority**: `3`
+- **labels**: `aws,<service>,<domain>` — service: `s3`, `ec2`, `lambda`... domain: `security`, `networking`, `compute`, `storage`, `database`, `serverless`, `monitoring`
+- **metadata**: `{"type":"aws-qa","service":"...","answer":"#X","verification":"direct|inferred|unverified","question_type":"single|multi-select","domain":"..."}`
 
 ### Sau khi tạo bead
-
-Thông báo cho user ở cuối response:
 
 ```
 📝 Đã lưu → <bead-id> | Labels: aws, <service> | bd show <bead-id>
