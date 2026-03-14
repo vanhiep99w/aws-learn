@@ -62,7 +62,7 @@ Sau khi hoàn tất phân tích, **bắt buộc** lưu Q&A vào beads database. 
 
 ## Mẫu đầu ra
 
-Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng.
+Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung section `🔍 GIẢI THÍCH CHI TIẾT` sẽ được **copy nguyên văn** vào beads notes, nên phải viết đầy đủ chi tiết ngay từ đầu.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -94,15 +94,22 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 ### Vì sao đúng
 
 **#X — <option>**
-<Giải thích chi tiết, bám sát nguồn AWS. Trích dẫn câu/đoạn quan trọng từ tài liệu.>
+<Giải thích chi tiết nhiều đoạn. Bám sát nguồn AWS.
+- Nêu rõ lý do kỹ thuật vì sao đây là đáp án đúng
+- Trích dẫn nguyên văn (quote block) từ tài liệu AWS
+- Nếu có quy trình hoạt động → liệt kê numbered steps
+- Bold key terms quan trọng
+- Đây là nội dung sẽ được copy nguyên văn vào beads notes>
 
 ### Vì sao các đáp án khác sai
 
 **#Y — <option>**
-❌ <Lý do sai ngắn gọn + nguồn>
+❌ <Giải thích chi tiết vì sao sai. Nêu rõ misconception/lý do kỹ thuật.
+Viết 3-5 câu mỗi option, không viết ngắn gọn 1 câu.
+Trích dẫn tài liệu AWS nếu cần để chứng minh option sai.>
 
 **#Z — <option>**
-❌ <Lý do sai ngắn gọn + nguồn>
+❌ <Tương tự — giải thích đầy đủ, không rút gọn.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 💡 KIẾN THỨC CỐT LÕI
@@ -139,6 +146,10 @@ Sau khi phân tích xong, lưu Q&A bằng **đúng 1 lệnh `bd create`** (bao g
 
 **Quan trọng — format newline**: Dùng **blank line** (double newline) giữa mỗi option và mỗi section. BD UI không tôn trọng single newline.
 
+### Quy tắc nội dung notes — PHẢI GIỐNG HỆT câu trả lời đã hiển thị
+
+**Quan trọng**: Nội dung trong `--notes` phải là **bản sao nguyên văn** của các section "Vì sao đúng" và "Vì sao các đáp án khác sai" từ phần `🔍 GIẢI THÍCH CHI TIẾT` đã hiển thị cho user. KHÔNG được tóm tắt hay rút gọn. Copy nguyên xi nội dung đã viết.
+
 ### Lệnh tạo bead (1 lệnh duy nhất)
 
 Dùng `--stdin` cho description + `--notes` cho giải thích chi tiết, tất cả trong cùng 1 lệnh:
@@ -151,38 +162,22 @@ bd create "<Tóm tắt câu hỏi (~60 ký tự)>" \
   --notes "$(cat <<'NOTES_EOF'
 ## Vì sao đúng
 
-#X — <option đúng>
-
-<Giải thích chi tiết 3-5 câu. Trích dẫn tài liệu AWS.>
-
-Trích dẫn: "<quote từ tài liệu AWS>"
-— <Tên tài liệu> (<URL>)
+<COPY NGUYÊN VĂN toàn bộ nội dung từ section "Vì sao đúng" trong phần 🔍 GIẢI THÍCH CHI TIẾT đã hiển thị cho user.
+Bao gồm: tên option, giải thích nhiều đoạn, tất cả trích dẫn AWS, numbered steps nếu có.
+KHÔNG tóm tắt. KHÔNG rút gọn. Giữ nguyên mọi quote block và bold text.>
 
 ## Vì sao các đáp án khác sai
 
-#Y — <option sai 1>
-
-❌ <Giải thích 2-3 câu. Nêu rõ misconception.>
-
-#Z — <option sai 2>
-
-❌ <Giải thích 2-3 câu.>
-
-#W — <option sai 3>
-
-❌ <Giải thích 2-3 câu.>
+<COPY NGUYÊN VĂN toàn bộ nội dung từ section "Vì sao các đáp án khác sai" trong phần 🔍 GIẢI THÍCH CHI TIẾT.
+Mỗi option sai giữ nguyên heading riêng, blank line trước #ID, toàn bộ giải thích chi tiết.>
 
 ## Kiến thức cốt lõi
 
-- <Rule/pattern 1 — viết dạng ghi nhớ>
-
-- <Rule/pattern 2>
-
-- <Rule/pattern 3>
+<COPY NGUYÊN VĂN từ section 💡 KIẾN THỨC CỐT LÕI đã hiển thị>
 
 ## Nguồn
 
-- <Tên tài liệu> — <URL>
+<COPY NGUYÊN VĂN từ section 📚 NGUỒN THAM KHẢO đã hiển thị>
 NOTES_EOF
 )" \
   --stdin <<'BEAD_EOF'
@@ -204,10 +199,11 @@ BEAD_EOF
 
 ### Yêu cầu chất lượng notes
 
-- Mỗi option sai: heading riêng, blank line trước `#ID`
-- Giải thích đủ chi tiết để đọc lại hiểu ngay
-- Trích dẫn tài liệu AWS cho đáp án đúng
+- **Notes = bản sao nguyên văn** của câu trả lời đã hiển thị, KHÔNG phải bản tóm tắt
+- Mỗi option sai: heading riêng, blank line trước `#ID`, giải thích đầy đủ (không rút gọn)
+- Tất cả trích dẫn tài liệu AWS phải có mặt trong notes
 - Kiến thức cốt lõi viết dạng rule/pattern ôn tập
+- Nếu câu trả lời có numbered steps, bold text, multiple paragraphs → notes cũng phải có
 
 ### Tham số bead
 
