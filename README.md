@@ -1,12 +1,16 @@
 # AWS Learning - Mục lục
 
-## Web Viewer
+## Practice Q&A
 
-AWS Beads Q&A flashcards viewer — deployed on Cloudflare Pages (Git integration: push to `main` auto-deploys).
+Interactive AWS practice questions — deployed on Cloudflare Pages (push to `main` auto-deploys).
 
-- **Live**: [aws-learn.pages.dev](https://aws-learn.pages.dev)
-- **Source**: [`web/index.html`](web/index.html)
+- **Live**: [aws-learn.pages.dev/beads/](https://aws-learn.pages.dev/beads/)
+- **Source**: [`public/beads/index.html`](public/beads/index.html)
 - **Data**: [DoltHub — vanhiep99w/aws-learn](https://www.dolthub.com/repositories/vanhiep99w/aws-learn)
+
+Two modes:
+- **Practice** — chọn đáp án rồi submit mới hiện kết quả và giải thích
+- **Review** — hiện đáp án đúng/sai và giải thích ngay
 
 ---
 
