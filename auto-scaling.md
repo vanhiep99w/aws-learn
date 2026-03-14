@@ -553,7 +553,7 @@ Khi scale IN, ASG quyết định terminate instance nào dựa trên policy:
 
 | Policy | Mô tả |
 |--------|-------|
-| **Default** | AZ có nhiều instances nhất → Instance gần billing hour nhất |
+| **Default** | AZ có nhiều instances nhất → Outdated configs (①Launch Config ②Different LT ③Oldest version current LT) → Closest to billing hour → Random |
 | **OldestInstance** | Terminate instance cũ nhất |
 | **NewestInstance** | Terminate instance mới nhất |
 | **OldestLaunchConfiguration** | Terminate instance dùng Launch Config cũ nhất |
@@ -564,22 +564,29 @@ Khi scale IN, ASG quyết định terminate instance nào dựa trên policy:
 ### Default Termination Policy Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                 Default Termination Policy                       │
-│                                                                  │
-│  1. Chọn AZ có nhiều instances nhất                             │
-│           │                                                      │
-│           ▼                                                      │
-│  2. Chọn instance với oldest Launch Template/Config             │
-│           │                                                      │
-│           ▼                                                      │
-│  3. Nếu nhiều instances cùng điều kiện:                         │
-│     Chọn instance gần next billing hour nhất                    │
-│           │                                                      │
-│           ▼                                                      │
-│  4. Nếu vẫn còn tie: Random                                     │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    Default Termination Policy                        │
+│                                                                      │
+│  1. Chọn AZ có nhiều instances nhất                                  │
+│           │                                                          │
+│           ▼                                                          │
+│  2. Tìm instances dùng outdated configurations (theo thứ tự):       │
+│     ① Instances dùng Launch Configuration (ưu tiên terminate đầu)   │
+│     ② Instances dùng Launch Template khác với current LT             │
+│     ③ Instances dùng oldest version của current Launch Template      │
+│                                                                      │
+│     → Nếu nhiều instances cùng dùng Launch Config:                  │
+│       chọn instance có oldest Launch Config                          │
+│           │                                                          │
+│           ▼                                                          │
+│  3. Nếu vẫn nhiều instances cùng điều kiện:                         │
+│     Chọn instance gần next billing hour nhất                        │
+│           │                                                          │
+│           ▼                                                          │
+│  4. Nếu vẫn còn tie: Random                                         │
+│                                                                      │
+│  ⚠ Launch Config luôn bị coi là outdated hơn Launch Template!       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -427,7 +427,7 @@ Xác định instance nào bị terminate khi scale in:
 
 | Policy | Mô tả |
 |--------|-------|
-| **Default** | AZ balance → Oldest launch config → Closest to billing hour |
+| **Default** | AZ balance → Outdated configs (①Launch Config ②Different Launch Template ③Oldest version current LT) → Closest to billing hour → Random |
 | **OldestInstance** | Terminate instance cũ nhất |
 | **NewestInstance** | Terminate instance mới nhất |
 | **OldestLaunchConfiguration** | Terminate instance với launch config cũ nhất |
