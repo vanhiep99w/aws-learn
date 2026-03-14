@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 import remarkGithubAdmonitions from 'remark-github-admonitions-to-directives';
 
 export default defineConfig({
-  site: 'https://aws-learn.pages.dev',
+  site: 'https://aws-learn.vanhiep99w.workers.dev',
   legacy: {
     collections: true,
   },
@@ -13,6 +13,10 @@ export default defineConfig({
       locales: {
         root: { label: 'Tiếng Việt', lang: 'vi' },
       },
+      social: [
+        { icon: 'rocket', label: 'Practice', href: '/beads/' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/vanhiep99w/aws-learn' },
+      ],
       sidebar: [
         { label: 'Fundamentals', autogenerate: { directory: 'fundamentals' } },
         { label: 'Compute', autogenerate: { directory: 'compute' } },
@@ -35,7 +39,6 @@ export default defineConfig({
         { label: 'AI/ML Services', autogenerate: { directory: 'ai-ml' } },
         { label: 'End User Computing', autogenerate: { directory: 'end-user-computing' } },
         { label: 'Application Integration', autogenerate: { directory: 'application-integration' } },
-        { label: 'Beads Viewer', link: '/beads/' },
       ],
       customCss: ['./src/styles/custom.css'],
     }),

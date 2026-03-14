@@ -1,6 +1,346 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta http-equiv="refresh" content="0;url=/fundamentals/aws-overview/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Learning</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0c0e14;
+  --surface:#13161f;
+  --surface2:#1a1e2b;
+  --border:#252a3a;
+  --text:#e4e8f1;
+  --text2:#8b93a8;
+  --text3:#555d75;
+  --accent:#6ee7b7;
+  --accent2:#34d399;
+  --purple:#a78bfa;
+  --blue:#60a5fa;
+  --amber:#fbbf24;
+  --rose:#fb7185;
+  --teal:#2dd4bf;
+}
+
+html{font-size:16px;scroll-behavior:smooth}
+
+body{
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Animated grid background ── */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(110,231,183,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(110,231,183,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.grid-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(110,231,183,.06),transparent 70%),
+             radial-gradient(ellipse 60% 40% at 80% 80%,rgba(167,139,250,.04),transparent);
+}
+
+/* ── Nav ── */
+nav{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;max-width:1200px;margin:0 auto;
+}
+.nav-logo{
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.95rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text);
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+}
+.nav-logo .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 12px rgba(110,231,183,.5);
+}
+.nav-links{display:flex;gap:8px}
+.nav-links a{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:500;
+  color:var(--text2);text-decoration:none;padding:8px 16px;border-radius:8px;
+  border:1px solid transparent;transition:all .2s;letter-spacing:.03em;
+}
+.nav-links a:hover{color:var(--text);border-color:var(--border);background:var(--surface)}
+.nav-links a.highlight{
+  color:var(--accent);border-color:rgba(110,231,183,.2);
+  background:rgba(110,231,183,.06);
+}
+.nav-links a.highlight:hover{
+  background:rgba(110,231,183,.12);border-color:rgba(110,231,183,.35);
+}
+
+/* ── Hero ── */
+.hero{
+  position:relative;z-index:1;
+  text-align:center;padding:100px 40px 60px;max-width:900px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;
+  color:var(--accent);background:rgba(110,231,183,.06);
+  border:1px solid rgba(110,231,183,.15);border-radius:20px;
+  padding:6px 16px;margin-bottom:32px;letter-spacing:.06em;text-transform:uppercase;
+}
+.hero-badge .pulse{
+  width:6px;height:6px;border-radius:50%;background:var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(110,231,183,.4)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(110,231,183,0)}}
+
+.hero h1{
+  font-size:clamp(2.8rem,6vw,4.5rem);font-weight:700;
+  line-height:1.08;margin-bottom:24px;letter-spacing:-.03em;
+}
+.hero h1 .gradient{
+  background:linear-gradient(135deg,var(--accent),var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero p{
+  font-size:1.15rem;line-height:1.7;color:var(--text2);
+  max-width:560px;margin:0 auto 40px;
+}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;
+  padding:14px 28px;border-radius:10px;text-decoration:none;
+  transition:all .2s;letter-spacing:.02em;
+}
+.btn-primary{
+  background:var(--accent);color:var(--bg);
+  box-shadow:0 0 30px rgba(110,231,183,.15);
+}
+.btn-primary:hover{
+  background:var(--accent2);box-shadow:0 0 40px rgba(110,231,183,.25);
+  transform:translateY(-1px);
+}
+.btn-secondary{
+  background:var(--surface);color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-secondary:hover{
+  border-color:var(--text3);background:var(--surface2);transform:translateY(-1px);
+}
+.btn .arrow{transition:transform .2s}
+.btn:hover .arrow{transform:translateX(3px)}
+
+/* ── Stats ── */
+.stats{
+  position:relative;z-index:1;
+  display:flex;justify-content:center;gap:48px;
+  padding:40px;max-width:700px;margin:0 auto;
+  flex-wrap:wrap;
+}
+.stat{text-align:center}
+.stat-num{
+  font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;
+  letter-spacing:-.02em;
+}
+.stat-num.green{color:var(--accent)}
+.stat-num.purple{color:var(--purple)}
+.stat-num.blue{color:var(--blue)}
+.stat-label{
+  font-size:.8rem;color:var(--text3);margin-top:4px;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+
+/* ── Categories ── */
+.categories{
+  position:relative;z-index:1;
+  max-width:1100px;margin:40px auto 0;padding:0 40px 80px;
+}
+.categories h2{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
+  color:var(--text3);letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;margin-bottom:32px;
+}
+.cat-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;
+}
+.cat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:18px 20px;text-decoration:none;
+  transition:all .2s;display:flex;align-items:center;gap:12px;
+  color:var(--text);
+}
+.cat-card:hover{
+  border-color:var(--text3);background:var(--surface2);transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+}
+.cat-icon{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.cat-card .cat-name{font-size:.88rem;font-weight:500}
+.cat-card .cat-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--text3);margin-top:2px;
+}
+
+/* Category colors */
+.cat-icon.compute{background:rgba(96,165,250,.1);color:var(--blue)}
+.cat-icon.storage{background:rgba(110,231,183,.1);color:var(--accent)}
+.cat-icon.database{background:rgba(167,139,250,.1);color:var(--purple)}
+.cat-icon.security{background:rgba(251,113,133,.1);color:var(--rose)}
+.cat-icon.networking{background:rgba(45,212,191,.1);color:var(--teal)}
+.cat-icon.compute-text,.cat-icon.storage-text,.cat-icon.database-text,.cat-icon.security-text,.cat-icon.networking-text{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700}
+.cat-icon.fundamentals{background:rgba(251,191,36,.1);color:var(--amber)}
+.cat-icon.monitoring{background:rgba(96,165,250,.1);color:var(--blue)}
+.cat-icon.messaging{background:rgba(167,139,250,.1);color:var(--purple)}
+.cat-icon.migration{background:rgba(45,212,191,.1);color:var(--teal)}
+.cat-icon.iac{background:rgba(251,191,36,.1);color:var(--amber)}
+.cat-icon.cost{background:rgba(110,231,183,.1);color:var(--accent)}
+.cat-icon.other{background:rgba(139,147,168,.1);color:var(--text2)}
+
+/* ── Footer ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:30px 40px;
+  border-top:1px solid var(--border);
+  font-size:.78rem;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+}
+footer a{color:var(--text2);text-decoration:none}
+footer a:hover{color:var(--accent)}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  nav{padding:16px 20px}
+  .hero{padding:60px 20px 40px}
+  .hero h1{font-size:2.2rem}
+  .stats{gap:32px}
+  .categories{padding:0 20px 60px}
+  .cat-grid{grid-template-columns:1fr 1fr}
+  .nav-links a span{display:none}
+}
+
+/* ── Entrance animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{animation:fadeUp .6s ease-out both}
+.hero h1{animation:fadeUp .6s ease-out .1s both}
+.hero p{animation:fadeUp .6s ease-out .2s both}
+.hero-actions{animation:fadeUp .6s ease-out .3s both}
+.stats{animation:fadeUp .6s ease-out .4s both}
+.categories{animation:fadeUp .6s ease-out .5s both}
+</style>
 </head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <span class="dot"></span>
+    AWS Learning
+  </a>
+  <div class="nav-links">
+    <a href="/fundamentals/aws-overview/">Docs</a>
+    <a href="/beads/" class="highlight">Practice</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">
+    <span class="pulse"></span>
+    116 tài liệu AWS bằng tiếng Việt
+  </div>
+  <h1>Học AWS<br><span class="gradient">có hệ thống</span></h1>
+  <p>Tài liệu chi tiết về 116 dịch vụ AWS, tổ chức theo 21 chủ đề, từ cơ bản đến nâng cao. Hoàn toàn bằng tiếng Việt.</p>
+  <div class="hero-actions">
+    <a href="/fundamentals/aws-overview/" class="btn btn-primary">
+      Bắt đầu học <span class="arrow">→</span>
+    </a>
+    <a href="/beads/" class="btn btn-secondary">
+      Practice Q&A <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num green">116</div>
+    <div class="stat-label">Tài liệu</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num purple">21</div>
+    <div class="stat-label">Chủ đề</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num blue">VI</div>
+    <div class="stat-label">Tiếng Việt</div>
+  </div>
+</div>
+
+<section class="categories">
+  <h2>Chủ đề chính</h2>
+  <div class="cat-grid">
+    <a href="/fundamentals/aws-overview/" class="cat-card">
+      <div class="cat-icon fundamentals">☁</div>
+      <div><div class="cat-name">Fundamentals</div><div class="cat-count">6 docs</div></div>
+    </a>
+    <a href="/compute/ec2/" class="cat-card">
+      <div class="cat-icon compute">⚡</div>
+      <div><div class="cat-name">Compute</div><div class="cat-count">18 docs</div></div>
+    </a>
+    <a href="/storage/s3/" class="cat-card">
+      <div class="cat-icon storage">◆</div>
+      <div><div class="cat-name">Storage</div><div class="cat-count">12 docs</div></div>
+    </a>
+    <a href="/database/rds/" class="cat-card">
+      <div class="cat-icon database">⬡</div>
+      <div><div class="cat-name">Database</div><div class="cat-count">11 docs</div></div>
+    </a>
+    <a href="/networking/vpc/" class="cat-card">
+      <div class="cat-icon networking">◎</div>
+      <div><div class="cat-name">Networking</div><div class="cat-count">9 docs</div></div>
+    </a>
+    <a href="/security/iam/" class="cat-card">
+      <div class="cat-icon security">⛊</div>
+      <div><div class="cat-name">Security</div><div class="cat-count">20 docs</div></div>
+    </a>
+    <a href="/monitoring-management/cloudwatch/" class="cat-card">
+      <div class="cat-icon monitoring">◉</div>
+      <div><div class="cat-name">Monitoring</div><div class="cat-count">12 docs</div></div>
+    </a>
+    <a href="/messaging-streaming/sqs/" class="cat-card">
+      <div class="cat-icon messaging">⇶</div>
+      <div><div class="cat-name">Messaging</div><div class="cat-count">7 docs</div></div>
+    </a>
+    <a href="/migration/aws-disaster-recovery-migration-overview/" class="cat-card">
+      <div class="cat-icon migration">↹</div>
+      <div><div class="cat-name">Migration</div><div class="cat-count">2 docs</div></div>
+    </a>
+    <a href="/iac/cloudformation/" class="cat-card">
+      <div class="cat-icon iac">{ }</div>
+      <div><div class="cat-name">IaC</div><div class="cat-count">2 docs</div></div>
+    </a>
+    <a href="/cost-management/aws-cost-explorer/" class="cat-card">
+      <div class="cat-icon cost">$</div>
+      <div><div class="cat-name">Cost</div><div class="cat-count">2 docs</div></div>
+    </a>
+    <a href="/ai-ml/aws-ai-ml-services/" class="cat-card">
+      <div class="cat-icon other">✧</div>
+      <div><div class="cat-name">AI/ML</div><div class="cat-count">1 doc</div></div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <a href="https://github.com/vanhiep99w/aws-learn">github.com/vanhiep99w/aws-learn</a>
+</footer>
+
+</body>
 </html>
