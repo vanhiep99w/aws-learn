@@ -1,5 +1,15 @@
 # AWS Learning - Mục lục
 
+## Web Viewer
+
+AWS Beads Q&A flashcards viewer — deployed on Cloudflare Pages (Git integration: push to `main` auto-deploys).
+
+- **Live**: [aws-learn.pages.dev](https://aws-learn.pages.dev)
+- **Source**: [`web/index.html`](web/index.html)
+- **Data**: [DoltHub — vanhiep99w/aws-learn](https://www.dolthub.com/repositories/vanhiep99w/aws-learn)
+
+---
+
 ## Fundamentals
 
 - [x] [AWS Overview](aws-overview.md) - Lịch sử AWS, Global Infrastructure (Regions, AZs, Edge Locations)
