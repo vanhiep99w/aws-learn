@@ -51,35 +51,35 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 ## Cách hoạt động
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    HOW COMPUTE OPTIMIZER WORKS                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌──────────────┐      ┌──────────────┐      ┌──────────────┐              │
-│   │  CloudWatch  │─────►│   Compute    │─────►│  Rightsizing │              │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                    HOW COMPUTE OPTIMIZER WORKS                                │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│   ┌──────────────┐      ┌──────────────┐      ┌──────────────┐                │
+│   │  CloudWatch  │─────►│   Compute    │─────►│  Rightsizing │                │
 │   │   Metrics    │      │   Optimizer  │      │ Recommendations│              │
-│   │  (14 days+)  │      │   (ML/AI)    │      │              │              │
-│   └──────────────┘      └──────────────┘      └──────────────┘              │
-│                                                                             │
-│   PROCESS:                                                                  │
-│                                                                             │
-│   1. COLLECT: Thu thập utilization metrics từ CloudWatch                    │
-│      • CPU utilization                                                      │
-│      • Memory utilization (cần CloudWatch agent)                            │
-│      • Network I/O                                                          │
-│      • Disk I/O                                                             │
-│                                                                             │
-│   2. ANALYZE: Dùng Machine Learning phân tích patterns                      │
-│      • Historical usage patterns                                            │
-│      • Peak/Average utilization                                             │
-│      • Workload characteristics                                             │
-│                                                                             │
-│   3. RECOMMEND: Đưa ra recommendations                                      │
-│      • Right-size (tăng/giảm instance type)                                 │
-│      • Graviton migration                                                   │
-│      • Idle resource detection                                              │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   │  (14 days+)  │      │   (ML/AI)    │      │              │                │
+│   └──────────────┘      └──────────────┘      └──────────────┘                │
+│                                                                               │
+│   PROCESS:                                                                    │
+│                                                                               │
+│   1. COLLECT: Thu thập utilization metrics từ CloudWatch                      │
+│      • CPU utilization                                                        │
+│      • Memory utilization (cần CloudWatch agent)                              │
+│      • Network I/O                                                            │
+│      • Disk I/O                                                               │
+│                                                                               │
+│   2. ANALYZE: Dùng Machine Learning phân tích patterns                        │
+│      • Historical usage patterns                                              │
+│      • Peak/Average utilization                                               │
+│      • Workload characteristics                                               │
+│                                                                               │
+│   3. RECOMMEND: Đưa ra recommendations                                        │
+│      • Right-size (tăng/giảm instance type)                                   │
+│      • Graviton migration                                                     │
+│      • Idle resource detection                                                │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -229,24 +229,24 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 ## Graviton Recommendations
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    GRAVITON MIGRATION RECOMMENDATIONS                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Compute Optimizer có thể recommend migrate từ x86 → Graviton              │
-│                                                                             │
-│   Current: m5.xlarge (x86, Intel)                                           │
-│       ↓                                                                     │
-│   Recommended: m6g.xlarge (Graviton2, ARM)                                  │
-│       ↓                                                                     │
-│   Benefits:                                                                 │
-│   • ~20% better price/performance                                           │
-│   • Lower cost                                                              │
-│   • Same or better performance                                              │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    GRAVITON MIGRATION RECOMMENDATIONS                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Compute Optimizer có thể recommend migrate từ x86 → Graviton               │
+│                                                                              │
+│   Current: m5.xlarge (x86, Intel)                                            │
+│       ↓                                                                      │
+│   Recommended: m6g.xlarge (Graviton2, ARM)                                   │
+│       ↓                                                                      │
+│   Benefits:                                                                  │
+│   • ~20% better price/performance                                            │
+│   • Lower cost                                                               │
+│   • Same or better performance                                               │
+│                                                                              │
 │   ⚠️ NOTE: Cần verify application compatible với ARM architecture            │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

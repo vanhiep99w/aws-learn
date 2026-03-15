@@ -72,15 +72,15 @@
 
 ```
 Ví dụ:
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────┐
 │  ⚠️ Warning: You have 5 unassociated Elastic IP addresses                    │
-│                                                                             │
-│  EIP: eip-abc123 - Not attached - $3.50/month wasted                        │
-│  EIP: eip-def456 - Not attached - $3.50/month wasted                        │
-│  ...                                                                        │
-│                                                                             │
-│  💡 Recommendation: Release unused EIPs to save $17.50/month                │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│  EIP: eip-abc123 - Not attached - $3.50/month wasted                         │
+│  EIP: eip-def456 - Not attached - $3.50/month wasted                         │
+│  ...                                                                         │
+│                                                                              │
+│  💡 Recommendation: Release unused EIPs to save $17.50/month                 │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -155,14 +155,14 @@ Ví dụ:
 
 ```
 Ví dụ:
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────┐
 │  ⚠️ Warning: Service Quota Approaching Limit                                 │
-│                                                                             │
-│  VPCs per Region: 4/5 (80%)                                                 │
-│  On-Demand EC2 Instances: 18/20 (90%)                                       │
-│                                                                             │
-│  💡 Recommendation: Request quota increase trước khi hết                    │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│  VPCs per Region: 4/5 (80%)                                                  │
+│  On-Demand EC2 Instances: 18/20 (90%)                                        │
+│                                                                              │
+│  💡 Recommendation: Request quota increase trước khi hết                     │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 > [!TIP]

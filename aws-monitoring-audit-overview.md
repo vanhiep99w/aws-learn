@@ -184,24 +184,24 @@ graph TB
 ### Điểm quan trọng cần nhớ
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  📊 CLOUDWATCH KEY POINTS                                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📊 CLOUDWATCH KEY POINTS                                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
 │  ⚠️ EC2 Default Metrics:                                                     │
-│  ├── ✅ CÓ sẵn: CPU, Network, Disk I/O, Status Checks                       │
-│  ├── ❌ KHÔNG có: Memory, Disk space (cần CloudWatch Agent)                 │
-│  └── Default period: 5 phút (Detailed: 1 phút, có phí)                      │
-│                                                                             │
-│  🔔 Alarm States: OK → ALARM → INSUFFICIENT_DATA                            │
-│                                                                             │
-│  📋 Log Retention: Mặc định NEVER EXPIRE (phải set manually)                │
-│                                                                             │
-│  📈 High-Resolution Metrics: Xuống tới 1 giây (custom metrics)              │
-│                                                                             │
-│  💡 Composite Alarms: Kết hợp nhiều alarms bằng AND/OR                      │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│  ├── ✅ CÓ sẵn: CPU, Network, Disk I/O, Status Checks                        │
+│  ├── ❌ KHÔNG có: Memory, Disk space (cần CloudWatch Agent)                  │
+│  └── Default period: 5 phút (Detailed: 1 phút, có phí)                       │
+│                                                                              │
+│  🔔 Alarm States: OK → ALARM → INSUFFICIENT_DATA                             │
+│                                                                              │
+│  📋 Log Retention: Mặc định NEVER EXPIRE (phải set manually)                 │
+│                                                                              │
+│  📈 High-Resolution Metrics: Xuống tới 1 giây (custom metrics)               │
+│                                                                              │
+│  💡 Composite Alarms: Kết hợp nhiều alarms bằng AND/OR                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

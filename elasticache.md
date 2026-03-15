@@ -24,26 +24,26 @@
 **Amazon ElastiCache** là dịch vụ **in-memory caching** được quản lý hoàn toàn, giúp tăng tốc ứng dụng bằng cách lưu trữ data trong RAM thay vì disk.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Amazon ElastiCache                           │
-│        "Managed In-Memory Caching for Microsecond Latency"      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Application ────► ElastiCache ────► Database                  │
-│       │                  │                │                     │
-│       │                  │                │                     │
-│       │     Cache Hit    │                │                     │
-│       │◄─────────────────│                │                     │
-│       │   (microseconds) │                │                     │
-│       │                  │   Cache Miss   │                     │
+┌──────────────────────────────────────────────────────────────────┐
+│                    Amazon ElastiCache                            │
+│        "Managed In-Memory Caching for Microsecond Latency"       │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Application ────► ElastiCache ────► Database                   │
+│       │                  │                 │                     │
+│       │                  │                 │                     │
+│       │     Cache Hit    │                 │                     │
+│       │◄─────────────────│                 │                     │
+│       │   (microseconds) │                 │                     │
+│       │                  │   Cache Miss    │                     │
 │       │                  │────────────────►│                     │
-│       │                  │  Query DB      │                     │
+│       │                  │  Query DB       │                     │
 │       │                  │◄────────────────│                     │
-│       │                  │  Store in cache│                     │
-│                                                                 │
-│   Latency: Database ~ms → ElastiCache ~µs (1000x faster)        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│       │                  │  Store in cache │                     │
+│                                                                  │
+│   Latency: Database ~ms → ElastiCache ~µs (1000x faster)         │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

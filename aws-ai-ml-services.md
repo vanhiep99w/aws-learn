@@ -56,52 +56,52 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 ### Amazon Rekognition - Image & Video Analysis
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON REKOGNITION                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🎯 WHAT: Nhận dạng hình ảnh và video bằng Deep Learning                   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  CAPABILITIES:                                                      │   │
-│   │                                                                     │   │
-│   │  👤 Face Detection & Analysis                                       │   │
-│   │     • Detect faces trong images/videos                              │   │
-│   │     • Analyze emotions (happy, sad, angry...)                       │   │
-│   │     • Age range, gender, glasses, beard...                          │   │
-│   │                                                                     │   │
-│   │  🔍 Face Comparison & Search                                        │   │
-│   │     • Compare faces (is this the same person?)                      │   │
-│   │     • Search faces in a collection                                  │   │
-│   │                                                                     │   │
-│   │  🏷️ Object & Scene Detection                                         │   │
-│   │     • Detect objects: car, tree, dog, cat...                        │   │
-│   │     • Detect scenes: beach, office, kitchen...                      │   │
-│   │                                                                     │   │
-│   │  📝 Text Detection (in images)                                      │   │
-│   │     • Read text from images (signs, documents)                      │   │
-│   │                                                                     │   │
-│   │  🔞 Content Moderation                                              │   │
-│   │     • Detect inappropriate content                                  │   │
-│   │     • NSFW filtering                                                │   │
-│   │                                                                     │   │
-│   │  👥 Celebrity Recognition                                           │   │
-│   │     • Identify famous people                                        │   │
-│   │                                                                     │   │
-│   │  🎬 Video Analysis                                                  │   │
-│   │     • Track people across video frames                              │   │
-│   │     • Detect activities                                             │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   USE CASES:                                                                │
-│   • User verification (face login)                                          │
-│   • Content moderation for social media                                     │
-│   • People counting in retail                                               │
-│   • Celebrity detection in media                                            │
-│   • Security surveillance                                                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        AMAZON REKOGNITION                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🎯 WHAT: Nhận dạng hình ảnh và video bằng Deep Learning                    │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  CAPABILITIES:                                                      │    │
+│   │                                                                     │    │
+│   │  👤 Face Detection & Analysis                                       │    │
+│   │     • Detect faces trong images/videos                              │    │
+│   │     • Analyze emotions (happy, sad, angry...)                       │    │
+│   │     • Age range, gender, glasses, beard...                          │    │
+│   │                                                                     │    │
+│   │  🔍 Face Comparison & Search                                        │    │
+│   │     • Compare faces (is this the same person?)                      │    │
+│   │     • Search faces in a collection                                  │    │
+│   │                                                                     │    │
+│   │  🏷️ Object & Scene Detection                                        │    │
+│   │     • Detect objects: car, tree, dog, cat...                        │    │
+│   │     • Detect scenes: beach, office, kitchen...                      │    │
+│   │                                                                     │    │
+│   │  📝 Text Detection (in images)                                      │    │
+│   │     • Read text from images (signs, documents)                      │    │
+│   │                                                                     │    │
+│   │  🔞 Content Moderation                                              │    │
+│   │     • Detect inappropriate content                                  │    │
+│   │     • NSFW filtering                                                │    │
+│   │                                                                     │    │
+│   │  👥 Celebrity Recognition                                           │    │
+│   │     • Identify famous people                                        │    │
+│   │                                                                     │    │
+│   │  🎬 Video Analysis                                                  │    │
+│   │     • Track people across video frames                              │    │
+│   │     • Detect activities                                             │    │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   USE CASES:                                                                 │
+│   • User verification (face login)                                           │
+│   • Content moderation for social media                                      │
+│   • People counting in retail                                                │
+│   • Celebrity detection in media                                             │
+│   • Security surveillance                                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Amazon Textract - Document Text Extraction
@@ -297,51 +297,51 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 ### Amazon Comprehend - Natural Language Processing (NLP)
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON COMPREHEND                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🎯 WHAT: Phân tích và hiểu nội dung văn bản (NLP)                         │
-│                                                                             │
-│   CAPABILITIES:                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │  😊😠😐 Sentiment Analysis                                          │   │
-│   │     Input: "I love this product! Best purchase ever!"               │   │
-│   │     Output: POSITIVE (98% confidence)                               │   │
-│   │                                                                     │   │
-│   │  🏷️ Entity Recognition (NER)                                         │   │
-│   │     Input: "John works at Amazon in Seattle"                        │   │
-│   │     Output: John (PERSON), Amazon (ORGANIZATION), Seattle (LOCATION)│   │
-│   │                                                                     │   │
-│   │  🔑 Key Phrase Extraction                                           │   │
-│   │     Input: "The quick brown fox jumps over the lazy dog"            │   │
-│   │     Output: ["quick brown fox", "lazy dog"]                         │   │
-│   │                                                                     │   │
-│   │  🌐 Language Detection                                              │   │
-│   │     Input: "Bonjour, comment allez-vous?"                           │   │
-│   │     Output: French (fr)                                             │   │
-│   │                                                                     │   │
-│   │  📂 Topic Modeling                                                  │   │
-│   │     Analyze documents to find common topics                         │   │
-│   │                                                                     │   │
-│   │  🔒 PII Detection (Comprehend + PII)                                │   │
-│   │     Detect và redact personal information                           │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   🏥 COMPREHEND MEDICAL:                                                    │
-│   • Specialized cho medical text                                            │
-│   • Detect diseases, medications, dosages, procedures                       │
-│   • Extract PHI (Protected Health Information)                              │
-│                                                                             │
-│   USE CASES:                                                                │
-│   • Customer review analysis                                                │
-│   • Social media monitoring                                                 │
-│   • Document classification                                                 │
-│   • Call center analytics                                                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        AMAZON COMPREHEND                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🎯 WHAT: Phân tích và hiểu nội dung văn bản (NLP)                          │
+│                                                                              │
+│   CAPABILITIES:                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │  😊😠😐 Sentiment Analysis                                          │    │
+│   │     Input: "I love this product! Best purchase ever!"               │    │
+│   │     Output: POSITIVE (98% confidence)                               │    │
+│   │                                                                     │    │
+│   │  🏷️ Entity Recognition (NER)                                        │    │
+│   │     Input: "John works at Amazon in Seattle"                        │    │
+│   │     Output: John (PERSON), Amazon (ORGANIZATION), Seattle (LOCATION)│    │
+│   │                                                                     │    │
+│   │  🔑 Key Phrase Extraction                                           │    │
+│   │     Input: "The quick brown fox jumps over the lazy dog"            │    │
+│   │     Output: ["quick brown fox", "lazy dog"]                         │    │
+│   │                                                                     │    │
+│   │  🌐 Language Detection                                              │    │
+│   │     Input: "Bonjour, comment allez-vous?"                           │    │
+│   │     Output: French (fr)                                             │    │
+│   │                                                                     │    │
+│   │  📂 Topic Modeling                                                  │    │
+│   │     Analyze documents to find common topics                         │    │
+│   │                                                                     │    │
+│   │  🔒 PII Detection (Comprehend + PII)                                │    │
+│   │     Detect và redact personal information                           │    │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   🏥 COMPREHEND MEDICAL:                                                     │
+│   • Specialized cho medical text                                             │
+│   • Detect diseases, medications, dosages, procedures                        │
+│   • Extract PHI (Protected Health Information)                               │
+│                                                                              │
+│   USE CASES:                                                                 │
+│   • Customer review analysis                                                 │
+│   • Social media monitoring                                                  │
+│   • Document classification                                                  │
+│   • Call center analytics                                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -711,66 +711,66 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 ### Amazon SageMaker - Full ML Platform
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON SAGEMAKER                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🎯 WHAT: Complete platform để build, train, deploy ML models              │
-│            End-to-end ML lifecycle management                               │
-│                                                                             │
-│   ML LIFECYCLE:                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │  ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐     │   │
-│   │  │ Label  │──►│ Build  │──►│ Train  │──►│ Tune   │──►│ Deploy │     │   │
-│   │  │ (GT)   │   │(Studio)│   │(Jobs)  │   │(HPO)   │   │(Endpoint)│   │   │
-│   │  └────────┘   └────────┘   └────────┘   └────────┘   └────────┘     │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   KEY COMPONENTS:                                                           │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │  🏷️ GROUND TRUTH                                                     │   │
-│   │     • Data labeling service                                         │   │
-│   │     • Human labelers + ML-assisted labeling                         │   │
-│   │                                                                     │   │
-│   │  📊 SAGEMAKER STUDIO                                                │   │
-│   │     • Web-based IDE cho ML                                          │   │
-│   │     • Jupyter notebooks                                             │   │
-│   │     • Experiment tracking                                           │   │
-│   │                                                                     │   │
-│   │  🎨 SAGEMAKER CANVAS                                                │   │
-│   │     • No-code ML!                                                   │   │
-│   │     • Build models với visual interface                             │   │
-│   │     • For business analysts (không cần code)                        │   │
-│   │                                                                     │   │
-│   │  🚀 TRAINING JOBS                                                   │   │
-│   │     • Distributed training                                          │   │
-│   │     • Built-in algorithms + custom                                  │   │
-│   │     • Spot instances for cost savings                               │   │
-│   │                                                                     │   │
-│   │  🎯 HYPERPARAMETER TUNING                                           │   │
-│   │     • Automatic model optimization                                  │   │
-│   │                                                                     │   │
-│   │  🌐 ENDPOINTS                                                       │   │
-│   │     • Real-time inference                                           │   │
-│   │     • Batch transform                                               │   │
-│   │     • Serverless inference                                          │   │
-│   │                                                                     │   │
-│   │  📦 MODEL REGISTRY                                                  │   │
-│   │     • Version control cho models                                    │   │
-│   │                                                                     │   │
-│   │  🔄 PIPELINES                                                       │   │
-│   │     • MLOps automation                                              │   │
-│   │     • CI/CD for ML                                                  │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   💡 For Cloud Practitioner: Focus on knowing SageMaker = full ML platform  │
-│      Canvas = No-code ML, Ground Truth = Data labeling                      │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        AMAZON SAGEMAKER                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🎯 WHAT: Complete platform để build, train, deploy ML models               │
+│            End-to-end ML lifecycle management                                │
+│                                                                              │
+│   ML LIFECYCLE:                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │  ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐      │   │
+│   │  │ Label  │──►│ Build  │──►│ Train  │──►│ Tune   │──►│ Deploy │      │   │
+│   │  │ (GT)   │   │(Studio)│   │(Jobs)  │   │(HPO)   │   │(Endpoint)│    │   │
+│   │  └────────┘   └────────┘   └────────┘   └────────┘   └────────┘      │   │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   KEY COMPONENTS:                                                            │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │  🏷️ GROUND TRUTH                                                    │    │
+│   │     • Data labeling service                                         │    │
+│   │     • Human labelers + ML-assisted labeling                         │    │
+│   │                                                                     │    │
+│   │  📊 SAGEMAKER STUDIO                                                │    │
+│   │     • Web-based IDE cho ML                                          │    │
+│   │     • Jupyter notebooks                                             │    │
+│   │     • Experiment tracking                                           │    │
+│   │                                                                     │    │
+│   │  🎨 SAGEMAKER CANVAS                                                │    │
+│   │     • No-code ML!                                                   │    │
+│   │     • Build models với visual interface                             │    │
+│   │     • For business analysts (không cần code)                        │    │
+│   │                                                                     │    │
+│   │  🚀 TRAINING JOBS                                                   │    │
+│   │     • Distributed training                                          │    │
+│   │     • Built-in algorithms + custom                                  │    │
+│   │     • Spot instances for cost savings                               │    │
+│   │                                                                     │    │
+│   │  🎯 HYPERPARAMETER TUNING                                           │    │
+│   │     • Automatic model optimization                                  │    │
+│   │                                                                     │    │
+│   │  🌐 ENDPOINTS                                                       │    │
+│   │     • Real-time inference                                           │    │
+│   │     • Batch transform                                               │    │
+│   │     • Serverless inference                                          │    │
+│   │                                                                     │    │
+│   │  📦 MODEL REGISTRY                                                  │    │
+│   │     • Version control cho models                                    │    │
+│   │                                                                     │    │
+│   │  🔄 PIPELINES                                                       │    │
+│   │     • MLOps automation                                              │    │
+│   │     • CI/CD for ML                                                  │    │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   💡 For Cloud Practitioner: Focus on knowing SageMaker = full ML platform   │
+│      Canvas = No-code ML, Ground Truth = Data labeling                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -854,26 +854,26 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 ### Mnemonics - Nhớ nhanh
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         MEMORY TRICKS                                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🦜 Polly = Parrot = SPEAKS (Text → Speech)                                │
-│   📝 Transcribe = WRITES DOWN what you say (Speech → Text)                  │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         MEMORY TRICKS                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🦜 Polly = Parrot = SPEAKS (Text → Speech)                                 │
+│   📝 Transcribe = WRITES DOWN what you say (Speech → Text)                   │
 │   👁️ Rekognition = RECOGNIZES faces/objects in images                        │
-│   📄 Textract = EXTRACTS text from documents                                │
-│   🌐 Translate = TRANSLATES languages                                       │
-│   🧠 Comprehend = COMPREHENDS/understands text                              │
-│   💬 Lex = aLEXa = CHATBOT                                                  │
-│   🔍 Kendra = SMART SEARCH                                                  │
-│   🛒 Personalize = RECOMMENDATIONS (like Amazon.com)                        │
-│   📈 Forecast = PREDICTS future (like Amazon logistics)                     │
+│   📄 Textract = EXTRACTS text from documents                                 │
+│   🌐 Translate = TRANSLATES languages                                        │
+│   🧠 Comprehend = COMPREHENDS/understands text                               │
+│   💬 Lex = aLEXa = CHATBOT                                                   │
+│   🔍 Kendra = SMART SEARCH                                                   │
+│   🛒 Personalize = RECOMMENDATIONS (like Amazon.com)                         │
+│   📈 Forecast = PREDICTS future (like Amazon logistics)                      │
 │   🛡️ Fraud Detector = Detects FRAUD                                          │
-│   💻 CodeGuru = GURU reviews your code                                      │
-│   🤖 Bedrock = FOUNDATION for AI apps                                       │
-│   🎓 SageMaker = MAKES ML models (full platform)                            │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   💻 CodeGuru = GURU reviews your code                                       │
+│   🤖 Bedrock = FOUNDATION for AI apps                                        │
+│   🎓 SageMaker = MAKES ML models (full platform)                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

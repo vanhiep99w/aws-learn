@@ -261,29 +261,29 @@
 ### 4.1 Supported Targets
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     TARGET TYPES                                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   COMPUTE:                    MESSAGING:                        │
-│   • Lambda                    • SQS                             │
-│   • ECS Task                  • SNS                             │
-│   • Step Functions            • Kinesis Data Streams            │
-│   • Batch Job                 • Kinesis Firehose                │
-│   • EC2 (Create Snapshot)     • EventBridge Bus (another)       │
-│                                                                 │
-│   ORCHESTRATION:              API:                              │
-│   • CodePipeline              • API Gateway                     │
-│   • CodeBuild                 • API Destination (HTTP)          │
-│   • Systems Manager                                             │
-│                                                                 │
-│   STORAGE:                    OTHER:                            │
-│   • S3 (via Batch)            • CloudWatch Log Group            │
-│   • Redshift                  • Incident Manager                │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                     TARGET TYPES                                 │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   COMPUTE:                    MESSAGING:                         │
+│   • Lambda                    • SQS                              │
+│   • ECS Task                  • SNS                              │
+│   • Step Functions            • Kinesis Data Streams             │
+│   • Batch Job                 • Kinesis Firehose                 │
+│   • EC2 (Create Snapshot)     • EventBridge Bus (another)        │
+│                                                                  │
+│   ORCHESTRATION:              API:                               │
+│   • CodePipeline              • API Gateway                      │
+│   • CodeBuild                 • API Destination (HTTP)           │
+│   • Systems Manager                                              │
+│                                                                  │
+│   STORAGE:                    OTHER:                             │
+│   • S3 (via Batch)            • CloudWatch Log Group             │
+│   • Redshift                  • Incident Manager                 │
+│                                                                  │
 │   ⚠️ Max 5 targets per rule                                      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 4.2 API Destinations

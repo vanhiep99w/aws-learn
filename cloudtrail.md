@@ -27,30 +27,30 @@
 > **Một câu tóm tắt:** CloudTrail = **"Security Camera"** cho AWS account - ghi lại AI làm GÌ, KHI NÀO, và TỪ ĐÂU.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         AWS CLOUDTRAIL OVERVIEW                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   WHO did WHAT, WHEN, and from WHERE?                                       │
-│                                                                             │
-│   ┌─────────────┐                              ┌─────────────────────────┐  │
-│   │   Users     │──┐                           │    CloudTrail Event      │ │
-│   │ (Console)   │  │                           ├─────────────────────────┤  │
-│   └─────────────┘  │   ┌─────────────────┐     │ WHO: user/arn            │ │
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                         AWS CLOUDTRAIL OVERVIEW                                                  │
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                  │
+│   WHO did WHAT, WHEN, and from WHERE?                                                            │
+│                                                                                                  │
+│   ┌─────────────┐                              ┌─────────────────────────┐                       │
+│   │   Users     │──┐                           │    CloudTrail Event                           │ │
+│   │ (Console)   │  │                           ├─────────────────────────┤                       │
+│   └─────────────┘  │   ┌─────────────────┐     │ WHO: user/arn                                 │ │
 │                    ├──▶│   AWS API   │────▶                         │ WHAT: action performed  │  │
-│   ┌─────────────┐  │   │   Calls         │     │ WHEN: timestamp          │ │
-│   │Applications │──┤   └─────────────────┘     │ WHERE: source IP         │ │
-│   │ (SDK/CLI)   │  │                           │ WHICH: resource ARN      │ │
-│   └─────────────┘  │                           │ RESULT: success/failure  │ │
-│                    │                           └─────────────────────────┘  │
-│   ┌─────────────┐                              │                         │  │
-│   │  Services   │──┘                                      ▼                 │
-│   │ (Lambda,etc)│                              ┌─────────────────────────┐  │
-│   └─────────────┘                              │ S3 / CloudWatch Logs    │  │
-│                                             │ (Long-term storage)       │   │
-│                                             └─────────────────────────┘     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   ┌─────────────┐  │   │   Calls         │     │ WHEN: timestamp                               │ │
+│   │Applications │──┤   └─────────────────┘     │ WHERE: source IP                              │ │
+│   │ (SDK/CLI)   │  │                           │ WHICH: resource ARN                           │ │
+│   └─────────────┘  │                           │ RESULT: success/failure                       │ │
+│                    │                           └─────────────────────────┘                       │
+│   ┌─────────────┐                              │                                              │  │
+│   │  Services   │──┘                                      ▼                                      │
+│   │ (Lambda,etc)│                              ┌─────────────────────────┐                       │
+│   └─────────────┘                              │ S3 / CloudWatch Logs                         │  │
+│                                             │ (Long-term storage)                            │   │
+│                                             └─────────────────────────┘                          │
+│                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -244,36 +244,36 @@
 ### 2. Log Delivery Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       CLOUDTRAIL LOG DELIVERY FLOW                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   API Call                                                                  │
-│      │                                                                      │
-│      ▼                                                                      │
-│   ┌─────────────────┐                                                       │
-│   │   CloudTrail    │                                                       │
-│   │   (Captures)    │                                                       │
-│   └────────┬────────┘                                                       │
-│            │                                                                │
-│            │  Events delivered within ~15 minutes                           │
-│            │                                                                │
-│    ┌───────┴───────┬──────────────────┬──────────────────┐                  │
-│    │               │                  │                   │                 │
-│    ▼               ▼                  ▼                  ▼                  │
-│ ┌──────┐    ┌────────────┐    ┌─────────────┐    ┌─────────────┐            │
-│ │  S3  │    │ CloudWatch │    │ EventBridge │    │    SNS      │            │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                       CLOUDTRAIL LOG DELIVERY FLOW                            │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│   API Call                                                                    │
+│        │                                                                      │
+│      ▼                                                                        │
+│   ┌─────────────────┐                                                         │
+│   │   CloudTrail    │                                                         │
+│   │   (Captures)    │                                                         │
+│   └────────┬────────┘                                                         │
+│              │                                                                │
+│            │  Events delivered within ~15 minutes                             │
+│              │                                                                │
+│    ┌───────┴───────┬──────────────────┬──────────────────┐                    │
+│    │               │                  │                     │                 │
+│    ▼               ▼                  ▼                  ▼                    │
+│ ┌──────┐    ┌────────────┐    ┌─────────────┐    ┌─────────────┐              │
+│ │  S3  │    │ CloudWatch │    │ EventBridge │    │    SNS      │              │
 │ │Bucket│    │   Logs     │    │  (Filter &  │    │(Notifications │            │
-│ │      │    │            │    │   Route)    │    │   )         │            │
-│ └──┬───┘    └─────┬──────┘    └──────┬──────┘    └─────────────┘            │
-│    │              │                  │                                      │
-│    ▼              ▼                  ▼                                      │
-│ ┌──────┐    ┌────────────┐    ┌─────────────┐                               │
-│ │Athena│    │  Alarms    │    │   Lambda    │                               │
-│ │Query │    │  Metrics   │    │Step Function│                               │
-│ └──────┘    └────────────┘    └─────────────┘                               │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│ │      │    │            │    │   Route)    │    │   )         │              │
+│ └──┬───┘    └─────┬──────┘    └──────┬──────┘    └─────────────┘              │
+│    │              │                    │                                      │
+│    ▼              ▼                  ▼                                        │
+│ ┌──────┐    ┌────────────┐    ┌─────────────┐                                 │
+│ │Athena│    │  Alarms    │    │   Lambda    │                                 │
+│ │Query │    │  Metrics   │    │Step Function│                                 │
+│ └──────┘    └────────────┘    └─────────────┘                                 │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -941,31 +941,31 @@ ORDER BY eventTime DESC;
 ## Tổng Kết
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       CLOUDTRAIL KEY TAKEAWAYS                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ✅ CloudTrail = Security Camera: WHO did WHAT, WHEN, WHERE                 │
-│                                                                             │
-│  ✅ 3 Event Types: Management (default), Data, Insights                     │
-│                                                                             │
-│  ✅ Management Events FREE cho 1 trail                                      │
-│                                                                             │
-│  ✅ Data Events cho S3/Lambda - phải enable riêng (high volume, costs)      │
-│                                                                             │
-│  ✅ Multi-region trail recommended (all regions → 1 bucket)                 │
-│                                                                             │
-│  ✅ Organization trail cho multi-account                                    │
-│                                                                             │
-│  ✅ Enable Log File Validation để detect tampering                          │
-│                                                                             │
-│  ✅ Send to CloudWatch Logs cho real-time alerts                            │
-│                                                                             │
-│  ✅ Use EventBridge cho event-driven automation                             │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       CLOUDTRAIL KEY TAKEAWAYS                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ✅ CloudTrail = Security Camera: WHO did WHAT, WHEN, WHERE                  │
+│                                                                              │
+│  ✅ 3 Event Types: Management (default), Data, Insights                      │
+│                                                                              │
+│  ✅ Management Events FREE cho 1 trail                                       │
+│                                                                              │
+│  ✅ Data Events cho S3/Lambda - phải enable riêng (high volume, costs)       │
+│                                                                              │
+│  ✅ Multi-region trail recommended (all regions → 1 bucket)                  │
+│                                                                              │
+│  ✅ Organization trail cho multi-account                                     │
+│                                                                              │
+│  ✅ Enable Log File Validation để detect tampering                           │
+│                                                                              │
+│  ✅ Send to CloudWatch Logs cho real-time alerts                             │
+│                                                                              │
+│  ✅ Use EventBridge cho event-driven automation                              │
+│                                                                              │
 │  ⚠️  Event History chỉ giữ 90 ngày - create trail để lưu lâu hơn             │
-│                                                                             │
+│                                                                              │
 │  ⚠️  Delivery delay ~15 phút (không phải real-time)                          │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```

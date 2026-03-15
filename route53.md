@@ -1145,16 +1145,16 @@ Route 53 Health Checks giám sát sức khỏe của resources và **tích hợp
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────┐
-│          Health Check + Latency Routing                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
+┌───────────────────────────────────────────────────────────────────┐
+│          Health Check + Latency Routing                           │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
 │  User ở Vietnam, latency: Singapore 30ms, Tokyo 50ms, Sydney 100ms│
-│                                                                 │
-│  Bình thường:     Singapore (30ms) ← Lowest latency             │
-│  Singapore down:  Tokyo (50ms) ← Next lowest còn healthy        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                   │
+│  Bình thường:     Singapore (30ms) ← Lowest latency               │
+│  Singapore down:  Tokyo (50ms) ← Next lowest còn healthy          │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ### Các loại Health Checks

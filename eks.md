@@ -162,30 +162,30 @@
 ### 1. Pod - Đơn vị nhỏ nhất
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                             POD                                     │
-│                                                                     │
-│   = Đơn vị deploy nhỏ nhất trong K8s                                │
-│   = Wrapper xung quanh 1 hoặc nhiều containers                      │
-│   = Có IP riêng trong cluster                                       │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                        POD                                  │   │
-│   │  ┌─────────────────┐  ┌─────────────────┐                   │   │
-│   │  │   Container     │  │   Container     │                   │   │
-│   │  │   (app)         │  │   (sidecar)     │                   │   │
-│   │  └─────────────────┘  └─────────────────┘                   │   │
-│   │                                                             │   │
-│   │  Shared:                                                    │   │
-│   │  ├── Network namespace (cùng IP, localhost)                 │   │
-│   │  ├── Storage volumes                                        │   │
-│   │  └── Lifecycle (sống chết cùng nhau)                        │   │
-│   │                                                             │   │
-│   │  IP: 10.0.0.15 (cluster internal)                           │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                             POD                                      │
+│                                                                      │
+│   = Đơn vị deploy nhỏ nhất trong K8s                                 │
+│   = Wrapper xung quanh 1 hoặc nhiều containers                       │
+│   = Có IP riêng trong cluster                                        │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │                        POD                                  │    │
+│   │  ┌─────────────────┐  ┌─────────────────┐                    │   │
+│   │  │   Container     │  │   Container     │                    │   │
+│   │  │   (app)         │  │   (sidecar)     │                    │   │
+│   │  └─────────────────┘  └─────────────────┘                    │   │
+│   │                                                             │    │
+│   │  Shared:                                                    │    │
+│   │  ├── Network namespace (cùng IP, localhost)                 │    │
+│   │  ├── Storage volumes                                        │    │
+│   │  └── Lifecycle (sống chết cùng nhau)                         │   │
+│   │                                                             │    │
+│   │  IP: 10.0.0.15 (cluster internal)                           │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
 │   ⚠️ Pod là EPHEMERAL - có thể bị xóa và tạo mới bất cứ lúc nào!     │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Pod manifest ví dụ:**
@@ -494,33 +494,33 @@ spec:
 ### EKS Fargate
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        EKS FARGATE                                  │
-│                                                                     │
-│   = Serverless compute cho Kubernetes                               │
-│   = Không cần quản lý nodes                                         │
-│   = Pay-per-pod (theo CPU/Memory sử dụng)                           │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                  FARGATE PROFILE                            │   │
-│   │                                                             │   │
-│   │  Selector:                                                  │   │
-│   │  ├── namespace: production                                  │   │
-│   │  └── labels: compute=fargate                                │   │
-│   │                                                             │   │
-│   │  Pods matching → Run on Fargate automatically!              │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────┐  ┌─────────┐  ┌─────────┐                             │
-│   │  Pod 1  │  │  Pod 2  │  │  Pod 3  │                             │
-│   │ Fargate │  │ Fargate │  │ Fargate │                             │
-│   │ (ẩn)    │  │ (ẩn)    │  │ (ẩn)    │                             │
-│   └─────────┘  └─────────┘  └─────────┘                             │
-│                                                                     │
-│   ✅ No nodes to manage                                             │
-│   ✅ Right-sized per pod                                            │
+┌──────────────────────────────────────────────────────────────────────┐
+│                        EKS FARGATE                                   │
+│                                                                      │
+│   = Serverless compute cho Kubernetes                                │
+│   = Không cần quản lý nodes                                          │
+│   = Pay-per-pod (theo CPU/Memory sử dụng)                            │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │                  FARGATE PROFILE                            │    │
+│   │                                                             │    │
+│   │  Selector:                                                  │    │
+│   │  ├── namespace: production                                  │    │
+│   │  └── labels: compute=fargate                                 │   │
+│   │                                                             │    │
+│   │  Pods matching → Run on Fargate automatically!              │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────┐  ┌─────────┐  ┌─────────┐                              │
+│   │  Pod 1  │  │  Pod 2  │  │  Pod 3  │                              │
+│   │ Fargate │  │ Fargate │  │ Fargate │                              │
+│   │ (ẩn)    │  │ (ẩn)    │  │ (ẩn)    │                              │
+│   └─────────┘  └─────────┘  └─────────┘                              │
+│                                                                      │
+│   ✅ No nodes to manage                                              │
+│   ✅ Right-sized per pod                                             │
 │   ⚠️ Một số giới hạn (DaemonSets, privileged pods)                   │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### So sánh Node Types

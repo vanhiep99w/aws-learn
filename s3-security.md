@@ -318,34 +318,34 @@ S3 tự động encrypt data khi lưu và decrypt khi GET:
 | **DSSE-KMS** | KMS, dual-layer | ✅ | Extra security |
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ENCRYPTION COMPARISON                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  SSE-S3 (Default từ Jan 2023)                                   │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ PUT object → S3 tự encrypt với AES-256                  │    │
-│  │ GET object → S3 tự decrypt                              │    │
-│  │ Key: AWS quản lý hoàn toàn, bạn không thấy              │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-│  SSE-KMS                                                        │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ PUT object → S3 gọi KMS để lấy Data Key → encrypt       │    │
-│  │ GET object → S3 gọi KMS để decrypt Data Key → decrypt   │    │
-│  │ Key: Bạn quản lý trong KMS, có audit log                │    │
-│  │ ⚠️ KMS có request limits (5,500-30,000 req/s per Region) │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-│  SSE-C                                                          │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ PUT: Gửi object + encryption key trong header           │    │
-│  │ GET: Gửi encryption key trong header để decrypt         │    │
-│  │ Key: Bạn quản lý hoàn toàn, AWS không lưu               │    │
-│  │ ⚠️ HTTPS bắt buộc (để bảo vệ key trong transit)          │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                    ENCRYPTION COMPARISON                         │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  SSE-S3 (Default từ Jan 2023)                                    │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ PUT object → S3 tự encrypt với AES-256                  │     │
+│  │ GET object → S3 tự decrypt                              │     │
+│  │ Key: AWS quản lý hoàn toàn, bạn không thấy              │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                  │
+│  SSE-KMS                                                         │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ PUT object → S3 gọi KMS để lấy Data Key → encrypt       │     │
+│  │ GET object → S3 gọi KMS để decrypt Data Key → decrypt   │     │
+│  │ Key: Bạn quản lý trong KMS, có audit log                │     │
+│  │ ⚠️ KMS có request limits (5,500-30,000 req/s per Region)│     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                  │
+│  SSE-C                                                           │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ PUT: Gửi object + encryption key trong header           │     │
+│  │ GET: Gửi encryption key trong header để decrypt         │     │
+│  │ Key: Bạn quản lý hoàn toàn, AWS không lưu               │     │
+│  │ ⚠️ HTTPS bắt buộc (để bảo vệ key trong transit)         │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Client-Side Encryption
@@ -450,24 +450,24 @@ aws s3api put-object \
 **Safety net** để ngăn accidentally expose data ra public:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│           S3 BLOCK PUBLIC ACCESS (4 settings)                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│           S3 BLOCK PUBLIC ACCESS (4 settings)                    │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
 │  ☑️ BlockPublicAcls                                              │
-│     → Block PUT bucket/object ACL nếu grants public access      │
-│                                                                 │
+│     → Block PUT bucket/object ACL nếu grants public access       │
+│                                                                  │
 │  ☑️ IgnorePublicAcls                                             │
-│     → Ignore existing public ACLs (treat như không có)          │
-│                                                                 │
+│     → Ignore existing public ACLs (treat như không có)           │
+│                                                                  │
 │  ☑️ BlockPublicPolicy                                            │
-│     → Block PUT bucket policy nếu grants public access          │
-│                                                                 │
+│     → Block PUT bucket policy nếu grants public access           │
+│                                                                  │
 │  ☑️ RestrictPublicBuckets                                        │
-│     → Restrict access to bucket với public policy chỉ cho       │
-│        AWS services và authorized users trong account           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│     → Restrict access to bucket với public policy chỉ cho        │
+│        AWS services và authorized users trong account            │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Có thể apply ở 2 levels:**

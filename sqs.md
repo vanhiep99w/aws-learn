@@ -361,35 +361,35 @@
 ### 3.2 Message Failure & Retry Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              KHI CONSUMER XỬ LÝ MESSAGE FAIL                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Timeline:                                                     │
-│   ┌─────────┬──────────────────────────┬───────────────────────┐│
-│   │ Receive │   Visibility Timeout     │ Message visible lại   ││
-│   │ Message │   (message invisible)    │ trong queue           ││
-│   └─────────┴──────────────────────────┴───────────────────────┘│
-│       ↓                                        ↓                │
-│   Consumer nhận                          Consumer khác          │
-│   message & FAIL                         có thể nhận lại        │
-│                                                                 │
-│   Retry Flow:                                                   │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  Receive 1 → Fail → Visible lại                         │   │
-│   │  Receive 2 → Fail → Visible lại                         │   │
-│   │  Receive 3 → Fail → Visible lại                         │   │
-│   │  ...                                                    │   │
-│   │  Receive N (= maxReceiveCount) → Fail → CHUYỂN ĐẾN DLQ  │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│              KHI CONSUMER XỬ LÝ MESSAGE FAIL                     │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Timeline:                                                      │
+│   ┌─────────┬──────────────────────────┬────────────────────────┐│
+│   │ Receive │   Visibility Timeout     │ Message visible lại    ││
+│   │ Message │   (message invisible)    │ trong queue            ││
+│   └─────────┴──────────────────────────┴────────────────────────┘│
+│       ↓                                        ↓                 │
+│   Consumer nhận                          Consumer khác           │
+│   message & FAIL                         có thể nhận lại         │
+│                                                                  │
+│   Retry Flow:                                                    │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  Receive 1 → Fail → Visible lại                         │    │
+│   │  Receive 2 → Fail → Visible lại                         │    │
+│   │  Receive 3 → Fail → Visible lại                         │    │
+│   │  ...                                                    │    │
+│   │  Receive N (= maxReceiveCount) → Fail → CHUYỂN ĐẾN DLQ  │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
 │   ⚠️ Lưu ý:                                                      │
-│   • Message KHÔNG tự động bị xóa khi fail                       │
-│   • Visibility Timeout hết → message quay lại queue             │
-│   • Consumer khác (hoặc chính nó) có thể nhận lại               │
-│   • Sau maxReceiveCount lần fail → chuyển sang DLQ              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   • Message KHÔNG tự động bị xóa khi fail                        │
+│   • Visibility Timeout hết → message quay lại queue              │
+│   • Consumer khác (hoặc chính nó) có thể nhận lại                │
+│   • Sau maxReceiveCount lần fail → chuyển sang DLQ               │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 | Scenario | Hành vi |
@@ -402,26 +402,26 @@
 ### 3.3 Dead Letter Queue (DLQ)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   DEAD LETTER QUEUE                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   ┌──────────────┐                                              │
-│   │   Producer   │                                              │
-│   └──────┬───────┘                                              │
-│          ↓                                                      │
-│   ┌──────────────┐     Failed > maxReceiveCount                 │
-│   │  Main Queue  │ ──────────────────────────────→ ┌─────────┐  │
-│   └──────────────┘                                 │   DLQ    │ │
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                   DEAD LETTER QUEUE                                                                              │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                                  │
+│   ┌──────────────┐                                                                                               │
+│   │   Producer                                                    │                                              │
+│   └──────┬───────┘                                                                                               │
+│          ↓                                                                                                       │
+│   ┌──────────────┐     Failed > maxReceiveCount                                                                  │
+│   │  Main Queue  │ ──────────────────────────────→ ┌─────────┐                                                   │
+│   └──────────────┘                                 │   DLQ                                                     │ │
 │          ↓                                         └──────────────┘                                              │
-│   ┌──────────────┐                                      ↓       │
-│   │   Consumer   │                              ┌──────────────┐│
-│   │   (retry)    │                              │ Investigate  ││
-│   └──────────────┘                              │   & Debug    ││
-│   └──────────────┘                                              │
-│   maxReceiveCount = Số lần retry trước khi chuyển đến DLQ       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   ┌──────────────┐                                      ↓                                                        │
+│   │   Consumer   │                              ┌───────────────────────────────────────────────────────────────┐│
+│   │   (retry)    │                              │ Investigate                                                   ││
+│   └──────────────┘                              │   & Debug                                                     ││
+│   └──────────────┘                                                                                               │
+│   maxReceiveCount = Số lần retry trước khi chuyển đến DLQ                                                        │
+│                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **DLQ Redrive:**

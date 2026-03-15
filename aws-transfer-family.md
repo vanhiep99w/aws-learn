@@ -64,30 +64,30 @@
 ### SFTP vs FTPS vs FTP
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              PROTOCOL COMPARISON                                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  SFTP (SSH File Transfer Protocol):                             │
-│  • Chạy trên SSH (port 22)                                      │
-│  • Mọi thứ encrypted                                            │
-│  • ✅ Recommended cho new implementations                       │
-│                                                                 │
-│  FTPS (FTP Secure):                                             │
-│  • FTP + TLS/SSL encryption                                     │
-│  • 2 modes: Explicit (port 21) / Implicit (port 990)            │
-│  • Dùng khi partner chỉ support FTPS                            │
-│                                                                 │
-│  FTP (Plain):                                                   │
+┌──────────────────────────────────────────────────────────────────┐
+│              PROTOCOL COMPARISON                                 │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  SFTP (SSH File Transfer Protocol):                              │
+│  • Chạy trên SSH (port 22)                                       │
+│  • Mọi thứ encrypted                                             │
+│  • ✅ Recommended cho new implementations                        │
+│                                                                  │
+│  FTPS (FTP Secure):                                              │
+│  • FTP + TLS/SSL encryption                                      │
+│  • 2 modes: Explicit (port 21) / Implicit (port 990)             │
+│  • Dùng khi partner chỉ support FTPS                             │
+│                                                                  │
+│  FTP (Plain):                                                    │
 │  • ⚠️ KHÔNG encrypted - chỉ dùng nội bộ                          │
-│  • Legacy compatibility only                                    │
-│                                                                 │
-│  AS2:                                                           │
-│  • HTTP-based, EDI transactions                                 │
-│  • Digital signatures, encryption, receipts                     │
-│  • B2B commerce (retail, healthcare)                            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│  • Legacy compatibility only                                     │
+│                                                                  │
+│  AS2:                                                            │
+│  • HTTP-based, EDI transactions                                  │
+│  • Digital signatures, encryption, receipts                      │
+│  • B2B commerce (retail, healthcare)                             │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

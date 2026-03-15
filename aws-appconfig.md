@@ -255,69 +255,69 @@
 ### App lấy config như thế nào?
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│              3 cách App lấy config từ AppConfig                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│              3 cách App lấy config từ AppConfig                               │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
 │   ⚠️ KHÔNG dùng SSM Agent! AppConfig có cách riêng:                           │
-│                                                                              │
-│   1️⃣ APPCONFIG AGENT (Recommended cho EC2/ECS)                               │
-│   ────────────────────────────────────────────                               │
-│   • Agent RIÊNG, KHÁC với SSM Agent                                          │
-│   • Caching + polling tự động                                                │
-│                                                                              │
-│   ┌─────────────────┐    localhost:2772    ┌─────────────────┐               │
-│   │   Your App      │ ◄─────────────────── │ AppConfig Agent │               │
-│   └─────────────────┘                      └────────┬────────┘               │
-│                                                      │ polling               │
-│                                             ┌────────▼────────┐              │
-│                                             │ AppConfig API   │              │
-│                                             └─────────────────┘              │
-│                                                                              │
-│   2️⃣ LAMBDA EXTENSION (Cho Lambda)                                           │
-│   ──────────────────────────────────                                         │
-│   • Lambda layer, không cần agent                                            │
-│   • Tự động cache config                                                     │
-│                                                                              │
-│   3️⃣ DIRECT API CALL (Simple cases)                                          │
-│   ────────────────────────────────                                           │
-│   • App gọi thẳng GetConfiguration API                                       │
-│   • Phải tự handle caching                                                   │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+│                                                                               │
+│   1️⃣ APPCONFIG AGENT (Recommended cho EC2/ECS)                                │
+│   ────────────────────────────────────────────                                │
+│   • Agent RIÊNG, KHÁC với SSM Agent                                           │
+│   • Caching + polling tự động                                                 │
+│                                                                               │
+│   ┌─────────────────┐    localhost:2772    ┌─────────────────┐                │
+│   │   Your App      │ ◄─────────────────── │ AppConfig Agent │                │
+│   └─────────────────┘                      └────────┬────────┘                │
+│                                                      │ polling                │
+│                                             ┌────────▼────────┐               │
+│                                             │ AppConfig API   │               │
+│                                             └─────────────────┘               │
+│                                                                               │
+│   2️⃣ LAMBDA EXTENSION (Cho Lambda)                                            │
+│   ──────────────────────────────────                                          │
+│   • Lambda layer, không cần agent                                             │
+│   • Tự động cache config                                                      │
+│                                                                               │
+│   3️⃣ DIRECT API CALL (Simple cases)                                           │
+│   ────────────────────────────────                                            │
+│   • App gọi thẳng GetConfiguration API                                        │
+│   • Phải tự handle caching                                                    │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Auto Rollback hoạt động như thế nào?
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Auto Rollback                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   AppConfig KHÔNG "hiểu" logs!                                               │
-│   Chỉ watch CloudWatch ALARMS mà BẠN setup trước.                            │
-│                                                                              │
-│   Logic đơn giản:                                                            │
-│   ────────────────                                                           │
-│   Đang deploy + Alarm triggered = GIẢ ĐỊNH là do config mới → ROLLBACK       │
-│                                                                              │
-│   VÍ DỤ:                                                                     │
-│   ───────                                                                    │
-│   BẠN setup alarm: "Error rate > 5% → trigger"                               │
-│   BẠN config AppConfig: "Monitor alarm này khi deploy"                       │
-│                                                                              │
-│   T=0:  Start deployment                                                     │
-│   T=3m: Error rate tăng 1% → 8%                                              │
-│         CloudWatch: ALARM!                                                   │
-│         AppConfig: "Có alarm trong khi deploy → ROLLBACK!"                   │
-│   T=3m: Tất cả instances poll → Nhận lại config CŨ                           │
-│                                                                              │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                         Auto Rollback                                         │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│   AppConfig KHÔNG "hiểu" logs!                                                │
+│   Chỉ watch CloudWatch ALARMS mà BẠN setup trước.                             │
+│                                                                               │
+│   Logic đơn giản:                                                             │
+│   ────────────────                                                            │
+│   Đang deploy + Alarm triggered = GIẢ ĐỊNH là do config mới → ROLLBACK        │
+│                                                                               │
+│   VÍ DỤ:                                                                      │
+│   ───────                                                                     │
+│   BẠN setup alarm: "Error rate > 5% → trigger"                                │
+│   BẠN config AppConfig: "Monitor alarm này khi deploy"                        │
+│                                                                               │
+│   T=0:  Start deployment                                                      │
+│   T=3m: Error rate tăng 1% → 8%                                               │
+│         CloudWatch: ALARM!                                                    │
+│         AppConfig: "Có alarm trong khi deploy → ROLLBACK!"                    │
+│   T=3m: Tất cả instances poll → Nhận lại config CŨ                            │
+│                                                                               │
 │   ⚠️ LƯU Ý:                                                                   │
-│   • AppConfig KHÔNG biết error có phải do config hay không                   │
-│   • Chỉ dựa vào correlation (trùng hợp thời gian)                            │
-│   • Philosophy: "Better safe than sorry" - rollback trước, điều tra sau      │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+│   • AppConfig KHÔNG biết error có phải do config hay không                    │
+│   • Chỉ dựa vào correlation (trùng hợp thời gian)                             │
+│   • Philosophy: "Better safe than sorry" - rollback trước, điều tra sau       │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### So sánh với Canary Deployment (CodeDeploy)

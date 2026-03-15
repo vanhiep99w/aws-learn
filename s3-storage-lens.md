@@ -126,20 +126,20 @@ Storage Lens cung cấp **contextual recommendations** để tối ưu:
 ### Cost Optimization
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    COST RECOMMENDATIONS                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                    COST RECOMMENDATIONS                          │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
 │  ⚠️ 500GB incomplete multipart uploads found                     │
-│     └── Recommendation: Create lifecycle rule to abort          │
-│                                                                 │
+│     └── Recommendation: Create lifecycle rule to abort           │
+│                                                                  │
 │  ⚠️ 2TB noncurrent versions in bucket-logs                       │
-│     └── Recommendation: Review versioning, add lifecycle        │
-│                                                                 │
+│     └── Recommendation: Review versioning, add lifecycle         │
+│                                                                  │
 │  ⚠️ 80% of bucket-archive not accessed in 90 days                │
-│     └── Recommendation: Transition to Glacier                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│     └── Recommendation: Transition to Glacier                    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 | Recommendation | Action |

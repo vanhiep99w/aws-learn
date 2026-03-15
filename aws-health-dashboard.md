@@ -55,77 +55,77 @@
 ### 1. Service Health Dashboard (Public)
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SERVICE HEALTH DASHBOARD                                 │
-│                    https://health.aws.amazon.com/                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   📋 WHAT IT SHOWS:                                                         │
-│   • Current status của TẤT CẢ AWS services                                  │
-│   • Historical incidents                                                    │
-│   • Planned maintenance windows                                             │
-│   • Service disruptions                                                     │
-│                                                                             │
-│   🌍 SCOPE: Global view - Không cần login                                   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  Service         │ Region      │ Status                             │   │
-│   │  ─────────────────────────────────────────────────────────────────  │   │
-│   │  Amazon EC2      │ us-east-1   │ ✅ Operational                     │   │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    SERVICE HEALTH DASHBOARD                                  │
+│                    https://health.aws.amazon.com/                            │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   📋 WHAT IT SHOWS:                                                          │
+│   • Current status của TẤT CẢ AWS services                                   │
+│   • Historical incidents                                                     │
+│   • Planned maintenance windows                                              │
+│   • Service disruptions                                                      │
+│                                                                              │
+│   🌍 SCOPE: Global view - Không cần login                                    │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  Service         │ Region      │ Status                              │   │
+│   │  ─────────────────────────────────────────────────────────────────  │    │
+│   │  Amazon EC2      │ us-east-1   │ ✅ Operational                      │   │
 │   │  Amazon S3       │ us-west-2   │ ⚠️ Degraded Performance             │   │
-│   │  Amazon RDS      │ eu-west-1   │ ✅ Operational                     │   │
-│   │  AWS Lambda      │ ap-south-1  │ 🔴 Service Disruption              │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   ❌ LIMITATIONS:                                                           │
-│   • Không cho biết TÀI NGUYÊN CỤ THỂ của bạn bị ảnh hưởng                   │
-│   • Chỉ hiển thị service-level issues                                       │
-│   • Không có personalized alerts                                            │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   │  Amazon RDS      │ eu-west-1   │ ✅ Operational                      │   │
+│   │  AWS Lambda      │ ap-south-1  │ 🔴 Service Disruption               │   │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   ❌ LIMITATIONS:                                                            │
+│   • Không cho biết TÀI NGUYÊN CỤ THỂ của bạn bị ảnh hưởng                    │
+│   • Chỉ hiển thị service-level issues                                        │
+│   • Không có personalized alerts                                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2. Personal Health Dashboard (Account-specific)
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    PERSONAL HEALTH DASHBOARD                                │
-│                    (AWS Console → Health)                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   📋 WHAT IT SHOWS:                                                         │
-│   • Events ảnh hưởng đến RESOURCES CỤ THỂ của bạn                           │
-│   • Scheduled changes cho tài nguyên của bạn                                │
-│   • Account notifications                                                   │
-│   • Proactive recommendations                                               │
-│                                                                             │
-│   👤 SCOPE: Account-specific - Cần login AWS Console                        │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  ⚠️ OPEN ISSUES                                                      │   │
-│   │  ────────────────────────────────────────────────────────────────── │   │
-│   │  🔴 EC2 Instance Retirement                                         │   │
-│   │     Instance: i-1234567890abcdef0                                   │   │
-│   │     Region: us-east-1                                               │   │
-│   │     Retirement Date: 2024-02-15                                     │   │
-│   │     Action: Migrate to new instance                                 │   │
-│   │                                                                     │   │
-│   │  ⚠️ RDS Maintenance Window                                           │   │
-│   │     Instance: prod-database                                         │   │
-│   │     Window: 2024-01-20 03:00-04:00 UTC                              │   │
-│   │     Action: Plan for brief downtime                                 │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  📅 SCHEDULED CHANGES                                               │   │
-│   │  ────────────────────────────────────────────────────────────────── │   │
-│   │  📋 Certificate Expiration                                          │   │
-│   │     ACM Certificate: *.example.com                                  │   │
-│   │     Expires: 2024-03-01                                             │   │
-│   │     Action: Renew certificate                                       │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    PERSONAL HEALTH DASHBOARD                                 │
+│                    (AWS Console → Health)                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   📋 WHAT IT SHOWS:                                                          │
+│   • Events ảnh hưởng đến RESOURCES CỤ THỂ của bạn                            │
+│   • Scheduled changes cho tài nguyên của bạn                                 │
+│   • Account notifications                                                    │
+│   • Proactive recommendations                                                │
+│                                                                              │
+│   👤 SCOPE: Account-specific - Cần login AWS Console                         │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  ⚠️ OPEN ISSUES                                                     │    │
+│   │  ────────────────────────────────────────────────────────────────── │    │
+│   │  🔴 EC2 Instance Retirement                                         │    │
+│   │     Instance: i-1234567890abcdef0                                   │    │
+│   │     Region: us-east-1                                               │    │
+│   │     Retirement Date: 2024-02-15                                     │    │
+│   │     Action: Migrate to new instance                                 │    │
+│   │                                                                     │    │
+│   │  ⚠️ RDS Maintenance Window                                          │    │
+│   │     Instance: prod-database                                         │    │
+│   │     Window: 2024-01-20 03:00-04:00 UTC                              │    │
+│   │     Action: Plan for brief downtime                                 │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  📅 SCHEDULED CHANGES                                               │    │
+│   │  ────────────────────────────────────────────────────────────────── │    │
+│   │  📋 Certificate Expiration                                          │    │
+│   │     ACM Certificate: *.example.com                                  │    │
+│   │     Expires: 2024-03-01                                             │    │
+│   │     Action: Renew certificate                                       │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -214,31 +214,31 @@
 ### API Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS HEALTH API                                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       AWS HEALTH API                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
 │   ⚠️ IMPORTANT: Chỉ available với Business/Enterprise Support Plan!          │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  AWS Health API                                                     │   │
-│   │  ─────────────────                                                  │   │
-│   │                                                                     │   │
-│   │  Programmatic access to:                                            │   │
-│   │  • Personal Health Dashboard events                                 │   │
-│   │  • Affected resources                                               │   │
-│   │  • Event details and descriptions                                   │   │
-│   │  • Historical events                                                │   │
-│   │                                                                     │   │
-│   │  Use cases:                                                         │   │
-│   │  • Build custom dashboards                                          │   │
-│   │  • Integrate với alerting systems                                   │   │
-│   │  • Automate responses to health events                              │   │
-│   │  • Feed into SIEM/monitoring tools                                  │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  AWS Health API                                                     │    │
+│   │  ─────────────────                                                  │    │
+│   │                                                                     │    │
+│   │  Programmatic access to:                                            │    │
+│   │  • Personal Health Dashboard events                                 │    │
+│   │  • Affected resources                                               │    │
+│   │  • Event details and descriptions                                   │    │
+│   │  • Historical events                                                │    │
+│   │                                                                     │    │
+│   │  Use cases:                                                         │    │
+│   │  • Build custom dashboards                                          │    │
+│   │  • Integrate với alerting systems                                   │    │
+│   │  • Automate responses to health events                              │    │
+│   │  • Feed into SIEM/monitoring tools                                  │    │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### API Operations
@@ -756,31 +756,31 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 ## Tổng Kết
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS HEALTH DASHBOARD SUMMARY                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🏥 TWO DASHBOARDS:                                                        │
-│   • Service Health (Public) - Status của tất cả AWS services                │
-│   • Personal Health (Private) - Issues affecting YOUR resources             │
-│                                                                             │
-│   🔔 THREE EVENT TYPES:                                                     │
-│   • Account Notifications - General announcements                           │
-│   • Scheduled Changes - Maintenance, retirements                            │
-│   • Issues - Ongoing problems                                               │
-│                                                                             │
-│   🔗 KEY INTEGRATIONS:                                                      │
-│   • EventBridge → Automated responses                                       │
-│   • SNS → Notifications (Email, Slack, PagerDuty)                           │
-│   • Lambda → Custom automation                                              │
-│   • Organizations → Multi-account visibility                                │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    AWS HEALTH DASHBOARD SUMMARY                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🏥 TWO DASHBOARDS:                                                         │
+│   • Service Health (Public) - Status của tất cả AWS services                 │
+│   • Personal Health (Private) - Issues affecting YOUR resources              │
+│                                                                              │
+│   🔔 THREE EVENT TYPES:                                                      │
+│   • Account Notifications - General announcements                            │
+│   • Scheduled Changes - Maintenance, retirements                             │
+│   • Issues - Ongoing problems                                                │
+│                                                                              │
+│   🔗 KEY INTEGRATIONS:                                                       │
+│   • EventBridge → Automated responses                                        │
+│   • SNS → Notifications (Email, Slack, PagerDuty)                            │
+│   • Lambda → Custom automation                                               │
+│   • Organizations → Multi-account visibility                                 │
+│                                                                              │
 │   ⚠️ IMPORTANT:                                                              │
-│   • Health API requires Business/Enterprise Support                         │
-│   • Always check Health Dashboard first during outages                      │
-│   • Automate responses to critical events                                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   • Health API requires Business/Enterprise Support                          │
+│   • Always check Health Dashboard first during outages                       │
+│   • Automate responses to critical events                                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -37,6 +37,7 @@ def display_width(s):
     w = 0
     chars = list(s)
     i = 0
+    prev_width = 0  # track width of previous char for FE0F boost
     while i < len(chars):
         cp = ord(chars[i])
         # Keycap sequences: digit + U+FE0F + U+20E3
@@ -45,9 +46,13 @@ def display_width(s):
                 and ord(chars[i + 2]) == 0x20E3):
             w += 2
             i += 3
+            prev_width = 2
             continue
-        # U+FE0F (variation selector-16, emoji presentation) — zero width
+        # U+FE0F (variation selector-16, emoji presentation)
+        # Triggers emoji presentation: if base char was width 1, boost to 2
         if cp == 0xFE0F:
+            if prev_width == 1:
+                w += 1  # boost: base was 1, now renders as 2
             i += 1
             continue
         # U+20E3 (combining enclosing keycap) — zero width
@@ -63,8 +68,11 @@ def display_width(s):
                 # Also skip any trailing FE0F
                 while i < len(chars) and ord(chars[i]) == 0xFE0F:
                     i += 1
+            prev_width = 0
             continue
-        w += char_display_width(chars[i])
+        cw = char_display_width(chars[i])
+        w += cw
+        prev_width = cw
         i += 1
     return w
 
@@ -99,12 +107,12 @@ def fix_box_group(lines, start, end, target_dw):
                         lines[i] = stripped[:len(stripped) - 1 + diff] + stripped[-1]
             continue
 
-        # Only process lines ending with │
-        if line[-1] != '│':
+        # Only process lines ending with │ or ┤
+        if line[-1] not in '│┤':
             continue
 
         # === Inner border line: ends with ┐│ or ┘│ or ┤│ ===
-        if len(line) >= 2 and line[-2] in '┐┘┤':
+        if len(line) >= 2 and line[-1] == '│' and line[-2] in '┐┘┤':
             if diff > 0:
                 lines[i] = line[:-2] + '─' * diff + line[-2:]
             elif diff < 0:
@@ -115,6 +123,20 @@ def fix_box_group(lines, start, end, target_dw):
                 removable = len(pre) - 1 - j
                 if removable >= abs(diff):
                     lines[i] = pre[:len(pre) + diff] + line[-2:]
+            continue
+
+        # === Border line ending with just ┤ (no outer │ after it) ===
+        if line[-1] == '┤':
+            if diff > 0:
+                lines[i] = line[:-1] + '─' * diff + '┤'
+            elif diff < 0:
+                pre = line[:-1]
+                j = len(pre) - 1
+                while j >= 0 and pre[j] == '─':
+                    j -= 1
+                removable = len(pre) - 1 - j
+                if removable >= abs(diff):
+                    lines[i] = pre[:len(pre) + diff] + '┤'
             continue
 
         # === Content line ending with │ ===
@@ -323,7 +345,7 @@ def fix_code_block(lines):
             if stripped.count('┌') > 1:
                 i += 1
                 continue
-            target_dw = display_width(stripped)
+            header_dw = display_width(stripped)
             end = None
             for j in range(i + 1, len(lines)):
                 sj = lines[j].lstrip()
@@ -332,6 +354,20 @@ def fix_code_block(lines):
                     end = j
                     break
             if end is not None:
+                # Find max display width across lines that end with
+                # box border characters (│┤) — these define the box width.
+                # Lines ending with ┐┘ are corner chars (inner sub-boxes or
+                # connectors) and should not influence the target.
+                # Lines ending with other chars (← comments, free-form text)
+                # are "overflow" and should not influence the target.
+                max_dw = header_dw
+                for k in range(i, end + 1):
+                    ln = lines[k]
+                    if ln and ln[-1] in '│┤':
+                        dw = display_width(ln)
+                        if dw > max_dw:
+                            max_dw = dw
+                target_dw = max_dw
                 groups.append((i, end, target_dw))
                 i = end + 1
             else:

@@ -260,20 +260,20 @@ Control Tower cung cấp **dashboard tổng quan** để theo dõi:
 **Drift** xảy ra khi cấu hình Landing Zone bị thay đổi bên ngoài Control Tower:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Drift Examples                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Drift Examples                                       │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
 │  ⚠️  Ai đó xóa OU qua AWS Organizations Console                              │
 │  ⚠️  Ai đó sửa SCP mà Control Tower quản lý                                  │
 │  ⚠️  Ai đó xóa CloudTrail trail                                              │
 │  ⚠️  Ai đó thay đổi cấu hình Log Archive account                             │
-│                                                                             │
-│  → Control Tower PHÁT HIỆN drift                                            │
-│  → Alert trên Dashboard                                                     │
-│  → Bạn có thể "Repair" để đưa về trạng thái đúng                            │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│  → Control Tower PHÁT HIỆN drift                                             │
+│  → Alert trên Dashboard                                                      │
+│  → Bạn có thể "Repair" để đưa về trạng thái đúng                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 > [!CAUTION]

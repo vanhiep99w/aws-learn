@@ -1156,21 +1156,21 @@ Legacy hardware tokens, ít phổ biến hơn.
 ### MFA cho Root User - QUAN TRỌNG!
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    ⚠️ ROOT USER MFA                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Root user có FULL ACCESS → BẮT BUỘC enable MFA                │
-│                                                                 │
-│   Best practice cho Root:                                       │
-│   ├── 1. Enable MFA ngay sau khi tạo account                    │
-│   ├── 2. Dùng U2F Security Key (phishing resistant)             │
-│   ├── 3. Có BACKUP MFA device (2 keys hoặc virtual backup)      │
-│   └── 4. Lưu backup codes an toàn                               │
-│                                                                 │
-│   AWS khuyến nghị: U2F Key > Hardware Token > Virtual MFA       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Root user có FULL ACCESS → BẮT BUỘC enable MFA                 │
+│                                                                  │
+│   Best practice cho Root:                                        │
+│   ├── 1. Enable MFA ngay sau khi tạo account                     │
+│   ├── 2. Dùng U2F Security Key (phishing resistant)              │
+│   ├── 3. Có BACKUP MFA device (2 keys hoặc virtual backup)       │
+│   └── 4. Lưu backup codes an toàn                                │
+│                                                                  │
+│   AWS khuyến nghị: U2F Key > Hardware Token > Virtual MFA        │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Require MFA trong IAM Policies

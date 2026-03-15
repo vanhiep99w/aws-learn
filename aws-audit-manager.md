@@ -142,29 +142,29 @@ CÓ Audit Manager:
 ### 3.2. Framework Types
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Framework Types                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌──────────────────────────────────┐  ┌──────────────────────────────────┐ │
-│  │  📋 STANDARD FRAMEWORKS          │  │  ✏️  CUSTOM FRAMEWORKS            │ │
-│  │  ──────────────────────────────  │  │  ──────────────────────────────  │ │
-│  │                                  │  │                                  │ │
-│  │  • Prebuilt bởi AWS              │  │  • Bạn tự tạo                    │ │
-│  │  • 30+ frameworks có sẵn         │  │  • Customize controls            │ │
-│  │  • Mapping theo industry std     │  │  • Map tới data sources          │ │
-│  │  • Tự động update                │  │  • Kết hợp manual + automated    │ │
-│  │                                  │  │                                  │ │
-│  │  Ví dụ:                          │  │  Ví dụ:                          │ │
-│  │  → GDPR, HIPAA, PCI DSS          │  │  → Internal security policy      │ │
-│  │  → SOC 2, ISO 27001              │  │  → Custom compliance program     │ │
-│  │  → CIS Benchmarks                │  │  → Hybrid on-prem + cloud        │ │
-│  │  → NIST 800-53                   │  │                                  │ │
-│  │  → AWS Best Practices            │  │                                  │ │
-│  │  → Generative AI Best Practices  │  │                                  │ │
-│  └──────────────────────────────────┘  └──────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Framework Types                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────────────┐  ┌──────────────────────────────────┐  │
+│  │  📋 STANDARD FRAMEWORKS          │  │  ✏️  CUSTOM FRAMEWORKS           │  │
+│  │  ──────────────────────────────  │  │  ──────────────────────────────  │  │
+│  │                                  │  │                                  │  │
+│  │  • Prebuilt bởi AWS              │  │  • Bạn tự tạo                    │  │
+│  │  • 30+ frameworks có sẵn         │  │  • Customize controls            │  │
+│  │  • Mapping theo industry std     │  │  • Map tới data sources          │  │
+│  │  • Tự động update                │  │  • Kết hợp manual + automated    │  │
+│  │                                  │  │                                  │  │
+│  │  Ví dụ:                          │  │  Ví dụ:                          │  │
+│  │  → GDPR, HIPAA, PCI DSS          │  │  → Internal security policy      │  │
+│  │  → SOC 2, ISO 27001              │  │  → Custom compliance program     │  │
+│  │  → CIS Benchmarks                │  │  → Hybrid on-prem + cloud        │  │
+│  │  → NIST 800-53                   │  │                                  │  │
+│  │  → AWS Best Practices            │  │                                  │  │
+│  │  → Generative AI Best Practices  │  │                                  │  │
+│  └──────────────────────────────────┘  └──────────────────────────────────┘  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

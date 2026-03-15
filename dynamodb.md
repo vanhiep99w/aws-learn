@@ -24,38 +24,38 @@
 **Amazon DynamoDB** là **fully managed NoSQL database service** cung cấp hiệu suất single-digit millisecond latency ở mọi quy mô. DynamoDB hỗ trợ cả **key-value** và **document data models**, phù hợp cho các ứng dụng yêu cầu throughput cao và latency thấp.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    DYNAMODB ARCHITECTURE                            │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    DYNAMODB TABLE                           │   │
-│   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
-│   │  │   Item 1    │  │   Item 2    │  │   Item 3    │          │   │
-│   │  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │          │   │
-│   │  │ │PK: user1│ │  │ │PK: user2│ │  │ │PK: user3│ │          │   │
-│   │  │ │SK: 2024 │ │  │ │SK: 2024 │ │  │ │SK: 2025 │ │          │   │
-│   │  │ │Attrs... │ │  │ │Attrs... │ │  │ │Attrs... │ │          │   │
-│   │  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │          │   │
-│   │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
-│   │                                                             │   │
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    DYNAMODB ARCHITECTURE                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────────┐       │
+│   │                    DYNAMODB TABLE                               │   │
+│   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │   │
+│   │  │   Item 1    │  │   Item 2    │  │   Item 3    │              │   │
+│   │  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │              │   │
+│   │  │ │PK: user1│ │  │ │PK: user2│ │  │ │PK: user3│ │              │   │
+│   │  │ │SK: 2024 │ │  │ │SK: 2024 │ │  │ │SK: 2025 │ │              │   │
+│   │  │ │Attrs... │ │  │ │Attrs... │ │  │ │Attrs... │ │              │   │
+│   │  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │              │   │
+│   │  └─────────────┘  └─────────────┘  └─────────────┘              │   │
+│   │                                                                 │   │
 │   │  Primary Key (PK): Partition Key hoặc (Partition Key + Sort Key)│   │
-│   │  Item: Collection of attributes được identify bởi Primary Key │   │
-│   │  Attribute: Fundamental data element (giống columns trong SQL) │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    DYNAMODB FEATURES                        │   │
-│   │  • Serverless - Không quản lý infrastructure                │   │
-│   │  • Auto-scaling - Tự động mở rộng capacity                  │   │
-│   │  • Global Tables - Multi-region, multi-active replication   │   │
-│   │  • On-Demand/Provisioned Capacity Modes                     │   │
-│   │  • DynamoDB Streams - Change data capture                   │   │
-│   │  • DAX - In-memory caching (microsecond latency)            │   │
-│   │  • ACID Transactions - Multi-item transactions              │   │
-│   │  • TTL - Automatic item expiration                          │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+│   │  Item: Collection of attributes được identify bởi Primary Key   │   │
+│   │  Attribute: Fundamental data element (giống columns trong SQL)  │   │
+│   └─────────────────────────────────────────────────────────────┘       │
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────────┐       │
+│   │                    DYNAMODB FEATURES                            │   │
+│   │  • Serverless - Không quản lý infrastructure                    │   │
+│   │  • Auto-scaling - Tự động mở rộng capacity                      │   │
+│   │  • Global Tables - Multi-region, multi-active replication       │   │
+│   │  • On-Demand/Provisioned Capacity Modes                         │   │
+│   │  • DynamoDB Streams - Change data capture                       │   │
+│   │  • DAX - In-memory caching (microsecond latency)                │   │
+│   │  • ACID Transactions - Multi-item transactions                  │   │
+│   │  • TTL - Automatic item expiration                              │   │
+│   └─────────────────────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Use Cases phổ biến
@@ -142,43 +142,43 @@ Operational Overhead:
 ### 1.1 Table, Items, Attributes
 
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│                     DYNAMODB DATA MODEL                            │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  TABLE: Movies                                                     │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │ PARTITION KEY: MovieID (Number)                            │    │
-│  │ SORT KEY: ReleaseYear (Number)                             │    │
-│  └────────────────────────────────────────────────────────────┘    │
-│                                                                    │
-│  ITEM 1:                                                           │
-│  ┌─────────────┬────────────────────────────────────────────────┐  │
-│  │ MovieID     │ 101                                             │ │
-│  │ ReleaseYear │ 2024                                            │ │
-│  │ Title       │ "The Cloud Architecture"                        │ │
-│  │ Genre       │ ["Action", "Sci-Fi"]                            │ │
-│  │ Rating      │ 8.5                                             │ │
+┌─────────────────────────────────────────────────────────────────────┐
+│                     DYNAMODB DATA MODEL                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  TABLE: Movies                                                      │
+│  ┌────────────────────────────────────────────────────────────┐     │
+│  │ PARTITION KEY: MovieID (Number)                            │     │
+│  │ SORT KEY: ReleaseYear (Number)                             │     │
+│  └────────────────────────────────────────────────────────────┘     │
+│                                                                     │
+│  ITEM 1:                                                            │
+│  ┌─────────────┬────────────────────────────────────────────────┐   │
+│  │ MovieID     │ 101                                              │ │
+│  │ ReleaseYear │ 2024                                             │ │
+│  │ Title       │ "The Cloud Architecture"                         │ │
+│  │ Genre       │ ["Action", "Sci-Fi"]                             │ │
+│  │ Rating      │ 8.5                                              │ │
 │  │ BoxOffice   │ { "domestic": 5000000, "international": 8000000 }│ │
-│  │ IsAvailable │ true                                            │ │
-│  └─────────────┴────────────────────────────────────────────────┘  │
-│                                                                    │
-│  ITEM 2:                                                           │
-│  ┌─────────────┬────────────────────────────────────────────────┐  │
-│  │ MovieID     │ 102                                             │ │
-│  │ ReleaseYear │ 2023                                            │ │
-│  │ Title       │ "Serverless Adventures"                         │ │
-│  │ Genre       │ ["Comedy"]                                      │ │
-│  │ Rating      │ 7.2                                             │ │
-│  │ BoxOffice   │ { "domestic": 3000000 }                         │ │
-│  │ IsAvailable │ false                                           │ │
-│  └─────────────┴────────────────────────────────────────────────┘  │
-│                                                                    │
-│  NOTES:                                                            │
-│  • Mỗi item có thể có attributes khác nhau (schema-less)           │
-│  • Item size limit: 400 KB (tính cả attribute names + values)      │
-│  • Table không có limit số items hoặc table size                   │
-└────────────────────────────────────────────────────────────────────┘
+│  │ IsAvailable │ true                                             │ │
+│  └─────────────┴────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ITEM 2:                                                            │
+│  ┌─────────────┬────────────────────────────────────────────────┐   │
+│  │ MovieID     │ 102                                              │ │
+│  │ ReleaseYear │ 2023                                             │ │
+│  │ Title       │ "Serverless Adventures"                          │ │
+│  │ Genre       │ ["Comedy"]                                       │ │
+│  │ Rating      │ 7.2                                              │ │
+│  │ BoxOffice   │ { "domestic": 3000000 }                          │ │
+│  │ IsAvailable │ false                                            │ │
+│  └─────────────┴────────────────────────────────────────────────┘   │
+│                                                                     │
+│  NOTES:                                                             │
+│  • Mỗi item có thể có attributes khác nhau (schema-less)            │
+│  • Item size limit: 400 KB (tính cả attribute names + values)       │
+│  • Table không có limit số items hoặc table size                    │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 1.2 Data Types
@@ -200,50 +200,50 @@ Operational Overhead:
 - Tương tự như "mã lực" của xe - cho biết table có thể đọc bao nhiêu data mỗi giây
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                RCU ĐO LƯỜNG CÁI GÌ?                                 │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  VÍ DỤ THỰC TẾ:                                                     │
-│                                                                     │
-│  Giống như đường cao tốc:                                           │
-│                                                                     │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │     RCU = Số làn đường (capacity/lane)                        │  │
-│  │                                                               │  │
-│  │  5 RCU = Đường 5 làn ───────────────────────────────►         │  │
-│  │        Cho phép 5 xe đi song song mỗi giây                    │  │
-│  │                                                               │  │
-│  │  100 RCU = Đường 100 làn ──────────────────────────►          │  │
-│  │          Cho phép 100 xe đi song song mỗi giây                │  │
-│  │          (đường cao tốc lớn, xử lý được traffic cao)          │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  TRONG DYNAMODB:                                                    │
-│                                                                     │
-│  1 RCU = 1 "làn đường" cho read operations:                         │
-│                                                                     │
-│  ┌─ 1 RCU cho phép đọc:                                             │
-│  │    • 1 item ≤ 4 KB với Strongly Consistent Read MỖI GIÂY         │
-│  │    HOẶC                                                          │
-│  │    • 2 items ≤ 4 KB với Eventually Consistent Read MỖI GIÂY      │
-│  │                                                                  │
-│  │  → Nếu bạn set 10 RCU cho table, tức là bạn "thuê" 10 làn đường  │
-│  │    table có thể đọc tối đa 10 items (4KB) mỗi giây               │
-│  │                                                                  │
-│  │  → Nếu traffic vượt quá 10 RCU (ví dụ 15 reads/giây)?            │
+┌────────────────────────────────────────────────────────────────────────────┐
+│                RCU ĐO LƯỜNG CÁI GÌ?                                        │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  VÍ DỤ THỰC TẾ:                                                            │
+│                                                                            │
+│  Giống như đường cao tốc:                                                  │
+│                                                                            │
+│  ┌───────────────────────────────────────────────────────────────┐         │
+│  │     RCU = Số làn đường (capacity/lane)                               │  │
+│  │                                                                      │  │
+│  │  5 RCU = Đường 5 làn ───────────────────────────────►                │  │
+│  │        Cho phép 5 xe đi song song mỗi giây                           │  │
+│  │                                                                      │  │
+│  │  100 RCU = Đường 100 làn ──────────────────────────►                 │  │
+│  │          Cho phép 100 xe đi song song mỗi giây                       │  │
+│  │          (đường cao tốc lớn, xử lý được traffic cao)                 │  │
+│  └───────────────────────────────────────────────────────────────┘         │
+│                                                                            │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  TRONG DYNAMODB:                                                           │
+│                                                                            │
+│  1 RCU = 1 "làn đường" cho read operations:                                │
+│                                                                            │
+│  ┌─ 1 RCU cho phép đọc:                                                    │
+│  │    • 1 item ≤ 4 KB với Strongly Consistent Read MỖI GIÂY                │
+│  │    HOẶC                                                                 │
+│  │    • 2 items ≤ 4 KB với Eventually Consistent Read MỖI GIÂY             │
+│         │                                                                  │
+│  │  → Nếu bạn set 10 RCU cho table, tức là bạn "thuê" 10 làn đường         │
+│  │    table có thể đọc tối đa 10 items (4KB) mỗi giây                      │
+│         │                                                                  │
+│  │  → Nếu traffic vượt quá 10 RCU (ví dụ 15 reads/giây)?                   │
 │  │    Requests thứ 11-15 sẽ bị THROTTLE (lỗi ProvisionedThroughputExceeded)│
-│  │                                                                  │
-│  └─────────────────────────────────────────────────────────────────┘│
-│                                                                     │
-│  QUAN TRỌNG:                                                        │
-│  • RCU chỉ áp dụng cho PROVISIONED CAPACITY MODE                    │
-│  • ON-DEMAND MODE không dùng RCU - dùng RRU (Read Request Unit)     │
-│  • RCU tính theo GIÂY, RRU tính theo REQUEST                        │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│         │                                                                  │
+│  └────────────────────────────────────────────────────────────────────────┘│
+│                                                                            │
+│  QUAN TRỌNG:                                                               │
+│  • RCU chỉ áp dụng cho PROVISIONED CAPACITY MODE                           │
+│  • ON-DEMAND MODE không dùng RCU - dùng RRU (Read Request Unit)            │
+│  • RCU tính theo GIÂY, RRU tính theo REQUEST                               │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    CÁCH TÍNH RCU CHI TIẾT                           │
@@ -300,37 +300,37 @@ Operational Overhead:
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────┐
-│    EVENTUALLY CONSISTENT READ (Giá: 0.5 RCU)                        │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  CƠ CHẾ: DynamoDB trả về data từ AZ GẦN NHẤT, không kiểm tra        │
-│          các AZs khác có data mới nhất chưa                         │
-│                                                                     │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │                                                               │  │
-│  │  Timeline: Write vừa xong (T+0)                               │  │
-│  │                                                               │  │
-│  │  AZ-1: "New Data" ✓      AZ-2: "Old Data" ◐      AZ-3: "Old" ◐│  │
+┌───────────────────────────────────────────────────────────────────────┐
+│    EVENTUALLY CONSISTENT READ (Giá: 0.5 RCU)                          │
+├───────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  CƠ CHẾ: DynamoDB trả về data từ AZ GẦN NHẤT, không kiểm tra          │
+│          các AZs khác có data mới nhất chưa                           │
+│                                                                       │
+│  ┌───────────────────────────────────────────────────────────────┐    │
+│  │                                                               │    │
+│  │  Timeline: Write vừa xong (T+0)                               │    │
+│  │                                                               │    │
+│  │  AZ-1: "New Data" ✓      AZ-2: "Old Data" ◐      AZ-3: "Old" ◐│    │
 │  │       (có new data)       (chưa replicate)      (chưa replicate)│  │
-│  │                                                               │  │
-│  │  App Read ──► DynamoDB chọn AZ-2 (gần nhất)                   │  │
-│  │               │                                               │  │
-│  │               ▼                                               │  │
-│  │          Return "Old Data" ⚠️                                  │  │
-│  │                                                               │  │
-│  │  → App thấy data CŨ, không thấy write vừa xong!               │  │
-│  │  → Nhưng sau 1-2 giây, tất cả AZs đều có "New Data"           │  │
-│  │  → Gọi là "Eventually" (cuối cùng) consistent                 │  │
-│  │                                                               │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-│  ✓ ƯU ĐIỂM: Giá rẻ (0.5 RCU), latency thấp hơn                      │
-│  ✗ NHƯỢC ĐIỂM: Có thể đọc được data cũ trong < 1s sau write         │
-│                                                                     │
-│  TỶ LỆ STALE DATA: Rất thấp (~0.1%), nhưng vẫn có thể xảy ra        │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│  │                                                               │    │
+│  │  App Read ──► DynamoDB chọn AZ-2 (gần nhất)                   │    │
+│  │               │                                                 │  │
+│  │               ▼                                               │    │
+│  │          Return "Old Data" ⚠️                                 │    │
+│  │                                                               │    │
+│  │  → App thấy data CŨ, không thấy write vừa xong!               │    │
+│  │  → Nhưng sau 1-2 giây, tất cả AZs đều có "New Data"           │    │
+│  │  → Gọi là "Eventually" (cuối cùng) consistent                 │    │
+│  │                                                               │    │
+│  └───────────────────────────────────────────────────────────────┘    │
+│                                                                       │
+│  ✓ ƯU ĐIỂM: Giá rẻ (0.5 RCU), latency thấp hơn                        │
+│  ✗ NHƯỢC ĐIỂM: Có thể đọc được data cũ trong < 1s sau write           │
+│                                                                       │
+│  TỶ LỆ STALE DATA: Rất thấp (~0.1%), nhưng vẫn có thể xảy ra          │
+│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
 │    STRONGLY CONSISTENT READ (Giá: 1 RCU)                            │
@@ -388,46 +388,46 @@ Operational Overhead:
 #### Ví dụ thực tế
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    PRACTICAL EXAMPLES                               │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ✅ NÊN DÙNG EVENTUALLY CONSISTENT:                                 │
-│                                                                     │
-│  1. Facebook Feed                                                   │
-│     - User A vừa đăng status                                        │
-│     - Friend B refresh feed ngay lập tức                            │
-│     - Có thể chưa thấy status mới ngay (chấp nhận delay 1-2s)       │
-│     - Giảm 50% read cost ✓                                          │
-│                                                                     │
-│  2. Product Recommendations                                         │
-│     - "Khách hàng cũng mua" suggestions                             │
-│     - Không cần real-time chính xác từng giây                       │
-│                                                                     │
-│  3. Analytics Dashboard                                             │
-│     - Metrics có thể delay vài giây không sao                       │
-│                                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ✅ NÊN DÙNG STRONGLY CONSISTENT:                                   │
-│                                                                     │
-│  1. Bank Account Balance                                            │
-│     - User vừa chuyển tiền ($100 → $50)                             │
-│     - Ngay sau đó kiểm tra số dư                                    │
-│     - PHẢI thấy $50, không thể thấy $100 (stale)                    │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    PRACTICAL EXAMPLES                                │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ✅ NÊN DÙNG EVENTUALLY CONSISTENT:                                  │
+│                                                                      │
+│  1. Facebook Feed                                                    │
+│     - User A vừa đăng status                                         │
+│     - Friend B refresh feed ngay lập tức                             │
+│     - Có thể chưa thấy status mới ngay (chấp nhận delay 1-2s)        │
+│     - Giảm 50% read cost ✓                                           │
+│                                                                      │
+│  2. Product Recommendations                                          │
+│     - "Khách hàng cũng mua" suggestions                              │
+│     - Không cần real-time chính xác từng giây                        │
+│                                                                      │
+│  3. Analytics Dashboard                                              │
+│     - Metrics có thể delay vài giây không sao                        │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ✅ NÊN DÙNG STRONGLY CONSISTENT:                                    │
+│                                                                      │
+│  1. Bank Account Balance                                             │
+│     - User vừa chuyển tiền ($100 → $50)                              │
+│     - Ngay sau đó kiểm tra số dư                                     │
+│     - PHẢI thấy $50, không thể thấy $100 (stale)                     │
 │     - Wrong balance = financial error ⚠️                             │
-│                                                                     │
-│  2. Inventory Management                                            │
-│     - Item stock: 5 → 4 (sau khi bán 1)                             │
-│     - Customer tiếp theo check stock                                │
-│     - PHẢI thấy 4, không thể thấy 5 (overselling)                   │
-│                                                                     │
-│  3. User Authentication                                             │
-│     - User vừa đổi password                                         │
-│     - Login ngay sau đó                                             │
-│     - PHẢI sử dụng password mới, không thể dùng cũ                  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+│  2. Inventory Management                                             │
+│     - Item stock: 5 → 4 (sau khi bán 1)                              │
+│     - Customer tiếp theo check stock                                 │
+│     - PHẢI thấy 4, không thể thấy 5 (overselling)                    │
+│                                                                      │
+│  3. User Authentication                                              │
+│     - User vừa đổi password                                          │
+│     - Login ngay sau đó                                              │
+│     - PHẢI sử dụng password mới, không thể dùng cũ                   │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nguồn**: [DynamoDB Read Consistency](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html)
@@ -480,81 +480,81 @@ Operational Overhead:
 ### 2.1 Simple Primary Key (Partition Key only)
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│             SIMPLE PRIMARY KEY (Partition Key Only)                 │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  Table: Users                                                       │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │  Primary Key: UserID (String)                                 │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-│  Items:                                                             │
-│  ┌──────────────┬──────────────┬──────────────┐                  │  │
-│  │   UserID     │   Email      │   Name       │                  │  │
-│  ├──────────────┼──────────────┼──────────────┤                  │  │
-│  │ "user_123"   │"a@email.com" │  "Alice"     │                  │  │
-│  │ "user_456"   │"b@email.com" │  "Bob"       │                  │  │
-│  │ "user_789"   │"c@email.com" │  "Charlie"   │                  │  │
-│  └──────────────┴──────────────┴──────────────┘                  │  │
-│                                                                     │
-│  ✓ Mỗi item được identify duy nhất bởi UserID                    │  │
-│  ✓ UserID phải unique trong table                                │  │
-│  ✓ Query/GetItem chỉ cần UserID                                  │  │
-│                                                                  │  │
+┌──────────────────────────────────────────────────────────────────────┐
+│             SIMPLE PRIMARY KEY (Partition Key Only)                  │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Table: Users                                                        │
+│  ┌───────────────────────────────────────────────────────────────┐   │
+│  │  Primary Key: UserID (String)                                 │   │
+│  └───────────────────────────────────────────────────────────────┘   │
+│                                                                      │
+│  Items:                                                              │
+│  ┌──────────────┬──────────────┬──────────────┐                   │  │
+│  │   UserID     │   Email      │   Name       │                   │  │
+│  ├──────────────┼──────────────┼──────────────┤                   │  │
+│  │ "user_123"   │"a@email.com" │  "Alice"     │                   │  │
+│  │ "user_456"   │"b@email.com" │  "Bob"       │                   │  │
+│  │ "user_789"   │"c@email.com" │  "Charlie"   │                   │  │
+│  └──────────────┴──────────────┴──────────────┘                   │  │
+│                                                                      │
+│  ✓ Mỗi item được identify duy nhất bởi UserID                     │  │
+│  ✓ UserID phải unique trong table                                 │  │
+│  ✓ Query/GetItem chỉ cần UserID                                   │  │
+│                                                                   │  │
 │  ⚠️ CONSTRAINTS:                                                  │  │
-│  ✗ Partition Key KHÔNG được NULL (required)                      │  │
-│  ✗ Partition Key KHÔNG được empty với Binary type                │  │
-│  ✓ String type có thể empty "" nhưng KHÔNG được null             │  │
-│  → Insert item thiếu PK sẽ lỗi ValidationException               │  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│  ✗ Partition Key KHÔNG được NULL (required)                       │  │
+│  ✗ Partition Key KHÔNG được empty với Binary type                 │  │
+│  ✓ String type có thể empty "" nhưng KHÔNG được null              │  │
+│  → Insert item thiếu PK sẽ lỗi ValidationException                │  │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.2 Composite Primary Key (Partition Key + Sort Key)
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│           COMPOSITE PRIMARY KEY (Partition + Sort Key)              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  Table: Orders                                                      │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │  Partition Key: CustomerID (String)                           │  │
-│  │  Sort Key: OrderTimestamp (Number - Unix timestamp)           │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-│  Items:                                                             │
-│  ┌──────────────┬──────────────┬──────────────┬──────────────┐   │  │
-│  │ CustomerID   │ OrderTime    │ OrderID      │ Total        │   │  │
-│  ├──────────────┼──────────────┼──────────────┼──────────────┤   │  │
-│  │  "cust_001"  │ 1704067200   │ "ord_1001"   │ 150.00       │   │  │
-│  │  "cust_001"  │ 1704153600   │ "ord_1002"   │ 230.50       │   │  │
-│  │  "cust_001"  │ 1704240000   │ "ord_1003"   │ 89.99        │   │  │
-│  │  "cust_002"  │ 1704067200   │ "ord_2001"   │ 450.00       │   │  │
-│  │  "cust_002"  │ 1704326400   │ "ord_2002"   │ 120.00       │   │  │
-│  └──────────────┴──────────────┴──────────────┴──────────────┘   │  │
-│                                                                  │  │
-│  ✓ Partition Key: Xác định partition (logical grouping)          │  │
-│  ✓ Sort Key: Sắp xếp items trong cùng partition                  │  │
-│  ✓ Combination (CustomerID + OrderTime) phải unique              │  │
-│  ✓ Query có thể filter theo range trên Sort Key                  │  │
-│                                                                  │  │
+┌──────────────────────────────────────────────────────────────────────┐
+│           COMPOSITE PRIMARY KEY (Partition + Sort Key)               │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Table: Orders                                                       │
+│  ┌───────────────────────────────────────────────────────────────┐   │
+│  │  Partition Key: CustomerID (String)                           │   │
+│  │  Sort Key: OrderTimestamp (Number - Unix timestamp)           │   │
+│  └───────────────────────────────────────────────────────────────┘   │
+│                                                                      │
+│  Items:                                                              │
+│  ┌──────────────┬──────────────┬──────────────┬──────────────┐    │  │
+│  │ CustomerID   │ OrderTime    │ OrderID      │ Total        │    │  │
+│  ├──────────────┼──────────────┼──────────────┼──────────────┤    │  │
+│  │  "cust_001"  │ 1704067200   │ "ord_1001"   │ 150.00       │    │  │
+│  │  "cust_001"  │ 1704153600   │ "ord_1002"   │ 230.50       │    │  │
+│  │  "cust_001"  │ 1704240000   │ "ord_1003"   │ 89.99        │    │  │
+│  │  "cust_002"  │ 1704067200   │ "ord_2001"   │ 450.00       │    │  │
+│  │  "cust_002"  │ 1704326400   │ "ord_2002"   │ 120.00       │    │  │
+│  └──────────────┴──────────────┴──────────────┴──────────────┘    │  │
+│                                                                   │  │
+│  ✓ Partition Key: Xác định partition (logical grouping)           │  │
+│  ✓ Sort Key: Sắp xếp items trong cùng partition                   │  │
+│  ✓ Combination (CustomerID + OrderTime) phải unique               │  │
+│  ✓ Query có thể filter theo range trên Sort Key                   │  │
+│                                                                   │  │
 │  ⚠️ CONSTRAINTS:                                                  │  │
-│  ✗ Partition Key KHÔNG được NULL (required)                      │  │
-│  ✗ Sort Key KHÔNG được NULL (required)                           │  │
-│  ✗ Primary Key TỐI ĐA 2 attributes (PK + SK), không thể 3+       │  │
-│  → Insert item thiếu PK hoặc SK sẽ lỗi ValidationException       │  │
-│                                                                  │  │
-│  💡 WORKAROUND cho 3+ attributes:                                │  │
-│  Concatenate nhiều values thành 1 Sort Key:                      │  │
-│  Ví dụ: SK = "2024#01#15" (Year#Month#Day)                       │  │
-│                                                                  │  │
-│  Query Examples:                                                 │  │
-│  • Query(CustomerID="cust_001") → 3 orders                       │  │
-│  • Query(CustomerID="cust_001", SortKey BETWEEN t1 AND t2)       │  │
-│                                                                  │  │
-└─────────────────────────────────────────────────────────────────────┘
+│  ✗ Partition Key KHÔNG được NULL (required)                       │  │
+│  ✗ Sort Key KHÔNG được NULL (required)                            │  │
+│  ✗ Primary Key TỐI ĐA 2 attributes (PK + SK), không thể 3+        │  │
+│  → Insert item thiếu PK hoặc SK sẽ lỗi ValidationException        │  │
+│                                                                   │  │
+│  💡 WORKAROUND cho 3+ attributes:                                 │  │
+│  Concatenate nhiều values thành 1 Sort Key:                       │  │
+│  Ví dụ: SK = "2024#01#15" (Year#Month#Day)                        │  │
+│                                                                   │  │
+│  Query Examples:                                                  │  │
+│  • Query(CustomerID="cust_001") → 3 orders                        │  │
+│  • Query(CustomerID="cust_001", SortKey BETWEEN t1 AND t2)        │  │
+│                                                                   │  │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.3 Partition Key Distribution
@@ -592,37 +592,37 @@ Operational Overhead:
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────┐
-│              PARTITION KEY DISTRIBUTION (Important!)                │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ❌ BAD: Partition Key không đều (Hot Partition)                    │
-│                                                                     │
-│  Partition Key: Date (YYYY-MM-DD)                                   │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  Partition A (2024-01-01) - 90% traffic ⚠️ HOT               │    │
-│  │  Partition B (2024-01-02) - 5% traffic                      │    │
-│  │  Partition C (2024-01-03) - 5% traffic                      │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│  → Partition A bị quá tải, requests bị THROTTLE!                    │
-│                                                                     │
-│  ✅ GOOD: Partition Key phân phối đều                               │
-│                                                                     │
-│  Partition Key: UserID (UUID v4 hoặc hash)                          │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  Partition A - 25% traffic ✓                                │    │
-│  │  Partition B - 25% traffic ✓                                │    │
-│  │  Partition C - 25% traffic ✓                                │    │
-│  │  Partition D - 25% traffic ✓                                │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  💡 BEST PRACTICES:                                                 │
-│  • Sử dụng UUID, hash của natural key, hoặc high-cardinality values │
-│  • Tránh partition key với low cardinality (date, status, category) │
-│  • Nếu bắt buộc dùng date → thêm suffix random ("2024-01-01#a3f2")  │
-│  • Mỗi partition tối đa ~10 GB và 3,000 RCU / 1,000 WCU             │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│              PARTITION KEY DISTRIBUTION (Important!)                 │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ❌ BAD: Partition Key không đều (Hot Partition)                     │
+│                                                                      │
+│  Partition Key: Date (YYYY-MM-DD)                                    │
+│  ┌─────────────────────────────────────────────────────────────┐     │
+│  │  Partition A (2024-01-01) - 90% traffic ⚠️ HOT              │     │
+│  │  Partition B (2024-01-02) - 5% traffic                      │     │
+│  │  Partition C (2024-01-03) - 5% traffic                      │     │
+│  └─────────────────────────────────────────────────────────────┘     │
+│  → Partition A bị quá tải, requests bị THROTTLE!                     │
+│                                                                      │
+│  ✅ GOOD: Partition Key phân phối đều                                │
+│                                                                      │
+│  Partition Key: UserID (UUID v4 hoặc hash)                           │
+│  ┌─────────────────────────────────────────────────────────────┐     │
+│  │  Partition A - 25% traffic ✓                                │     │
+│  │  Partition B - 25% traffic ✓                                │     │
+│  │  Partition C - 25% traffic ✓                                │     │
+│  │  Partition D - 25% traffic ✓                                │     │
+│  └─────────────────────────────────────────────────────────────┘     │
+│                                                                      │
+│  💡 BEST PRACTICES:                                                  │
+│  • Sử dụng UUID, hash của natural key, hoặc high-cardinality values  │
+│  • Tránh partition key với low cardinality (date, status, category)  │
+│  • Nếu bắt buộc dùng date → thêm suffix random ("2024-01-01#a3f2")   │
+│  • Mỗi partition tối đa ~10 GB và 3,000 RCU / 1,000 WCU              │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nguồn**: [DynamoDB Keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html#HowItWorks.CoreComponents.PrimaryKey)
@@ -840,41 +840,41 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 ### 4.4 Index Key Structure
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│              INDEX KEY STRUCTURE (Tối đa 2 attributes!)             │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│   GSI (Global Secondary Index):                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Option 1: [New Partition Key]                  → 1 attr    │   │
-│   │  Option 2: [New Partition Key] + [New Sort Key] → 2 attrs   │   │
-│   │                                                             │   │
-│   │  ✓ Sort Key là optional                                     │   │
-│   │  ✓ Partition Key có thể khác hoàn toàn base table           │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   LSI (Local Secondary Index):                                      │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Luôn: [Same Partition Key] + [Different Sort Key] → 2 attrs│   │
-│   │                                                             │   │
-│   │  ✗ Partition Key PHẢI giống base table                      │   │
-│   │  ✗ Bắt buộc phải có Sort Key                                │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│   PROJECTED ATTRIBUTES (Khác với Key Attributes!)                   │
-│                                                                     │
-│   Ngoài 2 key attributes, index có thể project thêm attributes:     │
-│                                                                     │
-│   Projection Type  │ Mô tả                                          │
-│   ─────────────────┼─────────────────────────────────────────────── │
-│   KEYS_ONLY        │ Chỉ key attributes                             │
-│   INCLUDE          │ Keys + chọn attributes cụ thể                  │
-│   ALL              │ Tất cả attributes từ base table                │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│              INDEX KEY STRUCTURE (Tối đa 2 attributes!)              │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   GSI (Global Secondary Index):                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Option 1: [New Partition Key]                  → 1 attr    │    │
+│   │  Option 2: [New Partition Key] + [New Sort Key] → 2 attrs   │    │
+│   │                                                             │    │
+│   │  ✓ Sort Key là optional                                     │    │
+│   │  ✓ Partition Key có thể khác hoàn toàn base table           │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   LSI (Local Secondary Index):                                       │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Luôn: [Same Partition Key] + [Different Sort Key] → 2 attrs│    │
+│   │                                                             │    │
+│   │  ✗ Partition Key PHẢI giống base table                      │    │
+│   │  ✗ Bắt buộc phải có Sort Key                                │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────┤
+│   PROJECTED ATTRIBUTES (Khác với Key Attributes!)                    │
+│                                                                      │
+│   Ngoài 2 key attributes, index có thể project thêm attributes:      │
+│                                                                      │
+│   Projection Type  │ Mô tả                                           │
+│   ─────────────────┼───────────────────────────────────────────────  │
+│   KEYS_ONLY        │ Chỉ key attributes                              │
+│   INCLUDE          │ Keys + chọn attributes cụ thể                   │
+│   ALL              │ Tất cả attributes từ base table                 │
+│                                                                      │
 │   ⚠️ Key structure vẫn chỉ tối đa 2 attributes!                      │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nguồn**: [Secondary Indexes](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html)
@@ -1119,38 +1119,38 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 ### 8.1 BatchWriteItem vs TransactWriteItems
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│         BATCH WRITE vs TRANSACTION (Quan trọng!)                    │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  BatchWriteItem (25 items/request):                                 │
-│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                            │
-│  │ ✓   │ │ ✓   │ │ ✗   │ │ ✓   │ │ ✓   │  ← Partial success         │
-│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘    (một số fail OK)        │
-│  → KHÔNG có ACID                                                    │
-│  → SDK có thể auto-split nếu > 25 items                             │
-│  → Mỗi item write độc lập                                           │
-│                                                                     │
-│  TransactWriteItems (25 items max):                                 │
-│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                            │
-│  │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │  ← ALL or NOTHING          │
-│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘                            │
-│  → CÓ ACID đầy đủ                                                   │
-│  → KHÔNG bao giờ auto-split (hard limit 25)                         │
-│  → Error nếu vượt 25 items                                          │
-│                                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│   SO SÁNH:                                                          │
-│                                                                     │
-│   Operation           │ Limit        │ Auto-split? │ ACID?          │
-│   ────────────────────┼──────────────┼─────────────┼────────────    │
-│   BatchWriteItem      │ 25/request   │ ✅ Có thể   │ ❌ Không       │
-│   TransactWriteItems  │ 25 total     │ ❌ Không    │ ✅ Có          │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│         BATCH WRITE vs TRANSACTION (Quan trọng!)                     │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  BatchWriteItem (25 items/request):                                  │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                             │
+│  │ ✓   │ │ ✓   │ │ ✗   │ │ ✓   │ │ ✓   │  ← Partial success          │
+│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘    (một số fail OK)         │
+│  → KHÔNG có ACID                                                     │
+│  → SDK có thể auto-split nếu > 25 items                              │
+│  → Mỗi item write độc lập                                            │
+│                                                                      │
+│  TransactWriteItems (25 items max):                                  │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                             │
+│  │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │ │ ✓   │  ← ALL or NOTHING           │
+│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘                             │
+│  → CÓ ACID đầy đủ                                                    │
+│  → KHÔNG bao giờ auto-split (hard limit 25)                          │
+│  → Error nếu vượt 25 items                                           │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────┤
+│   SO SÁNH:                                                           │
+│                                                                      │
+│   Operation           │ Limit        │ Auto-split? │ ACID?           │
+│   ────────────────────┼──────────────┼─────────────┼────────────     │
+│   BatchWriteItem      │ 25/request   │ ✅ Có thể   │ ❌ Không        │
+│   TransactWriteItems  │ 25 total     │ ❌ Không    │ ✅ Có           │
+│                                                                      │
 │   ⚠️ Nếu cần ACID cho > 25 items → KHÔNG THỂ trong 1 transaction!    │
-│   → Phải thiết kế lại data model hoặc chấp nhận eventual consistency│
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│   → Phải thiết kế lại data model hoặc chấp nhận eventual consistency │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 8.2 DynamoDB Operators
@@ -1215,48 +1215,48 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 ## 9. TTL (Time to Live)
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    TIME TO LIVE (TTL)                               │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  Tự động xóa items sau một thời điểm được định trước                │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                  TTL EXAMPLE                                │    │
-│  │                                                             │    │
-│  │  Session Management:                                        │    │
-│  │                                                             │    │
-│  │  Item: {                                                    │    │
-│  │    UserID: "user_123",                                      │    │
-│  │    SessionData: {...},                                      │    │
-│  │    ExpireAt: 1704067200  ← Unix timestamp (TTL attribute)   │    │
-│  │  }                                                          │    │
-│  │                                                             │    │
-│  │  Timeline:                                                  │    │
-│  │  │                                                           │   │
-│  │  ├─ T+0: Item created, ExpireAt = current_time + 24h        │    │
-│  │  ├─ T+12h: Item still exists ✓                              │    │
-│  │  ├─ T+24h: Item automatically deleted 🗑️                     │    │
-│  │  └─ T+48h: No trace of item                                  │   │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  ✓ Zero-cost deletion - Không tính WCU cho delete operations        │
-│  ✓ Background process - DynamoDB tự động scan và delete             │
-│  ✓ Eventually consistent - Items có thể tồn tại 48h sau TTL         │
-│  ✓ DynamoDB Streams - Delete events vẫn được ghi lại                │
-│                                                                     │
-│  Use Cases:                                                         │
-│  • Session data expiration                                          │
-│  • Temporary data (verification codes, tokens)                      │
-│  • Log rotation và data lifecycle management                        │
-│  • Cache invalidation                                               │
-│                                                                     │
-│  Setup:                                                             │
-│  1. Enable TTL trên table                                           │
-│  2. Specify attribute name (ví dụ: "ExpireAt")                      │
-│  3. Store Unix timestamp (seconds since epoch) trong attribute      │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    TIME TO LIVE (TTL)                                │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Tự động xóa items sau một thời điểm được định trước                 │
+│                                                                      │
+│  ┌─────────────────────────────────────────────────────────────┐     │
+│  │                  TTL EXAMPLE                                │     │
+│  │                                                             │     │
+│  │  Session Management:                                        │     │
+│  │                                                             │     │
+│  │  Item: {                                                    │     │
+│  │    UserID: "user_123",                                      │     │
+│  │    SessionData: {...},                                      │     │
+│  │    ExpireAt: 1704067200  ← Unix timestamp (TTL attribute)   │     │
+│  │  }                                                          │     │
+│  │                                                             │     │
+│  │  Timeline:                                                  │     │
+│  │  │                                                            │   │
+│  │  ├─ T+0: Item created, ExpireAt = current_time + 24h        │     │
+│  │  ├─ T+12h: Item still exists ✓                              │     │
+│  │  ├─ T+24h: Item automatically deleted 🗑️                    │     │
+│  │  └─ T+48h: No trace of item                                   │   │
+│  └─────────────────────────────────────────────────────────────┘     │
+│                                                                      │
+│  ✓ Zero-cost deletion - Không tính WCU cho delete operations         │
+│  ✓ Background process - DynamoDB tự động scan và delete              │
+│  ✓ Eventually consistent - Items có thể tồn tại 48h sau TTL          │
+│  ✓ DynamoDB Streams - Delete events vẫn được ghi lại                 │
+│                                                                      │
+│  Use Cases:                                                          │
+│  • Session data expiration                                           │
+│  • Temporary data (verification codes, tokens)                       │
+│  • Log rotation và data lifecycle management                         │
+│  • Cache invalidation                                                │
+│                                                                      │
+│  Setup:                                                              │
+│  1. Enable TTL trên table                                            │
+│  2. Specify attribute name (ví dụ: "ExpireAt")                       │
+│  3. Store Unix timestamp (seconds since epoch) trong attribute       │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nguồn**: [DynamoDB TTL](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html)

@@ -76,31 +76,31 @@
 ### SSM Agent hoạt động như thế nào?
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                    SSM Agent - Cách hoạt động                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                    SSM Agent - Cách hoạt động                                 │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
 │   ⚠️ QUAN TRỌNG: Agent KHÔNG lắng nghe connections!                           │
-│   Agent CHỦ ĐỘNG gọi RA NGOÀI đến SSM Service                                │
-│                                                                              │
-│   ┌─────────────────────┐                                                    │
-│   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                  │
-│   │   (trên cloud)      │                                                    │
-│   └──────────▲──────────┘                        p                           │
-│              │                                                               │
-│              │  WebSocket (Agent GỌI RA, giữ connection)                     │
-│              │                                                               │
-│   ┌──────────┴──────────┐                                                    │
-│   │   SSM Agent         │  ← Phần mềm TRONG EC2                              │
-│   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện       │
-│   └─────────────────────┘                                                    │
-│                                                                              │
-│   Workflow:                                                                  │
-│   1. Agent connect RA NGOÀI đến SSM Service (WebSocket)                      │
-│   2. Giữ connection, chờ commands/sessions                                   │
-│   3. Khi có command → Thực hiện và trả kết quả                               │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+│   Agent CHỦ ĐỘNG gọi RA NGOÀI đến SSM Service                                 │
+│                                                                               │
+│   ┌─────────────────────┐                                                     │
+│   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                   │
+│   │   (trên cloud)      │                                                     │
+│   └──────────▲──────────┘                        p                            │
+│               │                                                               │
+│              │  WebSocket (Agent GỌI RA, giữ connection)                      │
+│               │                                                               │
+│   ┌──────────┴──────────┐                                                     │
+│   │   SSM Agent         │  ← Phần mềm TRONG EC2                               │
+│   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện        │
+│   └─────────────────────┘                                                     │
+│                                                                               │
+│   Workflow:                                                                   │
+│   1. Agent connect RA NGOÀI đến SSM Service (WebSocket)                       │
+│   2. Giữ connection, chờ commands/sessions                                    │
+│   3. Khi có command → Thực hiện và trả kết quả                                │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Agent có sẵn hay phải cài?
@@ -208,40 +208,40 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 ## Phân loại SSM Tools
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Systems Manager Tools                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Systems Manager Tools                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
 │  🖥️ NODE TOOLS (Quản lý nodes)                                               │
-│  ─────────────────────────────────────────────────────────────              │
-│  • Run Command       → Chạy commands từ xa trên nhiều nodes                 │
-│  • Session Manager   → SSH/RDP không cần mở port, không cần key             │
-│  • Patch Manager     → Tự động patch OS và applications                     │
-│  • State Manager     → Duy trì cấu hình mong muốn trên nodes                │
-│  • Inventory         → Thu thập thông tin software trên nodes               │
-│  • Fleet Manager     → UI dashboard quản lý fleet                           │
-│  • Distributor       → Deploy packages đến nodes                            │
-│  • Compliance        → Check compliance của patches, configs                │
-│                                                                             │
-│  🔄 CHANGE MANAGEMENT (Quản lý thay đổi)                                    │
-│  ─────────────────────────────────────────────────────────────              │
-│  • Automation        → Tự động hóa tasks (tạo AMI, update, etc.)            │
-│  • Maintenance Win.  → Lên lịch chạy tasks định kỳ                          │
-│  • Change Calendar   → Định nghĩa khi nào được/không được thay đổi          │
-│  • Documents (SSM)   → Define actions (JSON/YAML)                           │
-│                                                                             │
-│  📦 APPLICATION TOOLS (Quản lý applications)                                │
-│  ─────────────────────────────────────────────────────────────              │
-│  • Parameter Store   → Lưu trữ config, secrets (FREE tier available)        │
-│  • AppConfig         → Deploy app configurations với rollback               │
-│                                                                             │
-│  📊 OPERATIONS TOOLS (Operations management)                                │
-│  ─────────────────────────────────────────────────────────────              │
-│  • OpsCenter         → Central dashboard cho operational issues             │
-│  • Explorer          → Aggregated view của OpsData                          │
-│  • Incident Manager  → Quản lý incidents                                    │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│  ─────────────────────────────────────────────────────────────               │
+│  • Run Command       → Chạy commands từ xa trên nhiều nodes                  │
+│  • Session Manager   → SSH/RDP không cần mở port, không cần key              │
+│  • Patch Manager     → Tự động patch OS và applications                      │
+│  • State Manager     → Duy trì cấu hình mong muốn trên nodes                 │
+│  • Inventory         → Thu thập thông tin software trên nodes                │
+│  • Fleet Manager     → UI dashboard quản lý fleet                            │
+│  • Distributor       → Deploy packages đến nodes                             │
+│  • Compliance        → Check compliance của patches, configs                 │
+│                                                                              │
+│  🔄 CHANGE MANAGEMENT (Quản lý thay đổi)                                     │
+│  ─────────────────────────────────────────────────────────────               │
+│  • Automation        → Tự động hóa tasks (tạo AMI, update, etc.)             │
+│  • Maintenance Win.  → Lên lịch chạy tasks định kỳ                           │
+│  • Change Calendar   → Định nghĩa khi nào được/không được thay đổi           │
+│  • Documents (SSM)   → Define actions (JSON/YAML)                            │
+│                                                                              │
+│  📦 APPLICATION TOOLS (Quản lý applications)                                 │
+│  ─────────────────────────────────────────────────────────────               │
+│  • Parameter Store   → Lưu trữ config, secrets (FREE tier available)         │
+│  • AppConfig         → Deploy app configurations với rollback                │
+│                                                                              │
+│  📊 OPERATIONS TOOLS (Operations management)                                 │
+│  ─────────────────────────────────────────────────────────────               │
+│  • OpsCenter         → Central dashboard cho operational issues              │
+│  • Explorer          → Aggregated view của OpsData                           │
+│  • Incident Manager  → Quản lý incidents                                     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

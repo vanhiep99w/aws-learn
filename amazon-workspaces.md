@@ -118,27 +118,27 @@
 ## 3. WorkSpaces Personal vs Pools
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     WorkSpaces Types                                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌───────────────────────────────────┐  ┌─────────────────────────────────┐ │
-│  │  🖥️  WorkSpaces PERSONAL           │  │  👥 WorkSpaces POOLS            │ │
-│  │  ───────────────────────────────  │  │  ─────────────────────────────  │ │
-│  │                                   │  │                                 │ │
-│  │  • 1 user = 1 dedicated desktop   │  │  • Shared pool of desktops      │ │
-│  │  • PERSISTENT storage             │  │  • NON-PERSISTENT storage       │ │
-│  │  • Cài đặt apps, lưu files        │  │  • Reset sau mỗi session        │ │
-│  │  • Personalized settings          │  │  • Giống nhau cho mọi user      │ │
-│  │                                   │  │                                 │ │
-│  │  Best for:                        │  │  Best for:                      │ │
-│  │  → Developers                     │  │  → Call center agents           │ │
-│  │  → Knowledge workers              │  │  → Task workers                 │ │
-│  │  → Long-term employees            │  │  → Seasonal/temporary staff     │ │
-│  │  → Power users                    │  │  → Shared workstations          │ │
-│  └───────────────────────────────────┘  └─────────────────────────────────┘ │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                     WorkSpaces Types                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌───────────────────────────────────┐  ┌─────────────────────────────────┐  │
+│  │  🖥️  WorkSpaces PERSONAL          │  │  👥 WorkSpaces POOLS            │  │
+│  │  ───────────────────────────────  │  │  ─────────────────────────────  │  │
+│  │                                   │  │                                 │  │
+│  │  • 1 user = 1 dedicated desktop   │  │  • Shared pool of desktops      │  │
+│  │  • PERSISTENT storage             │  │  • NON-PERSISTENT storage       │  │
+│  │  • Cài đặt apps, lưu files        │  │  • Reset sau mỗi session        │  │
+│  │  • Personalized settings          │  │  • Giống nhau cho mọi user      │  │
+│  │                                   │  │                                 │  │
+│  │  Best for:                        │  │  Best for:                      │  │
+│  │  → Developers                     │  │  → Call center agents           │  │
+│  │  → Knowledge workers              │  │  → Task workers                 │  │
+│  │  → Long-term employees            │  │  → Seasonal/temporary staff     │  │
+│  │  → Power users                    │  │  → Shared workstations          │  │
+│  └───────────────────────────────────┘  └─────────────────────────────────┘  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 | Feature | Personal | Pools |
@@ -196,35 +196,35 @@ WorkSpaces hỗ trợ **2 giao thức streaming**:
 WorkSpaces **BẮT BUỘC** phải kết nối với một directory service để quản lý user identity.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      Directory Options                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Option 1: Simple AD (AWS Managed)                                          │
-│  ┌──────────────────────────────────────────────┐                           │
-│  │  • Standalone directory by AWS               │                           │
-│  │  • Small: ≤ 500 users | Large: ≤ 5,000 users │                           │
-│  │  • Best for: Small orgs, không có AD sẵn     │                           │
-│  │  • ⚠️ Không support MFA, trusts               │                           │
-│  └──────────────────────────────────────────────┘                           │
-│                                                                             │
-│  Option 2: AD Connector                                                     │
-│  ┌──────────────────────────────────────────────┐                           │
-│  │  • Proxy tới on-premises Active Directory    │                           │
-│  │  • Không lưu data trên AWS                   │                           │
-│  │  • Best for: Có AD on-prem sẵn, hybrid       │                           │
-│  │  • ✅ Support MFA qua RADIUS                 │                           │
-│  └──────────────────────────────────────────────┘                           │
-│                                                                             │
-│  Option 3: AWS Managed Microsoft AD                                         │
-│  ┌──────────────────────────────────────────────┐                           │
-│  │  • Full Microsoft AD trên AWS                │                           │
-│  │  • Trust relationship với on-prem AD         │                           │
-│  │  • Best for: Enterprise, cần full AD features│                           │
-│  │  • ✅ Support MFA, Group Policies, Trusts    │                           │
-│  └──────────────────────────────────────────────┘                           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                      Directory Options                                       │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Option 1: Simple AD (AWS Managed)                                           │
+│  ┌──────────────────────────────────────────────┐                            │
+│  │  • Standalone directory by AWS               │                            │
+│  │  • Small: ≤ 500 users | Large: ≤ 5,000 users │                            │
+│  │  • Best for: Small orgs, không có AD sẵn     │                            │
+│  │  • ⚠️ Không support MFA, trusts              │                            │
+│  └──────────────────────────────────────────────┘                            │
+│                                                                              │
+│  Option 2: AD Connector                                                      │
+│  ┌──────────────────────────────────────────────┐                            │
+│  │  • Proxy tới on-premises Active Directory    │                            │
+│  │  • Không lưu data trên AWS                   │                            │
+│  │  • Best for: Có AD on-prem sẵn, hybrid       │                            │
+│  │  • ✅ Support MFA qua RADIUS                 │                            │
+│  └──────────────────────────────────────────────┘                            │
+│                                                                              │
+│  Option 3: AWS Managed Microsoft AD                                          │
+│  ┌──────────────────────────────────────────────┐                            │
+│  │  • Full Microsoft AD trên AWS                │                            │
+│  │  • Trust relationship với on-prem AD         │                            │
+│  │  • Best for: Enterprise, cần full AD features│                            │
+│  │  • ✅ Support MFA, Group Policies, Trusts    │                            │
+│  └──────────────────────────────────────────────┘                            │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

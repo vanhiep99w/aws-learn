@@ -202,15 +202,15 @@ ACM tích hợp native với nhiều AWS services:
 ### Lưu ý quan trọng về Region:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │  ⚠️  QUAN TRỌNG: Certificate Region                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  CloudFront        →  Certificate phải ở US-EAST-1 (N.Virginia) │
-│                                                                 │
-│  ALB, API Gateway  →  Certificate phải ở CÙNG REGION với service│
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  CloudFront        →  Certificate phải ở US-EAST-1 (N.Virginia)  │
+│                                                                  │
+│  ALB, API Gateway  →  Certificate phải ở CÙNG REGION với service │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Tại sao CloudFront yêu cầu Certificate ở US-EAST-1?

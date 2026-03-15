@@ -85,14 +85,14 @@ LB logic nằm trong application code:
 **Trả lời:** Vì LB logic là **thư viện trong code**, không phải server. Nhưng vẫn cần **Service Registry** (như Eureka) để biết danh sách targets.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     EUREKA ≠ LOAD BALANCER                      │
-│                                                                 │
-│   Eureka Server: "Tôi biết ai ở đâu" (lưu danh sách IP)         │
-│   Spring Cloud LB: "Tôi chọn gọi ai"                            │
+┌────────────────────────────────────────────────────────────────────────────┐
+│                     EUREKA ≠ LOAD BALANCER                                 │
+│                                                                            │
+│   Eureka Server: "Tôi biết ai ở đâu" (lưu danh sách IP)                    │
+│   Spring Cloud LB: "Tôi chọn gọi ai"                                       │
 │ (logic trong code và lưu ở trong chính server chỉ dùng eruka để đông bộ về)│
-│   → Eureka KHÔNG route traffic, chỉ cung cấp thông tin          │
-└─────────────────────────────────────────────────────────────────┘
+│   → Eureka KHÔNG route traffic, chỉ cung cấp thông tin                     │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow hoạt động:**
@@ -560,38 +560,38 @@ Internet
 Internet
     │
     ▼
-┌─────────┐
+┌────────────────────────────────────────────────────────┐
 │ AWS ALB │ ← Server-side (external traffic)
 └────┬────┘    + WAF, Shield, ACM
-          │
+                                                         │
      ▼
-┌─────────┐
-│              Kubernetes Cluster                      │
-│         │
-│  ┌─────────────┐                                    │
-│  │ K8s Ingress │ ← Server-side (routing rules)      │
-│  └──────┬──────┘                                    │
-│         │                                           │
-│         ▼                                           │
-│  ┌─────────────┐      ┌─────────────┐              │
-│  │ API Gateway │─────▶│ User Service│              │
-│  │ (Pod)       │      │ (Pod)       │              │
-│  │             │      │ ┌─────────┐ │              │
-│  │             │      │ │Spring   │ │              │
-│  │             │      │ │Cloud LB │─┼──┐           │
-│  │             │      │ └─────────┘ │  │           │
-│  └─────────────┘      └─────────────┘  │           │
-│                                        │           │
-│                              ┌─────────┘           │
-│                              ▼                     │
-│                              ┌─────────┐           │
+┌────────────────────────────────────────────────────────┐
+│              Kubernetes Cluster                        │
+│                                                        │
+│  ┌─────────────┐                                       │
+│  │ K8s Ingress │ ← Server-side (routing rules)         │
+│  └──────┬──────┘                                       │
+│            │                                           │
+│         ▼                                              │
+│  ┌─────────────┐      ┌─────────────┐                  │
+│  │ API Gateway │─────▶│ User Service    │              │
+│  │ (Pod)       │      │ (Pod)           │              │
+│  │             │      │ ┌─────────┐     │              │
+│  │             │      │ │Spring   │     │              │
+│  │             │      │ │Cloud LB │─┼──┐               │
+│  │             │      │ └─────────┘ │      │           │
+│  └─────────────┘      └─────────────┘      │           │
+│                                            │           │
+│                              ┌─────────┘               │
+│                              ▼                         │
+│                              ┌─────────┐               │
 │                              │Order Service│           │
-│                              │ (3 Pods)│           │
-│                              └─────────┘           │
-│                              ↑                     │
-│                    Client-side LB                  │
-│                    (Spring Cloud, gọi thẳng)       │
-└─────────┘
+│                              │ (3 Pods)    │           │
+│                              └─────────┘               │
+│                              ↑                         │
+│                    Client-side LB                      │
+│                    (Spring Cloud, gọi thẳng)           │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -619,7 +619,7 @@ Traffic: 10M requests/tháng, 3 services × 3 instances
 
 ┌────────────────┬─────────────────────────────────────────┐
 │                │              Cost/tháng                 │
-│   Kiến trúc    ├─────────┬─────────┬─────────┬──────────┤
+│   Kiến trúc    ├─────────┬─────────┬─────────┬───────────┤
 │                │ Compute │   LB    │  Other  │  Total    │
 ├────────────────┼─────────┼─────────┼─────────┼───────────┤
 │ AWS ECS        │  $150   │  $25    │  $5     │  ~$180    │

@@ -23,27 +23,27 @@
 **Amazon SNS** là fully managed **pub/sub** messaging service để gửi notifications đến nhiều subscribers cùng lúc.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    SNS PUB/SUB MODEL                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Publisher (1)                                                 │
-│       │                                                         │
-│       ↓                                                         │
-│   ┌───────────────────────────────────────┐                     │
-│   │           SNS TOPIC                   │                     │
-│   │    "order-created-topic"              │                     │
-│   └───────────────────────────────────────┘                     │
-│       │           │           │           │                     │
-│       ↓           ↓           ↓           ↓                     │
-│   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐                 │
-│   │  SQS  │   │Lambda │   │ Email │   │ HTTP  │                 │
+┌───────────────────────────────────────────────────────────────────┐
+│                    SNS PUB/SUB MODEL                              │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│   Publisher (1)                                                   │
+│         │                                                         │
+│       ↓                                                           │
+│   ┌───────────────────────────────────────┐                       │
+│   │           SNS TOPIC                   │                       │
+│   │    "order-created-topic"              │                       │
+│   └───────────────────────────────────────┘                       │
+│       │           │           │             │                     │
+│       ↓           ↓           ↓           ↓                       │
+│   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐                   │
+│   │  SQS  │   │Lambda │   │ Email │   │ HTTP  │                   │
 │   │ Queue │   │       │   │       │   │Endpoint │                 │
-│   └───────┘   └───────┘   └───────┘   └───────┘                 │
-│                                                                 │
-│   Subscribers (many) - TẤT CẢ đều nhận message                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   └───────┘   └───────┘   └───────┘   └───────┘                   │
+│                                                                   │
+│   Subscribers (many) - TẤT CẢ đều nhận message                    │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ### SNS vs SQS
@@ -158,25 +158,25 @@
 ### 2.3 Subscription Confirmation
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              SUBSCRIPTION CONFIRMATION                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   HTTP/HTTPS & Email subscriptions require confirmation:        │
-│                                                                 │
-│   1. Create subscription → Status: "Pending confirmation"       │
-│                                 ↓                               │
-│   2. SNS sends confirmation message                             │
-│      • HTTP: POST with SubscribeURL                             │
-│      • Email: Click confirmation link                           │
-│                                 ↓                               │
-│   3. Subscriber confirms                                        │
-│                                 ↓                               │
-│   4. Status: "Confirmed" → Ready to receive messages            │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│              SUBSCRIPTION CONFIRMATION                           │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   HTTP/HTTPS & Email subscriptions require confirmation:         │
+│                                                                  │
+│   1. Create subscription → Status: "Pending confirmation"        │
+│                                 ↓                                │
+│   2. SNS sends confirmation message                              │
+│      • HTTP: POST with SubscribeURL                              │
+│      • Email: Click confirmation link                            │
+│                                 ↓                                │
+│   3. Subscriber confirms                                         │
+│                                 ↓                                │
+│   4. Status: "Confirmed" → Ready to receive messages             │
+│                                                                  │
 │   ⚠️  Unconfirmed subscriptions auto-delete after 3 days         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -380,30 +380,30 @@ Ví dụ: User upload ảnh → cần làm:
 > **Có!** Nhưng có 2 cách:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              SPRING BOOT + SNS                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   OPTION 1: SNS → HTTP Endpoint (Spring Boot expose API)        │
-│   ┌────────────────────────────────────────────────────────────┐│
-│   │  SNS Topic ──PUSH──→ https://your-app.com/sns-endpoint     ││
-│   │                           ↓                                ││
-│   │                    @PostMapping("/sns-endpoint")           ││
-│   │                    public void handle(@RequestBody...)     ││
-│   │                                                            ││
+┌──────────────────────────────────────────────────────────────────┐
+│              SPRING BOOT + SNS                                   │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   OPTION 1: SNS → HTTP Endpoint (Spring Boot expose API)         │
+│   ┌─────────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──PUSH──→ https://your-app.com/sns-endpoint      ││
+│   │                           ↓                                 ││
+│   │                    @PostMapping("/sns-endpoint")            ││
+│   │                    public void handle(@RequestBody...)      ││
+│   │                                                             ││
 │   │  ⚠️ Cần public URL, xử lý subscription confirmation         ││
-│   └────────────────────────────────────────────────────────────┘│
-│                                                                 │
-│   OPTION 2: SNS → SQS → Spring Boot (RECOMMENDED!)              │
-│   ┌────────────────────────────────────────────────────────────┐│
-│   │  SNS Topic ──→ SQS Queue ←── Spring Boot @SqsListener      ││
-│   │                                                            ││
-│   │  ✅ Better: decoupled, retry, DLQ support                  ││
-│   │  ✅ No need for public URL                                 ││
-│   │  ✅ Buffering when app is down                             ││
-│   └────────────────────────────────────────────────────────────┘│
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   └─────────────────────────────────────────────────────────────┘│
+│                                                                  │
+│   OPTION 2: SNS → SQS → Spring Boot (RECOMMENDED!)               │
+│   ┌─────────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──→ SQS Queue ←── Spring Boot @SqsListener       ││
+│   │                                                             ││
+│   │  ✅ Better: decoupled, retry, DLQ support                   ││
+│   │  ✅ No need for public URL                                  ││
+│   │  ✅ Buffering when app is down                              ││
+│   └─────────────────────────────────────────────────────────────┘│
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 5.2 Option 1: HTTP Endpoint
@@ -521,23 +521,23 @@ public class OrderEventConsumer {
 ### 6.1 Encryption
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       ENCRYPTION                                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   IN-FLIGHT:                                                    │
-│   • HTTPS endpoints required                                    │
-│   • TLS for all API calls                                       │
-│                                                                 │
-│   AT-REST (SSE):                                                │
-│   • SSE-KMS for message encryption                              │
-│   • Key: AWS managed or Customer managed CMK                    │
-│   • Messages encrypted before stored (temporary)                │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                       ENCRYPTION                                 │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   IN-FLIGHT:                                                     │
+│   • HTTPS endpoints required                                     │
+│   • TLS for all API calls                                        │
+│                                                                  │
+│   AT-REST (SSE):                                                 │
+│   • SSE-KMS for message encryption                               │
+│   • Key: AWS managed or Customer managed CMK                     │
+│   • Messages encrypted before stored (temporary)                 │
+│                                                                  │
 │   ⚠️  Note: SNS doesn't store messages long-term                 │
-│       Encryption mostly for in-transit protection               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│       Encryption mostly for in-transit protection                │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 6.2 Access Control

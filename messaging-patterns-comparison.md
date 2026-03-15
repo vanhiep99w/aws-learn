@@ -133,45 +133,45 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 ### 1.3 STREAMING (Luồng dữ liệu) - AWS Kinesis / Kafka
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       STREAMING                                 │
-│                 🎥 AWS: Kinesis, Kafka (MSK)                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   📹 Ví dụ thực tế: YOUTUBE VIDEO / CAMERA AN NINH              │
-│                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                         │   │
-│   │   Camera quay liên tục (Producers)                      │   │
-│   │        ↓                                                │   │
-│   │   ┌───────────────────────────────────────────────────┐  │  │
-│   │   │  STREAM (lưu video 1-365 ngày)                    │  │  │
-│   │   │  ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐     │   │  │
-│   │   │  │ 9am │10am │11am │12pm │ 1pm │ 2pm │ 3pm │     │   │  │
-│   │   │  └─────┴─────┴─────┴─────┴─────┴─────┴─────┘     │   │  │
-│   │   │         ↑                           ↑             │  │  │
-│   │   │    Consumer A              Consumer B             │  │  │
-│   │   │   (xem từ 10am)          (xem live 3pm)           │  │  │
-│   │   └───────────────────────────────────────────────────┘  │  │
-│   │                                                         │   │
-│   │   → Data được LƯU LẠI (như video YouTube)               │   │
-│   │   → REPLAY: tua lại xem từ bất kỳ thời điểm nào         │   │
-│   │   → Nhiều consumers đọc CÙNG 1 stream                   │   │
-│   │   → Data vẫn còn sau khi đọc                            │   │
-│   │                                                         │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│   ĐẶC ĐIỂM:                                                     │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  ✅ Persistence: Data lưu 1-365 ngày (Kinesis)          │   │
-│   │  ✅ Replay: Đọc lại từ bất kỳ vị trí nào                │   │
-│   │  ✅ Multiple consumers: Nhiều apps đọc cùng data        │   │
-│   │  ✅ Consumer Groups: Chia việc trong nhóm (Kafka)       │   │
-│   │  ✅ Ordering: Theo partition/shard                      │   │
-│   │  ⚠️ Provisioned: Phải provision shards (capacity)        │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                       STREAMING                                  │
+│                 🎥 AWS: Kinesis, Kafka (MSK)                     │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   📹 Ví dụ thực tế: YOUTUBE VIDEO / CAMERA AN NINH               │
+│                                                                  │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │                                                         │    │
+│   │   Camera quay liên tục (Producers)                      │    │
+│   │        ↓                                                │    │
+│   │   ┌───────────────────────────────────────────────────┐   │  │
+│   │   │  STREAM (lưu video 1-365 ngày)                    │   │  │
+│   │   │  ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐     │    │  │
+│   │   │  │ 9am │10am │11am │12pm │ 1pm │ 2pm │ 3pm │     │    │  │
+│   │   │  └─────┴─────┴─────┴─────┴─────┴─────┴─────┘     │    │  │
+│   │   │         ↑                           ↑             │   │  │
+│   │   │    Consumer A              Consumer B             │   │  │
+│   │   │   (xem từ 10am)          (xem live 3pm)           │   │  │
+│   │   └───────────────────────────────────────────────────┘   │  │
+│   │                                                         │    │
+│   │   → Data được LƯU LẠI (như video YouTube)               │    │
+│   │   → REPLAY: tua lại xem từ bất kỳ thời điểm nào         │    │
+│   │   → Nhiều consumers đọc CÙNG 1 stream                   │    │
+│   │   → Data vẫn còn sau khi đọc                            │    │
+│   │                                                         │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│   ĐẶC ĐIỂM:                                                      │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  ✅ Persistence: Data lưu 1-365 ngày (Kinesis)          │    │
+│   │  ✅ Replay: Đọc lại từ bất kỳ vị trí nào                │    │
+│   │  ✅ Multiple consumers: Nhiều apps đọc cùng data        │    │
+│   │  ✅ Consumer Groups: Chia việc trong nhóm (Kafka)       │    │
+│   │  ✅ Ordering: Theo partition/shard                      │    │
+│   │  ⚠️ Provisioned: Phải provision shards (capacity)       │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **[📖 Chi tiết: Kinesis Documentation](./kinesis.md)**
@@ -181,53 +181,53 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 ### 1.4 EVENT BUS (Xe buýt sự kiện) - AWS EventBridge
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       EVENT BUS                                 │
-│                   🚌 AWS: EventBridge                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   🚏 Ví dụ thực tế: TRUNG TÂM ĐIỀU PHỐI / BƯU ĐIỆN              │
-│                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                         │   │
-│   │   Events arrive (từ nhiều nguồn)                        │   │
-│   │   ┌──────────┐ ┌──────────┐ ┌──────────┐                 │  │
-│   │   │ Order    │ │ S3 Event │ │ Partner  │                 │  │
-│   │   │ Service  │ │          │ │ (Stripe) │                 │  │
-│   │   └────┬─────┘ └────┬─────┘ └────┬─────┘                 │  │
-│   │        │            │            │                       │  │
-│   │        ↓            ↓            ↓                      │   │
-│   │   ┌─────────────────────────────────────────────────┐    │  │
-│   │   │              🚌 EVENT BUS                       │    │  │
-│   │   │                                                 │    │  │
-│   │   │  Rules:                                         │    │  │
-│   │   │  IF source = "order" AND amount > $100          │    │  │
-│   │   │     → Route to Lambda (send notification)       │    │  │
-│   │   │  IF source = "order" AND type = "refund"        │    │  │
-│   │   │     → Route to SQS (process refund)             │    │  │
-│   │   │  IF source = "s3"                               │    │  │
-│   │   │     → Route to Step Functions                   │    │  │
-│   │   │                                                 │    │  │
-│   │   └──────┬──────────────────┬──────────────┬───────┘     │  │
-│   │          ↓                  ↓              ↓            │   │
-│   │      ┌───────┐         ┌────────┐    ┌─────────┐         │  │
-│   │      │Lambda │         │  SQS   │    │ Step    │         │  │
-│   │      │       │         │        │    │Functions│         │  │
-│   │      └───────┘         └────────┘    └─────────┘         │  │
-│   │                                                         │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│   ĐẶC ĐIỂM:                                                     │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  ✅ Smart routing: 100+ rules với advanced filtering    │   │
+┌──────────────────────────────────────────────────────────────────┐
+│                       EVENT BUS                                  │
+│                   🚌 AWS: EventBridge                            │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   🚏 Ví dụ thực tế: TRUNG TÂM ĐIỀU PHỐI / BƯU ĐIỆN               │
+│                                                                  │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │                                                         │    │
+│   │   Events arrive (từ nhiều nguồn)                        │    │
+│   │   ┌──────────┐ ┌──────────┐ ┌──────────┐                  │  │
+│   │   │ Order    │ │ S3 Event │ │ Partner  │                  │  │
+│   │   │ Service  │ │          │ │ (Stripe) │                  │  │
+│   │   └────┬─────┘ └────┬─────┘ └────┬─────┘                  │  │
+│   │        │            │            │                        │  │
+│   │        ↓            ↓            ↓                      │    │
+│   │   ┌─────────────────────────────────────────────────┐     │  │
+│   │   │              🚌 EVENT BUS                       │     │  │
+│   │   │                                                 │     │  │
+│   │   │  Rules:                                         │     │  │
+│   │   │  IF source = "order" AND amount > $100          │     │  │
+│   │   │     → Route to Lambda (send notification)       │     │  │
+│   │   │  IF source = "order" AND type = "refund"        │     │  │
+│   │   │     → Route to SQS (process refund)             │     │  │
+│   │   │  IF source = "s3"                               │     │  │
+│   │   │     → Route to Step Functions                   │     │  │
+│   │   │                                                 │     │  │
+│   │   └──────┬──────────────────┬──────────────┬───────┘      │  │
+│   │          ↓                  ↓              ↓            │    │
+│   │      ┌───────┐         ┌────────┐    ┌─────────┐          │  │
+│   │      │Lambda │         │  SQS   │    │ Step    │          │  │
+│   │      │       │         │        │    │Functions│          │  │
+│   │      └───────┘         └────────┘    └─────────┘          │  │
+│   │                                                         │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│   ĐẶC ĐIỂM:                                                      │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  ✅ Smart routing: 100+ rules với advanced filtering    │    │
 │   │  ✅ Event transformation: Chuyển đổi format trước khi gửi│   │
-│   │  ✅ Schema Registry: Quản lý event schemas              │   │
-│   │  ✅ Archive & Replay: Lưu và replay events              │   │
-│   │  ✅ Third-party: Tích hợp SaaS (Stripe, Zendesk...)     │   │
-│   │  ✅ Serverless: Fully managed, no provisioning          │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   │  ✅ Schema Registry: Quản lý event schemas              │    │
+│   │  ✅ Archive & Replay: Lưu và replay events              │    │
+│   │  ✅ Third-party: Tích hợp SaaS (Stripe, Zendesk...)     │    │
+│   │  ✅ Serverless: Fully managed, no provisioning          │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **[📖 Chi tiết: EventBridge Documentation](./eventbridge.md)**
@@ -355,45 +355,45 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 ### 2.2 So sánh theo câu hỏi
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                  COMPARISON BY QUESTIONS                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   Q: Message sau khi đọc có còn không?                          │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  SQS:        BỊ XÓA sau khi consumer gọi Delete ❌      │   │
-│   │              (retention 14 ngày = nếu CHƯA ai xử lý)    │   │
-│   │  SNS:        KHÔNG LƯU từ đầu ❌                        │   │
-│   │  Kinesis:    VẪN CÒN (1-365 ngày) ✅ → có thể replay    │   │
-│   │  EventBridge: KHÔNG LƯU (trừ khi Archive) ⚠️             │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│   Q: Nhiều consumers có nhận được CÙNG message không?           │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  SQS:        ❌ NO - Mỗi message → 1 consumer           │   │
-│   │  SNS:        ✅ YES - Tất cả subscribers nhận           │   │
-│   │  Kinesis:    ✅ YES - Nhiều consumer groups             │   │
-│   │  EventBridge: ⚠️ DEPENDS - Theo rules filtering          │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│   Q: Có thể replay (đọc lại) messages không?                    │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  SQS:        ❌ NO                                      │   │
-│   │  SNS:        ❌ NO                                      │   │
-│   │  Kinesis:    ✅ YES - Tua lại từ bất kỳ thời điểm       │   │
-│   │  EventBridge: ✅ YES - Nếu đã enable Archive            │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│   Q: Cần provision capacity không?                              │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  SQS:        ❌ NO - Unlimited, serverless              │   │
-│   │  SNS:        ❌ NO - Unlimited, serverless              │   │
-│   │  Kinesis:    ✅ YES - Provision shards (On-demand mode  │   │
-│   │              có nhưng vẫn cần hiểu capacity)            │   │
-│   │  EventBridge: ❌ NO - Serverless                        │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                  COMPARISON BY QUESTIONS                         │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Q: Message sau khi đọc có còn không?                           │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  SQS:        BỊ XÓA sau khi consumer gọi Delete ❌      │    │
+│   │              (retention 14 ngày = nếu CHƯA ai xử lý)    │    │
+│   │  SNS:        KHÔNG LƯU từ đầu ❌                        │    │
+│   │  Kinesis:    VẪN CÒN (1-365 ngày) ✅ → có thể replay    │    │
+│   │  EventBridge: KHÔNG LƯU (trừ khi Archive) ⚠️            │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│   Q: Nhiều consumers có nhận được CÙNG message không?            │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  SQS:        ❌ NO - Mỗi message → 1 consumer           │    │
+│   │  SNS:        ✅ YES - Tất cả subscribers nhận           │    │
+│   │  Kinesis:    ✅ YES - Nhiều consumer groups             │    │
+│   │  EventBridge: ⚠️ DEPENDS - Theo rules filtering         │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│   Q: Có thể replay (đọc lại) messages không?                     │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  SQS:        ❌ NO                                      │    │
+│   │  SNS:        ❌ NO                                      │    │
+│   │  Kinesis:    ✅ YES - Tua lại từ bất kỳ thời điểm       │    │
+│   │  EventBridge: ✅ YES - Nếu đã enable Archive            │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│   Q: Cần provision capacity không?                               │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  SQS:        ❌ NO - Unlimited, serverless              │    │
+│   │  SNS:        ❌ NO - Unlimited, serverless              │    │
+│   │  Kinesis:    ✅ YES - Provision shards (On-demand mode  │    │
+│   │              có nhưng vẫn cần hiểu capacity)            │    │
+│   │  EventBridge: ❌ NO - Serverless                        │    │
+│   └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.3 Consumer Model - Chi tiết
@@ -404,32 +404,32 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 > Hai pattern này nhìn qua thì giống, nhưng **focus khác nhau hoàn toàn**!
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                   Streaming vs Event Bus - Khác biệt chính                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   STREAMING (Kinesis/Kafka)              EVENT BUS (EventBridge)             │
-│   ─────────────────────────              ──────────────────────              │
-│                                                                              │
-│   🎯 Focus: HIGH THROUGHPUT              🎯 Focus: SMART ROUTING             │
-│   (millions events/sec)                  (filter & route events)             │
-│                                                                              │
-│   📦 Data STORAGE:                       📦 Data STORAGE:                    │
-│   ✅ Lưu 1-365 ngày                      ❌ Không lưu (trừ Archive)          │
-│   ✅ Replay từ bất kỳ đâu                ⚠️ Replay qua Archive                │
-│                                                                              │
-│   🔀 ROUTING:                            🔀 ROUTING:                         │
-│   ❌ Không có (tất cả vào stream)        ✅ 100+ rules phức tạp              │
-│                                          ✅ Filter theo content              │
-│                                          ✅ Transform trước khi gửi          │
-│                                                                              │
-│   📊 ORDERING:                           📊 ORDERING:                        │
-│   ✅ Theo partition/shard                ❌ Không đảm bảo                    │
-│                                                                              │
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                   Streaming vs Event Bus - Khác biệt chính                     │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│   STREAMING (Kinesis/Kafka)              EVENT BUS (EventBridge)               │
+│   ─────────────────────────              ──────────────────────                │
+│                                                                                │
+│   🎯 Focus: HIGH THROUGHPUT              🎯 Focus: SMART ROUTING               │
+│   (millions events/sec)                  (filter & route events)               │
+│                                                                                │
+│   📦 Data STORAGE:                       📦 Data STORAGE:                      │
+│   ✅ Lưu 1-365 ngày                      ❌ Không lưu (trừ Archive)            │
+│   ✅ Replay từ bất kỳ đâu                ⚠️ Replay qua Archive                 │
+│                                                                                │
+│   🔀 ROUTING:                            🔀 ROUTING:                           │
+│   ❌ Không có (tất cả vào stream)        ✅ 100+ rules phức tạp                │
+│                                          ✅ Filter theo content                │
+│                                          ✅ Transform trước khi gửi            │
+│                                                                                │
+│   📊 ORDERING:                           📊 ORDERING:                          │
+│   ✅ Theo partition/shard                ❌ Không đảm bảo                      │
+│                                                                                │
 │   ⚙️ CAPACITY:                           ⚙️ CAPACITY:                          │
-│   Provision shards (hoặc on-demand)      Serverless, auto-scale              │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+│   Provision shards (hoặc on-demand)      Serverless, auto-scale                │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 | Câu hỏi | Streaming | Event Bus |
@@ -1196,45 +1196,45 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 ## 4. Decision Tree
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     DECISION TREE                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   START: Bạn cần gì?                                            │
-│        │                                                        │
-│        ↓                                                        │
-│   ┌───────────────────┐                                         │
+┌──────────────────────────────────────────────────────────────────┐
+│                     DECISION TREE                                │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   START: Bạn cần gì?                                             │
+│         │                                                        │
+│        ↓                                                         │
+│   ┌───────────────────┐                                          │
 │   │ Cần replay messages│                                         │
-│   │ hoặc multiple     │                                         │
-│   │ consumer groups?  │                                         │
-│   └─────────┬─────────┘                                         │
-│         YES │ NO                                                │
-│         ↓   └──────────────────────────────────────┐            │
-│   ┌───────────────┐                                │            │
-│   │   KINESIS     │                                │            │
-│   │ (or Kafka/MSK)│                                ↓            │
-│   └───────────────┘                     ┌───────────────────┐   │
-│                                         │ Cần fan-out       │   │
-│                                         │ (1 msg → nhiều    │   │
-│                                         │ consumers)?       │   │
-│                                         └─────────┬─────────┘   │
-│                                               YES │ NO          │
-│                               ┌───────────────────┘  │          │
-│                               ↓                      ↓          │
-│   ┌───────────────┐                     ┌───────────────────┐   │
-│   │ Cần complex   │                     │     SQS           │   │
-│   │ routing/filtering?│                     │ (simple queue)│   │
-│   └─────────┬─────┘                     └───────────────────┘   │
-│                          YES │ NO                               │
-│                          ↓  │                                   │
-│                ┌─────────────┘                                  │
-│                ↓             ↓                                  │
-│   ┌─────────────────┐  ┌─────────────┐                          │
-│   │   EVENTBRIDGE   │  │ SNS + SQS   │                          │
-│   │ (advanced rules)│  │ (fan-out)   │                          │
-│   └─────────────────┘  └─────────────┘                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│   │ hoặc multiple     │                                          │
+│   │ consumer groups?  │                                          │
+│   └─────────┬─────────┘                                          │
+│         YES │ NO                                                 │
+│         ↓   └──────────────────────────────────────┐             │
+│   ┌───────────────┐                                 │            │
+│   │   KINESIS     │                                 │            │
+│   │ (or Kafka/MSK)│                                ↓             │
+│   └───────────────┘                     ┌───────────────────┐    │
+│                                         │ Cần fan-out        │   │
+│                                         │ (1 msg → nhiều     │   │
+│                                         │ consumers)?        │   │
+│                                         └─────────┬─────────┘    │
+│                                               YES │ NO           │
+│                               ┌───────────────────┘   │          │
+│                               ↓                      ↓           │
+│   ┌───────────────┐                     ┌───────────────────┐    │
+│   │ Cần complex   │                     │     SQS           │    │
+│   │ routing/filtering?│                     │ (simple queue) │   │
+│   └─────────┬─────┘                     └───────────────────┘    │
+│                          YES │ NO                                │
+│                          ↓   │                                   │
+│                ┌─────────────┘                                   │
+│                ↓             ↓                                   │
+│   ┌─────────────────┐  ┌─────────────┐                           │
+│   │   EVENTBRIDGE   │  │ SNS + SQS   │                           │
+│   │ (advanced rules)│  │ (fan-out)   │                           │
+│   └─────────────────┘  └─────────────┘                           │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Quick Reference Table

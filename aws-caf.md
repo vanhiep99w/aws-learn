@@ -47,39 +47,39 @@ Nói đơn giản: **"Hướng dẫn từ AWS để giúp bạn chuyển đổi 
 CAF chia thành **6 perspectives**, mỗi perspective đại diện cho một khía cạnh khác nhau của cloud adoption:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        6 CAF PERSPECTIVES                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    BUSINESS CAPABILITIES                            │   │
-│   │            (Focus on Business & Organizational)                     │   │
-│   │                                                                     │   │
-│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
-│   │   │  BUSINESS    │  │   PEOPLE     │  │  GOVERNANCE  │              │   │
-│   │   │     💼       │  │     👥       │  │      📋      │              │   │
-│   │   │              │  │              │  │              │              │   │
-│   │   │ Strategy,    │  │ Culture,     │  │ Risk,        │              │   │
-│   │   │ Outcomes,    │  │ Training,    │  │ Compliance,  │              │   │
-│   │   │ Finance      │  │ Leadership   │  │ Portfolio    │              │   │
-│   │   └──────────────┘  └──────────────┘  └──────────────┘              │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    TECHNICAL CAPABILITIES                           │   │
-│   │            (Focus on Technical & Infrastructure)                    │   │
-│   │                                                                     │   │
-│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
-│   │   │  PLATFORM    │  │  SECURITY    │  │  OPERATIONS  │              │   │
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                        6 CAF PERSPECTIVES                                     │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│   ┌─────────────────────────────────────────────────────────────────────┐     │
+│   │                    BUSINESS CAPABILITIES                            │     │
+│   │            (Focus on Business & Organizational)                     │     │
+│   │                                                                     │     │
+│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                │   │
+│   │   │  BUSINESS    │  │   PEOPLE     │  │  GOVERNANCE  │                │   │
+│   │   │     💼       │  │     👥       │  │      📋      │                │   │
+│   │   │              │  │              │  │              │                │   │
+│   │   │ Strategy,    │  │ Culture,     │  │ Risk,        │                │   │
+│   │   │ Outcomes,    │  │ Training,    │  │ Compliance,  │                │   │
+│   │   │ Finance      │  │ Leadership   │  │ Portfolio    │                │   │
+│   │   └──────────────┘  └──────────────┘  └──────────────┘                │   │
+│   └─────────────────────────────────────────────────────────────────────┘     │
+│                                                                               │
+│   ┌─────────────────────────────────────────────────────────────────────┐     │
+│   │                    TECHNICAL CAPABILITIES                           │     │
+│   │            (Focus on Technical & Infrastructure)                    │     │
+│   │                                                                     │     │
+│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                │   │
+│   │   │  PLATFORM    │  │  SECURITY    │  │  OPERATIONS  │                │   │
 │   │   │     🏗️       │  │     🔐       │  │      ⚙️      │                │   │
-│   │   │              │  │              │  │              │              │   │
-│   │   │ Architecture,│  │ IAM,         │  │ Monitoring,  │              │   │
-│   │   │ CI/CD,       │  │ Detection,   │  │ Incident,    │              │   │
-│   │   │ Modernization│  │ Protection   │  │ Automation   │              │   │
-│   │   └──────────────┘  └──────────────┘  └──────────────┘              │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   │   │              │  │              │  │              │                │   │
+│   │   │ Architecture,│  │ IAM,         │  │ Monitoring,  │                │   │
+│   │   │ CI/CD,       │  │ Detection,   │  │ Incident,    │                │   │
+│   │   │ Modernization│  │ Protection   │  │ Automation   │                │   │
+│   │   └──────────────┘  └──────────────┘  └──────────────┘                │   │
+│   └─────────────────────────────────────────────────────────────────────┘     │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Chi tiết từng Perspective
@@ -240,41 +240,41 @@ CAF định nghĩa 4 giai đoạn để thực hiện cloud transformation:
 ## Ví dụ thực tế
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Ví dụ: Công ty XYZ muốn migrate to AWS                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Dùng CAF để đánh giá 6 perspectives:                                      │
-│                                                                             │
-│   💼 BUSINESS:                                                              │
-│      ✅ "Chúng tôi muốn giảm 30% chi phí infrastructure"                    │
-│      ✅ "Cần tăng speed-to-market"                                          │
-│                                                                             │
-│   👥 PEOPLE:                                                                │
-│      ❌ "Team chưa có cloud skills"                                         │
-│      → Action: Training AWS, hire cloud engineers                           │
-│                                                                             │
-│   📋 GOVERNANCE:                                                            │
-│      ❌ "Chưa có cloud governance policies"                                 │
-│      → Action: Define policies, cost management, compliance                 │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Ví dụ: Công ty XYZ muốn migrate to AWS                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Dùng CAF để đánh giá 6 perspectives:                                       │
+│                                                                              │
+│   💼 BUSINESS:                                                               │
+│      ✅ "Chúng tôi muốn giảm 30% chi phí infrastructure"                     │
+│      ✅ "Cần tăng speed-to-market"                                           │
+│                                                                              │
+│   👥 PEOPLE:                                                                 │
+│      ❌ "Team chưa có cloud skills"                                          │
+│      → Action: Training AWS, hire cloud engineers                            │
+│                                                                              │
+│   📋 GOVERNANCE:                                                             │
+│      ❌ "Chưa có cloud governance policies"                                  │
+│      → Action: Define policies, cost management, compliance                  │
+│                                                                              │
 │   🏗️ PLATFORM:                                                               │
-│      ❌ "Chưa có landing zone, CI/CD"                                       │
-│      → Action: Setup AWS Landing Zone, implement CI/CD                      │
-│                                                                             │
-│   🔐 SECURITY:                                                              │
+│      ❌ "Chưa có landing zone, CI/CD"                                        │
+│      → Action: Setup AWS Landing Zone, implement CI/CD                       │
+│                                                                              │
+│   🔐 SECURITY:                                                               │
 │      ⚠️ "Có IAM nhưng chưa có security monitoring"                           │
-│      → Action: Implement GuardDuty, Security Hub                            │
-│                                                                             │
+│      → Action: Implement GuardDuty, Security Hub                             │
+│                                                                              │
 │   ⚙️ OPERATIONS:                                                             │
-│      ❌ "Chưa có cloud monitoring strategy"                                 │
-│      → Action: Setup CloudWatch, define runbooks                            │
-│                                                                             │
-│   ───────────────────────────────────────────────────────────────────────── │
-│                                                                             │
-│   → Kết quả: Roadmap chi tiết cho cloud transformation                      │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│      ❌ "Chưa có cloud monitoring strategy"                                  │
+│      → Action: Setup CloudWatch, define runbooks                             │
+│                                                                              │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   → Kết quả: Roadmap chi tiết cho cloud transformation                       │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -368,27 +368,27 @@ CAF định nghĩa 4 giai đoạn để thực hiện cloud transformation:
 ## Tổng kết
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS CAF SUMMARY                                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🎯 WHAT: Framework để plan cloud adoption                                 │
-│                                                                             │
-│   📊 6 PERSPECTIVES:                                                        │
-│      💼 Business - Strategy & outcomes                                      │
-│      👥 People - Culture & skills                                           │
-│      📋 Governance - Risk & compliance                                      │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    AWS CAF SUMMARY                                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🎯 WHAT: Framework để plan cloud adoption                                  │
+│                                                                              │
+│   📊 6 PERSPECTIVES:                                                         │
+│      💼 Business - Strategy & outcomes                                       │
+│      👥 People - Culture & skills                                            │
+│      📋 Governance - Risk & compliance                                       │
 │      🏗️ Platform - Architecture & infra                                      │
-│      🔐 Security - Protection & IAM                                         │
+│      🔐 Security - Protection & IAM                                          │
 │      ⚙️ Operations - Monitoring & automation                                 │
-│                                                                             │
-│   🚀 4 PHASES: Envision → Align → Launch → Scale                            │
-│                                                                             │
-│   💡 KEY INSIGHT:                                                           │
-│      CAF = "Organizational readiness for cloud"                             │
-│      Well-Architected = "Workload architecture quality"                     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+│   🚀 4 PHASES: Envision → Align → Launch → Scale                             │
+│                                                                              │
+│   💡 KEY INSIGHT:                                                            │
+│      CAF = "Organizational readiness for cloud"                              │
+│      Well-Architected = "Workload architecture quality"                      │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

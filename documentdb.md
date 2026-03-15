@@ -101,31 +101,31 @@ Tương tự Aurora:
 ### Supported MongoDB Versions
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│              MONGODB API COMPATIBILITY                              │
-│                                                                     │
-│   ┌──────────────────┬───────────────────────────────────────────┐  │
-│   │ DocumentDB Ver.  │ MongoDB API Compatibility                 │  │
-│   ├──────────────────┼───────────────────────────────────────────┤  │
-│   │ DocumentDB 4.0   │ MongoDB 4.0 API                           │  │
-│   ├──────────────────┼───────────────────────────────────────────┤  │
-│   │ DocumentDB 5.0   │ MongoDB 5.0 API                           │  │
-│   │                  │ + Document compression                    │  │
-│   │                  │ + Client-side Field Level Encryption      │  │
-│   │                  │ + Text search, Partial indexes            │  │
-│   ├──────────────────┼───────────────────────────────────────────┤  │
-│   │ DocumentDB 8.0   │ MongoDB 8.0 API (+ 6.0, 7.0 support)      │  │
-│   │   (NEW 2024)     │ + New query planner (up to 7x faster)     │  │
-│   │                  │ + 5x better compression                   │  │
-│   │                  │ + Vector search ($vectorSearch)           │  │
-│   │                  │ + Collation, Views                        │  │
-│   └──────────────────┴───────────────────────────────────────────┘  │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│              MONGODB API COMPATIBILITY                               │
+│                                                                      │
+│   ┌──────────────────┬───────────────────────────────────────────┐   │
+│   │ DocumentDB Ver.  │ MongoDB API Compatibility                  │  │
+│   ├──────────────────┼───────────────────────────────────────────┤   │
+│   │ DocumentDB 4.0   │ MongoDB 4.0 API                            │  │
+│   ├──────────────────┼───────────────────────────────────────────┤   │
+│   │ DocumentDB 5.0   │ MongoDB 5.0 API                            │  │
+│   │                  │ + Document compression                     │  │
+│   │                  │ + Client-side Field Level Encryption       │  │
+│   │                  │ + Text search, Partial indexes             │  │
+│   ├──────────────────┼───────────────────────────────────────────┤   │
+│   │ DocumentDB 8.0   │ MongoDB 8.0 API (+ 6.0, 7.0 support)       │  │
+│   │   (NEW 2024)     │ + New query planner (up to 7x faster)      │  │
+│   │                  │ + 5x better compression                    │  │
+│   │                  │ + Vector search ($vectorSearch)            │  │
+│   │                  │ + Collation, Views                         │  │
+│   └──────────────────┴───────────────────────────────────────────┘   │
+│                                                                      │
 │   ⚠️ QUAN TRỌNG:                                                     │
-│   • DocumentDB KHÔNG phải MongoDB fork                              │
-│   • Một số MongoDB features KHÔNG được support                      │
-│   • Test kỹ trước khi migrate!                                      │
-└─────────────────────────────────────────────────────────────────────┘
+│   • DocumentDB KHÔNG phải MongoDB fork                               │
+│   • Một số MongoDB features KHÔNG được support                       │
+│   • Test kỹ trước khi migrate!                                       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Migration từ MongoDB
@@ -184,28 +184,28 @@ Tương tự Aurora:
 ### Elastic Clusters (Serverless-like scaling)
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    ELASTIC CLUSTERS                                 │
-│               (Sharding cho virtually limitless scale)              │
-│                                                                     │
-│   Khi standard cluster không đủ:                                    │
-│   • Millions of writes/second                                       │
-│   • Petabytes of data                                               │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   Shard 1          Shard 2          Shard 3          ...    │   │
-│   │   ┌───────────┐   ┌───────────┐   ┌───────────┐             │   │
-│   │   │ Primary   │   │ Primary   │   │ Primary   │             │   │
-│   │   │ + Replicas│   │ + Replicas│   │ + Replicas│             │   │
-│   │   └───────────┘   └───────────┘   └───────────┘             │   │
-│   │                                                             │   │
-│   │   Data distributed across shards by shard key               │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ✅ Virtually unlimited scale                                      │
-│   ✅ Automatic shard management                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    ELASTIC CLUSTERS                                  │
+│               (Sharding cho virtually limitless scale)               │
+│                                                                      │
+│   Khi standard cluster không đủ:                                     │
+│   • Millions of writes/second                                        │
+│   • Petabytes of data                                                │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   Shard 1          Shard 2          Shard 3          ...    │    │
+│   │   ┌───────────┐   ┌───────────┐   ┌───────────┐              │   │
+│   │   │ Primary   │   │ Primary   │   │ Primary   │              │   │
+│   │   │ + Replicas│   │ + Replicas│   │ + Replicas│              │   │
+│   │   └───────────┘   └───────────┘   └───────────┘              │   │
+│   │                                                             │    │
+│   │   Data distributed across shards by shard key               │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ✅ Virtually unlimited scale                                       │
+│   ✅ Automatic shard management                                      │
 │   ⚠️ Higher complexity, cost                                         │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -213,50 +213,50 @@ Tương tự Aurora:
 ## High Availability & Durability
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│              HIGH AVAILABILITY & DURABILITY                         │
-│                                                                     │
-│   STORAGE DURABILITY:                                               │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  📦 6 copies of data across 3 Availability Zones            │   │
-│   │  📦 Designed for 99.999999999% (11 9s) durability           │   │
-│   │  📦 Self-healing storage (tự detect/repair corrupt data)    │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   AUTOMATIC FAILOVER:                                               │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Primary fails →                                            │   │
-│   │      │                                                      │   │
-│   │      ▼                                                      │   │
-│   │  Replica promoted (60-120 seconds)                          │   │
-│   │      │                                                      │   │
-│   │      ▼                                                      │   │
-│   │  Application reconnects automatically                       │   │
-│   │                                                             │   │
-│   │  ⚠️ Brief downtime (60-120s) during failover                 │   │
-│   │  💡 Use retry logic trong application                       │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   BACKUPS:                                                          │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  • Continuous, incremental backups to S3                    │   │
-│   │  • Point-in-time recovery (PITR): up to 35 days             │   │
-│   │  • Manual snapshots: retain indefinitely                    │   │
-│   │  • Cross-region snapshot copy supported                     │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   GLOBAL CLUSTERS:                                                  │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Primary Region        Secondary Regions                    │   │
-│   │  ┌────────────┐       ┌────────────┐  ┌────────────┐        │   │
-│   │  │ R/W Cluster│ ───▶  │ R/O Cluster│  │ R/O Cluster│        │   │
-│   │  │ us-east-1  │ async │ eu-west-1  │  │ ap-south-1 │        │   │
-│   │  └────────────┘ <1s   └────────────┘  └────────────┘        │   │
-│   │                                                             │   │
-│   │  ✅ Low latency reads globally                              │   │
-│   │  ✅ DR: promote secondary to primary                        │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│              HIGH AVAILABILITY & DURABILITY                          │
+│                                                                      │
+│   STORAGE DURABILITY:                                                │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  📦 6 copies of data across 3 Availability Zones            │    │
+│   │  📦 Designed for 99.999999999% (11 9s) durability           │    │
+│   │  📦 Self-healing storage (tự detect/repair corrupt data)    │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   AUTOMATIC FAILOVER:                                                │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Primary fails →                                            │    │
+│   │      │                                                       │   │
+│   │      ▼                                                      │    │
+│   │  Replica promoted (60-120 seconds)                          │    │
+│   │      │                                                       │   │
+│   │      ▼                                                      │    │
+│   │  Application reconnects automatically                       │    │
+│   │                                                             │    │
+│   │  ⚠️ Brief downtime (60-120s) during failover                │    │
+│   │  💡 Use retry logic trong application                       │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   BACKUPS:                                                           │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  • Continuous, incremental backups to S3                    │    │
+│   │  • Point-in-time recovery (PITR): up to 35 days             │    │
+│   │  • Manual snapshots: retain indefinitely                    │    │
+│   │  • Cross-region snapshot copy supported                     │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   GLOBAL CLUSTERS:                                                   │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Primary Region        Secondary Regions                    │    │
+│   │  ┌────────────┐       ┌────────────┐  ┌────────────┐         │   │
+│   │  │ R/W Cluster│ ───▶  │ R/O Cluster│  │ R/O Cluster│         │   │
+│   │  │ us-east-1  │ async │ eu-west-1  │  │ ap-south-1 │         │   │
+│   │  └────────────┘ <1s   └────────────┘  └────────────┘         │   │
+│   │                                                             │    │
+│   │  ✅ Low latency reads globally                              │    │
+│   │  ✅ DR: promote secondary to primary                        │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -264,32 +264,32 @@ Tương tự Aurora:
 ## Scaling
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       SCALING OPTIONS                               │
-│                                                                     │
-│   STORAGE (Auto):                                                   │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  • Tự động scale từ 10 GB → 128 TiB                         │   │
-│   │  • Không cần provision trước                                │   │
-│   │  • Tăng theo increments 10 GB                               │   │
-│   │  • ❌ Không thể giảm (shrink)                               │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   COMPUTE (Manual/Auto):                                            │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Scale UP (vertical):                                       │   │
-│   │  • Modify instance class (e.g., db.r6g.large → xlarge)      │   │
-│   │  • Brief downtime during modification                       │   │
-│   │                                                             │   │
-│   │  Scale OUT (horizontal reads):                              │   │
-│   │  • Add read replicas (up to 15)                             │   │
-│   │  • No downtime                                              │   │
-│   │  • Use Reader Endpoint for automatic load balancing         │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                       SCALING OPTIONS                                │
+│                                                                      │
+│   STORAGE (Auto):                                                    │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  • Tự động scale từ 10 GB → 128 TiB                         │    │
+│   │  • Không cần provision trước                                │    │
+│   │  • Tăng theo increments 10 GB                               │    │
+│   │  • ❌ Không thể giảm (shrink)                               │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   COMPUTE (Manual/Auto):                                             │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Scale UP (vertical):                                       │    │
+│   │  • Modify instance class (e.g., db.r6g.large → xlarge)      │    │
+│   │  • Brief downtime during modification                       │    │
+│   │                                                             │    │
+│   │  Scale OUT (horizontal reads):                              │    │
+│   │  • Add read replicas (up to 15)                             │    │
+│   │  • No downtime                                              │    │
+│   │  • Use Reader Endpoint for automatic load balancing         │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
 │   ⚠️ Writes chỉ scale VERTICAL (bigger instance)                     │
 │   ⚠️ Hoặc dùng Elastic Clusters (sharding) cho extreme scale         │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -334,36 +334,36 @@ Tương tự Aurora:
 ## Pricing
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        PRICING MODEL                                │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. INSTANCE HOURS                                          │   │
-│   │     • Pay per instance per hour                             │   │
-│   │     • On-Demand hoặc Reserved Instances                     │   │
-│   │     • Ví dụ: db.r6g.large ~$0.206/hour (US East)            │   │
-│   ├─────────────────────────────────────────────────────────────┤   │
-│   │  2. STORAGE                                                 │   │
-│   │     • $0.10 per GB-month                                    │   │
-│   │     • Auto-scaled, pay for what you use                     │   │
-│   ├─────────────────────────────────────────────────────────────┤   │
-│   │  3. I/O REQUESTS                                            │   │
-│   │     Standard: $0.20 per 1 million I/Os                      │   │
-│   │     I/O-Optimized: Higher storage cost, unlimited I/O       │   │
-│   ├─────────────────────────────────────────────────────────────┤   │
-│   │  4. BACKUP STORAGE                                          │   │
-│   │     • Free: backup storage ≤ total cluster storage          │   │
-│   │     • Excess: $0.021 per GB-month                           │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   💡 Cost Optimization Tips:                                        │
-│   • Use Graviton instances (r6g, r8g) - better price/performance    │
-│   • Stop idle clusters (dev/test) - zero compute cost when stopped  │
-│   • I/O-Optimized for high I/O workloads                            │
-│   • Reserved Instances cho production (save up to 60%)              │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                        PRICING MODEL                                 │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  1. INSTANCE HOURS                                          │    │
+│   │     • Pay per instance per hour                             │    │
+│   │     • On-Demand hoặc Reserved Instances                     │    │
+│   │     • Ví dụ: db.r6g.large ~$0.206/hour (US East)            │    │
+│   ├─────────────────────────────────────────────────────────────┤    │
+│   │  2. STORAGE                                                 │    │
+│   │     • $0.10 per GB-month                                    │    │
+│   │     • Auto-scaled, pay for what you use                     │    │
+│   ├─────────────────────────────────────────────────────────────┤    │
+│   │  3. I/O REQUESTS                                            │    │
+│   │     Standard: $0.20 per 1 million I/Os                      │    │
+│   │     I/O-Optimized: Higher storage cost, unlimited I/O       │    │
+│   ├─────────────────────────────────────────────────────────────┤    │
+│   │  4. BACKUP STORAGE                                          │    │
+│   │     • Free: backup storage ≤ total cluster storage          │    │
+│   │     • Excess: $0.021 per GB-month                           │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   💡 Cost Optimization Tips:                                         │
+│   • Use Graviton instances (r6g, r8g) - better price/performance     │
+│   • Stop idle clusters (dev/test) - zero compute cost when stopped   │
+│   • I/O-Optimized for high I/O workloads                             │
+│   • Reserved Instances cho production (save up to 60%)               │
+│                                                                      │
 │   ⚠️ DocumentDB KHÔNG có Free Tier!                                  │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -456,39 +456,39 @@ Tương tự Aurora:
 ## Key Takeaways
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    KEY TAKEAWAYS FOR EXAM                           │
-│                                                                     │
-│   ✅ DocumentDB = MongoDB-compatible document database              │
-│                                                                     │
-│   ✅ NOT MongoDB! (AWS custom engine trên Aurora platform)          │
-│                                                                     │
-│   ✅ Architecture: 6 copies across 3 AZs (giống Aurora)             │
-│                                                                     │
-│   ✅ Storage auto-scales: 10 GB → 128 TiB                           │
-│                                                                     │
-│   ✅ Up to 15 read replicas (scale reads)                           │
-│                                                                     │
-│   ✅ Failover: 60-120 seconds                                       │
-│                                                                     │
-│   ✅ MongoDB API compat: 4.0, 5.0, 8.0                              │
-│                                                                     │
-│   ✅ Encryption: At rest (KMS) + In transit (TLS)                   │
-│                                                                     │
-│   ✅ VPC only, Security Groups                                      │
-│                                                                     │
-│   ✅ Migrate từ MongoDB dùng: mongodump/restore hoặc AWS DMS        │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    KEY TAKEAWAYS FOR EXAM                            │
+│                                                                      │
+│   ✅ DocumentDB = MongoDB-compatible document database               │
+│                                                                      │
+│   ✅ NOT MongoDB! (AWS custom engine trên Aurora platform)           │
+│                                                                      │
+│   ✅ Architecture: 6 copies across 3 AZs (giống Aurora)              │
+│                                                                      │
+│   ✅ Storage auto-scales: 10 GB → 128 TiB                            │
+│                                                                      │
+│   ✅ Up to 15 read replicas (scale reads)                            │
+│                                                                      │
+│   ✅ Failover: 60-120 seconds                                        │
+│                                                                      │
+│   ✅ MongoDB API compat: 4.0, 5.0, 8.0                               │
+│                                                                      │
+│   ✅ Encryption: At rest (KMS) + In transit (TLS)                    │
+│                                                                      │
+│   ✅ VPC only, Security Groups                                       │
+│                                                                      │
+│   ✅ Migrate từ MongoDB dùng: mongodump/restore hoặc AWS DMS         │
+│                                                                      │
 │   ⚠️ KHÔNG có Free Tier!                                             │
-│                                                                     │
+│                                                                      │
 │   ⚠️ KHÔNG support IAM Database Authentication                       │
-│                                                                     │
+│                                                                      │
 │   ⚠️ Một số MongoDB features KHÔNG được support                      │
-│                                                                     │
-│   🆚 vs DynamoDB:                                                   │
-│      • DocumentDB = Rich queries, MongoDB compatible                │
-│      • DynamoDB = Simple queries, extreme scale, serverless         │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+│   🆚 vs DynamoDB:                                                    │
+│      • DocumentDB = Rich queries, MongoDB compatible                 │
+│      • DynamoDB = Simple queries, extreme scale, serverless          │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

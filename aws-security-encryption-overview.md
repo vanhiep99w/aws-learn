@@ -332,30 +332,30 @@ graph TB
 ### Shield + WAF: Chống tấn công từ bên ngoài
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       SHIELD + WAF                                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       SHIELD + WAF                                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
 │  🛡️ SHIELD                             🔥 WAF                                │
-│  ═══════════                           ═════                                │
-│                                                                             │
-│  Chống DDoS attacks:                   Chặn web attacks:                    │
-│  • Layer 3: UDP/ICMP floods            • SQL Injection                      │
-│  • Layer 4: SYN floods                 • Cross-Site Scripting (XSS)         │
-│  • Layer 7: HTTP floods                • IP blacklist/whitelist             │
-│                                        • Rate limiting                      │
-│  Standard: FREE (auto bật)             • Geo-blocking                       │
-│  Advanced: $3,000/month                • Bot Control                        │
-│  → DRT team, cost protection           • Custom rules                       │
-│                                                                             │
-│  Deploy trên:                          Deploy trên:                         │
-│  • CloudFront                          • CloudFront                         │
-│  • Route 53                            • ALB                                │
-│  • ALB / NLB                           • API Gateway                        │
-│  • Global Accelerator                  • AppSync                            │
-│  • EC2 (Advanced only)                 • Cognito User Pool                  │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│  ═══════════                           ═════                                 │
+│                                                                              │
+│  Chống DDoS attacks:                   Chặn web attacks:                     │
+│  • Layer 3: UDP/ICMP floods            • SQL Injection                       │
+│  • Layer 4: SYN floods                 • Cross-Site Scripting (XSS)          │
+│  • Layer 7: HTTP floods                • IP blacklist/whitelist              │
+│                                        • Rate limiting                       │
+│  Standard: FREE (auto bật)             • Geo-blocking                        │
+│  Advanced: $3,000/month                • Bot Control                         │
+│  → DRT team, cost protection           • Custom rules                        │
+│                                                                              │
+│  Deploy trên:                          Deploy trên:                          │
+│  • CloudFront                          • CloudFront                          │
+│  • Route 53                            • ALB                                 │
+│  • ALB / NLB                           • API Gateway                         │
+│  • Global Accelerator                  • AppSync                             │
+│  • EC2 (Advanced only)                 • Cognito User Pool                   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

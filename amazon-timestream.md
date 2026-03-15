@@ -22,30 +22,30 @@
 **Amazon Timestream** là fully managed **time series database** được thiết kế để lưu trữ và phân tích hàng tỷ events per day từ IoT devices, applications, và infrastructure.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      AMAZON TIMESTREAM                              │
-│                                                                     │
-│   "Purpose-built time series database, serverless, fully managed"   │
-│                                                                     │
-│   TIME SERIES DATA = Data points có TIMESTAMP                       │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Ví dụ: IoT sensor readings mỗi giây                        │   │
-│   │                                                             │   │
-│   │  timestamp              │ device_id │ temperature │ humidity│   │
+┌──────────────────────────────────────────────────────────────────────┐
+│                      AMAZON TIMESTREAM                               │
+│                                                                      │
+│   "Purpose-built time series database, serverless, fully managed"    │
+│                                                                      │
+│   TIME SERIES DATA = Data points có TIMESTAMP                        │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  Ví dụ: IoT sensor readings mỗi giây                        │    │
+│   │                                                             │    │
+│   │  timestamp              │ device_id │ temperature │ humidity │   │
 │   │  ───────────────────────┼───────────┼─────────────┼──────────│   │
-│   │  2024-01-01 10:00:00    │ sensor-1  │ 25.5        │ 60%     │   │
-│   │  2024-01-01 10:00:01    │ sensor-1  │ 25.6        │ 61%     │   │
-│   │  2024-01-01 10:00:02    │ sensor-1  │ 25.4        │ 60%     │   │
-│   │  ...                    │           │             │         │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ✅ Serverless (không quản lý servers)                             │
-│   ✅ Auto-scales (trillions of events/day)                          │
-│   ✅ 1000x faster queries than relational DBs                       │
-│   ✅ Smart storage tiers (memory → magnetic)                        │
-│   ✅ Built-in time series analytics functions                       │
-│   ✅ Pay-per-use (chỉ trả tiền cho resources dùng)                  │
-└─────────────────────────────────────────────────────────────────────┘
+│   │  2024-01-01 10:00:00    │ sensor-1  │ 25.5        │ 60%      │   │
+│   │  2024-01-01 10:00:01    │ sensor-1  │ 25.6        │ 61%      │   │
+│   │  2024-01-01 10:00:02    │ sensor-1  │ 25.4        │ 60%      │   │
+│   │  ...                    │           │             │          │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ✅ Serverless (không quản lý servers)                              │
+│   ✅ Auto-scales (trillions of events/day)                           │
+│   ✅ 1000x faster queries than relational DBs                        │
+│   ✅ Smart storage tiers (memory → magnetic)                         │
+│   ✅ Built-in time series analytics functions                        │
+│   ✅ Pay-per-use (chỉ trả tiền cho resources dùng)                   │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Tại sao cần Time Series Database?
@@ -399,37 +399,37 @@ Key: Decoupled architecture - Ingestion, Storage, Query scale independently
 ## Pricing
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    PRICING (LiveAnalytics)                          │
-│                                                                     │
-│   PAY-PER-USE MODEL:                                                │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. WRITES                                                  │   │
-│   │     • $0.50 per million 1KB writes                          │   │
-│   │                                                             │   │
-│   │  2. MEMORY STORE                                            │   │
-│   │     • $0.036 per GB-hour (~$26/GB-month)                    │   │
-│   │     • For recent, hot data                                  │   │
-│   │                                                             │   │
-│   │  3. MAGNETIC STORE                                          │   │
-│   │     • $0.03 per GB-month                                    │   │
-│   │     • ~1/800 of memory store cost!                          │   │
-│   │                                                             │   │
-│   │  4. QUERIES                                                 │   │
-│   │     • $0.01 per GB scanned                                  │   │
-│   │     • Minimum 10 MB per query                               │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   COST OPTIMIZATION:                                                │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  • Giảm Memory Store retention → data chuyển Magnetic sớm   │   │
-│   │  • Batch writes (group records per request)                 │   │
-│   │  • Use predicates to limit data scanned                     │   │
-│   │  • Create scheduled queries for common aggregations         │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    PRICING (LiveAnalytics)                           │
+│                                                                      │
+│   PAY-PER-USE MODEL:                                                 │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  1. WRITES                                                  │    │
+│   │     • $0.50 per million 1KB writes                          │    │
+│   │                                                             │    │
+│   │  2. MEMORY STORE                                            │    │
+│   │     • $0.036 per GB-hour (~$26/GB-month)                    │    │
+│   │     • For recent, hot data                                  │    │
+│   │                                                             │    │
+│   │  3. MAGNETIC STORE                                          │    │
+│   │     • $0.03 per GB-month                                    │    │
+│   │     • ~1/800 of memory store cost!                          │    │
+│   │                                                             │    │
+│   │  4. QUERIES                                                 │    │
+│   │     • $0.01 per GB scanned                                  │    │
+│   │     • Minimum 10 MB per query                               │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   COST OPTIMIZATION:                                                 │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  • Giảm Memory Store retention → data chuyển Magnetic sớm   │    │
+│   │  • Batch writes (group records per request)                 │    │
+│   │  • Use predicates to limit data scanned                     │    │
+│   │  • Create scheduled queries for common aggregations         │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
 │   ⚠️ Timestream KHÔNG có Free Tier!                                  │
-└─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -437,41 +437,41 @@ Key: Decoupled architecture - Ingestion, Storage, Query scale independently
 ## Timestream vs InfluxDB vs OpenSearch
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│        TIMESTREAM vs INFLUXDB vs OPENSEARCH                         │
-│                                                                     │
-│   ┌──────────────┬───────────────┬───────────────┬─────────────────┐│
-│   │ Feature      │ Timestream    │ InfluxDB      │ OpenSearch      ││
-│   │              │ LiveAnalytics │ (self/managed)│                 ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
-│   │ Type         │ Time Series   │ Time Series   │ Search/         ││
-│   │              │ (AWS native)  │ (Open source) │ Analytics       ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
-│   │ Query        │ SQL           │ InfluxQL/Flux │ DSL/SQL         ││
-│   │ Language     │               │               │                 ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
+┌──────────────────────────────────────────────────────────────────────┐
+│        TIMESTREAM vs INFLUXDB vs OPENSEARCH                          │
+│                                                                      │
+│   ┌──────────────┬───────────────┬───────────────┬──────────────────┐│
+│   │ Feature      │ Timestream    │ InfluxDB      │ OpenSearch       ││
+│   │              │ LiveAnalytics │ (self/managed)│                  ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
+│   │ Type         │ Time Series   │ Time Series   │ Search/          ││
+│   │              │ (AWS native)  │ (Open source) │ Analytics        ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
+│   │ Query        │ SQL           │ InfluxQL/Flux │ DSL/SQL          ││
+│   │ Language     │               │               │                  ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
 │   │ Serverless   │ ✅ Yes        │ ❌ No         │ ⚠️ Serverless    ││
-│   │              │               │ (instance)    │    option       ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
-│   │ Auto tiering │ ✅ Yes        │ ❌ Manual     │ ❌ Manual       ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
+│   │              │               │ (instance)    │    option        ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
+│   │ Auto tiering │ ✅ Yes        │ ❌ Manual     │ ❌ Manual        ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
 │   │ Time series  │ ✅ Built-in   │ ✅ Built-in   │ ⚠️ Limited       ││
-│   │ functions    │               │               │                 ││
-│   ├──────────────┼───────────────┼───────────────┼─────────────────┤│
-│   │ Best for     │ IoT, metrics  │ InfluxDB      │ Logs, search,   ││
-│   │              │ DevOps        │ migration     │ full-text       ││
-│   └──────────────┴───────────────┴───────────────┴─────────────────┘│
-│                                                                     │
-│   WHEN TO USE WHAT:                                                 │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │ Timestream: Pure time series, IoT, metrics, serverless      │   │
-│   │                                                             │   │
-│   │ Timestream for InfluxDB: Migrating from self-hosted InfluxDB│   │
-│   │                                                             │   │
-│   │ OpenSearch: Need full-text search + time series logs        │   │
-│   │             (e.g., application logs with search)            │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+│   │ functions    │               │               │                  ││
+│   ├──────────────┼───────────────┼───────────────┼──────────────────┤│
+│   │ Best for     │ IoT, metrics  │ InfluxDB      │ Logs, search,    ││
+│   │              │ DevOps        │ migration     │ full-text        ││
+│   └──────────────┴───────────────┴───────────────┴──────────────────┘│
+│                                                                      │
+│   WHEN TO USE WHAT:                                                  │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │ Timestream: Pure time series, IoT, metrics, serverless      │    │
+│   │                                                             │    │
+│   │ Timestream for InfluxDB: Migrating from self-hosted InfluxDB│    │
+│   │                                                             │    │
+│   │ OpenSearch: Need full-text search + time series logs        │    │
+│   │             (e.g., application logs with search)            │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -519,41 +519,41 @@ Key: Decoupled architecture - Ingestion, Storage, Query scale independently
 ## Key Takeaways
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    KEY TAKEAWAYS FOR EXAM                           │
-│                                                                     │
-│   ✅ Timestream = Purpose-built TIME SERIES database                │
-│                                                                     │
-│   ✅ Serverless, fully managed (no servers to provision)            │
-│                                                                     │
-│   ✅ 2 Engines: LiveAnalytics (AWS) vs InfluxDB (open source)       │
-│                                                                     │
-│   ✅ 2 Storage Tiers:                                               │
-│      • Memory Store = Recent data, fast, expensive                  │
-│      • Magnetic Store = Historical, slow, cheap                     │
-│                                                                     │
-│   ✅ Automatic data lifecycle (memory → magnetic → delete)          │
-│                                                                     │
-│   ✅ SQL queries với built-in time series functions                 │
-│                                                                     │
-│   ✅ 1000x faster than relational DBs cho time series               │
-│                                                                     │
-│   ✅ Ingestion: AWS SDK, Kinesis, IoT Core, Telegraf                │
-│                                                                     │
-│   ✅ Visualization: QuickSight, Grafana                             │
-│                                                                     │
-│   ✅ Use cases: IoT, DevOps monitoring, metrics, analytics          │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    KEY TAKEAWAYS FOR EXAM                            │
+│                                                                      │
+│   ✅ Timestream = Purpose-built TIME SERIES database                 │
+│                                                                      │
+│   ✅ Serverless, fully managed (no servers to provision)             │
+│                                                                      │
+│   ✅ 2 Engines: LiveAnalytics (AWS) vs InfluxDB (open source)        │
+│                                                                      │
+│   ✅ 2 Storage Tiers:                                                │
+│      • Memory Store = Recent data, fast, expensive                   │
+│      • Magnetic Store = Historical, slow, cheap                      │
+│                                                                      │
+│   ✅ Automatic data lifecycle (memory → magnetic → delete)           │
+│                                                                      │
+│   ✅ SQL queries với built-in time series functions                  │
+│                                                                      │
+│   ✅ 1000x faster than relational DBs cho time series                │
+│                                                                      │
+│   ✅ Ingestion: AWS SDK, Kinesis, IoT Core, Telegraf                 │
+│                                                                      │
+│   ✅ Visualization: QuickSight, Grafana                              │
+│                                                                      │
+│   ✅ Use cases: IoT, DevOps monitoring, metrics, analytics           │
+│                                                                      │
 │   ⚠️ KHÔNG có Free Tier!                                             │
-│                                                                     │
-│   🆚 vs DynamoDB:                                                   │
-│      • Timestream = Time series, analytics                          │
-│      • DynamoDB = Key-value, transactional                          │
-│                                                                     │
-│   🆚 vs OpenSearch:                                                 │
-│      • Timestream = Pure time series                                │
-│      • OpenSearch = Full-text search + logs                         │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+│   🆚 vs DynamoDB:                                                    │
+│      • Timestream = Time series, analytics                           │
+│      • DynamoDB = Key-value, transactional                           │
+│                                                                      │
+│   🆚 vs OpenSearch:                                                  │
+│      • Timestream = Pure time series                                 │
+│      • OpenSearch = Full-text search + logs                          │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

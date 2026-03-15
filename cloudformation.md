@@ -614,80 +614,80 @@ Outputs:
 ### Update Behaviors
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    UPDATE BEHAVIORS                                 │
-│                                                                     │
-│   Khi update stack, mỗi property có thể có behavior khác nhau:      │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. NO INTERRUPTION                                         │   │
-│   │     └── Update in-place, không downtime                     │   │
-│   │     └── Ví dụ: Thêm tag, update security group rules        │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. SOME INTERRUPTION                                       │   │
-│   │     └── Resource bị restart/reboot                          │   │
-│   │     └── Ví dụ: Thay đổi instance type                       │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. REPLACEMENT ⚠️                                           │   │
-│   │     └── Resource bị DELETE và CREATE mới                    │   │
-│   │     └── DATA CÓ THỂ BỊ MẤT!                                 │   │
-│   │     └── Ví dụ: Thay đổi DBInstanceIdentifier, InstanceId    │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   Luôn check documentation để biết update behavior!                 │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    UPDATE BEHAVIORS                                  │
+│                                                                      │
+│   Khi update stack, mỗi property có thể có behavior khác nhau:       │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  1. NO INTERRUPTION                                         │    │
+│   │     └── Update in-place, không downtime                      │   │
+│   │     └── Ví dụ: Thêm tag, update security group rules         │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  2. SOME INTERRUPTION                                       │    │
+│   │     └── Resource bị restart/reboot                           │   │
+│   │     └── Ví dụ: Thay đổi instance type                        │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  3. REPLACEMENT ⚠️                                          │    │
+│   │     └── Resource bị DELETE và CREATE mới                     │   │
+│   │     └── DATA CÓ THỂ BỊ MẤT!                                  │   │
+│   │     └── Ví dụ: Thay đổi DBInstanceIdentifier, InstanceId     │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   Luôn check documentation để biết update behavior!                  │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Change Sets
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CHANGE SETS                                      │
-│      Preview changes trước khi apply!                               │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. Create Change Set                                       │   │
-│   │     aws cloudformation create-change-set \                  │   │
-│   │       --stack-name my-stack \                               │   │
-│   │       --change-set-name my-changes \                        │   │
-│   │       --template-body file://template.yaml                  │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                           │                                         │
-│                            ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. Review Changes                                          │   │
-│   │     aws cloudformation describe-change-set \                │   │
-│   │       --change-set-name my-changes \                        │   │
-│   │       --stack-name my-stack                                 │   │
-│   │                                                             │   │
-│   │     Output:                                                 │   │
-│   │     ┌─────────────────────────────────────────────────────┐ │   │
-│   │     │ Resource: MyInstance                                 ││   │
-│   │     │ Action: Modify                                       ││   │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    CHANGE SETS                                       │
+│      Preview changes trước khi apply!                                │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  1. Create Change Set                                       │    │
+│   │     aws cloudformation create-change-set \                  │    │
+│   │       --stack-name my-stack \                               │    │
+│   │       --change-set-name my-changes \                        │    │
+│   │       --template-body file://template.yaml                  │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                            │                                         │
+│                            ▼                                         │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  2. Review Changes                                          │    │
+│   │     aws cloudformation describe-change-set \                │    │
+│   │       --change-set-name my-changes \                        │    │
+│   │       --stack-name my-stack                                 │    │
+│   │                                                             │    │
+│   │     Output:                                                 │    │
+│   │     ┌─────────────────────────────────────────────────────┐  │   │
+│   │     │ Resource: MyInstance                                 │ │   │
+│   │     │ Action: Modify                                       │ │   │
 │   │     │ Replacement: True  ⚠️ CAUTION!                      │  │   │
-│   │     │ Details:                                             ││   │
-│   │     │   - InstanceType: t3.micro → t3.large               │ │   │
-│   │     └─────────────────────────────────────────────────────┘ │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                           │                                         │
-│                            ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. Execute or Delete                                       │   │
-│   │     # Apply changes:                                        │   │
-│   │     aws cloudformation execute-change-set \                 │   │
-│   │       --change-set-name my-changes \                        │   │
-│   │       --stack-name my-stack                                 │   │
-│   │                                                             │   │
-│   │     # Or cancel:                                            │   │
-│   │     aws cloudformation delete-change-set \                  │   │
-│   │       --change-set-name my-changes \                        │   │
-│   │       --stack-name my-stack                                 │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+│   │     │ Details:                                             │ │   │
+│   │     │   - InstanceType: t3.micro → t3.large               │  │   │
+│   │     └─────────────────────────────────────────────────────┘  │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                            │                                         │
+│                            ▼                                         │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  3. Execute or Delete                                       │    │
+│   │     # Apply changes:                                        │    │
+│   │     aws cloudformation execute-change-set \                 │    │
+│   │       --change-set-name my-changes \                        │    │
+│   │       --stack-name my-stack                                 │    │
+│   │                                                             │    │
+│   │     # Or cancel:                                            │    │
+│   │     aws cloudformation delete-change-set \                  │    │
+│   │       --change-set-name my-changes \                        │    │
+│   │       --stack-name my-stack                                 │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -1102,23 +1102,23 @@ output "instance_public_ip" {
 ## Pricing
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUDFORMATION PRICING                           │
-│                                                                     │
-│   CloudFormation Service = $0 (MIỄN PHÍ!)                           │
-│                                                                     │
-│   Bạn chỉ trả tiền cho resources trong template:                    │
-│   ├── EC2 Instances                                                 │
-│   ├── RDS Databases                                                 │
-│   ├── S3 Buckets                                                    │
-│   ├── Load Balancers                                                │
-│   ├── Lambda Functions                                              │
-│   └── ... tất cả resources khác                                     │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                    CLOUDFORMATION PRICING                            │
+│                                                                      │
+│   CloudFormation Service = $0 (MIỄN PHÍ!)                            │
+│                                                                      │
+│   Bạn chỉ trả tiền cho resources trong template:                     │
+│   ├── EC2 Instances                                                  │
+│   ├── RDS Databases                                                  │
+│   ├── S3 Buckets                                                     │
+│   ├── Load Balancers                                                 │
+│   ├── Lambda Functions                                               │
+│   └── ... tất cả resources khác                                      │
+│                                                                      │
 │   ⚠️ PHÍ CHỈ PHÁT SINH khi dùng:                                     │
-│   └── 3rd-party resource types (từ AWS Public Registry)             │
-│       → Rất ít dùng, hầu hết không cần                              │
-└─────────────────────────────────────────────────────────────────────┘
+│   └── 3rd-party resource types (từ AWS Public Registry)              │
+│       → Rất ít dùng, hầu hết không cần                               │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### So sánh pricing các IaC tools

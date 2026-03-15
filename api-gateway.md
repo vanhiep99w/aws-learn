@@ -368,74 +368,74 @@ API Gateway hỗ trợ 3 loại API:
 ## Authentication & Authorization
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                  AUTHENTICATION & AUTHORIZATION                     │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. IAM AUTHORIZATION                                       │   │
-│   │     ┌───────────────────────────────────────────────────┐   │   │
-│   │     │  Client ──(SigV4)──▶ API Gateway ──▶ IAM ──▶ OK   │   │   │
-│   │     │                                                     │ │   │
-│   │     │  • Dùng AWS credentials để sign request            │  │   │
-│   │     │  • Best for: AWS services, internal apps           │  │   │
-│   │     │  • IAM Policy controls access                      │  │   │
-│   │     └───────────────────────────────────────────────────┘   │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. COGNITO USER POOLS                                      │   │
-│   │     ┌───────────────────────────────────────────────────┐   │   │
-│   │     │                                                     │ │   │
-│   │     │  1. User ──(login)──▶ Cognito ──▶ JWT Token        │  │   │
-│   │     │                                                     │ │   │
-│   │     │  2. User ──(JWT)──▶ API Gateway ──▶ Cognito ──▶ OK │  │   │
-│   │     │                                                     │ │   │
-│   │     │  • Fully managed user directory                    │  │   │
-│   │     │  • Built-in sign-up/sign-in                        │  │   │
-│   │     │  • Social login (Google, Facebook, Apple)          │  │   │
-│   │     │  • MFA support                                     │  │   │
-│   │     │  • Best for: Web/mobile apps                       │  │   │
-│   │     └───────────────────────────────────────────────────┘   │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. LAMBDA AUTHORIZER (Custom Authorizer)                   │   │
-│   │     ┌───────────────────────────────────────────────────┐   │   │
-│   │     │                                                     │ │   │
-│   │     │  Request ──▶ API Gateway ──▶ Lambda Authorizer     │  │   │
-│   │     │                                      │              │ │   │
-│   │     │                               ┌──────┴──────┐       │ │   │
-│   │     │                               ▼             ▼       │ │   │
-│   │     │                            Allow         Deny       │ │   │
-│   │     │                               │             │       │ │   │
-│   │     │                               ▼             ▼       │ │   │
-│   │     │                          Backend       403 Error    │ │   │
-│   │     │                                                     │ │   │
-│   │     │  2 types:                                           │ │   │
-│   │     │  • Token-based: Validate JWT/OAuth tokens          │  │   │
-│   │     │  • Request-based: Check headers, query params      │  │   │
-│   │     │                                                     │ │   │
-│   │     │  Best for: Custom auth logic, 3rd party tokens     │  │   │
-│   │     │                                                     │ │   │
-│   │     │  ⚡ Tip: Enable caching to reduce Lambda calls     │  │   │
-│   │     └───────────────────────────────────────────────────┘   │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  4. API KEYS                                                │   │
-│   │     ┌───────────────────────────────────────────────────┐   │   │
-│   │     │  Request (x-api-key: xxx) ──▶ API Gateway         │   │   │
-│   │     │                                                     │ │   │
+┌──────────────────────────────────────────────────────────────────────┐
+│                  AUTHENTICATION & AUTHORIZATION                      │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  1. IAM AUTHORIZATION                                       │    │
+│   │     ┌───────────────────────────────────────────────────┐    │   │
+│   │     │  Client ──(SigV4)──▶ API Gateway ──▶ IAM ──▶ OK   │    │   │
+│   │     │                                                     │  │   │
+│   │     │  • Dùng AWS credentials để sign request            │   │   │
+│   │     │  • Best for: AWS services, internal apps           │   │   │
+│   │     │  • IAM Policy controls access                      │   │   │
+│   │     └───────────────────────────────────────────────────┘    │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  2. COGNITO USER POOLS                                      │    │
+│   │     ┌───────────────────────────────────────────────────┐    │   │
+│   │     │                                                     │  │   │
+│   │     │  1. User ──(login)──▶ Cognito ──▶ JWT Token        │   │   │
+│   │     │                                                     │  │   │
+│   │     │  2. User ──(JWT)──▶ API Gateway ──▶ Cognito ──▶ OK │   │   │
+│   │     │                                                     │  │   │
+│   │     │  • Fully managed user directory                    │   │   │
+│   │     │  • Built-in sign-up/sign-in                        │   │   │
+│   │     │  • Social login (Google, Facebook, Apple)          │   │   │
+│   │     │  • MFA support                                     │   │   │
+│   │     │  • Best for: Web/mobile apps                       │   │   │
+│   │     └───────────────────────────────────────────────────┘    │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  3. LAMBDA AUTHORIZER (Custom Authorizer)                   │    │
+│   │     ┌───────────────────────────────────────────────────┐    │   │
+│   │     │                                                     │  │   │
+│   │     │  Request ──▶ API Gateway ──▶ Lambda Authorizer     │   │   │
+│   │     │                                      │              │  │   │
+│   │     │                               ┌──────┴──────┐       │  │   │
+│   │     │                               ▼             ▼       │  │   │
+│   │     │                            Allow         Deny       │  │   │
+│   │     │                               │             │       │  │   │
+│   │     │                               ▼             ▼       │  │   │
+│   │     │                          Backend       403 Error    │  │   │
+│   │     │                                                     │  │   │
+│   │     │  2 types:                                           │  │   │
+│   │     │  • Token-based: Validate JWT/OAuth tokens          │   │   │
+│   │     │  • Request-based: Check headers, query params      │   │   │
+│   │     │                                                     │  │   │
+│   │     │  Best for: Custom auth logic, 3rd party tokens     │   │   │
+│   │     │                                                     │  │   │
+│   │     │  ⚡ Tip: Enable caching to reduce Lambda calls     │   │   │
+│   │     └───────────────────────────────────────────────────┘    │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │  4. API KEYS                                                │    │
+│   │     ┌───────────────────────────────────────────────────┐    │   │
+│   │     │  Request (x-api-key: xxx) ──▶ API Gateway         │    │   │
+│   │     │                                                     │  │   │
 │   │     │  ⚠️ Không phải auth mechanism!                     │   │   │
-│   │     │     API Keys chỉ dùng để:                          │  │   │
-│   │     │     • Identify clients                             │  │   │
-│   │     │     • Track usage                                  │  │   │
-│   │     │     • Apply quotas/throttling                      │  │   │
-│   │     │                                                     │ │   │
-│   │     │  Luôn kết hợp với auth mechanism khác!             │  │   │
-│   │     └───────────────────────────────────────────────────┘   │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+│   │     │     API Keys chỉ dùng để:                          │   │   │
+│   │     │     • Identify clients                             │   │   │
+│   │     │     • Track usage                                  │   │   │
+│   │     │     • Apply quotas/throttling                      │   │   │
+│   │     │                                                     │  │   │
+│   │     │  Luôn kết hợp với auth mechanism khác!             │   │   │
+│   │     └───────────────────────────────────────────────────┘    │   │
+│   └─────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Lambda Authorizer Example

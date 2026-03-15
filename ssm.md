@@ -144,23 +144,23 @@
 **Session Manager** cho phép access EC2 instances mà **không cần SSH, không cần bastion host, không cần mở port 22**.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                 Traditional SSH vs Session Manager                  │
-│                                                                     │
-│  Traditional SSH:                                                   │
-│  ┌──────────┐   SSH (22)   ┌──────────┐   SSH (22)   ┌──────────┐   │
-│  │ User     │────────────► │ Bastion  │────────────► │ Private  │   │
-│  │          │              │ Host     │              │ EC2      │   │
-│  └──────────┘              └──────────┘              └──────────┘   │
+┌──────────────────────────────────────────────────────────────────────┐
+│                 Traditional SSH vs Session Manager                   │
+│                                                                      │
+│  Traditional SSH:                                                    │
+│  ┌──────────┐   SSH (22)   ┌──────────┐   SSH (22)   ┌──────────┐    │
+│  │ User     │────────────► │ Bastion  │────────────► │ Private  │    │
+│  │          │              │ Host     │              │ EC2      │    │
+│  └──────────┘              └──────────┘              └──────────┘    │
 │       ⚠️ Cần quản lý SSH keys, mở ports, maintain bastion            │
-│                                                                     │
-│  Session Manager:                                                   │
-│  ┌──────────┐  HTTPS (443) ┌──────────┐              ┌──────────┐   │
-│  │ User     │────────────► │ SSM      │◄─────────────│ SSM Agent│   │
-│  │ (Console │              │ Service  │   polling    │ (EC2)    │   │
-│  │  or CLI) │              └──────────┘              └──────────┘   │
-│       ✅ Không cần SSH keys, không mở port, có audit logs           │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+│  Session Manager:                                                    │
+│  ┌──────────┐  HTTPS (443) ┌──────────┐              ┌──────────┐    │
+│  │ User     │────────────► │ SSM      │◄─────────────│ SSM Agent│    │
+│  │ (Console │              │ Service  │   polling    │ (EC2)    │    │
+│  │  or CLI) │              └──────────┘              └──────────┘    │
+│       ✅ Không cần SSH keys, không mở port, có audit logs            │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Kiến Trúc Chi Tiết
@@ -210,33 +210,33 @@
 ## Requirements
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│              SESSION MANAGER REQUIREMENTS CHECKLIST                 │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│              SESSION MANAGER REQUIREMENTS CHECKLIST                  │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
 │  ☑️ 1. SSM AGENT                                                     │
-│     • Pre-installed on Amazon Linux 2/2023, Ubuntu 16.04+,          │
-│       Windows Server 2016+                                          │
-│     • Must be running                                               │
-│                                                                     │
+│     • Pre-installed on Amazon Linux 2/2023, Ubuntu 16.04+,           │
+│       Windows Server 2016+                                           │
+│     • Must be running                                                │
+│                                                                      │
 │  ☑️ 2. IAM INSTANCE PROFILE                                          │
-│     • Attach role với policy: AmazonSSMManagedInstanceCore          │
-│     • Hoặc custom policy với ssm:* permissions                      │
-│                                                                     │
+│     • Attach role với policy: AmazonSSMManagedInstanceCore           │
+│     • Hoặc custom policy với ssm:* permissions                       │
+│                                                                      │
 │  ☑️ 3. NETWORK CONNECTIVITY                                          │
-│     Option A: Public subnet với Internet Gateway                    │
-│     Option B: Private subnet + NAT Gateway                          │
-│     Option C: Private subnet + VPC Endpoints (recommended)          │
-│               • ssm.region.amazonaws.com                            │
-│               • ssmmessages.region.amazonaws.com                    │
-│               • ec2messages.region.amazonaws.com                    │
-│                                                                     │
+│     Option A: Public subnet với Internet Gateway                     │
+│     Option B: Private subnet + NAT Gateway                           │
+│     Option C: Private subnet + VPC Endpoints (recommended)           │
+│               • ssm.region.amazonaws.com                             │
+│               • ssmmessages.region.amazonaws.com                     │
+│               • ec2messages.region.amazonaws.com                     │
+│                                                                      │
 │  ☑️ 4. USER IAM PERMISSIONS                                          │
-│     • ssm:StartSession                                              │
-│     • ssm:ResumeSession                                             │
-│     • ssm:TerminateSession                                          │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+│     • ssm:StartSession                                               │
+│     • ssm:ResumeSession                                              │
+│     • ssm:TerminateSession                                           │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ## VPC Endpoints cho Private Subnet
@@ -450,28 +450,28 @@ aws ssm start-session \
 ## Session Manager vs SSH Comparison
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                SESSION MANAGER vs SSH - WHEN TO USE?                     │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ✅ USE SESSION MANAGER when:                                            │
-│     • AWS EC2 instances                                                  │
-│     • Need audit logging                                                 │
-│     • Want to eliminate SSH key management                               │
-│     • Private subnet access without bastion                              │
-│     • Compliance requirements (session recording)                        │
-│     • Centralized IAM access control                                     │
-│                                                                          │
+┌───────────────────────────────────────────────────────────────────────────┐
+│                SESSION MANAGER vs SSH - WHEN TO USE?                      │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ✅ USE SESSION MANAGER when:                                             │
+│     • AWS EC2 instances                                                   │
+│     • Need audit logging                                                  │
+│     • Want to eliminate SSH key management                                │
+│     • Private subnet access without bastion                               │
+│     • Compliance requirements (session recording)                         │
+│     • Centralized IAM access control                                      │
+│                                                                           │
 │  ⚠️ CONSIDER SSH when:                                                    │
-│     • Non-AWS servers                                                    │
-│     • Need SCP file transfer (workaround: use S3)                        │
-│     • Legacy tools requiring SSH                                         │
-│     • SSH tunneling for specific protocols                               │
-│                                                                          │
-│  💡 HYBRID: Use SSH through Session Manager proxy                        │
-│     → Get benefits of both!                                              │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
+│     • Non-AWS servers                                                     │
+│     • Need SCP file transfer (workaround: use S3)                         │
+│     • Legacy tools requiring SSH                                          │
+│     • SSH tunneling for specific protocols                                │
+│                                                                           │
+│  💡 HYBRID: Use SSH through Session Manager proxy                         │
+│     → Get benefits of both!                                               │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Limitations

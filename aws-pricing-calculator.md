@@ -277,29 +277,29 @@ Bạn có thể nhóm services theo:
 ### 1. Đừng quên các chi phí ẩn
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Hidden Costs to Consider                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                    Hidden Costs to Consider                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
 │  ⚠️ Data Transfer Out                                            │
-│     └── Internet egress không free (sau 100GB/month)            │
-│                                                                 │
+│     └── Internet egress không free (sau 100GB/month)             │
+│                                                                  │
 │  ⚠️ Cross-Region/Cross-AZ Transfer                               │
-│     └── Traffic giữa regions/AZs tính phí                       │
-│                                                                 │
+│     └── Traffic giữa regions/AZs tính phí                        │
+│                                                                  │
 │  ⚠️ API Requests                                                 │
-│     └── S3 PUT/GET, Lambda invocations...                       │
-│                                                                 │
+│     └── S3 PUT/GET, Lambda invocations...                        │
+│                                                                  │
 │  ⚠️ Snapshots & Backups                                          │
-│     └── EBS snapshots, RDS backups...                           │
-│                                                                 │
+│     └── EBS snapshots, RDS backups...                            │
+│                                                                  │
 │  ⚠️ NAT Gateway                                                  │
-│     └── Hourly charge + data processing                         │
-│                                                                 │
+│     └── Hourly charge + data processing                          │
+│                                                                  │
 │  ⚠️ Elastic IPs (unused)                                         │
-│     └── Tính phí nếu không attach                               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│     └── Tính phí nếu không attach                                │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2. Compare Regions

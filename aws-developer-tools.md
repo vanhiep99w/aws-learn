@@ -976,21 +976,21 @@ pip install my-package
 ## Upstream Repositories
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                  Upstream Flow                               │
-│                                                              │
-│  Developer Request     CodeArtifact         Public Registry  │
-│       │                    │                     │           │
-│       │  npm install       │                     │           │
-│       │ ────────────────►  │                     │           │
-│       │                    │  Not in cache?      │           │
-│       │                    │ ─────────────────►  │           │
-│       │                    │                     │           │
+┌───────────────────────────────────────────────────────────────┐
+│                  Upstream Flow                                │
+│                                                               │
+│  Developer Request     CodeArtifact         Public Registry   │
+│       │                    │                      │           │
+│       │  npm install       │                      │           │
+│       │ ────────────────►  │                      │           │
+│       │                    │  Not in cache?       │           │
+│       │                    │ ─────────────────►   │           │
+│       │                    │                      │           │
 │       │                    │  ◄───── Package ─────│           │
-│       │                    │  (Cached for future)│           │
-│       │  ◄──── Package ────│                     │           │
-│       │                    │                     │           │
-└──────────────────────────────────────────────────────────────┘
+│       │                    │  (Cached for future) │           │
+│       │  ◄──── Package ────│                      │           │
+│       │                    │                      │           │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -431,24 +431,24 @@ Cho phép thực hiện custom actions khi instance đang scale:
 - **Scale IN Hook**: Drain connections, backup logs, deregister từ external systems
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      Lifecycle Hook Flow                        │
-│                                                                 │
-│  Scale OUT:                                                     │
-│  Pending ──► Pending:Wait ──► [Custom Action] ──► InService     │
-│                   │                                             │
-│                    ├── Pull config from S3                      │
-│                    ├── Register to DNS                          │
-│                    └── Warm up cache                            │
-│                                                                 │
-│  Scale IN:                                                      │
+┌───────────────────────────────────────────────────────────────────┐
+│                      Lifecycle Hook Flow                          │
+│                                                                   │
+│  Scale OUT:                                                       │
+│  Pending ──► Pending:Wait ──► [Custom Action] ──► InService       │
+│                     │                                             │
+│                    ├── Pull config from S3                        │
+│                    ├── Register to DNS                            │
+│                    └── Warm up cache                              │
+│                                                                   │
+│  Scale IN:                                                        │
 │  InService ──► Terminating:Wait ──► [Custom Action] ──► Terminated│
-│                      │                                          │
-│                       ├── Drain connections                     │
-│                       ├── Upload logs to S3                     │
-│                       └── Notify monitoring system              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                        │                                          │
+│                       ├── Drain connections                       │
+│                       ├── Upload logs to S3                       │
+│                       └── Notify monitoring system                │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -705,31 +705,31 @@ Warm Pool là một nhóm các instances đã được **pre-initialized** (đã
 ### Scale OUT Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         SCALE OUT COMPARISON                            │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  WITHOUT WARM POOL (Traditional):                                       │
-│  ─────────────────────────────────                                      │
-│                                                                         │
-│  CloudWatch     Launch        Boot OS      Install      Register        │
+┌────────────────────────────────────────────────────────────────────────────┐
+│                         SCALE OUT COMPARISON                               │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  WITHOUT WARM POOL (Traditional):                                          │
+│  ─────────────────────────────────                                         │
+│                                                                            │
+│  CloudWatch     Launch        Boot OS      Install      Register           │
 │   Alarm    ──►  Instance  ──►  (60s)   ──►  App    ──►  to ELB    ──► Ready│
-│    │              │             │          (120s)       (30s)           │
-│    └──────────────┴─────────────┴────────────┴───────────┘              │
-│                        Total: 3-5 minutes                               │
-│                                                                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  WITH WARM POOL (Optimized):                                            │
-│  ──────────────────────────────                                         │
-│                                                                         │
-│  CloudWatch     Start from      Register                                │
-│   Alarm    ──►  Warm Pool   ──►  to ELB   ──► Ready                     │
-│    │            (10-20s)         (30s)                                  │
-│    └────────────┴────────────────┘                                      │
-│                Total: 30-60 seconds                                     │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
+│    │              │             │          (120s)       (30s)              │
+│    └──────────────┴─────────────┴────────────┴───────────┘                 │
+│                        Total: 3-5 minutes                                  │
+│                                                                            │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  WITH WARM POOL (Optimized):                                               │
+│  ──────────────────────────────                                            │
+│                                                                            │
+│  CloudWatch     Start from      Register                                   │
+│   Alarm    ──►  Warm Pool   ──►  to ELB   ──► Ready                        │
+│    │            (10-20s)         (30s)                                     │
+│    └────────────┴────────────────┘                                         │
+│                Total: 30-60 seconds                                        │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Warm Pool States

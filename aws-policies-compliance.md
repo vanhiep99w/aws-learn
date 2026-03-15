@@ -129,23 +129,23 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 ### Những gì LUÔN BỊ CẤM
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      Always Prohibited Activities                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🚫 LUÔN BỊ CẤM (dù có xin phép cũng không được):                          │
-│                                                                             │
-│   • DNS zone walking via Route 53                                           │
-│   • DDoS attacks / simulations                                              │
-│   • Port flooding                                                           │
-│   • Protocol flooding                                                       │
-│   • Request flooding                                                        │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                      Always Prohibited Activities                            │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🚫 LUÔN BỊ CẤM (dù có xin phép cũng không được):                           │
+│                                                                              │
+│   • DNS zone walking via Route 53                                            │
+│   • DDoS attacks / simulations                                               │
+│   • Port flooding                                                            │
+│   • Protocol flooding                                                        │
+│   • Request flooding                                                         │
+│                                                                              │
 │   ⚠️ LƯU Ý:                                                                  │
-│   • Chỉ được test trên resources CỦA MÌNH                                   │
-│   • Không được làm ảnh hưởng đến customers khác                             │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   • Chỉ được test trên resources CỦA MÌNH                                    │
+│   • Không được làm ảnh hưởng đến customers khác                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 > [!IMPORTANT]
@@ -202,29 +202,29 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 AWS tuân thủ nhiều compliance programs:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Compliance Programs                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   🏥 HEALTHCARE:                                                            │
-│   • HIPAA (US healthcare data protection)                                   │
-│                                                                             │
-│   💳 PAYMENT:                                                               │
-│   • PCI DSS (Payment Card Industry)                                         │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    AWS Compliance Programs                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   🏥 HEALTHCARE:                                                             │
+│   • HIPAA (US healthcare data protection)                                    │
+│                                                                              │
+│   💳 PAYMENT:                                                                │
+│   • PCI DSS (Payment Card Industry)                                          │
+│                                                                              │
 │   🏛️ GOVERNMENT:                                                             │
-│   • FedRAMP (US Federal)                                                    │
-│   • GovCloud (US Government workloads)                                      │
-│                                                                             │
-│   🌍 DATA PROTECTION:                                                       │
-│   • GDPR (EU data protection)                                               │
-│   • SOC 1, SOC 2, SOC 3                                                     │
-│                                                                             │
-│   🔐 SECURITY:                                                              │
-│   • ISO 27001, 27017, 27018                                                 │
-│   • CSA STAR                                                                │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   • FedRAMP (US Federal)                                                     │
+│   • GovCloud (US Government workloads)                                       │
+│                                                                              │
+│   🌍 DATA PROTECTION:                                                        │
+│   • GDPR (EU data protection)                                                │
+│   • SOC 1, SOC 2, SOC 3                                                      │
+│                                                                              │
+│   🔐 SECURITY:                                                               │
+│   • ISO 27001, 27017, 27018                                                  │
+│   • CSA STAR                                                                 │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -651,38 +651,38 @@ Win-win-win:
 ## Tổng kết
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Key Points for Cloud Practitioner                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   📋 DOCUMENTS:                                                             │
-│   ─────────────────────────────────────────                                 │
-│   • Acceptable Use Policy (AUP) → Những gì được/không được làm              │
-│   • Customer Agreement → Hợp đồng với AWS                                   │
-│   • Service Terms → Điều khoản từng service                                 │
-│                                                                             │
-│   🔐 PENETRATION TESTING:                                                   │
-│   ─────────────────────────────────────────                                 │
-│   • Permitted: EC2, RDS, Lambda, CloudFront... (không cần xin phép)         │
-│   • Prohibited: DDoS, DNS zone walking, flooding                            │
-│                                                                             │
-│   📊 AWS ARTIFACT:                                                          │
-│   ─────────────────────────────────────────                                 │
-│   • Reports = Compliance reports (SOC, ISO, PCI)                            │
-│   • Agreements = Legal agreements (BAA, GDPR DPA)                           │
-│                                                                             │
-│   📧 AWS ABUSE TEAM:                                                        │
-│   ─────────────────────────────────────────                                 │
-│   • Report: abuse@amazonaws.com                                             │
-│   • Cho spam, attacks, illegal content                                      │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Key Points for Cloud Practitioner                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   📋 DOCUMENTS:                                                              │
+│   ─────────────────────────────────────────                                  │
+│   • Acceptable Use Policy (AUP) → Những gì được/không được làm               │
+│   • Customer Agreement → Hợp đồng với AWS                                    │
+│   • Service Terms → Điều khoản từng service                                  │
+│                                                                              │
+│   🔐 PENETRATION TESTING:                                                    │
+│   ─────────────────────────────────────────                                  │
+│   • Permitted: EC2, RDS, Lambda, CloudFront... (không cần xin phép)          │
+│   • Prohibited: DDoS, DNS zone walking, flooding                             │
+│                                                                              │
+│   📊 AWS ARTIFACT:                                                           │
+│   ─────────────────────────────────────────                                  │
+│   • Reports = Compliance reports (SOC, ISO, PCI)                             │
+│   • Agreements = Legal agreements (BAA, GDPR DPA)                            │
+│                                                                              │
+│   📧 AWS ABUSE TEAM:                                                         │
+│   ─────────────────────────────────────────                                  │
+│   • Report: abuse@amazonaws.com                                              │
+│   • Cho spam, attacks, illegal content                                       │
+│                                                                              │
 │   ⚠️ REMEMBER:                                                               │
-│   ─────────────────────────────────────────                                 │
-│   • "Fair Use Policy" → KHÔNG TỒN TẠI                                       │
-│   • "Applicable Use Policy" → KHÔNG TỒN TẠI                                 │
-│   • Chỉ có "Acceptable Use Policy"                                          │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   ─────────────────────────────────────────                                  │
+│   • "Fair Use Policy" → KHÔNG TỒN TẠI                                        │
+│   • "Applicable Use Policy" → KHÔNG TỒN TẠI                                  │
+│   • Chỉ có "Acceptable Use Policy"                                           │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

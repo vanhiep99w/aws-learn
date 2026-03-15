@@ -365,34 +365,34 @@ AWS Storage Gateway có **4 loại chính**:
 ### Stored Volumes
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                       Volume Gateway - Stored Volumes                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   On-Premises                                           AWS Cloud            │
-│                                                                              │
-│   ┌─────────────┐       iSCSI       ┌──────────────┐                         │
-│   │  Application│─────────────────► │    Volume    │                         │
-│   │   Server    │                   │   Gateway    │                         │
-│   └─────────────┘                   │              │                         │
-│         │                           │ ┌──────────┐ │   Async                 │
-│         │ Sees as                   │ │ Full     │ │   Backup                │
-│         │ local disk                │ │ Local    │ │───────────┐             │
-│         ▼                           │ │ Storage  │ │              │          │
-│   ┌─────────────┐                   │ │(Primary) │ │           ▼             │
-│   │   /dev/sdb  │                   │ └──────────┘ │    ┌────────────┐       │
+┌────────────────────────────────────────────────────────────────────────────────────────────┐
+│                       Volume Gateway - Stored Volumes                                      │
+├────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                            │
+│   On-Premises                                           AWS Cloud                          │
+│                                                                                            │
+│   ┌─────────────┐       iSCSI       ┌──────────────┐                                       │
+│   │  Application│─────────────────► │    Volume                  │                         │
+│   │   Server    │                   │   Gateway                  │                         │
+│   └─────────────┘                   │                            │                         │
+│         │                           │ ┌──────────┐ │   Async                               │
+│         │ Sees as                   │ │ Full     │ │   Backup                              │
+│         │ local disk                │ │ Local    │ │───────────┐                           │
+│         ▼                           │ │ Storage  │ │                            │          │
+│   ┌─────────────┐                   │ │(Primary) │ │           ▼                           │
+│   │   /dev/sdb  │                   │ └──────────┘ │    ┌────────────┐                     │
 │   │   500GB     │                   └─┘          │    S3         │                         │
-│   └─────────────┘                                       │ (backup as    │    │
-│                                                         │ snapshots)    │    │
-│   📍 All data stored locally                            └────────────┘       │
-│   📍 Async backup to S3 as EBS snapshots                          │          │
-│   📍 Volume size: up to 16 TB per volume                       ▼             │
-│   📍 Low latency (all data local)                    ┌──────────────────────┐│
-│                                                      │   EBS Snapshots      ││
-│                                                      │   (can restore       ││
-│                                                      │    to EC2)           ││
-│                                                      └──────────────────────┘│
-└──────────────────────────────────────────────────────────────────────────────┘
+│   └─────────────┘                                       │ (backup as                  │    │
+│                                                         │ snapshots)                  │    │
+│   📍 All data stored locally                            └────────────┘                     │
+│   📍 Async backup to S3 as EBS snapshots                                        │          │
+│   📍 Volume size: up to 16 TB per volume                       ▼                           │
+│   📍 Low latency (all data local)                    ┌────────────────────────────────────┐│
+│                                                      │   EBS Snapshots                    ││
+│                                                      │   (can restore                     ││
+│                                                      │    to EC2)                         ││
+│                                                      └────────────────────────────────────┘│
+└────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Đặc điểm Stored Volumes:**
@@ -639,21 +639,21 @@ Benefits:
 ### 1. Cache Sizing
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Cache Sizing Guidelines                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Cache should hold:                                             │
-│  • Working set (frequently accessed data)                       │
-│  • Recently written data (pending upload)                       │
-│                                                                 │
-│  Rule of thumb:                                                 │
-│  Cache size = 20% of total dataset (minimum)                    │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                    Cache Sizing Guidelines                       │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Cache should hold:                                              │
+│  • Working set (frequently accessed data)                        │
+│  • Recently written data (pending upload)                        │
+│                                                                  │
+│  Rule of thumb:                                                  │
+│  Cache size = 20% of total dataset (minimum)                     │
+│                                                                  │
 │  ⚠️ Too small cache = Frequent S3 reads = Higher latency         │
 │  ⚠️ Use SSD/NVMe for cache storage                               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2. Network Bandwidth

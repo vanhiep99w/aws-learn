@@ -330,35 +330,35 @@ Instance Store-backed: Root data nằm BÊN TRONG instance (local disk)
 ### Hình dung trong Data Center
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    AWS Data Center                              │
-│                                                                 │
-│  EBS-backed Instance:                                           │
-│  ┌─────────────────┐           ┌─────────────────┐              │
-│  │ Physical Server │           │ EBS Storage     │              │
-│  │ ┌─────────────┐ │           │ Server          │              │
-│  │ │EC2 Instance │ │◄─Network─►│ ┌─────────────┐ │              │
-│  │ │(chạy app)   │ │           │ │ EBS Volume  │ │              │
-│  │ └─────────────┘ │           │ │ (root data) │ │              │
-│  └─────────────────┘           │ └─────────────┘ │              │
-│                                └─────────────────┘              │
-│  → Stop instance = Server rảnh, EBS Volume VẪN CÒN              │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Instance Store-backed Instance:                                │
-│  ┌─────────────────────────────────┐                            │
-│  │ Physical Server                 │                            │
-│  │                 ┌───────────┐                 │              │
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                    AWS Data Center                                                │
+│                                                                                   │
+│  EBS-backed Instance:                                                             │
+│  ┌─────────────────┐           ┌─────────────────┐                                │
+│  │ Physical Server │           │ EBS Storage                       │              │
+│  │ ┌─────────────┐ │           │ Server                            │              │
+│  │ │EC2 Instance │ │◄─Network─►│ ┌─────────────┐                   │              │
+│  │ │(chạy app)   │ │           │ │ EBS Volume  │                   │              │
+│  │ └─────────────┘ │           │ │ (root data) │                   │              │
+│  └─────────────────┘           │ └─────────────┘                   │              │
+│                                └─────────────────┘                                │
+│  → Stop instance = Server rảnh, EBS Volume VẪN CÒN                                │
+│                                                                                   │
+├───────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                   │
+│  Instance Store-backed Instance:                                                  │
+│  ┌─────────────────────────────────┐                                              │
+│  │ Physical Server                                   │                            │
+│  │                 ┌───────────┐                                   │              │
 │  │                 │ EC2 Instance                │                 │              │
-│  │ │ ┌─────────────────────────┐ │ │                            │
-│  │ │ │ Local SSD (root data)   │ │ │ ← Data trong server        │
-│  │ │ └─────────────────────────┘ │ │                            │
-│  │                 └───────────┘                 │              │
-│  └─────────────────────────────────┘                            │
-│  → Stop instance = Server giải phóng = Local SSD XÓA = MẤT DATA │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│  │ │ ┌─────────────────────────┐ │                   │                            │
+│  │ │ │ Local SSD (root data)   │ │ │ ← Data trong server                          │
+│  │ │ └─────────────────────────┘ │                   │                            │
+│  │                 └───────────┘                                   │              │
+│  └─────────────────────────────────┘                                              │
+│  → Stop instance = Server giải phóng = Local SSD XÓA = MẤT DATA                   │
+│                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### AMI type chỉ quyết định ROOT volume

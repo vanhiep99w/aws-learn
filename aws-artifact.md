@@ -125,27 +125,27 @@
 ### HIPAA BAA (Business Associate Addendum)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      HIPAA BAA                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  📋 HIPAA = Health Insurance Portability and Accountability Act │
-│  🏥 PHI = Protected Health Information (dữ liệu bệnh nhân)      │
-│                                                                 │
-│  Nếu bạn xử lý PHI trên AWS:                                    │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │  1. Vào AWS Artifact                                    │    │
-│  │  2. Tìm HIPAA BAA                                       │    │
-│  │  3. Review và Accept agreement                          │    │
-│  │  4. Chỉ dùng HIPAA-eligible services                    │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                      HIPAA BAA                                   │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  📋 HIPAA = Health Insurance Portability and Accountability Act  │
+│  🏥 PHI = Protected Health Information (dữ liệu bệnh nhân)       │
+│                                                                  │
+│  Nếu bạn xử lý PHI trên AWS:                                     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  1. Vào AWS Artifact                                    │     │
+│  │  2. Tìm HIPAA BAA                                       │     │
+│  │  3. Review và Accept agreement                          │     │
+│  │  4. Chỉ dùng HIPAA-eligible services                    │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                  │
 │  ⚠️ QUAN TRỌNG:                                                  │
-│  • Không phải TẤT CẢ AWS services đều HIPAA-eligible            │
-│  • Phải check danh sách HIPAA-eligible services                 │
-│  • Common eligible: S3, EC2, RDS, Lambda, DynamoDB, etc.        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│  • Không phải TẤT CẢ AWS services đều HIPAA-eligible             │
+│  • Phải check danh sách HIPAA-eligible services                  │
+│  • Common eligible: S3, EC2, RDS, Lambda, DynamoDB, etc.         │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

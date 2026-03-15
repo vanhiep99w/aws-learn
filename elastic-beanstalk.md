@@ -200,65 +200,65 @@ Beanstalk hỗ trợ nhiều ngôn ngữ và platforms:
 ### Deployment Policies
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    DEPLOYMENT POLICIES                              │
-│                                                                     │
-│   1. ALL AT ONCE (Fastest, có downtime)                             │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   [v1] [v1] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │   │
-│   │        ↓ Deploy v2 to all                                   │   │
-│   │   ⚠️ Downtime trong lúc deploy                               │   │
-│   │   ✅ Fastest deployment                                     │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   2. ROLLING (Batches, giảm capacity tạm thời)                      │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   [v1] [v1] [v1] [v1]                                       │   │
-│   │     ↓    ↓                                                  │   │
-│   │   [v2] [v2] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │   │
-│   │                                                             │   │
-│   │   ✅ No downtime                                            │   │
-│   │   ⚠️ Capacity giảm trong lúc deploy                          │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   3. ROLLING WITH ADDITIONAL BATCH (No reduced capacity)            │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   [v1] [v1] [v1] [v1] + [v2] (new batch)                    │   │
-│   │                          ↓                                  │   │
-│   │   [v2] [v1] [v1] [v1] + [v2]                                │   │
-│   │     ↓    ↓                                                  │   │
-│   │   [v2] [v2] [v2] [v2] (terminate extra)                     │   │
-│   │                                                             │   │
-│   │   ✅ Full capacity during deployment                        │   │
-│   │   ⚠️ Tốn thêm cost cho extra instances                       │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   4. IMMUTABLE (New ASG, safest)                                    │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   ASG 1: [v1] [v1] [v1] [v1] (existing)                     │   │
-│   │                  +                                          │   │
-│   │   ASG 2: [v2] [v2] [v2] [v2] (new, temporary)               │   │
-│   │                  ↓                                          │   │
-│   │   Merge ASG 2 into ASG 1, terminate old instances           │   │
-│   │                                                             │   │
-│   │   ✅ Fastest rollback (terminate new ASG)                   │   │
-│   │   ✅ Full capacity                                          │   │
-│   │   ⚠️ Double capacity cost during deployment                  │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│   5. BLUE/GREEN (Separate environment)                              │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   Blue (Prod):  [v1] [v1] [v1] [v1] ←── DNS                 │   │
-│   │                                          │                  │   │
-│   │   Green (New):  [v2] [v2] [v2] [v2]      │                  │   │
-│   │                        ↓                  │                 │   │
-│   │   Swap DNS ─────────────────────────────→│                  │   │
-│   │                                                             │   │
-│   │   ✅ Zero downtime                                          │   │
-│   │   ✅ Easy rollback (swap back)                              │   │
-│   │   ⚠️ Cần 2 environments (gấp đôi cost)                       │   │
-│   └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    DEPLOYMENT POLICIES                               │
+│                                                                      │
+│   1. ALL AT ONCE (Fastest, có downtime)                              │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   [v1] [v1] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │    │
+│   │        ↓ Deploy v2 to all                                   │    │
+│   │   ⚠️ Downtime trong lúc deploy                              │    │
+│   │   ✅ Fastest deployment                                     │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   2. ROLLING (Batches, giảm capacity tạm thời)                       │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   [v1] [v1] [v1] [v1]                                       │    │
+│   │     ↓    ↓                                                  │    │
+│   │   [v2] [v2] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │    │
+│   │                                                             │    │
+│   │   ✅ No downtime                                            │    │
+│   │   ⚠️ Capacity giảm trong lúc deploy                         │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   3. ROLLING WITH ADDITIONAL BATCH (No reduced capacity)             │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   [v1] [v1] [v1] [v1] + [v2] (new batch)                    │    │
+│   │                          ↓                                  │    │
+│   │   [v2] [v1] [v1] [v1] + [v2]                                │    │
+│   │     ↓    ↓                                                  │    │
+│   │   [v2] [v2] [v2] [v2] (terminate extra)                     │    │
+│   │                                                             │    │
+│   │   ✅ Full capacity during deployment                        │    │
+│   │   ⚠️ Tốn thêm cost cho extra instances                      │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   4. IMMUTABLE (New ASG, safest)                                     │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   ASG 1: [v1] [v1] [v1] [v1] (existing)                     │    │
+│   │                  +                                          │    │
+│   │   ASG 2: [v2] [v2] [v2] [v2] (new, temporary)               │    │
+│   │                  ↓                                          │    │
+│   │   Merge ASG 2 into ASG 1, terminate old instances           │    │
+│   │                                                             │    │
+│   │   ✅ Fastest rollback (terminate new ASG)                   │    │
+│   │   ✅ Full capacity                                          │    │
+│   │   ⚠️ Double capacity cost during deployment                 │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│   5. BLUE/GREEN (Separate environment)                               │
+│   ┌─────────────────────────────────────────────────────────────┐    │
+│   │   Blue (Prod):  [v1] [v1] [v1] [v1] ←── DNS                 │    │
+│   │                                          │                   │   │
+│   │   Green (New):  [v2] [v2] [v2] [v2]      │                   │   │
+│   │                        ↓                  │                  │   │
+│   │   Swap DNS ─────────────────────────────→│                   │   │
+│   │                                                             │    │
+│   │   ✅ Zero downtime                                          │    │
+│   │   ✅ Easy rollback (swap back)                              │    │
+│   │   ⚠️ Cần 2 environments (gấp đôi cost)                      │    │
+│   └─────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### So sánh Deployment Policies
@@ -398,15 +398,15 @@ eb config --cfg my-config
 ### Option 1: RDS trong Beanstalk (NOT recommended for prod)
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────┐
 │   ⚠️ WARNING: RDS lifecycle tied to environment!                     │
-│                                                                     │
-│   Environment                                                       │
-│   ├── EC2 Instances                                                 │
-│   └── RDS Instance ← Bị XÓA khi terminate environment!              │
-│                                                                     │
-│   Use case: Dev/Test only                                           │
-└─────────────────────────────────────────────────────────────────────┘
+│                                                                      │
+│   Environment                                                        │
+│   ├── EC2 Instances                                                  │
+│   └── RDS Instance ← Bị XÓA khi terminate environment!               │
+│                                                                      │
+│   Use case: Dev/Test only                                            │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Option 2: RDS bên ngoài (Recommended for prod)

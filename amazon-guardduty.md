@@ -205,20 +205,20 @@ Phát hiện suspicious login attempts vào Amazon RDS databases.
 ### 4. Lambda Protection
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Lambda Protection                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Giám sát VPC network activity của Lambda functions:            │
-│                                                                 │
-│  ├── Communication với known malicious IPs/domains              │
-│  ├── Crypto-mining activity                                     │
-│  ├── Command & Control (C2) communication                       │
-│  └── Data exfiltration qua network                              │
-│                                                                 │
+┌──────────────────────────────────────────────────────────────────┐
+│                     Lambda Protection                            │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Giám sát VPC network activity của Lambda functions:             │
+│                                                                  │
+│  ├── Communication với known malicious IPs/domains               │
+│  ├── Crypto-mining activity                                      │
+│  ├── Command & Control (C2) communication                        │
+│  └── Data exfiltration qua network                               │
+│                                                                  │
 │  ⚠️ Chỉ áp dụng cho Lambda functions chạy trong VPC              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### 5. Malware Protection

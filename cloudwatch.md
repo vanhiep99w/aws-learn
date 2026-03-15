@@ -720,33 +720,33 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
 ### 1. Dashboard Features
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      CLOUDWATCH DASHBOARD EXAMPLE                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  Production Overview                                      [Time: Last 3h ▼] │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────────────────────┐  ┌─────────────────────────────┐           │
-│  │  📈 EC2 CPU Utilization     │  │  📈 RDS Connections         │           │
-│  │  ┌─────────────────────┐    │  │  ┌─────────────────────┐     │          │
-│  │  │     ___/\___        │    │  │  │   ___    ___        │     │          │
-│  │  │    /       \        │    │  │  │  /   \__/   \___    │     │          │
-│  │  │___/         \___    │    │  │  │_/               \_  │     │          │
-│  │  └─────────────────────┘    │  │  └─────────────────────┘     │          │
-│  │  Avg: 45%  Max: 78%         │  │  Current: 127  Max: 200     │           │
-│  └─────────────────────────────┘  └─────────────────────────────┘           │
-│                                                                             │
-│  ┌─────────────────────────────┐  ┌─────────────────────────────┐           │
-│  │  📊 Lambda Errors (Table)   │  │  🔢 Active Alarms           │           │
-│  │  ┌─────────────────────┐    │  │                              │          │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                      CLOUDWATCH DASHBOARD EXAMPLE                            │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  Production Overview                                      [Time: Last 3h ▼]  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────────────────────┐  ┌─────────────────────────────┐            │
+│  │  📈 EC2 CPU Utilization     │  │  📈 RDS Connections         │            │
+│  │  ┌─────────────────────┐    │  │  ┌─────────────────────┐      │          │
+│  │  │     ___/\___        │    │  │  │   ___    ___        │      │          │
+│  │  │    /       \        │    │  │  │  /   \__/   \___    │      │          │
+│  │  │___/         \___    │    │  │  │_/               \_  │      │          │
+│  │  └─────────────────────┘    │  │  └─────────────────────┘      │          │
+│  │  Avg: 45%  Max: 78%         │  │  Current: 127  Max: 200     │            │
+│  └─────────────────────────────┘  └─────────────────────────────┘            │
+│                                                                              │
+│  ┌─────────────────────────────┐  ┌─────────────────────────────┐            │
+│  │  📊 Lambda Errors (Table)   │  │  🔢 Active Alarms           │            │
+│  │  ┌─────────────────────┐    │  │                               │          │
 │  │  │ Function   | Errors │    │  │  ⚠️  HighCPU-Web-Server       │          │
 │  │  │ OrderProc  |   3    │    │  │  ⚠️  LowDiskSpace-DB          │          │
-│  │  │ PaymentSvc |   0    │    │  │  ✅  All other alarms OK     │          │
-│  │  │ UserAuth   |   1    │    │  │                              │          │
-│  │  └─────────────────────┘    │  │                              │          │
-│  └─────────────────────────────┘  └─────────────────────────────┘           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│  │  │ PaymentSvc |   0    │    │  │  ✅  All other alarms OK      │          │
+│  │  │ UserAuth   |   1    │    │  │                               │          │
+│  │  └─────────────────────┘    │  │                               │          │
+│  └─────────────────────────────┘  └─────────────────────────────┘            │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 2. Widget Types
@@ -1197,30 +1197,30 @@ Log Group: /aws/lambda/order-service     ← Container (billing, retention)
 ## Tổng Kết
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      CLOUDWATCH KEY TAKEAWAYS                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ✅ Metrics: Time-series data, default + custom, 1-second to 5-min res      │
-│                                                                             │
-│  ✅ Logs: Centralized logging, retention policies, Insights for queries     │
-│                                                                             │
-│  ✅ Alarms: Threshold-based alerts, 3 states (OK/ALARM/INSUFFICIENT)        │
-│                                                                             │
-│  ✅ Agent: Required for Memory/Disk metrics and custom logs                 │
-│                                                                             │
-│  ✅ Dashboards: Unified visualization, cross-account/region support         │
-│                                                                             │
-│  ✅ Canaries: Synthetic monitoring for endpoints and workflows              │
-│                                                                             │
-│  ✅ Container Insights: EKS/ECS monitoring with cluster/pod/container       │
-│                         level metrics                                       │
-│                                                                             │
-│  ✅ ServiceLens: End-to-end observability with X-Ray integration            │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                      CLOUDWATCH KEY TAKEAWAYS                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ✅ Metrics: Time-series data, default + custom, 1-second to 5-min res       │
+│                                                                              │
+│  ✅ Logs: Centralized logging, retention policies, Insights for queries      │
+│                                                                              │
+│  ✅ Alarms: Threshold-based alerts, 3 states (OK/ALARM/INSUFFICIENT)         │
+│                                                                              │
+│  ✅ Agent: Required for Memory/Disk metrics and custom logs                  │
+│                                                                              │
+│  ✅ Dashboards: Unified visualization, cross-account/region support          │
+│                                                                              │
+│  ✅ Canaries: Synthetic monitoring for endpoints and workflows               │
+│                                                                              │
+│  ✅ Container Insights: EKS/ECS monitoring with cluster/pod/container        │
+│                         level metrics                                        │
+│                                                                              │
+│  ✅ ServiceLens: End-to-end observability with X-Ray integration             │
+│                                                                              │
 │  ⚠️  Memory & Disk Space: NOT default metrics - need CloudWatch Agent        │
-│                                                                             │
+│                                                                              │
 │  ⚠️  Log retention: Default is "Never Expire" - SET RETENTION POLICY!        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```

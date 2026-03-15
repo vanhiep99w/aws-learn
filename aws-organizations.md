@@ -42,32 +42,32 @@ Với Organizations, bạn có thể:
 | Quản lý security rời rạc | **Centralized governance** - policy inheritance |
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AWS Organizations                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│                              ┌─────────────┐                                │
-│                              │    ROOT     │ ← Administrative Root          │
-│                              │             │                                │
-│                              └──────┬──────┘                                │
-│                                     │                                       │
-│                     ┌───────────────┼───────────────┐                       │
-│                     │               │               │                       │
-│               ┌─────▼─────┐  ┌─────▼─────┐  ┌─────▼─────┐                   │
-│               │    OU     │  │    OU     │  │    OU     │  ← Organizational │
-│               │Production │  │   Dev     │  │ Security  │    Units (OUs)    │
-│               └─────┬─────┘  └─────┬─────┘  └─────┬─────┘                   │
-│                     │              │              │                         │
-│               ┌─────┴─────┐  ┌─────┴─────┐  ┌─────┴─────┐                   │
-│               │  Account  │  │  Account  │  │  Account  │ ← Member Accounts │
-│               │  Account  │  │  Account  │  │           │                   │
-│               └───────────┘  └───────────┘  └───────────┘                   │
-│                                                                             │
-│                     ┌───────────────────────────────┐                       │
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                           AWS Organizations                                                                   │
+├───────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                               │
+│                              ┌─────────────┐                                                                  │
+│                              │    ROOT     │ ← Administrative Root                                            │
+│                              │                                               │                                │
+│                              └──────┬──────┘                                                                  │
+│                                                                       │                                       │
+│                     ┌───────────────┼───────────────┐                                                         │
+│                     │               │                                                 │                       │
+│               ┌─────▼─────┐  ┌─────▼─────┐  ┌─────▼─────┐                                                     │
+│               │    OU     │  │    OU     │  │    OU     │  ← Organizational                                   │
+│               │Production │  │   Dev     │  │ Security  │    Units (OUs)                                      │
+│               └─────┬─────┘  └─────┬─────┘  └─────┬─────┘                                                     │
+│                     │              │                                                │                         │
+│               ┌─────┴─────┐  ┌─────┴─────┐  ┌─────┴─────┐                                                     │
+│               │  Account  │  │  Account  │  │  Account  │ ← Member Accounts                                   │
+│               │  Account  │  │  Account  │  │                                             │                   │
+│               └───────────┘  └───────────┘  └───────────┘                                                     │
+│                                                                                                               │
+│                     ┌───────────────────────────────┐                                                         │
 │                     │  Policies: SCPs, RCPs, Tag Policies, Backup Policies, etc.      │                       │
-│                     └───────────────────────────────┘                       │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│                     └───────────────────────────────┘                                                         │
+│                                                                                                               │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -190,40 +190,40 @@ AWS Organizations hỗ trợ 2 feature sets:
 - ❌ **KHÔNG có AWS service integrations** - Không thể enable GuardDuty, Security Hub cho organization
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Feature Sets Comparison                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Consolidated Billing Only              All Features                       │
-│   ┌─────────────────────────────┐       ┌─────────────────────────────┐     │
-│   │                             │       │                             │     │
-│   │  💰 BILLING ONLY            │       │  💰 BILLING                 │     │
-│   │  ────────────────────────   │       │  ────────────────────────   │     │
-│   │  • Single bill              │       │  • Single bill              │     │
-│   │  • Volume discounts         │       │  • Volume discounts         │     │
-│   │  • Share RIs                │       │  • Share RIs                │     │
-│   │  • Share Savings Plans      │       │  • Share Savings Plans      │     │
-│   │                             │       │                             │     │
-│   │                             │       │  🔐 GOVERNANCE              │     │
-│   │                             │       │  ────────────────────────   │     │
-│   │  ❌ No SCPs                 │       │  • SCPs                     │     │
-│   │  ❌ No RCPs                 │       │  • RCPs                     │     │
-│   │  ❌ No Tag Policies         │       │  • Tag Policies             │     │
-│   │  ❌ No Backup Policies      │       │  • Backup Policies          │     │
-│   │                             │       │                             │     │
-│   │                             │       │  🔗 INTEGRATIONS            │     │
-│   │                             │       │  ────────────────────────   │     │
-│   │  ❌ No service integrations │       │  • GuardDuty                │     │
-│   │                             │       │  • Security Hub             │     │
-│   │                             │       │  • CloudTrail Org           │     │
-│   │                             │       │  • IAM Identity Center      │     │
-│   │                             │       │  • + 50 more services       │     │
-│   └─────────────────────────────┘       └─────────────────────────────┘     │
-│                                                                             │
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         Feature Sets Comparison                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Consolidated Billing Only              All Features                        │
+│   ┌─────────────────────────────┐       ┌─────────────────────────────┐      │
+│   │                             │       │                             │      │
+│   │  💰 BILLING ONLY            │       │  💰 BILLING                 │      │
+│   │  ────────────────────────   │       │  ────────────────────────   │      │
+│   │  • Single bill              │       │  • Single bill              │      │
+│   │  • Volume discounts         │       │  • Volume discounts         │      │
+│   │  • Share RIs                │       │  • Share RIs                │      │
+│   │  • Share Savings Plans      │       │  • Share Savings Plans      │      │
+│   │                             │       │                             │      │
+│   │                             │       │  🔐 GOVERNANCE              │      │
+│   │                             │       │  ────────────────────────   │      │
+│   │  ❌ No SCPs                 │       │  • SCPs                     │      │
+│   │  ❌ No RCPs                 │       │  • RCPs                     │      │
+│   │  ❌ No Tag Policies         │       │  • Tag Policies             │      │
+│   │  ❌ No Backup Policies      │       │  • Backup Policies          │      │
+│   │                             │       │                             │      │
+│   │                             │       │  🔗 INTEGRATIONS            │      │
+│   │                             │       │  ────────────────────────   │      │
+│   │  ❌ No service integrations │       │  • GuardDuty                │      │
+│   │                             │       │  • Security Hub             │      │
+│   │                             │       │  • CloudTrail Org           │      │
+│   │                             │       │  • IAM Identity Center      │      │
+│   │                             │       │  • + 50 more services       │      │
+│   └─────────────────────────────┘       └─────────────────────────────┘      │
+│                                                                              │
 │   ⚠️ Legacy mode                        ✅ Recommended                       │
-│   (Không nên sử dụng cho new orgs)      (Default cho new organizations)     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+│   (Không nên sử dụng cho new orgs)      (Default cho new organizations)      │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 > [!WARNING]
@@ -780,31 +780,31 @@ Ví dụ thực tế:
 ### 8.1. Cách hoạt động
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    CONSOLIDATED BILLING                         │
-│                                                                 │
-│  ┌─────────────────┐                                            │
-│  │ Management      │ ◄─── Receives ONE combined bill            │
-│  │ Account (Payer) │                                            │
-│  └────────┬────────┘                                            │
-│           │                                                     │
-│    Aggregates usage from:                                       │
-│           │                                                     │
-│  ┌────────┼────────┬──────────────┬──────────────┐              │
-│  ▼        ▼        ▼              ▼              ▼              │
-│ ┌───┐   ┌───┐    ┌───┐         ┌───┐         ┌───┐              │
-│ │Dev│   │Stg│    │Prod│         │QA │         │DR│              │
+┌───────────────────────────────────────────────────────────────────┐
+│                    CONSOLIDATED BILLING                           │
+│                                                                   │
+│  ┌─────────────────┐                                              │
+│  │ Management      │ ◄─── Receives ONE combined bill              │
+│  │ Account (Payer) │                                              │
+│  └────────┬────────┘                                              │
+│             │                                                     │
+│    Aggregates usage from:                                         │
+│             │                                                     │
+│  ┌────────┼────────┬──────────────┬──────────────┐                │
+│  ▼        ▼        ▼              ▼              ▼                │
+│ ┌───┐   ┌───┐    ┌───┐         ┌───┐         ┌───┐                │
+│ │Dev│   │Stg│    │Prod│         │QA │         │DR  │              │
 │ │$50│   │$30│    │$500│         │$20│         │$100│              │
-│ └───┘   └───┘    └───┘         └───┘         └───┘              │
-│                                                                 │
-│ TOTAL = $50 + $30 + $500 + $20 + $100 = $700/month              │
-│                                                                 │
-│ BENEFITS:                                                       │
-│ • Volume discounts (aggregated usage)                           │
-│ • Shared Reserved Instances                                     │
-│ • Shared Savings Plans                                          │
-│ • Single payment method                                         │
-└─────────────────────────────────────────────────────────────────┘
+│ └───┘   └───┘    └───┘         └───┘         └───┘                │
+│                                                                   │
+│ TOTAL = $50 + $30 + $500 + $20 + $100 = $700/month                │
+│                                                                   │
+│ BENEFITS:                                                         │
+│ • Volume discounts (aggregated usage)                             │
+│ • Shared Reserved Instances                                       │
+│ • Shared Savings Plans                                            │
+│ • Single payment method                                           │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ### 8.2. Lợi ích chính

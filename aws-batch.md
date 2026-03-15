@@ -71,34 +71,34 @@
 ### Use Cases phổ biến
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      AWS BATCH USE CASES                            │
-│                                                                     │
-│  1. 🎬 MEDIA PROCESSING                                             │
-│     ├── Video transcoding (1000s videos cùng lúc)                   │
-│     ├── Image processing pipelines                                  │
-│     └── Audio normalization                                         │
-│                                                                     │
-│  2. 🧬 SCIENTIFIC COMPUTING                                         │
-│     ├── Genomics data analysis                                      │
-│     ├── Drug discovery simulations                                  │
-│     └── Climate modeling                                            │
-│                                                                     │
-│  3. 🤖 MACHINE LEARNING                                             │
-│     ├── Model training (đặc biệt với GPU)                           │
-│     ├── Hyperparameter tuning                                       │
-│     └── Batch inference                                             │
-│                                                                     │
-│  4. 📊 DATA PROCESSING                                              │
-│     ├── ETL jobs (Extract, Transform, Load)                         │
-│     ├── Log processing                                              │
-│     └── Financial simulations                                       │
-│                                                                     │
+┌──────────────────────────────────────────────────────────────────────┐
+│                      AWS BATCH USE CASES                             │
+│                                                                      │
+│  1. 🎬 MEDIA PROCESSING                                              │
+│     ├── Video transcoding (1000s videos cùng lúc)                    │
+│     ├── Image processing pipelines                                   │
+│     └── Audio normalization                                          │
+│                                                                      │
+│  2. 🧬 SCIENTIFIC COMPUTING                                          │
+│     ├── Genomics data analysis                                       │
+│     ├── Drug discovery simulations                                   │
+│     └── Climate modeling                                             │
+│                                                                      │
+│  3. 🤖 MACHINE LEARNING                                              │
+│     ├── Model training (đặc biệt với GPU)                            │
+│     ├── Hyperparameter tuning                                        │
+│     └── Batch inference                                              │
+│                                                                      │
+│  4. 📊 DATA PROCESSING                                               │
+│     ├── ETL jobs (Extract, Transform, Load)                          │
+│     ├── Log processing                                               │
+│     └── Financial simulations                                        │
+│                                                                      │
 │  5. 🏗️ RENDERING                                                     │
-│     ├── 3D rendering (Animation studios)                            │
-│     ├── VFX processing                                              │
-│     └── Architectural visualization                                 │
-└─────────────────────────────────────────────────────────────────────┘
+│     ├── 3D rendering (Animation studios)                             │
+│     ├── VFX processing                                               │
+│     └── Architectural visualization                                  │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -310,25 +310,25 @@ aws batch submit-job \
 ### 4. Compute Environment
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    COMPUTE ENVIRONMENT                              │
-│                                                                     │
-│   = Compute resources để chạy jobs                                  │
-│   = Tương tự ECS Cluster                                            │
-│                                                                     │
-│   2 LOẠI CHÍNH:                                                     │
-│                                                                     │
-│   ┌───────────────────────────┐  ┌───────────────────────────┐      │
-│   │    MANAGED (AWS quản lý)  │  │  UNMANAGED (Bạn quản lý)  │      │
-│   │                           │  │                           │      │
-│   │  AWS tự động:             │  │  Bạn phải:                │      │
-│   │  - Provision EC2/Fargate  │  │  - Tự tạo ECS cluster     │      │
-│   │  - Scale lên/xuống        │  │  - Tự scale instances     │      │
-│   │  - Patch instances        │  │  - Tự manage lifecycle    │      │
-│   │                           │  │                           │      │
-│   │  ✅ Recommended           │  │  ⚠️ Advanced use cases     │      │
-│   └───────────────────────────┘  └───────────────────────────┘      │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    COMPUTE ENVIRONMENT                               │
+│                                                                      │
+│   = Compute resources để chạy jobs                                   │
+│   = Tương tự ECS Cluster                                             │
+│                                                                      │
+│   2 LOẠI CHÍNH:                                                      │
+│                                                                      │
+│   ┌───────────────────────────┐  ┌───────────────────────────┐       │
+│   │    MANAGED (AWS quản lý)  │  │  UNMANAGED (Bạn quản lý)  │       │
+│   │                           │  │                           │       │
+│   │  AWS tự động:             │  │  Bạn phải:                │       │
+│   │  - Provision EC2/Fargate  │  │  - Tự tạo ECS cluster     │       │
+│   │  - Scale lên/xuống        │  │  - Tự scale instances     │       │
+│   │  - Patch instances        │  │  - Tự manage lifecycle    │       │
+│   │                           │  │                           │       │
+│   │  ✅ Recommended           │  │  ⚠️ Advanced use cases    │       │
+│   └───────────────────────────┘  └───────────────────────────┘       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Managed Compute Environment - EC2:**
