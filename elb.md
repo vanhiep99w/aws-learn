@@ -67,12 +67,12 @@ Nếu cần load balance **cross-region**, dùng **Global service** đứng phí
                             User Request
                                  │
                                  ▼
-                    ┌─────────────────────────┐
+                    ┌──────────────────────────┐
                     │  GLOBAL SERVICE          │
                     │  • Route 53 (DNS)        │
                     │  • Global Accelerator    │
                     │  • CloudFront            │
-                    └───────────┬─────────────┘
+                    └───────────┬──────────────┘
                                 │
               ┌─────────────────┼─────────────────┐
               ▼                                   ▼
@@ -462,10 +462,10 @@ ELB liên tục kiểm tra sức khỏe của targets:
 └─────────┘   GET /health HTTP/1.1       └─────────┘
                      │
                      ▼
-              ┌──────────────┐
-              │ Healthy: 2xx │
+              ┌────────────────┐
+              │ Healthy: 2xx   │
               │ Unhealthy: else│
-              └──────────────┘
+              └────────────────┘
 ```
 
 | Parameter | Default | Mô tả |

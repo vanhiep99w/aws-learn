@@ -1321,7 +1321,7 @@ aws rds create-db-instance-read-replica \
 
 ```
                     ┌──────────────────┐
-     Writes ───────▶│  Primary (RW)   │
+     Writes ───────▶│  Primary (RW)    │
                     └────────┬─────────┘
                              │ Async Replication
               ┌──────────────┼──────────────┐

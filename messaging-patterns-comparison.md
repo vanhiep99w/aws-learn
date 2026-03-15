@@ -53,12 +53,12 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   Khách gọi món                                         │   │
 │   │        ↓                                                │   │
 │   │   [Đơn1] [Đơn2] [Đơn3] [Đơn4] [Đơn5]  ← Queue           │   │
-│   │        │                                                 │  │
+│   │        │                                                │   │
 │   │        ↓ (đầu bếp PULL đơn từ queue)                    │   │
-│   │   ┌────────┐  ┌────────┐  ┌────────┐                     │  │
-│   │   │ Bếp 1  │  │ Bếp 2  │  │ Bếp 3  │  ← Consumers        │  │
-│   │   │ [Đơn1] │  │ [Đơn2] │  │ [Đơn3] │                     │  │
-│   │   └────────┘  └────────┘  └────────┘                     │  │
+│   │   ┌────────┐  ┌────────┐  ┌────────┐                    │   │
+│   │   │ Bếp 1  │  │ Bếp 2  │  │ Bếp 3  │  ← Consumers       │   │
+│   │   │ [Đơn1] │  │ [Đơn2] │  │ [Đơn3] │                    │   │
+│   │   └────────┘  └────────┘  └────────┘                    │   │
 │   │                                                         │   │
 │   │   → Mỗi đầu bếp nhận 1 đơn khác nhau (load balancing)   │   │
 │   │   → Làm xong → Đơn BIẾN MẤT khỏi queue                  │   │

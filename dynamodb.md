@@ -154,24 +154,24 @@ Operational Overhead:
 │                                                                     │
 │  ITEM 1:                                                            │
 │  ┌─────────────┬────────────────────────────────────────────────┐   │
-│  │ MovieID     │ 101                                              │ │
-│  │ ReleaseYear │ 2024                                             │ │
-│  │ Title       │ "The Cloud Architecture"                         │ │
-│  │ Genre       │ ["Action", "Sci-Fi"]                             │ │
-│  │ Rating      │ 8.5                                              │ │
+│  │ MovieID     │ 101                                            │   │
+│  │ ReleaseYear │ 2024                                           │   │
+│  │ Title       │ "The Cloud Architecture"                       │   │
+│  │ Genre       │ ["Action", "Sci-Fi"]                           │   │
+│  │ Rating      │ 8.5                                            │   │
 │  │ BoxOffice   │ { "domestic": 5000000, "international": 8000000 }│ │
-│  │ IsAvailable │ true                                             │ │
+│  │ IsAvailable │ true                                           │   │
 │  └─────────────┴────────────────────────────────────────────────┘   │
 │                                                                     │
 │  ITEM 2:                                                            │
 │  ┌─────────────┬────────────────────────────────────────────────┐   │
-│  │ MovieID     │ 102                                              │ │
-│  │ ReleaseYear │ 2023                                             │ │
-│  │ Title       │ "Serverless Adventures"                          │ │
-│  │ Genre       │ ["Comedy"]                                       │ │
-│  │ Rating      │ 7.2                                              │ │
-│  │ BoxOffice   │ { "domestic": 3000000 }                          │ │
-│  │ IsAvailable │ false                                            │ │
+│  │ MovieID     │ 102                                            │   │
+│  │ ReleaseYear │ 2023                                           │   │
+│  │ Title       │ "Serverless Adventures"                        │   │
+│  │ Genre       │ ["Comedy"]                                     │   │
+│  │ Rating      │ 7.2                                            │   │
+│  │ BoxOffice   │ { "domestic": 3000000 }                        │   │
+│  │ IsAvailable │ false                                          │   │
 │  └─────────────┴────────────────────────────────────────────────┘   │
 │                                                                     │
 │  NOTES:                                                             │

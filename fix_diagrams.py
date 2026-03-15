@@ -78,6 +78,11 @@ def display_width(s):
 
 
 def fix_box_group(lines, start, end, target_dw):
+    # Determine indent from the header line
+    header = lines[start]
+    header_stripped = header.lstrip()
+    box_indent = len(header) - len(header_stripped)
+
     for i in range(start, end + 1):
         line = lines[i]
         if not line or len(line) < 2:
@@ -91,63 +96,67 @@ def fix_box_group(lines, start, end, target_dw):
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
 
-        # === Outer border line (indent 0, all border chars) ===
-        if indent == 0 and stripped and stripped[0] in '┌├└' and stripped[-1] in '┐┤┘':
+        # === Outer border line (same indent as box, all border chars) ===
+        if indent == box_indent and stripped and stripped[0] in '┌├└╔╠╚' and stripped[-1] in '┐┤┘╗╣╝':
             inner = stripped[1:-1]
-            border_chars = set('─┬┴┼')
+            border_chars = set('─┬┴┼═╦╩╬')
             if all(c in border_chars for c in inner):
+                fill = '═' if '═' in inner else '─'
                 if diff > 0:
-                    lines[i] = stripped[:-1] + '─' * diff + stripped[-1]
+                    lines[i] = line[:box_indent] + stripped[:-1] + fill * diff + stripped[-1]
                 elif diff < 0:
                     j = len(stripped) - 2
-                    while j > 0 and stripped[j] == '─':
+                    while j > 0 and stripped[j] in '─═':
                         j -= 1
                     removable = len(stripped) - 2 - j
                     if removable >= abs(diff):
-                        lines[i] = stripped[:len(stripped) - 1 + diff] + stripped[-1]
+                        lines[i] = line[:box_indent] + stripped[:len(stripped) - 1 + diff] + stripped[-1]
             continue
 
-        # Only process lines ending with │ or ┤
-        if line[-1] not in '│┤':
+        # Only process lines ending with │, ┤, or ║
+        if line[-1] not in '│┤║':
             continue
 
-        # === Inner border line: ends with ┐│ or ┘│ or ┤│ ===
-        if len(line) >= 2 and line[-1] == '│' and line[-2] in '┐┘┤':
+        # === Inner border line: ends with ┐│ or ┘│ or ┤│ or ╗║ or ╝║ or ╣║ ===
+        if len(line) >= 2 and line[-2] in '┐┘┤╗╝╣':
+            fill = '═' if line[-2] in '╗╝╣' else '─'
             if diff > 0:
-                lines[i] = line[:-2] + '─' * diff + line[-2:]
+                lines[i] = line[:-2] + fill * diff + line[-2:]
             elif diff < 0:
                 pre = line[:-2]
                 j = len(pre) - 1
-                while j >= 0 and pre[j] == '─':
+                while j >= 0 and pre[j] in '─═':
                     j -= 1
                 removable = len(pre) - 1 - j
                 if removable >= abs(diff):
                     lines[i] = pre[:len(pre) + diff] + line[-2:]
             continue
 
-        # === Border line ending with just ┤ (no outer │ after it) ===
-        if line[-1] == '┤':
+        # === Border line ending with just ┤ or ║ (no outer │ after it) ===
+        if line[-1] in '┤║':
+            fill = '═' if line[-1] == '║' else '─'
             if diff > 0:
-                lines[i] = line[:-1] + '─' * diff + '┤'
+                lines[i] = line[:-1] + fill * diff + line[-1]
             elif diff < 0:
                 pre = line[:-1]
                 j = len(pre) - 1
-                while j >= 0 and pre[j] == '─':
+                while j >= 0 and pre[j] in '─═':
                     j -= 1
                 removable = len(pre) - 1 - j
                 if removable >= abs(diff):
-                    lines[i] = pre[:len(pre) + diff] + '┤'
+                    lines[i] = pre[:len(pre) + diff] + line[-1]
             continue
 
         # === Content line ending with │ ===
-        # Detect pattern: ...│  │ or ...│ │ or ...││ (inner border + spaces + outer border)
+        # Detect pattern: ...│  │ or ...│ │ or ...││ or ...║  │ or ...║│
+        # (inner border + spaces + outer border)
         # vs simple ...content  │ (just content + spaces + outer border)
         #
-        # Strategy: find the second-to-last │. If there are only spaces between
-        # second-to-last │ and last │, this is an "inner + outer border" pattern.
-        # In that case, preserve the "  │" suffix and pad/trim the content before it.
+        # Strategy: find the second-to-last │/║. If there are only spaces between
+        # second-to-last │/║ and last │, this is an "inner + outer border" pattern.
+        # In that case, preserve the suffix and pad/trim the content before it.
 
-        pipes = [j for j, c in enumerate(line) if c == '│']
+        pipes = [j for j, c in enumerate(line) if c in '│║']
 
         if len(pipes) >= 3:
             second_last = pipes[-2]
@@ -192,8 +201,8 @@ def fix_box_group(lines, start, end, target_dw):
                 lines[i] = trimmed + ' ' * (available + diff) + '│'
 
 
-VERT_BORDERS = set('│┌┐└┘')
-BORDER_FILL = set('─┬┴┼')
+VERT_BORDERS = set('│┌┐└┘║╔╗╚╝')
+BORDER_FILL = set('─┬┴┼═╦╩╬')
 
 
 def split_at_vert(line):
@@ -334,41 +343,50 @@ def fix_line_columns(lines, idx, target_widths):
 
 def fix_code_block(lines):
     groups = []
+    processed = set()  # track lines already in a group
     i = 0
     while i < len(lines):
+        if i in processed:
+            i += 1
+            continue
         line = lines[i]
         stripped = line.lstrip()
         indent_len = len(line) - len(stripped)
 
-        if indent_len == 0 and stripped and stripped[0] == '┌' and stripped[-1] == '┐':
+        if stripped and stripped[0] in '┌╔' and stripped[-1] in '┐╗':
             # Skip side-by-side boxes (multiple ┌ on the same line)
-            if stripped.count('┌') > 1:
+            if stripped.count('┌') + stripped.count('╔') > 1:
                 i += 1
                 continue
-            header_dw = display_width(stripped)
+            # Determine matching close chars
+            close_left = '└' if stripped[0] == '┌' else '╚'
+            close_right = '┘' if stripped[-1] == '┐' else '╝'
+            header_dw = display_width(line)
             end = None
             for j in range(i + 1, len(lines)):
                 sj = lines[j].lstrip()
                 ij = len(lines[j]) - len(sj)
-                if ij == 0 and sj and sj[0] == '└' and sj[-1] == '┘':
+                if ij == indent_len and sj and sj[0] == close_left and sj[-1] == close_right:
                     end = j
                     break
             if end is not None:
                 # Find max display width across lines that end with
-                # box border characters (│┤) — these define the box width.
-                # Lines ending with ┐┘ are corner chars (inner sub-boxes or
+                # box border characters (│┤║) — these define the box width.
+                # Lines ending with ┐┘╗╝ are corner chars (inner sub-boxes or
                 # connectors) and should not influence the target.
                 # Lines ending with other chars (← comments, free-form text)
                 # are "overflow" and should not influence the target.
                 max_dw = header_dw
                 for k in range(i, end + 1):
                     ln = lines[k]
-                    if ln and ln[-1] in '│┤':
+                    if ln and ln[-1] in '│┤║':
                         dw = display_width(ln)
                         if dw > max_dw:
                             max_dw = dw
                 target_dw = max_dw
                 groups.append((i, end, target_dw))
+                for k in range(i, end + 1):
+                    processed.add(k)
                 i = end + 1
             else:
                 i += 1

@@ -490,10 +490,10 @@ Resources:
 │  │                     Management Account                                │  │
 │  │                        (Aggregator)                                   │  │
 │  │  ┌─────────────────────────────────────────────────────────────────┐   │ │
-│  │  │              Aggregated Dashboard                                │  │ │
-│  │  │  • Compliance summary across all accounts                        │  │ │
-│  │  │  • Resource inventory                                            │  │ │
-│  │  │  • Non-compliant resources                                       │  │ │
+│  │  │              Aggregated Dashboard                               │   │ │
+│  │  │  • Compliance summary across all accounts                       │   │ │
+│  │  │  • Resource inventory                                           │   │ │
+│  │  │  • Non-compliant resources                                      │   │ │
 │  │  └─────────────────────────────────────────────────────────────────┘   │ │
 │  └───────────────────────────────────────────────────────────────────────┘  │
 │                        ▲           ▲           ▲                            │

@@ -807,13 +807,13 @@ spec:
 │  │                                                                        │ │
 │  │  Root Cause Analysis:                                                  │ │
 │  │  ┌────────────────────────────────────────────────────────────────┐    │ │
-│  │  │                                                                 │   │ │
-│  │  │  payment-service                                                │   │ │
-│  │  │       ↓                                                         │   │ │
+│  │  │                                                                │    │ │
+│  │  │  payment-service                                               │    │ │
+│  │  │       ↓                                                        │    │ │
 │  │  │  Stripe API  ←── Connection Timeout (85% of errors)            │    │ │
-│  │  │       ↓                                                         │   │ │
+│  │  │       ↓                                                        │    │ │
 │  │  │  [External: api.stripe.com] ← Possible Third-Party Issue       │    │ │
-│  │  │                                                                 │   │ │
+│  │  │                                                                │    │ │
 │  │  └────────────────────────────────────────────────────────────────┘    │ │
 │  │                                                                        │ │
 │  │  Recommended Actions:                                                  │ │

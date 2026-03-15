@@ -869,10 +869,10 @@ User ở Tokyo                         User ở Paris
     ▼                                    ▼
    ┌─────────────────────────────────────────────────────┐
    │              Route 53 tra bảng latency              │
-   │   Tokyo → ap-northeast-1: 20ms                     │
-   │   Tokyo → eu-west-1: 250ms                         │
-   │   Paris → ap-northeast-1: 300ms                    │
-   │   Paris → eu-west-1: 15ms                          │
+   │   Tokyo → ap-northeast-1: 20ms                      │
+   │   Tokyo → eu-west-1: 250ms                          │
+   │   Paris → ap-northeast-1: 300ms                     │
+   │   Paris → eu-west-1: 15ms                           │
    └─────────────────────────────────────────────────────┘
     │                                    │
     ▼                                    ▼
@@ -1517,15 +1517,15 @@ Cả hai đều có khả năng "routing", nhưng hoạt động ở **tầng kh
 ```
                     Route 53 (Latency-based + Health Checks)
                             │
-         ┌──────────────────┴──────────────────┐
+         ┌──────────────────┴───────────────────────────┐
          ▼                                     ▼
     Singapore ✅ Healthy                   Tokyo ✅ Healthy
     ┌─────────────────┐               ┌─────────────────┐
     │ API Gateway     │               │ API Gateway     │
     │ Lambda/ECS      │               │ Lambda/ECS      │
-    │ RDS (Primary)   │◀── Sync ──▶  │ RDS (Replica)   │
+    │ RDS (Primary)   │◀── Sync ──▶  │ RDS (Replica)    │
     └─────────────────┘               └─────────────────┘
-         │                                     │
+         │                                              │
          └────────────── Cả 2 đều nhận traffic ───────────────┘
 ```
 
