@@ -11,3 +11,6 @@ src/content/docs/
 
 # Wrangler
 .wrangler/
+
+# Python
+__pycache__/
