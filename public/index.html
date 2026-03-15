@@ -82,8 +82,26 @@ nav{
 }
 
 /* ── Hero ── */
-.hero{
+.hero-wrapper{
   position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;
+  min-height:560px;
+}
+.hero-spline{
+  position:absolute;inset:0;z-index:0;
+  overflow:hidden;pointer-events:auto;
+}
+.hero-spline iframe{
+  width:100%;height:100%;border:none;
+  pointer-events:auto;
+}
+.hero-spline::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(12,14,20,.3) 0%,rgba(12,14,20,.1) 40%,rgba(12,14,20,.6) 100%);
+  pointer-events:none;
+}
+.hero{
+  position:relative;z-index:2;
   text-align:center;padding:100px 40px 60px;max-width:900px;margin:0 auto;
 }
 .hero-badge{
@@ -219,6 +237,7 @@ footer a:hover{color:var(--accent)}
 /* ── Responsive ── */
 @media(max-width:640px){
   nav{padding:16px 20px}
+  .hero-wrapper{min-height:420px}
   .hero{padding:60px 20px 40px}
   .hero h1{font-size:2.2rem}
   .stats{gap:32px}
@@ -252,22 +271,27 @@ footer a:hover{color:var(--accent)}
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-badge">
-    <span class="pulse"></span>
-    116 tài liệu AWS bằng tiếng Việt
+<div class="hero-wrapper">
+  <div class="hero-spline">
+    <iframe src="https://my.spline.design/boxeshover-YtNn5bYMBD3eCiHdBV4zU63f/" loading="lazy" title="3D Boxes"></iframe>
   </div>
-  <h1>Học AWS<br><span class="gradient">có hệ thống</span></h1>
-  <p>Tài liệu chi tiết về 116 dịch vụ AWS, tổ chức theo 21 chủ đề, từ cơ bản đến nâng cao. Hoàn toàn bằng tiếng Việt.</p>
-  <div class="hero-actions">
-    <a href="/fundamentals/aws-overview/" class="btn btn-primary">
-      Bắt đầu học <span class="arrow">→</span>
-    </a>
-    <a href="/beads/" class="btn btn-secondary">
-      Practice Q&A <span class="arrow">→</span>
-    </a>
-  </div>
-</section>
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      116 tài liệu AWS bằng tiếng Việt
+    </div>
+    <h1>Học AWS<br><span class="gradient">có hệ thống</span></h1>
+    <p>Tài liệu chi tiết về 116 dịch vụ AWS, tổ chức theo 21 chủ đề, từ cơ bản đến nâng cao. Hoàn toàn bằng tiếng Việt.</p>
+    <div class="hero-actions">
+      <a href="/fundamentals/aws-overview/" class="btn btn-primary">
+        Bắt đầu học <span class="arrow">→</span>
+      </a>
+      <a href="/beads/" class="btn btn-secondary">
+        Practice Q&A <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+</div>
 
 <div class="stats">
   <div class="stat">
