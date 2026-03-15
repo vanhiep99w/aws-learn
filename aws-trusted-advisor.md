@@ -39,7 +39,7 @@
 │   │   ┌────────────┐  ┌───────────┐  ┌───────────┐                      │   │
 │   │   │   COST     │  │PERFORMANCE│  │ SECURITY  │                      │   │
 │   │   │Optimization│  │           │  │           │                      │   │
-│   │   │    💰      │  │    ⚡      │  │    🔐     │                      │   │
+│   │   │    💰      │  │    ⚡      │  │    🔐     │                     │   │
 │   │   └────────────┘  └───────────┘  └───────────┘                      │   │
 │   │                                                                     │   │
 │   │   ┌────────────┐  ┌───────────┐                                     │   │
@@ -73,7 +73,7 @@
 ```
 Ví dụ:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚠️ Warning: You have 5 unassociated Elastic IP addresses                   │
+│  ⚠️ Warning: You have 5 unassociated Elastic IP addresses                    │
 │                                                                             │
 │  EIP: eip-abc123 - Not attached - $3.50/month wasted                        │
 │  EIP: eip-def456 - Not attached - $3.50/month wasted                        │
@@ -156,7 +156,7 @@ Ví dụ:
 ```
 Ví dụ:
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚠️ Warning: Service Quota Approaching Limit                                │
+│  ⚠️ Warning: Service Quota Approaching Limit                                 │
 │                                                                             │
 │  VPCs per Region: 4/5 (80%)                                                 │
 │  On-Demand EC2 Instances: 18/20 (90%)                                       │
@@ -343,7 +343,7 @@ Dành cho **Enterprise Support** - AWS Technical Account Manager (TAM) sẽ:
 │                                                                             │
 │  📊 5 CATEGORIES:                                                           │
 │     💰 Cost Optimization - Tìm cách tiết kiệm                               │
-│     ⚡ Performance - Cải thiện hiệu suất                                     │
+│     ⚡ Performance - Cải thiện hiệu suất                                    │
 │     🔐 Security - Phát hiện lỗ hổng                                         │
 │     🔄 Fault Tolerance - Tăng availability                                  │
 │     📊 Service Limits - Check quotas                                        │

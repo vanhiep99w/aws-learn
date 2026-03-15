@@ -46,16 +46,16 @@
 │  └──────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │  Supported OS:                                                              │
-│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐               │
-│  │ Windows 10 │ │ Windows 11 │ │ Amazon     │ │ Ubuntu     │               │
-│  │            │ │            │ │ Linux 2    │ │            │               │
-│  └────────────┘ └────────────┘ └────────────┘ └────────────┘               │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐                │
+│  │ Windows 10 │ │ Windows 11 │ │ Amazon     │ │ Ubuntu     │                │
+│  │            │ │            │ │ Linux 2    │ │            │                │
+│  └────────────┘ └────────────┘ └────────────┘ └────────────┘                │
 │                                                                             │
 │  Access via:                                                                │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐         │
-│  │ Windows  │ │ macOS    │ │ Linux    │ │ iPad     │ │ Web      │         │
-│  │ Client   │ │ Client   │ │ Client   │ │ Client   │ │ Browser  │         │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘         │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │ Windows  │ │ macOS    │ │ Linux    │ │ iPad     │ │ Web      │           │
+│  │ Client   │ │ Client   │ │ Client   │ │ Client   │ │ Browser  │           │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -83,12 +83,12 @@
 │                                        │        Your VPC             │      │
 │                                        │                             │      │
 │                                        │   ┌─────────────────────┐   │      │
-│                                        │   │  Directory Service   │   │      │
+│                                        │   │  Directory Service   │  │      │
 │                                        │   │  (AD / Simple AD)   │   │      │
 │                                        │   └─────────┬───────────┘   │      │
 │                                        │             │               │      │
 │                                        │   ┌─────────▼───────────┐   │      │
-│                                        │   │    WorkSpaces        │   │      │
+│                                        │   │    WorkSpaces        │  │      │
 │                                        │   │  ┌─────┐ ┌─────┐    │   │      │
 │                                        │   │  │ WS1 │ │ WS2 │    │   │      │
 │                                        │   │  └─────┘ └─────┘    │   │      │
@@ -123,19 +123,19 @@
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌───────────────────────────────────┐  ┌─────────────────────────────────┐ │
-│  │  🖥️  WorkSpaces PERSONAL          │  │  👥 WorkSpaces POOLS            │ │
-│  │  ───────────────────────────────  │  │  ───────────────────────────── │ │
-│  │                                   │  │                               │ │
-│  │  • 1 user = 1 dedicated desktop   │  │  • Shared pool of desktops    │ │
-│  │  • PERSISTENT storage             │  │  • NON-PERSISTENT storage     │ │
-│  │  • Cài đặt apps, lưu files        │  │  • Reset sau mỗi session      │ │
-│  │  • Personalized settings          │  │  • Giống nhau cho mọi user    │ │
-│  │                                   │  │                               │ │
-│  │  Best for:                        │  │  Best for:                    │ │
-│  │  → Developers                     │  │  → Call center agents         │ │
-│  │  → Knowledge workers              │  │  → Task workers               │ │
-│  │  → Long-term employees            │  │  → Seasonal/temporary staff   │ │
-│  │  → Power users                    │  │  → Shared workstations        │ │
+│  │  🖥️  WorkSpaces PERSONAL           │  │  👥 WorkSpaces POOLS            │ │
+│  │  ───────────────────────────────  │  │  ─────────────────────────────  │ │
+│  │                                   │  │                                 │ │
+│  │  • 1 user = 1 dedicated desktop   │  │  • Shared pool of desktops      │ │
+│  │  • PERSISTENT storage             │  │  • NON-PERSISTENT storage       │ │
+│  │  • Cài đặt apps, lưu files        │  │  • Reset sau mỗi session        │ │
+│  │  • Personalized settings          │  │  • Giống nhau cho mọi user      │ │
+│  │                                   │  │                                 │ │
+│  │  Best for:                        │  │  Best for:                      │ │
+│  │  → Developers                     │  │  → Call center agents           │ │
+│  │  → Knowledge workers              │  │  → Task workers                 │ │
+│  │  → Long-term employees            │  │  → Seasonal/temporary staff     │ │
+│  │  → Power users                    │  │  → Shared workstations          │ │
 │  └───────────────────────────────────┘  └─────────────────────────────────┘ │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -202,26 +202,26 @@ WorkSpaces **BẮT BUỘC** phải kết nối với một directory service đ�
 │                                                                             │
 │  Option 1: Simple AD (AWS Managed)                                          │
 │  ┌──────────────────────────────────────────────┐                           │
-│  │  • Standalone directory by AWS                │                           │
+│  │  • Standalone directory by AWS               │                           │
 │  │  • Small: ≤ 500 users | Large: ≤ 5,000 users │                           │
 │  │  • Best for: Small orgs, không có AD sẵn     │                           │
-│  │  • ⚠️ Không support MFA, trusts              │                           │
+│  │  • ⚠️ Không support MFA, trusts               │                           │
 │  └──────────────────────────────────────────────┘                           │
 │                                                                             │
 │  Option 2: AD Connector                                                     │
 │  ┌──────────────────────────────────────────────┐                           │
-│  │  • Proxy tới on-premises Active Directory     │                           │
-│  │  • Không lưu data trên AWS                    │                           │
+│  │  • Proxy tới on-premises Active Directory    │                           │
+│  │  • Không lưu data trên AWS                   │                           │
 │  │  • Best for: Có AD on-prem sẵn, hybrid       │                           │
-│  │  • ✅ Support MFA qua RADIUS                  │                           │
+│  │  • ✅ Support MFA qua RADIUS                 │                           │
 │  └──────────────────────────────────────────────┘                           │
 │                                                                             │
 │  Option 3: AWS Managed Microsoft AD                                         │
 │  ┌──────────────────────────────────────────────┐                           │
-│  │  • Full Microsoft AD trên AWS                 │                           │
-│  │  • Trust relationship với on-prem AD          │                           │
-│  │  • Best for: Enterprise, cần full AD features │                           │
-│  │  • ✅ Support MFA, Group Policies, Trusts     │                           │
+│  │  • Full Microsoft AD trên AWS                │                           │
+│  │  • Trust relationship với on-prem AD         │                           │
+│  │  • Best for: Enterprise, cần full AD features│                           │
+│  │  • ✅ Support MFA, Group Policies, Trusts    │                           │
 │  └──────────────────────────────────────────────┘                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -273,22 +273,22 @@ WorkSpaces **BẮT BUỘC** phải kết nối với một directory service đ�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Multi-Region Resilience                                   │
+│                    Multi-Region Resilience                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Primary Region (ap-southeast-1)     Standby Region (ap-northeast-1)        │
 │  ┌─────────────────────────────┐     ┌─────────────────────────────┐        │
 │  │                             │     │                             │        │
-│  │   ┌─────┐  ┌─────┐         │     │   ┌─────┐  ┌─────┐         │        │
-│  │   │ WS1 │  │ WS2 │  ACTIVE │     │   │ WS1'│  │ WS2'│ STANDBY │        │
-│  │   └─────┘  └─────┘         │     │   └─────┘  └─────┘         │        │
-│  │   ┌─────┐  ┌─────┐         │     │   ┌─────┐  ┌─────┐         │        │
-│  │   │ WS3 │  │ WS4 │         │     │   │ WS3'│  │ WS4'│         │        │
-│  │   └─────┘  └─────┘         │     │   └─────┘  └─────┘         │        │
+│  │   ┌─────┐  ┌─────┐         │     │   ┌─────┐  ┌─────┐           │        │
+│  │   │ WS1 │  │ WS2 │  ACTIVE │     │   │ WS1'│  │ WS2'│ STANDBY   │        │
+│  │   └─────┘  └─────┘         │     │   └─────┘  └─────┘           │        │
+│  │   ┌─────┐  ┌─────┐         │     │   ┌─────┐  ┌─────┐           │        │
+│  │   │ WS3 │  │ WS4 │         │     │   │ WS3'│  │ WS4'│           │        │
+│  │   └─────┘  └─────┘         │     │   └─────┘  └─────┘           │        │
 │  │                             │     │                             │        │
 │  └─────────────────────────────┘     └─────────────────────────────┘        │
 │                                                                             │
-│  Khi primary region gặp sự cố → Failover sang standby region               │
+│  Khi primary region gặp sự cố → Failover sang standby region                │
 │  • Chỉ cho WorkSpaces Personal                                              │
 │  • User data được sync cross-region                                         │
 │                                                                             │

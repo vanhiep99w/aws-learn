@@ -27,18 +27,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       Amazon GuardDuty                           │
-│       "Intelligent Threat Detection for AWS"                     │
+│                       Amazon GuardDuty                          │
+│       "Intelligent Threat Detection for AWS"                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐   │
 │   │  Machine    │ + │  Anomaly    │ + │     Threat          │   │
 │   │  Learning   │   │  Detection  │   │  Intelligence       │   │
 │   └─────────────┘   └─────────────┘   └─────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │   Phát hiện: Unauthorized access, Crypto-mining, Malware,       │
-│              Data exfiltration, Compromised instances...         │
-│                                                                  │
+│              Data exfiltration, Compromised instances...        │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -65,24 +65,24 @@ GuardDuty phân tích nhiều nguồn dữ liệu để phát hiện threats:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Foundational Data Sources                     │
+│                    Foundational Data Sources                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────────┐                                        │
 │  │  VPC Flow Logs      │  Network traffic metadata              │
 │  │  (không cần enable) │  IP, ports, protocols, bytes...        │
 │  └─────────────────────┘                                        │
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────────┐                                        │
 │  │  CloudTrail Events  │  API calls trong AWS account           │
 │  │  (Management Events)│  Who did what, when, from where        │
 │  └─────────────────────┘                                        │
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────────┐                                        │
 │  │  DNS Logs           │  DNS queries từ EC2 instances          │
 │  │                     │  Phát hiện C2 communication            │
 │  └─────────────────────┘                                        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -147,18 +147,18 @@ Giám sát API calls liên quan đến S3 để phát hiện data exfiltration v
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      S3 Protection                               │
+│                      S3 Protection                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Phát hiện:                                                      │
+│                                                                 │
+│  Phát hiện:                                                     │
 │  ├── Unusual data access patterns (bất thường về thời gian/IP)  │
 │  ├── Disabled logging hoặc versioning                           │
-│  ├── Public bucket modifications                                 │
-│  ├── Data exfiltration attempts                                  │
+│  ├── Public bucket modifications                                │
+│  ├── Data exfiltration attempts                                 │
 │  └── Access từ known malicious IPs                              │
-│                                                                  │
-│  Data Source: CloudTrail S3 Data Events                          │
-│                                                                  │
+│                                                                 │
+│  Data Source: CloudTrail S3 Data Events                         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -168,9 +168,9 @@ Bảo vệ Amazon EKS clusters với 2 components:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       EKS Protection                             │
+│                       EKS Protection                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────────────────────────────┐                    │
 │  │   EKS Audit Log Monitoring              │                    │
 │  │   ├── Analyze Kubernetes API calls      │                    │
@@ -178,7 +178,7 @@ Bảo vệ Amazon EKS clusters với 2 components:
 │  │   ├── Identify anonymous access         │                    │
 │  │   └── Find policy violations            │                    │
 │  └─────────────────────────────────────────┘                    │
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────────────────────────────┐                    │
 │  │   EKS Runtime Monitoring (Agent-based)  │                    │
 │  │   ├── File system activity              │                    │
@@ -186,7 +186,7 @@ Bảo vệ Amazon EKS clusters với 2 components:
 │  │   ├── Network connections               │                    │
 │  │   └── Container-level threats           │                    │
 │  └─────────────────────────────────────────┘                    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -206,18 +206,18 @@ Phát hiện suspicious login attempts vào Amazon RDS databases.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Lambda Protection                            │
+│                     Lambda Protection                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Giám sát VPC network activity của Lambda functions:            │
-│                                                                  │
-│  ├── Communication với known malicious IPs/domains             │
-│  ├── Crypto-mining activity                                      │
+│                                                                 │
+│  ├── Communication với known malicious IPs/domains              │
+│  ├── Crypto-mining activity                                     │
 │  ├── Command & Control (C2) communication                       │
 │  └── Data exfiltration qua network                              │
-│                                                                  │
-│  ⚠️ Chỉ áp dụng cho Lambda functions chạy trong VPC             │
-│                                                                  │
+│                                                                 │
+│  ⚠️ Chỉ áp dụng cho Lambda functions chạy trong VPC              │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -227,21 +227,21 @@ Phát hiện suspicious login attempts vào Amazon RDS databases.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   EC2 Malware Protection                         │
+│                   EC2 Malware Protection                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Trigger: Khi có behavioral finding đáng ngờ                    │
 │           (ví dụ: EC2 đang communicate với C2 server)           │
-│                                                                  │
-│  Process:                                                        │
+│                                                                 │
+│  Process:                                                       │
 │  1. GuardDuty tự động tạo EBS snapshot                          │
 │  2. Scan snapshot tìm malware (AGENTLESS)                       │
 │  3. Tạo finding nếu phát hiện malware                           │
 │  4. Xóa snapshot sau khi scan xong                              │
-│                                                                  │
+│                                                                 │
 │  ✅ Không impact performance của running instance               │
-│  ✅ Không cần cài agent                                          │
-│                                                                  │
+│  ✅ Không cần cài agent                                         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -249,21 +249,21 @@ Phát hiện suspicious login attempts vào Amazon RDS databases.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   S3 Malware Protection                          │
+│                   S3 Malware Protection                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Tự động scan objects mới upload lên S3:                        │
-│                                                                  │
+│                                                                 │
 │  Upload ─────► GuardDuty Scan ─────► Tag Object                 │
-│                     │                    │                       │
-│                     ▼                    ▼                       │
+│                     │                   │                       │
+│                     ▼                    ▼                      │
 │              ┌──────────┐         ┌──────────────┐              │
 │              │ Finding  │         │ CLEAN hoặc   │              │
 │              │ (nếu có) │         │ THREATS_FOUND│              │
 │              └──────────┘         └──────────────┘              │
-│                                                                  │
+│                                                                 │
 │  Use case: User uploads, untrusted data pipelines               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -275,18 +275,18 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Threat Intelligence Sources                    │
+│                   Threat Intelligence Sources                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Built-in (AWS managed):                                         │
+│                                                                 │
+│  Built-in (AWS managed):                                        │
 │  ├── AWS internal threat intelligence                           │
-│  ├── CrowdStrike                                                 │
-│  └── Proofpoint                                                  │
-│                                                                  │
-│  Custom (User managed):                                          │
-│  ├── Trusted IP Lists (whitelist - không generate findings)    │
-│  └── Threat IP Lists (blacklist - luôn generate findings)      │
-│                                                                  │
+│  ├── CrowdStrike                                                │
+│  └── Proofpoint                                                 │
+│                                                                 │
+│  Custom (User managed):                                         │
+│  ├── Trusted IP Lists (whitelist - không generate findings)     │
+│  └── Threat IP Lists (blacklist - luôn generate findings)       │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -312,35 +312,35 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Common Finding Types                         │
+│                     Common Finding Types                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  EC2 Findings:                                                   │
+│                                                                 │
+│  EC2 Findings:                                                  │
 │  ├── CryptoCurrency:EC2/BitcoinTool.B!DNS                       │
 │  │    └── EC2 đang query crypto mining domains                  │
 │  ├── UnauthorizedAccess:EC2/SSHBruteForce                       │
 │  │    └── SSH brute-force attack                                │
 │  └── Backdoor:EC2/C&CActivity.B!DNS                             │
 │       └── EC2 communicating với C2 server                       │
-│                                                                  │
-│  IAM Findings:                                                   │
+│                                                                 │
+│  IAM Findings:                                                  │
 │  ├── UnauthorizedAccess:IAMUser/MaliciousIPCaller               │
 │  │    └── API call từ known malicious IP                        │
 │  └── Recon:IAMUser/UserPermissions                              │
 │       └── Unusual IAM reconnaissance                            │
-│                                                                  │
-│  S3 Findings:                                                    │
+│                                                                 │
+│  S3 Findings:                                                   │
 │  ├── Exfiltration:S3/AnomalousBehavior                          │
 │  │    └── Unusual data access pattern                           │
 │  └── Policy:S3/BucketBlockPublicAccessDisabled                  │
 │       └── Public access được enable                             │
-│                                                                  │
-│  Kubernetes Findings:                                            │
+│                                                                 │
+│  Kubernetes Findings:                                           │
 │  ├── PrivilegeEscalation:Kubernetes/PrivilegedContainer         │
 │  │    └── Container chạy với privileged mode                    │
 │  └── Execution:Kubernetes/ExecInKubeSystemPod                   │
 │       └── Exec into kube-system pod                             │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -361,27 +361,27 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   GuardDuty Multi-Account                        │
+│                   GuardDuty Multi-Account                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │                  ┌─────────────────────┐                        │
 │                  │  Delegated Admin    │                        │
 │                  │  Account            │                        │
 │                  │  (Central View)     │                        │
 │                  └──────────┬──────────┘                        │
-│                             │                                    │
+│                            │                                    │
 │        ┌────────────────────┼────────────────────┐              │
 │        │                    │                    │              │
 │        ▼                    ▼                    ▼              │
-│  ┌──────────┐        ┌──────────┐        ┌──────────┐          │
-│  │ Member   │        │ Member   │        │ Member   │          │
-│  │Account 1 │        │Account 2 │        │Account 3 │          │
-│  └──────────┘        └──────────┘        └──────────┘          │
-│                                                                  │
+│  ┌──────────┐        ┌──────────┐        ┌──────────┐           │
+│  │ Member   │        │ Member   │        │ Member   │           │
+│  │Account 1 │        │Account 2 │        │Account 3 │           │
+│  └──────────┘        └──────────┘        └──────────┘           │
+│                                                                 │
 │  ✅ Aggregated findings trong single view                       │
-│  ✅ Centralized configuration                                    │
+│  ✅ Centralized configuration                                   │
 │  ✅ Auto-enable cho new member accounts                         │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -393,16 +393,16 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Automated Response Flow                       │
+│                    Automated Response Flow                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  GuardDuty                                                       │
-│      │                                                           │
-│      ▼                                                           │
+│                                                                 │
+│  GuardDuty                                                      │
+│     │                                                           │
+│      ▼                                                          │
 │  EventBridge Rule ───► Match: severity >= 7                     │
-│      │                                                           │
+│     │                                                           │
 │      │   ┌──────────────────────────────────────────┐           │
-│      ├──►│ Lambda: Isolate EC2 (modify SG)         │           │
+│      ├──►│ Lambda: Isolate EC2 (modify SG)          │           │
 │      │   └──────────────────────────────────────────┘           │
 │      │   ┌──────────────────────────────────────────┐           │
 │      ├──►│ SNS: Alert Security Team                 │           │
@@ -410,7 +410,7 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 │      │   ┌──────────────────────────────────────────┐           │
 │      └──►│ Step Functions: Incident Response        │           │
 │          └──────────────────────────────────────────┘           │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -444,24 +444,24 @@ def lambda_handler(event, context):
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│              AWS Security Services - Chọn service nào?              │
+│              AWS Security Services - Chọn service nào?             │
 ├────────────────────────────────────────────────────────────────────┤
-│                                                                     │
+│                                                                    │
 │  "Ai đang tấn công AWS account của tôi?"                           │
 │      └──► Amazon GuardDuty (Threat Detection)                      │
-│                                                                     │
+│                                                                    │
 │  "Sensitive data trong S3 ở đâu?"                                  │
 │      └──► Amazon Macie (Data Discovery)                            │
-│                                                                     │
+│                                                                    │
 │  "EC2/Container có vulnerabilities không?"                         │
 │      └──► Amazon Inspector (Vulnerability Scanning)                │
-│                                                                     │
+│                                                                    │
 │  "Resources có đúng cấu hình không?"                               │
 │      └──► AWS Config (Configuration Compliance)                    │
-│                                                                     │
+│                                                                    │
 │  "Tổng hợp tất cả security findings?"                              │
 │      └──► AWS Security Hub (Aggregation)                           │
-│                                                                     │
+│                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -504,18 +504,18 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   GuardDuty Best Practices                       │
+│                   GuardDuty Best Practices                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  □ Enable GuardDuty trong TẤT CẢ regions (không chỉ region     │
+│                                                                 │
+│  □ Enable GuardDuty trong TẤT CẢ regions (không chỉ region      │
 │    đang dùng - attackers có thể exploit unused regions)         │
-│                                                                  │
-│  □ Enable cho TẤT CẢ AWS accounts trong organization           │
-│                                                                  │
+│                                                                 │
+│  □ Enable cho TẤT CẢ AWS accounts trong organization            │
+│                                                                 │
 │  □ Designate delegated administrator account                    │
-│                                                                  │
+│                                                                 │
 │  □ Enable auto-enable cho new member accounts                   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -649,19 +649,19 @@ Response:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Amazon GuardDuty Summary                       │
+│                   Amazon GuardDuty Summary                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Intelligent threat detection using ML                       │
 │  ✅ Analyzes VPC Flow Logs, CloudTrail, DNS logs                │
 │  ✅ Protection: S3, EKS, RDS, Lambda, Malware                   │
 │  ✅ Agentless (mostly) - easy to enable                         │
 │  ✅ Multi-account support via Organizations                     │
 │  ✅ Integration: EventBridge, Security Hub                      │
-│  ✅ 30-day free trial                                            │
-│                                                                  │
+│  ✅ 30-day free trial                                           │
+│                                                                 │
 │  Nhớ: GuardDuty = "Security Guard" cho AWS account              │
 │       Phát hiện kẻ xấu đang làm gì trong account của bạn        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

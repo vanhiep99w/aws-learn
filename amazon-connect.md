@@ -38,27 +38,27 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        Amazon Connect Overview                                │
+│                        Amazon Connect Overview                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Customers                    Amazon Connect                    Agents      │
 │                                                                              │
-│   ┌─────────┐                 ┌──────────────────┐          ┌─────────────┐ │
-│   │ 📞 Phone │────────────────►│                  │──────────►│ Agent CCP   │ │
-│   └─────────┘                 │                  │          │ (Softphone) │ │
-│                               │   Contact        │          └─────────────┘ │
-│   ┌─────────┐                 │   Center         │                          │
+│   ┌─────────┐                 ┌──────────────────┐          ┌─────────────┐  │
+│   │ 📞 Phone│────────────────►│                  │──────────►│ Agent CCP  │  │
+│   └─────────┘                 │                  │          │ (Softphone) │  │
+│                               │   Contact        │          └─────────────┘  │
+│   ┌─────────┐                 │   Center          │                          │
 │   │ 💬 Chat  │────────────────►│                  │          ┌─────────────┐ │
 │   └─────────┘                 │   ┌────────────┐ │──────────►│ Supervisor  │ │
-│                               │   │ Contact    │ │          │ Dashboard   │ │
-│   ┌─────────┐                 │   │ Flows      │ │          └─────────────┘ │
-│   │ 📧 Email │────────────────►│   └────────────┘ │                          │
-│   └─────────┘                 │                  │          ┌─────────────┐ │
-│                               │   ┌────────────┐ │──────────►│ Analytics   │ │
-│   ┌─────────┐                 │   │ AI/ML      │ │          │ Reports     │ │
+│   │          │ Contact         │                  │          │ Dashboard   │ │
+│   ┌─────────┐                 │   │ Flows      │ │          └─────────────┘  │
+│   │ 📧 Email │────────────────►│                  └──────────┘             │ │
+│   └─────────┘                 │                  │          ┌─────────────┐  │
+│   │         ┌─────────────────┐                  │──────────►│ Analytics  │  │
+│   ┌─────────┐                 │   │ AI/ML      │ │          │ Reports      │ │
 │   │ 📱 SMS   │────────────────►│   │ Features   │ │          └─────────────┘ │
-│   └─────────┘                 │   └────────────┘ │                          │
-│                               └──────────────────┘                          │
+│   └─────────┘                 │                  └──────────┘             │  │
+│                               └──────────────────┘                           │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,32 +71,32 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                      Amazon Connect Architecture                              │
+│                      Amazon Connect Architecture                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────────┐ │
-│  │                         Amazon Connect Instance                          │ │
+│  │                         Amazon Connect Instance                         │ │
 │  │                                                                         │ │
-│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐              │ │
-│  │  │  Phone        │  │  Routing      │  │  Queues       │              │ │
-│  │  │  Numbers      │  │  Profiles     │  │               │              │ │
-│  │  │  (DID/Toll-   │  │               │  │  • Sales      │              │ │
-│  │  │   free)       │  │               │  │  • Support    │              │ │
-│  │  └───────────────┘  └───────────────┘  │  • Billing    │              │ │
-│  │                                         └───────────────┘              │ │
-│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐              │ │
-│  │  │  Contact      │  │  Hours of     │  │  Users        │              │ │
-│  │  │  Flows        │  │  Operation    │  │  (Agents)     │              │ │
-│  │  │  (IVR Logic)  │  │               │  │               │              │ │
-│  │  └───────────────┘  └───────────────┘  └───────────────┘              │ │
+│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                │ │
+│  │  │  Phone        │  │  Routing      │  │  Queues       │                │ │
+│  │  │  Numbers      │  │  Profiles     │  │               │                │ │
+│  │  │  (DID/Toll-   │  │               │  │  • Sales      │                │ │
+│  │  │   free)       │  │               │  │  • Support    │                │ │
+│  │  └───────────────┘  └───────────────┘  │  • Billing    │                │ │
+│  │                                         └───────────────┘               │ │
+│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                │ │
+│  │  │  Contact      │  │  Hours of     │  │  Users        │                │ │
+│  │  │  Flows        │  │  Operation    │  │  (Agents)     │                │ │
+│  │  │  (IVR Logic)  │  │               │  │               │                │ │
+│  │  └───────────────┘  └───────────────┘  └───────────────┘                │ │
 │  │                                                                         │ │
 │  └─────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │  Integrations:                                                               │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐          │
-│  │ Lambda   │ │ Lex      │ │ Kinesis  │ │ S3       │ │ DynamoDB │          │
-│  │          │ │ (Bots)   │ │(Streams) │ │(Record)  │ │          │          │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘          │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐            │
+│  │ Lambda   │ │ Lex      │ │ Kinesis  │ │ S3       │ │ DynamoDB │            │
+│  │          │ │ (Bots)   │ │(Streams) │ │(Record)  │ │          │            │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘            │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -121,7 +121,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Voice Features                            │
+│                        Voice Features                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  • Inbound/Outbound Calls                                       │
@@ -150,17 +150,17 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Tasks Feature                            │
+│                         Tasks Feature                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Cho phép agents quản lý công việc ngoài contacts:              │
 │                                                                 │
 │  • Follow-up tasks từ cuộc gọi/chat                             │
 │  • CRM integrations (Salesforce, Zendesk)                       │
-│  • External systems via API                                      │
+│  • External systems via API                                     │
 │  • Task routing giống như voice/chat                            │
 │                                                                 │
-│  Use case:                                                       │
+│  Use case:                                                      │
 │  Agent nhận cuộc gọi → tạo task "Follow up sau 24h"             │
 │  → Task được route đến agent available                          │
 │                                                                 │
@@ -171,31 +171,31 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                          Agent Workspace (CCP)                            │
+│                          Agent Workspace (CCP)                           │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌────────────────────────────────────────────────────────────────────┐  │
-│  │  ┌──────────────┐  ┌──────────────────────────────────────────┐   │  │
+│  │  ┌──────────────┐  ┌──────────────────────────────────────────┐    │  │
 │  │  │   Contact    │  │           Customer Profile                │   │  │
-│  │  │   Controls   │  │                                          │   │  │
-│  │  │              │  │  Name: John Doe                          │   │  │
-│  │  │  📞 Answer   │  │  Phone: +1-xxx-xxx-xxxx                  │   │  │
-│  │  │  🔇 Mute     │  │  Last Contact: 3 days ago                │   │  │
-│  │  │  ⏸️ Hold     │  │  Open Cases: 2                           │   │  │
-│  │  │  📲 Transfer │  │                                          │   │  │
-│  │  │  ❌ End      │  └──────────────────────────────────────────┘   │  │
+│  │  │   Controls   │  │                                          │    │  │
+│  │  │              │  │  Name: John Doe                          │    │  │
+│  │  │  📞 Answer   │  │  Phone: +1-xxx-xxx-xxxx                  │    │  │
+│  │  │  🔇 Mute     │  │  Last Contact: 3 days ago                │    │  │
+│  │  │  ⏸️ Hold     │  │  Open Cases: 2                           │     │  │
+│  │  │  📲 Transfer │  │                                          │    │  │
+│  │  │  ❌ End      │  └──────────────────────────────────────────┘    │  │
 │  │  │              │                                                  │  │
-│  │  └──────────────┘  ┌──────────────────────────────────────────┐   │  │
+│  │  └──────────────┘  ┌──────────────────────────────────────────┐    │  │
 │  │                    │           Agent Assist                    │   │  │
-│  │  Status:           │                                          │   │  │
-│  │  🟢 Available      │  Suggested Response:                     │   │  │
-│  │  🟡 After Call     │  "I understand you're having an issue    │   │  │
-│  │  🔴 Offline        │   with your billing..."                  │   │  │
-│  │                    │                                          │   │  │
-│  │                    │  Knowledge Articles:                     │   │  │
-│  │                    │  • Billing FAQ                           │   │  │
-│  │                    │  • Refund Policy                         │   │  │
-│  │                    └──────────────────────────────────────────┘   │  │
+│  │  Status:           │                                          │    │  │
+│  │  🟢 Available      │  Suggested Response:                     │    │  │
+│  │  🟡 After Call     │  "I understand you're having an issue    │    │  │
+│  │  🔴 Offline        │   with your billing..."                  │    │  │
+│  │                    │                                          │    │  │
+│  │                    │  Knowledge Articles:                     │    │  │
+│  │                    │  • Billing FAQ                           │    │  │
+│  │                    │  • Refund Policy                         │    │  │
+│  │                    └──────────────────────────────────────────┘    │  │
 │  └────────────────────────────────────────────────────────────────────┘  │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
@@ -223,43 +223,43 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     Example: Customer Service Contact Flow                    │
+│                     Example: Customer Service Contact Flow                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────────┐           │
-│  │ Customer │───►│ Play     │───►│ Get      │───►│ Check Hours  │           │
-│  │ Calls    │    │ Welcome  │    │ Customer │    │ of Operation │           │
-│  └──────────┘    │ Message  │    │ Input    │    └──────┬───────┘           │
-│                  └──────────┘    └──────────┘           │                   │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────────┐            │
+│  │ Customer │───►│ Play     │───►│ Get      │───►│ Check Hours  │            │
+│  │ Calls    │    │ Welcome  │    │ Customer │    │ of Operation │            │
+│  └──────────┘    │ Message  │    │ Input    │    └──────┬───────┘            │
+│                  └──────────┘    └──────────┘            │                   │
 │                                                          │                   │
 │                    ┌─────────────────────────────────────┴─────────────┐     │
 │                    │                                                   │     │
 │                    ▼                                                   ▼     │
-│            ┌──────────────┐                               ┌──────────────┐  │
-│            │ Within Hours │                               │ Outside Hours│  │
-│            └──────┬───────┘                               └──────┬───────┘  │
-│                   │                                              │          │
-│                   ▼                                              ▼          │
-│        ┌─────────────────────┐                     ┌──────────────────────┐ │
-│        │ Press 1: Sales      │                     │ Leave Voicemail      │ │
-│        │ Press 2: Support    │                     │ or                   │ │
-│        │ Press 3: Billing    │                     │ Request Callback     │ │
-│        └──────────┬──────────┘                     └──────────────────────┘ │
-│                   │                                                         │
-│         ┌─────────┴─────────┐                                               │
-│         │                   │                                               │
-│         ▼                   ▼                                               │
-│  ┌─────────────┐    ┌─────────────┐                                        │
-│  │ Invoke      │    │ Transfer to │                                        │
-│  │ Lex Bot     │    │ Queue       │                                        │
-│  │ (Self-serve)│    │             │                                        │
-│  └──────┬──────┘    └──────┬──────┘                                        │
-│         │                  │                                                │
-│         ▼                  ▼                                                │
-│  ┌─────────────┐    ┌─────────────┐                                        │
-│  │ Resolved?   │    │ Agent       │                                        │
-│  │ Yes/No      │    │ Available   │                                        │
-│  └─────────────┘    └─────────────┘                                        │
+│            ┌──────────────┐                               ┌──────────────┐   │
+│            │ Within Hours │                               │ Outside Hours│   │
+│            └──────┬───────┘                               └──────┬───────┘   │
+│                   │                                               │          │
+│                   ▼                                              ▼           │
+│        ┌─────────────────────┐                     ┌──────────────────────┐  │
+│        │ Press 1: Sales      │                     │ Leave Voicemail      │  │
+│        │ Press 2: Support    │                     │ or                   │  │
+│        │ Press 3: Billing    │                     │ Request Callback     │  │
+│        └──────────┬──────────┘                     └──────────────────────┘  │
+│                    │                                                         │
+│         ┌─────────┴─────────┐                                                │
+│         │                    │                                               │
+│         ▼                   ▼                                                │
+│  ┌─────────────┐    ┌─────────────┐                                          │
+│  │ Invoke      │    │ Transfer to │                                          │
+│  │ Lex Bot     │    │ Queue       │                                          │
+│  │ (Self-serve)│    │             │                                          │
+│  └──────┬──────┘    └──────┬──────┘                                          │
+│         │                   │                                                │
+│         ▼                  ▼                                                 │
+│  ┌─────────────┐    ┌─────────────┐                                          │
+│  │ Resolved?   │    │ Agent       │                                          │
+│  │ Yes/No      │    │ Available   │                                          │
+│  └─────────────┘    └─────────────┘                                          │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -287,7 +287,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                           Contact Lens Features                               │
+│                           Contact Lens Features                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  Real-time Analysis                      Post-call Analysis                  │
@@ -299,17 +299,17 @@
 │  • Supervisor alerts                     • Conversation characteristics      │
 │  • Agent assist prompts                  • Compliance detection              │
 │                                                                              │
-│  ┌────────────────────────────────────────────────────────────────────┐     │
-│  │                    Sentiment Timeline                               │     │
-│  │                                                                     │     │
-│  │   😊 ──────────╮                    ╭────────── 😊                  │     │
+│  ┌────────────────────────────────────────────────────────────────────┐      │
+│  │                    Sentiment Timeline                              │      │
+│  │                                                                    │      │
+│  │   😊 ──────────╮                    ╭────────── 😊                 │      │
 │  │                │                    │                               │     │
-│  │   😐 ──────────┼────────────────────┼────────────────────── 😐      │     │
+│  │   😐 ──────────┼────────────────────┼────────────────────── 😐     │      │
 │  │                │                    │                               │     │
-│  │   😠 ──────────┴────────────────────┴────────────────────── 😠      │     │
-│  │       Start              Issue mentioned        Resolved    End     │     │
-│  │                                                                     │     │
-│  └────────────────────────────────────────────────────────────────────┘     │
+│  │   😠 ──────────┴────────────────────┴────────────────────── 😠     │      │
+│  │       Start              Issue mentioned        Resolved    End    │      │
+│  │                                                                    │      │
+│  └────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -327,26 +327,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Voice ID                                 │
+│                         Voice ID                                │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Biometric voice authentication:                                │
 │                                                                 │
 │  1. Enrollment (lần đầu)                                        │
-│     Customer nói → Voiceprint được tạo và lưu                  │
+│     Customer nói → Voiceprint được tạo và lưu                   │
 │                                                                 │
 │  2. Authentication (các lần sau)                                │
-│     Customer gọi → So sánh voice với voiceprint                │
+│     Customer gọi → So sánh voice với voiceprint                 │
 │                  → Authenticated hoặc Not authenticated         │
 │                                                                 │
 │  3. Fraud Detection                                             │
 │     So sánh voice với known fraudster voiceprints               │
 │     → Alert nếu match                                           │
 │                                                                 │
-│  Benefits:                                                       │
+│  Benefits:                                                      │
 │  ✅ Giảm thời gian xác thực từ 30-60s xuống vài giây            │
 │  ✅ Tăng bảo mật - không thể đánh cắp như password              │
-│  ✅ Cải thiện customer experience                                │
+│  ✅ Cải thiện customer experience                               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -355,21 +355,21 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     High-volume Outbound Campaigns               │
+│                     High-volume Outbound Campaigns              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  • Predictive dialing                                           │
 │  • ML-powered answering machine detection                       │
 │  • Campaign management                                          │
-│  • List management                                               │
-│  • Time zone aware calling                                       │
+│  • List management                                              │
+│  • Time zone aware calling                                      │
 │  • Integration với Pinpoint                                     │
 │                                                                 │
-│  Use cases:                                                      │
-│  • Appointment reminders                                         │
-│  • Payment reminders                                             │
-│  • Marketing campaigns                                           │
-│  • Surveys                                                       │
+│  Use cases:                                                     │
+│  • Appointment reminders                                        │
+│  • Payment reminders                                            │
+│  • Marketing campaigns                                          │
+│  • Surveys                                                      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -380,28 +380,28 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     Amazon Connect + AWS Services                             │
+│                     Amazon Connect + AWS Services                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│                              Amazon Connect                                   │
+│                              Amazon Connect                                  │
 │                                    │                                         │
-│     ┌──────────────────────────────┼──────────────────────────────┐         │
-│     │              │               │               │              │         │
-│     ▼              ▼               ▼               ▼              ▼         │
-│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐    │
-│  │Lambda│    │Amazon Lex│    │ Kinesis  │    │   S3    │    │DynamoDB │    │
-│  │      │    │          │    │          │    │         │    │         │    │
-│  │Custom│    │Chatbots  │    │Real-time │    │Call     │    │Customer │    │
-│  │Logic │    │IVR       │    │Analytics │    │Recording│    │Data     │    │
-│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘    │
+│     ┌──────────────────────────────┼──────────────────────────────┐          │
+│     │              │               │               │               │         │
+│     ▼              ▼               ▼               ▼              ▼          │
+│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐      │
+│  │Lambda│    │Amazon Lex│    │ Kinesis  │    │   S3    │    │DynamoDB │      │
+│  │      │    │          │    │          │    │         │    │         │      │
+│  │Custom│    │Chatbots  │    │Real-time │    │Call     │    │Customer │      │
+│  │Logic │    │IVR       │    │Analytics │    │Recording│    │Data     │      │
+│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘      │
 │                                    │                                         │
-│                    ┌───────────────┴───────────────┐                        │
-│                    ▼                               ▼                        │
-│              ┌──────────┐                    ┌──────────┐                   │
-│              │QuickSight│                    │ Redshift │                   │
-│              │          │                    │          │                   │
-│              │BI Reports│                    │Analytics │                   │
-│              └──────────┘                    └──────────┘                   │
+│                    ┌───────────────┴───────────────┐                         │
+│                    ▼                               ▼                         │
+│              ┌──────────┐                    ┌──────────┐                    │
+│              │QuickSight│                    │ Redshift │                    │
+│              │          │                    │          │                    │
+│              │BI Reports│                    │Analytics │                    │
+│              └──────────┘                    └──────────┘                    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -442,26 +442,26 @@ Amazon Connect sử dụng mô hình **pay-per-use**, không có upfront costs, 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               Monthly Cost Example                               │
+│               Monthly Cost Example                              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Small Contact Center (10 agents, 10,000 calls/month)           │
 │                                                                 │
-│  Assumptions:                                                    │
-│  • Average call duration: 5 minutes                              │
-│  • 80% inbound, 20% outbound                                     │
-│  • 5 DID phone numbers                                           │
+│  Assumptions:                                                   │
+│  • Average call duration: 5 minutes                             │
+│  • 80% inbound, 20% outbound                                    │
+│  • 5 DID phone numbers                                          │
 │                                                                 │
-│  Voice Usage:                                                    │
+│  Voice Usage:                                                   │
 │    10,000 calls × 5 min = 50,000 minutes                        │
 │    50,000 min × $0.018 = $900.00                                │
 │                                                                 │
-│  Phone Numbers:                                                  │
+│  Phone Numbers:                                                 │
 │    5 DID × $0.03/day × 30 days = $4.50                          │
 │                                                                 │
 │  ─────────────────────────────────────────                      │
 │  ESTIMATED TOTAL: ~$904.50/month                                │
-│  (+ telephony charges for outbound)                              │
+│  (+ telephony charges for outbound)                             │
 │                                                                 │
 │  So với on-premises: Tiết kiệm 50-80%                           │
 │                                                                 │
@@ -541,7 +541,7 @@ Benefits:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Agent Experience Best Practices                 │
+│                  Agent Experience Best Practices                │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ✅ Cung cấp đủ context trước khi connect call                  │

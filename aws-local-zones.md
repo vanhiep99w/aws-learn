@@ -28,34 +28,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS Local Zones Architecture                          │
+│                        AWS Local Zones Architecture                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│                           AWS REGION (e.g., us-west-2)                       │
+│                                                                             │
+│                           AWS REGION (e.g., us-west-2)                      │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
 │   │   │    AZ-1      │  │    AZ-2      │  │    AZ-3      │              │   │
 │   │   │ (Oregon DC)  │  │ (Oregon DC)  │  │ (Oregon DC)  │              │   │
 │   │   └──────────────┘  └──────────────┘  └──────────────┘              │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                              │                                               │
-│                              │ High-bandwidth connection                     │
-│                              │                                               │
+│                             │                                               │
+│                              │ High-bandwidth connection                    │
+│                             │                                               │
 │   ┌──────────────────────────┼──────────────────────────────────────────┐   │
-│   │                          ▼                                           │   │
+│   │                          ▼                                          │   │
 │   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
 │   │   │ Local Zone   │  │ Local Zone   │  │ Local Zone   │              │   │
 │   │   │ Los Angeles  │  │ Boston       │  │ Miami        │              │   │
-│   │   │ 🏙️           │  │ 🏙️           │  │ 🏙️           │              │   │
+│   │   │ 🏙️           │  │ 🏙️           │  │ 🏙️           │                 │   │
 │   │   └──────────────┘  └──────────────┘  └──────────────┘              │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   │   AWS Data Centers đặt GẦN các thành phố lớn                        │   │
 │   │   Latency: < 10ms cho users trong thành phố đó                      │   │
-│   │                                                                      │   │
-│   └──────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│   │                                                                     │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -68,14 +68,14 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                    AVAILABILITY ZONE vs LOCAL ZONE                                   │
+│                    AVAILABILITY ZONE vs LOCAL ZONE                                  │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
-│  AVAILABILITY ZONE (AZ) - Zone "chính thức" TRONG Region                           │
+│                                                                                     │
+│  AVAILABILITY ZONE (AZ) - Zone "chính thức" TRONG Region                            │
 │  ─────────────────────────────────────────────────────────                          │
 │  ┌──────────────────────────────────────────────────────────────────────────────┐   │
 │  │  AWS REGION (us-west-2 - Oregon)                                             │   │
-│  │                                                                               │   │
+│  │                                                                              │   │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                        │   │
 │  │  │  us-west-2a  │  │  us-west-2b  │  │  us-west-2c  │                        │   │
 │  │  │  (AZ 1)      │  │  (AZ 2)      │  │  (AZ 3)      │                        │   │
@@ -86,36 +86,36 @@
 │  │  │  S3, Lambda  │  │  S3, Lambda  │  │  S3, Lambda  │                        │   │
 │  │  │  ELB, etc.)  │  │  ELB, etc.)  │  │  ELB, etc.)  │                        │   │
 │  │  └──────────────┘  └──────────────┘  └──────────────┘                        │   │
-│  │                                                                               │   │
+│  │                                                                              │   │
 │  │  📍 Vị trí: TẤT CẢ đều ở TRONG Oregon (cùng 1 metro area)                    │   │
-│  │  🏛️ Size: DATA CENTER LỚN (full capacity)                                    │   │
+│  │  🏛️ Size: DATA CENTER LỚN (full capacity)                                     │   │
 │  │  ⚡ Enabled: MẶC ĐỊNH (default)                                              │   │
-│  │                                                                               │   │
+│  │                                                                              │   │
 │  └──────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                      │
+│                                                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
+│                                                                                     │
 │  LOCAL ZONE - Zone "mở rộng" RA XA Region, gần thành phố users                      │
 │  ─────────────────────────────────────────────────────────────                      │
-│                                                                                      │
+│                                                                                     │
 │  ┌──────────────────┐                                                               │
 │  │  AWS REGION      │     1,500km                                                   │
 │  │  (Oregon)        │◄──────────────────┐                                           │
 │  └──────────────────┘                   │                                           │
 │                                         │                                           │
-│                            ┌────────────┴────────────┐                              │
-│                            │  us-west-2-lax-1a       │                              │
-│                            │  (Los Angeles)          │                              │
-│                            │                         │                              │
-│                            │  LIMITED SERVICES       │                              │
-│                            │  (EC2, EBS, VPC, ELB    │                              │
-│                            │   RDS limited)          │                              │
-│                            └─────────────────────────┘                              │
-│                                                                                      │
-│  📍 Vị trí: CÁC THÀNH PHỐ XA Region (LA, Boston, Miami...)                         │
-│  🏛️ Size: MINI DATA CENTER (limited capacity)                                      │
-│  ⚡ Enabled: PHẢI OPT-IN (không tự động)                                           │
-│                                                                                      │
+│  ┌────────────┴─────┐                                                               │
+│  │  us-west-2-lax-1a│                                                               │
+│  │  (Los Angeles)   │                                                               │
+│  │                  │                                                               │
+│  │  LIMITED SERVICES│                                                               │
+│  │  (EC2, EBS, VPC, ELB    │                                                               │
+│  │   RDS limited)   │                                                               │
+│  └──────────────────┘                                                               │
+│                                                                                     │
+│  📍 Vị trí: CÁC THÀNH PHỐ XA Region (LA, Boston, Miami...)                          │
+│  🏛️ Size: MINI DATA CENTER (limited capacity)                                        │
+│  ⚡ Enabled: PHẢI OPT-IN (không tự động)                                            │
+│                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -166,31 +166,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                     PHYSICAL LOCATION - LOCAL ZONE Ở ĐÂU?                            │
+│                     PHYSICAL LOCATION - LOCAL ZONE Ở ĐÂU?                           │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
-│                                                                                      │
-│   AWS REGION (Oregon)                              Los Angeles City                  │
+│                                                                                     │
+│                                                                                     │
+│   AWS REGION (Oregon)                              Los Angeles City                 │
 │   ┌───────────────────┐                           ┌────────────────────────────┐    │
-│   │ 🏛️ Main DC        │                           │                            │    │
+│   │ 🏛️ Main DC         │                           │                            │    │
 │   │                   │                           │  👩‍💻 End Users              │    │
-│   │ [Full Services]   │     ~1000+ km            │  (content creators,        │    │
-│   │                   │◄─────────────────────────│   gamers, etc.)            │    │
-│   │                   │     latency: 30-50ms     │                            │    │
+│   │ [Full Services]   │     ~1000+ km             │  (content creators,        │    │
+│   │                   │◄───────────────────────── │   gamers, etc.)            │    │
+│   │                   │     latency: 30-50ms      │                            │    │
 │   └───────────────────┘                           │       │                    │    │
-│                                                   │       │ < 10ms            │    │
+│                                                   │       │ < 10ms             │    │
 │                                                   │       ▼                    │    │
-│                                                   │  ┌─────────────────────┐  │    │
-│                                                   │  │ 🔷 LOCAL ZONE       │  │    │
-│                                                   │  │   LA (AWS DC)       │  │    │
-│                                                   │  │                     │  │    │
-│                                                   │  │ [EC2, EBS, VPC...] │  │    │
-│                                                   │  └─────────────────────┘  │    │
+│   │                   ┌───────────────────────────┐                            │    │
+│   │                   │ 🔷 LOCAL ZONE             │                            │    │
+│   │                   │   LA (AWS DC)             │                            │    │
+│   │                   │                           │                            │    │
+│   │                   │ [EC2, EBS, VPC...]        │                            │    │
+│   │                   └───────────────────────────┘                            │    │
 │                                                   │                            │    │
 │                                                   └────────────────────────────┘    │
-│                                                                                      │
+│                                                                                     │
 │   Local Zone = AWS's MINI DATA CENTER đặt trong/gần thành phố                       │
-│                                                                                      │
+│                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -200,24 +200,24 @@
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                    3 LOẠI VỊ TRÍ KHÁC NHAU - AI SỞ HỮU DC?                          │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
+│                                                                                     │
 │  1️⃣  AWS OUTPOSTS                                                                   │
 │      📍 Vị trí: DATA CENTER CỦA BẠN                                                 │
 │      🏢 Ai sở hữu DC: BẠN                                                           │
 │      🎯 Use case: Hybrid cloud, data residency                                      │
 │      ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                      │
+│                                                                                     │
 │  2️⃣  AWS WAVELENGTH                                                                 │
 │      📍 Vị trí: DATA CENTER CỦA NHÀ MẠNG (Verizon, KDDI...)                         │
 │      🏢 Ai sở hữu DC: TELECOM PROVIDER                                              │
 │      🎯 Use case: 5G mobile ultra-low latency                                       │
 │      ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                      │
+│                                                                                     │
 │  3️⃣  AWS LOCAL ZONES                                                                │
 │      📍 Vị trí: MINI DC CỦA AWS gần thành phố lớn                                   │
 │      🏢 Ai sở hữu DC: AWS (xây hoặc thuê)                                           │
 │      🎯 Use case: Low latency cho users tại thành phố cụ thể                        │
-│                                                                                      │
+│                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -238,23 +238,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                          VẤN ĐỀ VÀ GIẢI PHÁP                                         │
+│                          VẤN ĐỀ VÀ GIẢI PHÁP                                        │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
+│                                                                                     │
 │  VẤN ĐỀ: User ở Los Angeles, AWS Region ở Oregon                                    │
-│                                                                                      │
-│  👩‍💻 LA User ───────── 1,500 km ─────────► 🏛️ Oregon Region                         │
-│                                                                                      │
+│                                                                                     │
+│  👩‍💻 LA User ───────── 1,500 km ─────────► 🏛️ Oregon Region                           │
+│                                                                                     │
 │  Latency: 30-50ms (quá chậm cho real-time apps!)                                    │
-│                                                                                      │
+│                                                                                     │
 │  ─────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                      │
+│                                                                                     │
 │  GIẢI PHÁP: Dùng Local Zone tại Los Angeles                                         │
-│                                                                                      │
-│  👩‍💻 LA User ───── 10 km ─────► 🔷 LA Local Zone ◄────── 🏛️ Oregon Region           │
+│                                                                                     │
+│  👩‍💻 LA User ───── 10 km ─────► 🔷 LA Local Zone ◄────── 🏛️ Oregon Region             │
 │                                                          (backend services)         │
 │  Latency: < 10ms ✅                                                                 │
-│                                                                                      │
+│                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -273,31 +273,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│               Video Production Studio tại Los Angeles                        │
+│               Video Production Studio tại Los Angeles                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   🎬 Film Studio (LA)                     🔷 Local Zone LA                   │
+│                                                                             │
+│   🎬 Film Studio (LA)                     🔷 Local Zone LA                  │
 │   ┌─────────────────────┐                ┌─────────────────────────┐        │
 │   │                     │                │                         │        │
-│   │  Video Editor       │◄── < 10ms ────►│  EC2 (GPU instances)   │        │
+│   │  Video Editor       │◄── < 10ms ────►│  EC2 (GPU instances)    │        │
 │   │  workstation        │                │  for rendering          │        │
 │   │                     │                │                         │        │
 │   │  Cần real-time      │                │  EBS (high performance) │        │
 │   │  preview!           │                │  for video files        │        │
 │   │                     │                │                         │        │
 │   └─────────────────────┘                └───────────┬─────────────┘        │
-│                                                      │                       │
-│                                                      │ After rendering       │
-│                                                      ▼                       │
+│                                                     │                       │
+│                                                      │ After rendering      │
+│                                                      ▼                      │
 │                                          ┌─────────────────────────┐        │
-│                                          │  🏛️ Oregon Region       │        │
+│                                          │  🏛️ Oregon Region        │        │
 │                                          │  S3 (final storage)     │        │
 │                                          │  CloudFront (delivery)  │        │
 │                                          └─────────────────────────┘        │
-│                                                                              │
+│                                                                             │
 │   ✅ Real-time editing với low latency                                      │
 │   ✅ Massive storage và delivery từ Region                                  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -325,34 +325,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Local Zones Networking                                    │
+│                    Local Zones Networking                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                           YOUR VPC                                   │   │
-│   │                                                                      │   │
+│   │                           YOUR VPC                                  │   │
+│   │                                                                     │   │
 │   │   ┌───────────────────────────┐  ┌────────────────────────────────┐ │   │
 │   │   │   Local Zone Subnet       │  │   Regular Subnet (Region)      │ │   │
 │   │   │   (in LA Local Zone)      │  │   (in Oregon AZ)               │ │   │
-│   │   │   ┌─────────┐             │  │   ┌─────────┐  ┌─────────┐    │ │   │
-│   │   │   │   EC2   │             │  │   │   EC2   │  │   RDS   │    │ │   │
-│   │   │   │   EBS   │             │  │   │   S3    │  │  Lambda │    │ │   │
-│   │   │   └────┬────┘             │  │   └────┬────┘  └─────────┘    │ │   │
+│   │   │   ┌─────────┐             │  │   ┌─────────┐  ┌─────────┐    │  │   │
+│   │   │   │   EC2   │             │  │   │   EC2   │  │   RDS   │    │  │   │
+│   │   │   │   EBS   │             │  │   │   S3    │  │  Lambda │    │  │   │
+│   │   │   └────┬────┘             │  │   └────┬────┘  └─────────┘    │  │   │
 │   │   │        │                  │  │        │                       │ │   │
 │   │   └────────┼──────────────────┘  └────────┼───────────────────────┘ │   │
 │   │            │                              │                         │   │
 │   │            ▼                              ▼                         │   │
-│   │   ┌────────────────┐            ┌─────────────────┐                │   │
+│   │   ┌────────────────┐            ┌─────────────────┐                 │   │
 │   │   │Internet Gateway│            │ Internet Gateway │                │   │
-│   │   └────────────────┘            └─────────────────┘                │   │
-│   │                                                                      │   │
+│   │   └────────────────┘            └─────────────────┘                 │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   KEY POINT:                                                                │
 │   • Local Zone subnet là PHẦN MỞ RỘNG của VPC                               │
 │   • Cùng VPC, khác subnet                                                   │
-│   • Dùng Internet Gateway bình thường (KHÔNG cần Carrier Gateway)          │
-│                                                                              │
+│   • Dùng Internet Gateway bình thường (KHÔNG cần Carrier Gateway)           │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -480,28 +480,28 @@ aws ec2 run-instances \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS Local Zones - Summary                              │
+│                       AWS Local Zones - Summary                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ✅ WHAT: AWS mini data centers đặt gần các thành phố lớn                   │
-│                                                                              │
+│                                                                             │
 │  ✅ WHY: Low latency (< 10ms) cho end users tại thành phố cụ thể            │
-│                                                                              │
-│  ✅ HOW:                                                                     │
+│                                                                             │
+│  ✅ HOW:                                                                    │
 │     • AWS xây/thuê DC gần cities (LA, Boston, Miami...)                     │
 │     • Extension của VPC - tạo subnet trong Local Zone                       │
 │     • Dùng APIs giống hệt Region                                            │
-│                                                                              │
-│  ✅ USE CASES:                                                               │
+│                                                                             │
+│  ✅ USE CASES:                                                              │
 │     • Media & Entertainment         • Real-time gaming                      │
 │     • Virtual workstations          • Live streaming                        │
 │     • ML inference                  • Ad tech                               │
-│                                                                              │
+│                                                                             │
 │  ✅ vs OUTPOSTS: Outposts ở DC của BẠN, Local Zones ở DC của AWS            │
 │  ✅ vs WAVELENGTH: Wavelength cho 5G mobile, Local Zones cho city users     │
-│                                                                              │
+│                                                                             │
 │  ✅ SERVICES: EC2, EBS, VPC, ELB, RDS (limited)                             │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -509,30 +509,30 @@ aws ec2 run-instances \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                    AWS EDGE COMPUTING - CHỌN CÁI NÀO?                                │
+│                    AWS EDGE COMPUTING - CHỌN CÁI NÀO?                               │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                      │
+│                                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐    │
 │  │                            BẠN CẦN GÌ?                                      │    │
 │  └─────────────────────────────────────────────────────────────────────────────┘    │
-│                                     │                                                │
+│                                    │                                                │
 │        ┌────────────────────────────┼────────────────────────────┐                  │
 │        │                            │                            │                  │
 │        ▼                            ▼                            ▼                  │
-│  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐           │
-│  │ 🏭 OUTPOSTS   │          │ 📱 WAVELENGTH │          │ 🏙️ LOCAL ZONES│           │
-│  │               │          │               │          │               │           │
-│  │ Your DC      │          │ Telecom DC    │          │ AWS DC        │           │
-│  │ (bạn sở hữu)  │          │ (nhà mạng     │          │ (AWS sở hữu   │           │
-│  │               │          │  sở hữu)      │          │  gần cities)  │           │
-│  ├───────────────┤          ├───────────────┤          ├───────────────┤           │
-│  │ ✅ Hybrid     │          │ ✅ 5G Mobile  │          │ ✅ City users │           │
-│  │ ✅ Data       │          │ ✅ AR/VR      │          │ ✅ Media      │           │
-│  │    residency  │          │ ✅ Gaming     │          │ ✅ Gaming     │           │
-│  │ ✅ On-prem    │          │ ✅ Connected  │          │ ✅ Virtual    │           │
-│  │    low latency│          │    vehicles   │          │    desktops   │           │
-│  └───────────────┘          └───────────────┘          └───────────────┘           │
-│                                                                                      │
+│  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐            │
+│  │ 🏭 OUTPOSTS   │          │ 📱 WAVELENGTH │          │ 🏙️ LOCAL ZONES │            │
+│  │               │          │               │          │               │            │
+│  │ Your DC       │          │ Telecom DC    │          │ AWS DC        │            │
+│  │ (bạn sở hữu)  │          │ (nhà mạng     │          │ (AWS sở hữu   │            │
+│  │               │          │  sở hữu)      │          │  gần cities)  │            │
+│  ├───────────────┤          ├───────────────┤          ├───────────────┤            │
+│  │ ✅ Hybrid     │          │ ✅ 5G Mobile  │          │ ✅ City users │            │
+│  │ ✅ Data       │          │ ✅ AR/VR      │          │ ✅ Media      │            │
+│  │    residency  │          │ ✅ Gaming     │          │ ✅ Gaming     │            │
+│  │ ✅ On-prem    │          │ ✅ Connected  │          │ ✅ Virtual    │            │
+│  │    low latency│          │    vehicles   │          │    desktops   │            │
+│  └───────────────┘          └───────────────┘          └───────────────┘            │
+│                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 

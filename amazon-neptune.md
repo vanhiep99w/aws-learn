@@ -23,23 +23,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AMAZON NEPTUNE                                     │
+│                           AMAZON NEPTUNE                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Định nghĩa ngắn gọn:                                                       │
-│   ════════════════════                                                       │
-│   • Fully managed GRAPH DATABASE                                             │
-│   • Optimized cho highly connected data                                      │
+│                                                                             │
+│   Định nghĩa ngắn gọn:                                                      │
+│   ════════════════════                                                      │
+│   • Fully managed GRAPH DATABASE                                            │
+│   • Optimized cho highly connected data                                     │
 │   • Hỗ trợ cả Property Graph và RDF                                         │
 │   • Query bằng Gremlin, SPARQL, hoặc openCypher                             │
-│                                                                              │
-│   Khi nào dùng?                                                              │
-│   ════════════════════                                                       │
+│                                                                             │
+│   Khi nào dùng?                                                             │
+│   ════════════════════                                                      │
 │   • Social networks (ai là bạn của ai?)                                     │
 │   • Recommendation engines (bạn có thể thích gì?)                           │
 │   • Fraud detection (giao dịch nào đáng ngờ?)                               │
 │   • Knowledge graphs (entities liên quan thế nào?)                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -51,13 +51,13 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                  RELATIONAL vs GRAPH DATABASE                                │
+│                  RELATIONAL vs GRAPH DATABASE                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  RELATIONAL DATABASE (RDS, Aurora):                                         │
 │  ══════════════════════════════════                                         │
-│                                                                              │
-│  Users Table          Friends Table                                          │
+│                                                                             │
+│  Users Table          Friends Table                                         │
 │  ┌────┬───────┐      ┌─────────┬─────────┐                                  │
 │  │ ID │ Name  │      │ User_ID │Friend_ID│                                  │
 │  ├────┼───────┤      ├─────────┼─────────┤                                  │
@@ -65,29 +65,29 @@
 │  │ 2  │ Bob   │      │    1    │    3    │                                  │
 │  │ 3  │ Carol │      │    2    │    3    │                                  │
 │  └────┴───────┘      └─────────┴─────────┘                                  │
-│                                                                              │
+│                                                                             │
 │  → Cần JOIN nhiều bảng để tìm relationships                                 │
 │  → Slow khi relationships phức tạp                                          │
-│                                                                              │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  GRAPH DATABASE (Neptune):                                                   │
-│  ══════════════════════════                                                  │
-│                                                                              │
-│           ┌───────┐                                                          │
-│           │ Alice │                                                          │
-│           └───┬───┘                                                          │
-│        FRIEND │ FRIEND                                                       │
-│          ┌────┴────┐                                                         │
-│          ▼         ▼                                                         │
+│                                                                             │
+│  GRAPH DATABASE (Neptune):                                                  │
+│  ══════════════════════════                                                 │
+│                                                                             │
+│           ┌───────┐                                                         │
+│           │ Alice │                                                         │
+│           └───┬───┘                                                         │
+│        FRIEND │ FRIEND                                                      │
+│          ┌────┴────┐                                                        │
+│          ▼         ▼                                                        │
 │      ┌───────┐ ┌───────┐                                                    │
 │      │  Bob  │─│ Carol │                                                    │
 │      └───────┘ └───────┘                                                    │
-│           FRIEND                                                             │
-│                                                                              │
+│           FRIEND                                                            │
+│                                                                             │
 │  → Relationships là first-class citizens                                    │
 │  → Traversal nhanh, không cần JOIN                                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -108,36 +108,36 @@ Neptune hỗ trợ 2 loại graph models:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      GRAPH MODELS IN NEPTUNE                                 │
+│                      GRAPH MODELS IN NEPTUNE                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  1. PROPERTY GRAPH                                                           │
-│  ═══════════════════                                                         │
-│                                                                              │
+│                                                                             │
+│  1. PROPERTY GRAPH                                                          │
+│  ═══════════════════                                                        │
+│                                                                             │
 │  • Query languages: Gremlin, openCypher                                     │
 │  • Nodes và edges có properties (key-value pairs)                           │
 │  • Phổ biến cho: Social networks, fraud detection                           │
-│                                                                              │
+│                                                                             │
 │     ┌──────────────┐    PURCHASED     ┌──────────────┐                      │
 │     │ User: Alice  │ ───────────────► │ Product: X   │                      │
 │     │ age: 30      │    price: $100   │ category: Y  │                      │
 │     └──────────────┘                  └──────────────┘                      │
-│                                                                              │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  2. RDF (Resource Description Framework)                                    │
 │  ═══════════════════════════════════════                                    │
-│                                                                              │
+│                                                                             │
 │  • Query language: SPARQL                                                   │
-│  • Data stored as triples: Subject - Predicate - Object                    │
+│  • Data stored as triples: Subject - Predicate - Object                     │
 │  • Phổ biến cho: Knowledge graphs, semantic web                             │
-│                                                                              │
+│                                                                             │
 │     Subject          Predicate         Object                               │
 │     ────────         ─────────         ──────                               │
 │     :Alice           :knows            :Bob                                 │
 │     :Alice           :age              30                                   │
 │     :Alice           :worksAt          :AWS                                 │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -155,38 +155,38 @@ Neptune hỗ trợ 2 loại graph models:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       NEPTUNE ARCHITECTURE                                   │
+│                       NEPTUNE ARCHITECTURE                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │                          ┌─────────────────┐                                │
 │                          │   Application   │                                │
 │                          └────────┬────────┘                                │
-│                                   │                                          │
+│                                  │                                          │
 │                    Gremlin / SPARQL / openCypher                            │
-│                                   │                                          │
-│                                   ▼                                          │
+│                                  │                                          │
+│                                   ▼                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                     NEPTUNE CLUSTER                                  │   │
+│   │                     NEPTUNE CLUSTER                                 │   │
 │   │  ┌───────────────────────────────────────────────────────────────┐  │   │
-│   │  │                    PRIMARY INSTANCE                            │  │   │
-│   │  │                    (Read/Write)                                │  │   │
+│   │  │                    PRIMARY INSTANCE                            │ │   │
+│   │  │                    (Read/Write)                                │ │   │
 │   │  └───────────────────────────────────────────────────────────────┘  │   │
-│   │                              │                                       │   │
+│   │                              │                                      │   │
 │   │         ┌────────────────────┼────────────────────┐                 │   │
 │   │         ▼                    ▼                    ▼                 │   │
-│   │  ┌────────────┐       ┌────────────┐       ┌────────────┐          │   │
-│   │  │  Replica   │       │  Replica   │       │  Replica   │          │   │
-│   │  │ (Read only)│       │ (Read only)│       │ (Read only)│          │   │
-│   │  └────────────┘       └────────────┘       └────────────┘          │   │
+│   │  ┌────────────┐       ┌────────────┐       ┌────────────┐           │   │
+│   │  │  Replica   │       │  Replica   │       │  Replica   │           │   │
+│   │  │ (Read only)│       │ (Read only)│       │ (Read only)│           │   │
+│   │  └────────────┘       └────────────┘       └────────────┘           │   │
 │   │         AZ-a                AZ-b                AZ-c                │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                   │                                          │
-│                                   ▼                                          │
+│                                  │                                          │
+│                                   ▼                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                 SHARED STORAGE (6 copies across 3 AZs)              │   │
 │   │                    Auto-scaling up to 128 TB                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -207,44 +207,44 @@ Neptune hỗ trợ 2 loại graph models:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        NEPTUNE USE CASES                                     │
+│                        NEPTUNE USE CASES                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  1. SOCIAL NETWORKING                                                        │
-│  ═════════════════════                                                       │
-│                                                                              │
+│                                                                             │
+│  1. SOCIAL NETWORKING                                                       │
+│  ═════════════════════                                                      │
+│                                                                             │
 │     "Tìm bạn của bạn của Alice"                                             │
 │     "Ai có nhiều connections nhất?"                                         │
 │     "Gợi ý kết bạn dựa trên mutual friends"                                 │
-│                                                                              │
-│  2. RECOMMENDATION ENGINES                                                   │
-│  ═══════════════════════════                                                 │
-│                                                                              │
+│                                                                             │
+│  2. RECOMMENDATION ENGINES                                                  │
+│  ═══════════════════════════                                                │
+│                                                                             │
 │     "Người dùng đã mua X cũng mua Y"                                        │
 │     "Movies tương tự mà bạn có thể thích"                                   │
 │     "Sản phẩm phổ biến trong network của bạn"                               │
-│                                                                              │
-│  3. FRAUD DETECTION                                                          │
-│  ═══════════════════                                                         │
-│                                                                              │
+│                                                                             │
+│  3. FRAUD DETECTION                                                         │
+│  ═══════════════════                                                        │
+│                                                                             │
 │     "Account này có liên kết với fraud ring không?"                         │
 │     "Phát hiện circular transactions"                                       │
 │     "Identify suspicious patterns"                                          │
-│                                                                              │
-│  4. KNOWLEDGE GRAPHS                                                         │
-│  ═══════════════════                                                         │
-│                                                                              │
+│                                                                             │
+│  4. KNOWLEDGE GRAPHS                                                        │
+│  ═══════════════════                                                        │
+│                                                                             │
 │     "Barack Obama là tổng thống của nước nào?"                              │
 │     "Các công ty con của Amazon là gì?"                                     │
 │     "Semantic search và reasoning"                                          │
-│                                                                              │
-│  5. NETWORK/IT OPERATIONS                                                    │
-│  ═════════════════════════                                                   │
-│                                                                              │
+│                                                                             │
+│  5. NETWORK/IT OPERATIONS                                                   │
+│  ═════════════════════════                                                  │
+│                                                                             │
 │     "Server nào kết nối với server này?"                                    │
 │     "Impact analysis khi 1 node down"                                       │
 │     "Dependency mapping"                                                    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -280,16 +280,16 @@ Track changes trong graph database:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        NEPTUNE STREAMS                                       │
+│                        NEPTUNE STREAMS                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Neptune DB ──► Stream ──► Lambda ──► Downstream processing               │
-│                                                                              │
-│   Use cases:                                                                 │
+│                                                                             │
+│   Neptune DB ──► Stream ──► Lambda ──► Downstream processing                │
+│                                                                             │
+│   Use cases:                                                                │
 │   • Real-time notifications khi data thay đổi                               │
 │   • Sync data to other systems (Elasticsearch, etc.)                        │
 │   • Audit trail of all changes                                              │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -309,24 +309,24 @@ Web-based tool để query và visualize graphs.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       NEPTUNE SERVERLESS                                     │
+│                       NEPTUNE SERVERLESS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Capacity                                                                   │
-│       ▲                                                                      │
-│       │     ____                                                             │
+│                                                                             │
+│   Capacity                                                                  │
+│       ▲                                                                     │
+│       │     ____                                                            │
 │       │    /    \          Auto-scales up khi load tăng                     │
 │       │   /      \    /\                                                    │
 │       │  /        \  /  \                                                   │
 │       │ /          \/    \____                                              │
 │       └──────────────────────────► Time                                     │
-│                                                                              │
-│   Benefits:                                                                  │
+│                                                                             │
+│   Benefits:                                                                 │
 │   • Pay only for what you use                                               │
 │   • No capacity planning needed                                             │
 │   • Scales to zero when idle (cost savings)                                 │
-│   • Instant scaling                                                          │
-│                                                                              │
+│   • Instant scaling                                                         │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -338,18 +338,18 @@ Sử dụng machine learning trên graph data:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          NEPTUNE ML                                          │
+│                          NEPTUNE ML                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Neptune DB ──► SageMaker ──► ML Model ──► Predictions                     │
-│                                                                              │
-│   Use cases:                                                                 │
+│                                                                             │
+│   Use cases:                                                                │
 │   • Node classification ("User này là fraud không?")                        │
 │   • Link prediction ("User này có thể kết bạn với ai?")                     │
-│   • Node embeddings for ML                                                   │
-│                                                                              │
+│   • Node embeddings for ML                                                  │
+│                                                                             │
 │   Powered by: Graph Neural Networks (GNN)                                   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -361,34 +361,34 @@ Sử dụng machine learning trên graph data:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    EXAM TIPS - AMAZON NEPTUNE                                │
+│                    EXAM TIPS - AMAZON NEPTUNE                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  1. Neptune = GRAPH DATABASE                                                 │
+│                                                                             │
+│  1. Neptune = GRAPH DATABASE                                                │
 │     • Keyword: relationships, connections, graph                            │
 │     • KHÔNG phải relational, KHÔNG phải NoSQL document                      │
-│                                                                              │
-│  2. Query Languages:                                                         │
+│                                                                             │
+│  2. Query Languages:                                                        │
 │     • Gremlin, openCypher (Property Graph)                                  │
 │     • SPARQL (RDF)                                                          │
 │     • KHÔNG dùng SQL                                                        │
-│                                                                              │
-│  3. Use Cases:                                                               │
+│                                                                             │
+│  3. Use Cases:                                                              │
 │     • Social networks → "friends of friends"                                │
 │     • Fraud detection → "connected to fraud ring?"                          │
 │     • Recommendation → "users who bought X also bought Y"                   │
 │     • Knowledge graphs → semantic relationships                             │
-│                                                                              │
-│  4. High Availability:                                                       │
-│     • Multi-AZ                                                               │
+│                                                                             │
+│  4. High Availability:                                                      │
+│     • Multi-AZ                                                              │
 │     • 6 copies of data across 3 AZs                                         │
 │     • Up to 15 read replicas                                                │
-│                                                                              │
-│  5. Fully Managed:                                                           │
-│     • Auto backups                                                           │
+│                                                                             │
+│  5. Fully Managed:                                                          │
+│     • Auto backups                                                          │
 │     • Encryption at rest and in transit                                     │
 │     • Serverless option available                                           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

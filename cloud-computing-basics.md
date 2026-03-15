@@ -72,9 +72,9 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                 SIX ADVANTAGES OF CLOUD COMPUTING                        │
+│                 SIX ADVANTAGES OF CLOUD COMPUTING                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  1️⃣ TRADE FIXED EXPENSE FOR VARIABLE EXPENSE                            │
 │     ┌──────────────────┐         ┌──────────────────┐                   │
 │     │ Traditional      │         │ Cloud            │                   │
@@ -82,12 +82,12 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 │     │ before knowing   │         │ Only when needed │                   │
 │     │ actual needs     │         │                  │                   │
 │     └──────────────────┘         └──────────────────┘                   │
-│                                                                          │
+│                                                                         │
 │  2️⃣ BENEFIT FROM MASSIVE ECONOMIES OF SCALE                             │
 │     Single company: 100 servers → Price per server: $$$                 │
 │     AWS (millions): 1,000,000+ servers → Price per server: $            │
 │     → AWS passes savings to customers                                   │
-│                                                                          │
+│                                                                         │
 │  3️⃣ STOP GUESSING CAPACITY                                              │
 │     ┌─────────────────────────────────────────────────┐                 │
 │     │  Traditional: Guess for 3 years ahead           │                 │
@@ -97,14 +97,14 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 │     │  Cloud: Scale on demand                         │                 │
 │     │  └─ Right-size always → ✅ Pay for what you use │                 │
 │     └─────────────────────────────────────────────────┘                 │
-│                                                                          │
+│                                                                         │
 │  4️⃣ INCREASE SPEED AND AGILITY                                          │
 │     Traditional: Need new server?                                       │
 │     → Order → Ship → Install → Configure → 4-8 weeks                    │
-│                                                                          │
+│                                                                         │
 │     Cloud: Need new server?                                             │
 │     → Click → Launch → Ready → 5 minutes                                │
-│                                                                          │
+│                                                                         │
 │  5️⃣ STOP SPENDING MONEY ON DATA CENTERS                                 │
 │     ┌───────────────────────────────────────────┐                       │
 │     │ Don't worry about:                        │                       │
@@ -117,9 +117,9 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 │     │ • Building products ✅                    │                       │
 │     │ • Serving customers ✅                    │                       │
 │     └───────────────────────────────────────────┘                       │
-│                                                                          │
+│                                                                         │
 │  6️⃣ GO GLOBAL IN MINUTES                                                │
-│                     🌍                                                   │
+│                     🌍                                                  │
 │         ┌─────────────────────────────┐                                 │
 │         │    Deploy worldwide         │                                 │
 │         │    in just a few clicks     │                                 │
@@ -129,7 +129,7 @@ Thuê tài nguyên IT (compute, storage, database, networking...) qua internet t
 │         │   └─────┴──────┴───────┘    │                                 │
 │         │   Lower latency for users   │                                 │
 │         └─────────────────────────────┘                                 │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 

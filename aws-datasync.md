@@ -20,24 +20,24 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              AWS DATASYNC                                        │
+│              AWS DATASYNC                                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  On-premises                     AWS                             │
+│                                                                 │
+│  On-premises                     AWS                            │
 │  ┌─────────────┐                ┌─────────────┐                 │
 │  │  NFS/SMB    │                │     S3      │                 │
 │  │  Storage    │ ──────────────►│     EFS     │                 │
 │  └──────┬──────┘    DataSync    │     FSx     │                 │
 │         │                       └─────────────┘                 │
-│    ┌────┴────┐                                                   │
+│    ┌────┴────┐                                                  │
 │    │ DataSync│  ← Agent chạy trên VM                            │
-│    │  Agent  │                                                   │
-│    └─────────┘                                                   │
-│                                                                  │
+│    │  Agent  │                                                  │
+│    └─────────┘                                                  │
+│                                                                 │
 │  ⚡ Up to 10 Gbps transfer speed                                │
 │  🔄 Automatic retry, verification                               │
 │  📊 Bandwidth throttling                                        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -53,39 +53,39 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              DATASYNC WORKFLOW                                   │
+│              DATASYNC WORKFLOW                                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. Deploy Agent (nếu on-premises)                              │
-│     ┌─────────────┐                                              │
-│     │  VMware/    │                                              │
+│     ┌─────────────┐                                             │
+│     │  VMware/    │                                             │
 │     │  Hyper-V/   │  ← Download OVA/VHD từ AWS                  │
-│     │  KVM/EC2    │                                              │
-│     └──────┬──────┘                                              │
-│            │                                                     │
+│     │  KVM/EC2    │                                             │
+│     └──────┬──────┘                                             │
+│           │                                                     │
 │  2. Create Locations (Source + Destination)                     │
-│            │                                                     │
-│            ▼                                                     │
+│           │                                                     │
+│            ▼                                                    │
 │     ┌─────────────┐         ┌─────────────┐                     │
 │     │   Source    │ ──────► │ Destination │                     │
 │     │  Location   │         │  Location   │                     │
 │     └─────────────┘         └─────────────┘                     │
-│            │                                                     │
+│           │                                                     │
 │  3. Create Task (defines what/how to transfer)                  │
-│            │                                                     │
-│            ▼                                                     │
-│     ┌─────────────┐                                              │
+│           │                                                     │
+│            ▼                                                    │
+│     ┌─────────────┐                                             │
 │     │    Task     │ ← Schedule, filters, options                │
-│     └──────┬──────┘                                              │
-│            │                                                     │
+│     └──────┬──────┘                                             │
+│           │                                                     │
 │  4. Run Task (manual or scheduled)                              │
-│            │                                                     │
-│            ▼                                                     │
-│     ┌─────────────┐                                              │
+│           │                                                     │
+│            ▼                                                    │
+│     ┌─────────────┐                                             │
 │     │  Transfer   │ ← Monitor progress in Console               │
-│     │  Execution  │                                              │
-│     └─────────────┘                                              │
-│                                                                  │
+│     │  Execution  │                                             │
+│     └─────────────┘                                             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -112,19 +112,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              COMMON TRANSFER PATTERNS                            │
+│              COMMON TRANSFER PATTERNS                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. On-prem NFS/SMB ──► S3/EFS/FSx (Migration)                  │
-│                                                                  │
+│                                                                 │
 │  2. S3 ──► EFS (Transform object to file)                       │
-│                                                                  │
+│                                                                 │
 │  3. EFS ──► EFS (Cross-region replication)                      │
-│                                                                  │
+│                                                                 │
 │  4. FSx ──► S3 (Backup/Archive)                                 │
-│                                                                  │
+│                                                                 │
 │  5. Google Cloud Storage ──► S3 (Cloud migration)               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -146,12 +146,12 @@
 ```
 On-premises:
 ┌─────────────────────────────────────────────────────────────────┐
-│  Download Agent VM image from AWS Console:                       │
+│  Download Agent VM image from AWS Console:                      │
 │  • VMware ESXi (.ova)                                           │
-│  • Microsoft Hyper-V (.vhd)                                      │
-│  • KVM (.qcow2)                                                  │
-│                                                                  │
-│  Requirements:                                                   │
+│  • Microsoft Hyper-V (.vhd)                                     │
+│  • KVM (.qcow2)                                                 │
+│                                                                 │
+│  Requirements:                                                  │
 │  • 4 vCPUs, 32 GB RAM                                           │
 │  • 80 GB disk                                                   │
 │  • Network access to AWS (port 443)                             │
@@ -160,7 +160,7 @@ On-premises:
 
 AWS (for self-managed storage on EC2):
 ┌─────────────────────────────────────────────────────────────────┐
-│  Launch EC2 instance with DataSync Agent AMI                     │
+│  Launch EC2 instance with DataSync Agent AMI                    │
 │  • Use for EC2 instances running NFS/SMB servers                │
 └─────────────────────────────────────────────────────────────────┘
 ```

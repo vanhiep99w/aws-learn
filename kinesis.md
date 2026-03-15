@@ -67,29 +67,29 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Producers                                                     │
-│   ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐                  │
-│   │  App   │ │  IoT   │ │ Logs   │ │ Clicks │                  │
-│   └────┬───┘ └────┬───┘ └────┬───┘ └────┬───┘                  │
+│   ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐                   │
+│   │  App   │ │  IoT   │ │ Logs   │ │ Clicks │                   │
+│   └────┬───┘ └────┬───┘ └────┬───┘ └────┬───┘                   │
 │        │          │          │          │                       │
 │        └──────────┴────┬─────┴──────────┘                       │
 │                        ↓                                        │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │              KINESIS DATA STREAM                        │  │
-│   │  ┌─────────────────────────────────────────────────┐    │  │
-│   │  │ Shard 1: [rec1] [rec4] [rec7] [rec10]           │    │  │
-│   │  │ Shard 2: [rec2] [rec5] [rec8] [rec11]           │    │  │
-│   │  │ Shard 3: [rec3] [rec6] [rec9] [rec12]           │    │  │
-│   │  └─────────────────────────────────────────────────┘    │  │
-│   │                                                         │  │
-│   │  Data Retention: 1 day (default) - 365 days             │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │              KINESIS DATA STREAM                        │   │
+│   │  ┌─────────────────────────────────────────────────┐     │  │
+│   │  │ Shard 1: [rec1] [rec4] [rec7] [rec10]           │     │  │
+│   │  │ Shard 2: [rec2] [rec5] [rec8] [rec11]           │     │  │
+│   │  │ Shard 3: [rec3] [rec6] [rec9] [rec12]           │     │  │
+│   │  └─────────────────────────────────────────────────┘     │  │
+│   │                                                         │   │
+│   │  Data Retention: 1 day (default) - 365 days             │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                        │                                        │
 │        ┌───────────────┼───────────────┐                        │
 │        ↓               ↓               ↓                        │
-│   ┌────────┐      ┌────────┐      ┌────────┐                   │
-│   │ Lambda │      │  EC2   │      │Kinesis │                   │
-│   │        │      │  App   │      │Analytics│                  │
-│   └────────┘      └────────┘      └────────┘                   │
+│   ┌────────┐      ┌────────┐      ┌────────┐                    │
+│   │ Lambda │      │  EC2   │      │Kinesis │                    │
+│   │        │      │  App   │      │Analytics │                    │
+│   └────────┘      └────────┘      └────────┘                    │
 │   Consumers (có thể đọc lại - replay!)                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -105,15 +105,15 @@
 │   Mỗi Shard có capacity cố định:                                │
 │                                                                 │
 │   WRITE (Ingestion):                                            │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  1 MB/second  OR  1000 records/second                   │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  1 MB/second  OR  1000 records/second                   │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   READ (Consumption):                                           │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Standard: 2 MB/second (shared across consumers)        │  │
-│   │  Enhanced Fan-out: 2 MB/second PER consumer             │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Standard: 2 MB/second (shared across consumers)        │   │
+│   │  Enhanced Fan-out: 2 MB/second PER consumer             │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   Billing: Pay per shard hour + data transfer                   │
 │                                                                 │
@@ -137,14 +137,14 @@
 │                      ↓                                          │
 │   Hash(PartitionKey) → Shard mapping                            │
 │                      ↓                                          │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │ Shard 1: user-123, user-456  (same key → same shard)    │  │
-│   │ Shard 2: user-789, user-012                             │  │
-│   │ Shard 3: user-345, user-678                             │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ Shard 1: user-123, user-456  (same key → same shard)    │   │
+│   │ Shard 2: user-789, user-012                             │   │
+│   │ Shard 3: user-345, user-678                             │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   ✅ Records với CÙNG partition key → CÙNG shard → ORDERING     │
-│   ⚠️  Hot partition: quá nhiều records với cùng key             │
+│   ⚠️  Hot partition: quá nhiều records với cùng key              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -165,16 +165,16 @@
 │                    KPL FEATURES                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │                    Producer App                         │  │
-│   │  ┌─────────────────────────────────────────────────┐    │  │
-│   │  │ Record 1 ─┐                                     │    │  │
-│   │  │ Record 2 ─┼──→ Batch → Compress → Send          │    │  │
-│   │  │ Record 3 ─┘         ↓                           │    │  │
-│   │  │                 Retry on failure                │    │  │
-│   │  │                 Async & non-blocking            │    │  │
-│   │  └─────────────────────────────────────────────────┘    │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                    Producer App                         │   │
+│   │  ┌─────────────────────────────────────────────────┐     │  │
+│   │  │ Record 1 ─┐                                     │     │  │
+│   │  │ Record 2 ─┼──→ Batch → Compress → Send          │     │  │
+│   │  │ Record 3 ─┘         ↓                           │     │  │
+│   │  │                 Retry on failure                │     │  │
+│   │  │                 Async & non-blocking            │     │  │
+│   │  └─────────────────────────────────────────────────┘     │  │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   Batching: Aggregate user records → fewer API calls            │
 │   Compression: Optional compression                             │
@@ -191,26 +191,26 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   1. SHARED CONSUMER (Classic):                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Shard ←──── Poll ──── Consumer 1                       │  │
-│   │  (2 MB/s)←── Poll ──── Consumer 2                       │  │
-│   │        ←── Poll ──── Consumer 3                         │  │
-│   │                                                         │  │
-│   │  → 2 MB/s SHARED giữa tất cả consumers                  │  │
-│   │  → GetRecords API (pull model)                          │  │
-│   │  → Max 5 GetRecords calls/second per shard              │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Shard ←──── Poll ──── Consumer 1                       │   │
+│   │  (2 MB/s)←── Poll ──── Consumer 2                       │   │
+│   │        ←── Poll ──── Consumer 3                         │   │
+│   │                                                         │   │
+│   │  → 2 MB/s SHARED giữa tất cả consumers                  │   │
+│   │  → GetRecords API (pull model)                          │   │
+│   │  → Max 5 GetRecords calls/second per shard              │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   2. ENHANCED FAN-OUT (EFO):                                    │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Shard ────→ Push ────→ Consumer 1 (2 MB/s)             │  │
-│   │        ────→ Push ────→ Consumer 2 (2 MB/s)             │  │
-│   │        ────→ Push ────→ Consumer 3 (2 MB/s)             │  │
-│   │                                                         │  │
-│   │  → Mỗi consumer nhận RIÊNG 2 MB/s                       │  │
-│   │  → SubscribeToShard API (push model via HTTP/2)         │  │
-│   │  → ~70ms latency (vs ~200ms classic)                    │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Shard ────→ Push ────→ Consumer 1 (2 MB/s)             │   │
+│   │        ────→ Push ────→ Consumer 2 (2 MB/s)             │   │
+│   │        ────→ Push ────→ Consumer 3 (2 MB/s)             │   │
+│   │                                                         │   │
+│   │  → Mỗi consumer nhận RIÊNG 2 MB/s                       │   │
+│   │  → SubscribeToShard API (push model via HTTP/2)         │   │
+│   │  → ~70ms latency (vs ~200ms classic)                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -232,25 +232,25 @@
 │                    KCL ARCHITECTURE                             │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │                  Kinesis Stream                         │  │
-│   │  [Shard 1] [Shard 2] [Shard 3] [Shard 4]                │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                  Kinesis Stream                         │   │
+│   │  [Shard 1] [Shard 2] [Shard 3] [Shard 4]                │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │         │          │          │          │                      │
 │         ↓          ↓          ↓          ↓                      │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │              KCL Application (2 instances)              │  │
-│   │  ┌──────────────────┐  ┌──────────────────┐             │  │
-│   │  │   Worker 1       │  │   Worker 2       │             │  │
-│   │  │  Shard 1, 2      │  │  Shard 3, 4      │             │  │
-│   │  └──────────────────┘  └──────────────────┘             │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │              KCL Application (2 instances)              │   │
+│   │  ┌──────────────────┐  ┌──────────────────┐              │  │
+│   │  │   Worker 1       │  │   Worker 2       │              │  │
+│   │  │  Shard 1, 2      │  │  Shard 3, 4      │              │  │
+│   │  └──────────────────┘  └──────────────────┘              │  │
+│   └─────────────────────────────────────────────────────────┘   │
 │                        │                                        │
 │                        ↓                                        │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │                  DynamoDB                               │  │
-│   │  (Checkpoint tracking - which records processed)         │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │                  DynamoDB                               │   │
+│   │  (Checkpoint tracking - which records processed)        │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   Rules:                                                        │
 │   • 1 shard = max 1 KCL worker có thể read                      │
@@ -275,21 +275,21 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   PROVISIONED MODE:                                             │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • Bạn chọn số shards                                   │  │
-│   │  • Manual scaling (UpdateShardCount API)                │  │
-│   │  • Pay per shard per hour (~$0.015/shard/hour)          │  │
-│   │  • Predictable cost                                     │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • Bạn chọn số shards                                   │   │
+│   │  • Manual scaling (UpdateShardCount API)                │   │
+│   │  • Pay per shard per hour (~$0.015/shard/hour)          │   │
+│   │  • Predictable cost                                     │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   ON-DEMAND MODE:                                               │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • Auto scales based on throughput                      │  │
-│   │  • No capacity planning                                 │  │
-│   │  • Pay per GB in/out                                    │  │
-│   │  • Default: 4 MB/s write, tự scale lên 200 MB/s write   │  │
-│   │  • Đắt hơn ~2-3x so với provisioned                     │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • Auto scales based on throughput                      │   │
+│   │  • No capacity planning                                 │   │
+│   │  • Pay per GB in/out                                    │   │
+│   │  • Default: 4 MB/s write, tự scale lên 200 MB/s write   │   │
+│   │  • Đắt hơn ~2-3x so với provisioned                     │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -306,16 +306,16 @@
 │   • Maximum: 365 days                                           │
 │                                                                 │
 │   Replay Capability:                                            │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Timeline: ──────────────────────────────────────────── │  │
-│   │            │ Hour 1 │ Hour 2 │ Hour 3 │ Hour 4 │ Now   │  │
-│   │                                                         │  │
-│   │  Consumer 1: Reading Hour 4 (current)                   │  │
-│   │  Consumer 2: Replaying from Hour 1 (reprocess all)      │  │
-│   │                                                         │  │
-│   │  → Same stream, different consumers, different positions│  │
-│   │  → Mỗi consumer có riêng checkpoint                     │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Timeline: ──────────────────────────────────────────── │   │
+│   │            │ Hour 1 │ Hour 2 │ Hour 3 │ Hour 4 │ Now     │  │
+│   │                                                         │   │
+│   │  Consumer 1: Reading Hour 4 (current)                   │   │
+│   │  Consumer 2: Replaying from Hour 1 (reprocess all)      │   │
+│   │                                                         │   │
+│   │  → Same stream, different consumers, different positions│   │
+│   │  → Mỗi consumer có riêng checkpoint                     │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   Iterator Types:                                               │
 │   • TRIM_HORIZON: Đọc từ oldest record                          │
@@ -340,14 +340,14 @@
 │   Fully managed, auto-scaling, NO administration                │
 │                                                                 │
 │   Sources               Firehose                 Destinations   │
-│   ┌────────┐         ┌─────────────┐           ┌────────────┐  │
-│   │Producer│────────→│             │──────────→│    S3      │  │
-│   │  SDK   │         │  Transform  │           │ Redshift   │  │
-│   └────────┘         │  (Lambda)   │           │ OpenSearch │  │
-│   ┌────────┐         │             │           │ Splunk     │  │
-│   │Kinesis │────────→│  Buffer     │           │ HTTP       │  │
-│   │Streams │         │  (size/time)│           │ Endpoint   │  │
-│   └────────┘         └─────────────┘           └────────────┘  │
+│   ┌────────┐         ┌─────────────┐           ┌────────────┐   │
+│   │Producer│────────→│             │──────────→│    S3      │   │
+│   │  SDK   │         │  Transform  │           │ Redshift   │   │
+│   └────────┘         │  (Lambda)   │           │ OpenSearch │   │
+│   ┌────────┐         │             │           │ Splunk      │  │
+│   │Kinesis │────────→│  Buffer     │           │ HTTP        │  │
+│   │Streams │         │  (size/time)│           │ Endpoint    │  │
+│   └────────┘         └─────────────┘           └─────────────┘  │
 │   ┌────────┐                │                                   │
 │   │  IoT   │────────────────┘                                   │
 │   └────────┘                                                    │
@@ -376,10 +376,10 @@
 │              FIREHOSE TRANSFORMATION                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌────────────┐    ┌────────────┐    ┌────────────┐           │
-│   │   Source   │───→│   Lambda   │───→│   S3       │           │
-│   │   Records  │    │ Transform  │    │ (output)   │           │
-│   └────────────┘    └────────────┘    └────────────┘           │
+│   ┌────────────┐    ┌────────────┐    ┌────────────┐            │
+│   │   Source   │───→│   Lambda   │───→│   S3       │            │
+│   │   Records  │    │ Transform  │    │ (output)   │            │
+│   └────────────┘    └────────────┘    └────────────┘            │
 │                           │                                     │
 │                           ↓                                     │
 │                    ┌────────────┐                               │
@@ -417,23 +417,23 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   DATA STREAMS:                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • Real-time (~200ms latency)                           │  │
-│   │  • Custom consumers (Lambda, EC2, KCL)                  │  │
-│   │  • Data replay ✅                                       │  │
-│   │  • Manage scaling (shards)                              │  │
-│   │  • Multiple consumers on same data                      │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • Real-time (~200ms latency)                           │   │
+│   │  • Custom consumers (Lambda, EC2, KCL)                  │   │
+│   │  • Data replay ✅                                       │   │
+│   │  • Manage scaling (shards)                              │   │
+│   │  • Multiple consumers on same data                      │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   FIREHOSE:                                                     │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • Near real-time (60s+ latency)                        │  │
-│   │  • Managed destinations (S3, Redshift, OpenSearch)      │  │
-│   │  • NO replay (data delivered then gone)                 │  │
-│   │  • Auto scaling                                         │  │
-│   │  • Data transformation (Lambda, format conversion)      │  │
-│   │  • Serverless, no administration                        │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • Near real-time (60s+ latency)                        │   │
+│   │  • Managed destinations (S3, Redshift, OpenSearch)      │   │
+│   │  • NO replay (data delivered then gone)                 │   │
+│   │  • Auto scaling                                         │   │
+│   │  • Data transformation (Lambda, format conversion)      │   │
+│   │  • Serverless, no administration                        │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -460,16 +460,16 @@
 │                                                                 │
 │   Real-time analytics using SQL or Apache Flink                 │
 │                                                                 │
-│   ┌────────────┐    ┌────────────────┐    ┌────────────┐       │
-│   │  Kinesis   │───→│                │───→│  Kinesis   │       │
-│   │  Streams   │    │ SQL / Flink    │    │  Streams   │       │
-│   └────────────┘    │                │    └────────────┘       │
-│   ┌────────────┐    │ Process &      │    ┌────────────┐       │
-│   │  Firehose  │───→│ Analyze        │───→│  Firehose  │       │
-│   └────────────┘    │                │    └────────────┘       │
-│                     └────────────────┘    ┌────────────┐       │
-│                                           │   Lambda   │       │
-│                                           └────────────┘       │
+│   ┌────────────┐    ┌────────────────┐    ┌────────────┐        │
+│   │  Kinesis   │───→│                │───→│  Kinesis   │        │
+│   │  Streams   │    │ SQL / Flink    │    │  Streams   │        │
+│   └────────────┘    │                │    └────────────┘        │
+│   ┌────────────┐    │ Process &      │    ┌────────────┐        │
+│   │  Firehose  │───→│ Analyze        │───→│  Firehose  │        │
+│   └────────────┘    │                │    └────────────┘        │
+│                     └────────────────┘    ┌────────────┐        │
+│                                           │   Lambda    │       │
+│                                           └────────────┘        │
 │                                                                 │
 │   Use Cases:                                                    │
 │   • Real-time dashboards                                        │
@@ -504,7 +504,7 @@
 │                     ↓                                           │
 │              Sau khi xử lý xong                                 │
 │                     ↓                                           │
-│              MESSAGE BỊ XÓA ❌                                   │
+│              MESSAGE BỊ XÓA ❌                                  │
 │                                                                 │
 │   Giống như: HỘP THƯ                                            │
 │   • Bạn nhận thư, đọc xong, VỨT ĐI                              │
@@ -590,30 +590,30 @@
 │   Topic "orders" với 3 partitions                               │
 │                                                                 │
 │   SCENARIO 1: 1 Consumer Group với 3 consumers                  │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Group "order-service"                                  │  │
-│   │  ┌────────┐  ┌────────┐  ┌────────┐                     │  │
-│   │  │  C1    │  │  C2    │  │  C3    │                     │  │
-│   │  │  P0    │  │  P1    │  │  P2    │                     │  │
-│   │  │ [A][D] │  │ [B][E] │  │ [C][F] │                     │  │
-│   │  └────────┘  └────────┘  └────────┘                     │  │
-│   │                                                         │  │
-│   │  → Mỗi consumer nhận 1 phần messages (load balancing)   │  │
-│   │  → GIỐNG SQS behavior trong 1 group!                    │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Group "order-service"                                  │   │
+│   │  ┌────────┐  ┌────────┐  ┌────────┐                      │  │
+│   │  │  C1    │  │  C2    │  │  C3    │                      │  │
+│   │  │  P0    │  │  P1    │  │  P2    │                      │  │
+│   │  │ [A][D] │  │ [B][E] │  │ [C][F] │                      │  │
+│   │  └────────┘  └────────┘  └────────┘                      │  │
+│   │                                                         │   │
+│   │  → Mỗi consumer nhận 1 phần messages (load balancing)   │   │
+│   │  → GIỐNG SQS behavior trong 1 group!                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   SCENARIO 2: 2 Consumer Groups                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Group "order-service"        Group "analytics"         │  │
-│   │  ┌────────────────────┐      ┌────────────────────┐     │  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Group "order-service"        Group "analytics"         │   │
+│   │  ┌────────────────────┐      ┌────────────────────┐      │  │
 │   │  │ C1(P0) C2(P1) C3(P2)│      │     C1(ALL)        │     │  │
-│   │  └────────────────────┘      └────────────────────┘     │  │
-│   │  Nhận: A,B,C,D,E,F            Nhận: A,B,C,D,E,F          │  │
-│   │  (chia cho 3 consumers)       (1 consumer nhận all)      │  │
-│   │                                                         │  │
-│   │  → CẢ HAI groups đều nhận TẤT CẢ messages!              │  │
-│   │  → Khác SQS: SQS chỉ có 1 "group"                       │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   │  └────────────────────┘      └────────────────────┘      │  │
+│   │  Nhận: A,B,C,D,E,F            Nhận: A,B,C,D,E,F         │   │
+│   │  (chia cho 3 consumers)       (1 consumer nhận all)     │   │
+│   │                                                         │   │
+│   │  → CẢ HAI groups đều nhận TẤT CẢ messages!              │   │
+│   │  → Khác SQS: SQS chỉ có 1 "group"                       │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -626,34 +626,34 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   OPTION 1: Multiple KCL Applications                           │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Stream "orders"                                        │  │
-│   │         ↓                     ↓                         │  │
-│   │  ┌─────────────────┐   ┌─────────────────┐              │  │
-│   │  │KCL App A        │   │KCL App B        │              │  │
-│   │  │"order-service"  │   │"analytics"      │              │  │
-│   │  │DynamoDB Table A │   │DynamoDB Table B │              │  │
-│   │  └─────────────────┘   └─────────────────┘              │  │
-│   │                                                         │  │
-│   │  → Mỗi KCL app có riêng checkpoint table                │  │
-│   │  → Cả 2 apps đều đọc TẤT CẢ data                        │  │
-│   │  → Giống Kafka 2 consumer groups!                       │  │
-│   │  ⚠️ Shared throughput (2 MB/s per shard)               │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Stream "orders"                                        │   │
+│   │         ↓                     ↓                         │   │
+│   │  ┌─────────────────┐   ┌─────────────────┐               │  │
+│   │  │KCL App A        │   │KCL App B        │               │  │
+│   │  │"order-service"  │   │"analytics"      │               │  │
+│   │  │DynamoDB Table A │   │DynamoDB Table B │               │  │
+│   │  └─────────────────┘   └─────────────────┘               │  │
+│   │                                                         │   │
+│   │  → Mỗi KCL app có riêng checkpoint table                │   │
+│   │  → Cả 2 apps đều đọc TẤT CẢ data                        │   │
+│   │  → Giống Kafka 2 consumer groups!                       │   │
+│   │  ⚠️ Shared throughput (2 MB/s per shard)                 │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   OPTION 2: Enhanced Fan-out                                    │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Stream "orders"                                        │  │
-│   │         ↓ (push)          ↓ (push)                      │  │
-│   │  ┌─────────────────┐   ┌─────────────────┐              │  │
-│   │  │Consumer A       │   │Consumer B       │              │  │
-│   │  │2 MB/s dedicated │   │2 MB/s dedicated │              │  │
-│   │  └─────────────────┘   └─────────────────┘              │  │
-│   │                                                         │  │
-│   │  → Mỗi consumer nhận RIÊNG 2 MB/s                       │  │
-│   │  → Up to 20 consumers per stream                        │  │
-│   │  → Giống Kafka consumer groups hơn!                     │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Stream "orders"                                        │   │
+│   │         ↓ (push)          ↓ (push)                      │   │
+│   │  ┌─────────────────┐   ┌─────────────────┐               │  │
+│   │  │Consumer A       │   │Consumer B       │               │  │
+│   │  │2 MB/s dedicated │   │2 MB/s dedicated │               │  │
+│   │  └─────────────────┘   └─────────────────┘               │  │
+│   │                                                         │   │
+│   │  → Mỗi consumer nhận RIÊNG 2 MB/s                       │   │
+│   │  → Up to 20 consumers per stream                        │   │
+│   │  → Giống Kafka consumer groups hơn!                     │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -761,22 +761,22 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   ❌ BAD: Low cardinality partition key                         │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  PartitionKey = "device-type"                           │  │
-│   │  Values: "mobile", "web", "tablet" (only 3!)            │  │
-│   │                                                         │  │
-│   │  → 80% traffic might go to "mobile" shard               │  │
-│   │  → Hot shard, throttling                                │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  PartitionKey = "device-type"                           │   │
+│   │  Values: "mobile", "web", "tablet" (only 3!)            │   │
+│   │                                                         │   │
+│   │  → 80% traffic might go to "mobile" shard               │   │
+│   │  → Hot shard, throttling                                │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   ✅ GOOD: High cardinality partition key                       │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  PartitionKey = "user-id" or "device-id"                │  │
-│   │  Values: millions of unique values                      │  │
-│   │                                                         │  │
-│   │  → Even distribution across shards                      │  │
-│   │  → Ordering maintained per user                         │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  PartitionKey = "user-id" or "device-id"                │   │
+│   │  Values: millions of unique values                      │   │
+│   │                                                         │   │
+│   │  → Even distribution across shards                      │   │
+│   │  → Ordering maintained per user                         │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

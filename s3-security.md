@@ -23,29 +23,29 @@ S3 Security dựa trên nguyên tắc **Defense in Depth** - nhiều lớp bảo
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    S3 SECURITY LAYERS                            │
+│                    S3 SECURITY LAYERS                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Layer 1: Network                                                │
+│                                                                 │
+│  Layer 1: Network                                               │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ VPC Endpoints, S3 Access Points, Block Public Access    │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                              │                                   │
-│  Layer 2: Identity & Access                                      │
+│                             │                                   │
+│  Layer 2: Identity & Access                                     │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ IAM Policies, Bucket Policies, ACLs, Pre-signed URLs    │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                              │                                   │
-│  Layer 3: Data Protection                                        │
+│                             │                                   │
+│  Layer 3: Data Protection                                       │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ Encryption (SSE-S3, SSE-KMS, SSE-C), Versioning         │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                              │                                   │
-│  Layer 4: Compliance & Audit                                     │
+│                             │                                   │
+│  Layer 4: Compliance & Audit                                    │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ Object Lock, Access Logs, CloudTrail, Macie             │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -68,23 +68,23 @@ S3 Security dựa trên nguyên tắc **Defense in Depth** - nhiều lớp bảo
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    POLICY EVALUATION                             │
+│                    POLICY EVALUATION                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Request đến S3:                                                 │
-│                                                                  │
-│  1. Check IAM Policy (caller có permission không?)               │
-│  2. Check Bucket Policy (bucket cho phép caller không?)          │
-│  3. Check ACL (nếu enabled)                                      │
-│                                                                  │
-│  → Kết quả = UNION của Allow - Explicit Deny wins                │
-│                                                                  │
-│  Ví dụ:                                                          │
-│  - IAM: Allow s3:GetObject                                       │
-│  - Bucket Policy: Allow Principal: *                             │
-│  - Có Explicit Deny? → DENY                                      │
-│  - Không có Deny? → ALLOW                                        │
-│                                                                  │
+│                                                                 │
+│  Request đến S3:                                                │
+│                                                                 │
+│  1. Check IAM Policy (caller có permission không?)              │
+│  2. Check Bucket Policy (bucket cho phép caller không?)         │
+│  3. Check ACL (nếu enabled)                                     │
+│                                                                 │
+│  → Kết quả = UNION của Allow - Explicit Deny wins               │
+│                                                                 │
+│  Ví dụ:                                                         │
+│  - IAM: Allow s3:GetObject                                      │
+│  - Bucket Policy: Allow Principal: *                            │
+│  - Có Explicit Deny? → DENY                                     │
+│  - Không có Deny? → ALLOW                                       │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -198,21 +198,21 @@ Khi nhiều teams cùng dùng 1 bucket, bạn phải viết **1 bucket policy r�
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    S3 ACCESS POINTS                              │
+│                    S3 ACCESS POINTS                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Không có Access Points:                                        │
 │  ═══════════════════════                                        │
 │    Team A ──┐                                                   │
-│    Team B ──┼──► [ 1 cửa vào + 1 policy dài ] ──► Bucket       │
+│    Team B ──┼──► [ 1 cửa vào + 1 policy dài ] ──► Bucket        │
 │    Team C ──┘                                                   │
-│                                                                  │
+│                                                                 │
 │  Có Access Points:                                              │
 │  ═════════════════                                              │
 │    Team A ──► [ Cửa A + policy A ] ──┐                          │
 │    Team B ──► [ Cửa B + policy B ] ──┼──► Bucket                │
 │    Team C ──► [ Cửa C + policy C ] ──┘                          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -284,17 +284,17 @@ aws s3 cp s3://arn:aws:s3:us-east-1:123456789012:accesspoint/data-science/ml/mod
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              S3 DEFAULT ENCRYPTION (Jan 2023+)                   │
+│              S3 DEFAULT ENCRYPTION (Jan 2023+)                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Trước Jan 2023:              Sau Jan 2023 (hiện tại):          │
 │  ─────────────────            ────────────────────────          │
-│  Upload object                Upload object                      │
-│       │                            │                             │
-│       ▼                            ▼                             │
+│  Upload object                Upload object                     │
+│       │                           │                             │
+│       ▼                            ▼                            │
 │  Không encrypt                Tự động encrypt với SSE-S3        │
 │  (trừ khi bạn specify)        (AES-256, AWS managed keys)       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -319,32 +319,32 @@ S3 tự động encrypt data khi lưu và decrypt khi GET:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ENCRYPTION COMPARISON                         │
+│                    ENCRYPTION COMPARISON                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  SSE-S3 (Default từ Jan 2023)                                   │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ PUT object → S3 tự encrypt với AES-256                  │    │
-│  │ GET object → S3 tự decrypt                               │    │
+│  │ GET object → S3 tự decrypt                              │    │
 │  │ Key: AWS quản lý hoàn toàn, bạn không thấy              │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  SSE-KMS                                                         │
+│                                                                 │
+│  SSE-KMS                                                        │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ PUT object → S3 gọi KMS để lấy Data Key → encrypt       │    │
 │  │ GET object → S3 gọi KMS để decrypt Data Key → decrypt   │    │
 │  │ Key: Bạn quản lý trong KMS, có audit log                │    │
-│  │ ⚠️ KMS có request limits (5,500-30,000 req/s per Region)│    │
+│  │ ⚠️ KMS có request limits (5,500-30,000 req/s per Region) │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  SSE-C                                                           │
+│                                                                 │
+│  SSE-C                                                          │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ PUT: Gửi object + encryption key trong header           │    │
 │  │ GET: Gửi encryption key trong header để decrypt         │    │
 │  │ Key: Bạn quản lý hoàn toàn, AWS không lưu               │    │
-│  │ ⚠️ HTTPS bắt buộc (để bảo vệ key trong transit)         │    │
+│  │ ⚠️ HTTPS bắt buộc (để bảo vệ key trong transit)          │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -392,18 +392,18 @@ aws s3api put-object \
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              DEFAULT vs FORCE ENCRYPTION                         │
+│              DEFAULT vs FORCE ENCRYPTION                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  DEFAULT ENCRYPTION:                                             │
+│                                                                 │
+│  DEFAULT ENCRYPTION:                                            │
 │  - Upload không specify → S3 tự động áp dụng default            │
 │  - Upload có specify → Dùng encryption client chọn (override)   │
-│                                                                  │
-│  FORCE ENCRYPTION (Bucket Policy):                               │
+│                                                                 │
+│  FORCE ENCRYPTION (Bucket Policy):                              │
 │  - Upload PHẢI dùng encryption được chỉ định                    │
 │  - Nếu không đúng → DENY! (kể cả không specify)                 │
 │  - Đảm bảo 100% compliance, không ai bypass được                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -451,22 +451,22 @@ aws s3api put-object \
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│           S3 BLOCK PUBLIC ACCESS (4 settings)                    │
+│           S3 BLOCK PUBLIC ACCESS (4 settings)                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ☑️ BlockPublicAcls                                              │
-│     → Block PUT bucket/object ACL nếu grants public access       │
-│                                                                  │
+│     → Block PUT bucket/object ACL nếu grants public access      │
+│                                                                 │
 │  ☑️ IgnorePublicAcls                                             │
-│     → Ignore existing public ACLs (treat như không có)           │
-│                                                                  │
+│     → Ignore existing public ACLs (treat như không có)          │
+│                                                                 │
 │  ☑️ BlockPublicPolicy                                            │
-│     → Block PUT bucket policy nếu grants public access           │
-│                                                                  │
+│     → Block PUT bucket policy nếu grants public access          │
+│                                                                 │
 │  ☑️ RestrictPublicBuckets                                        │
-│     → Restrict access to bucket với public policy chỉ cho        │
-│        AWS services và authorized users trong account            │
-│                                                                  │
+│     → Restrict access to bucket với public policy chỉ cho       │
+│        AWS services và authorized users trong account           │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -488,18 +488,18 @@ Browser có **Same-Origin Policy** - chặn requests đến domain khác vì lý
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    SAME-ORIGIN POLICY                            │
+│                    SAME-ORIGIN POLICY                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Website: https://myapp.com                                      │
-│                                                                  │
-│  ✅ Fetch from https://myapp.com/api      (same origin)          │
-│  ❌ Fetch from https://my-bucket.s3...    (cross-origin!)        │
-│  ❌ Fetch from https://api.other.com      (cross-origin!)        │
-│                                                                  │
-│  Origin = protocol + domain + port                               │
+│                                                                 │
+│  Website: https://myapp.com                                     │
+│                                                                 │
+│  ✅ Fetch from https://myapp.com/api      (same origin)         │
+│  ❌ Fetch from https://my-bucket.s3...    (cross-origin!)       │
+│  ❌ Fetch from https://api.other.com      (cross-origin!)       │
+│                                                                 │
+│  Origin = protocol + domain + port                              │
 │  → Nếu khác bất kỳ thành phần nào → Cross-Origin                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -553,26 +553,26 @@ Website (myapp.com)  →  Backend (myapp.com/api)  →  S3
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    CORS FLOW                                     │
+│                    CORS FLOW                                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Browser gửi Preflight request (OPTIONS)                      │
-│     Origin: https://myapp.com                                    │
-│          │                                                       │
-│          ▼                                                       │
+│                                                                 │
+│  1. Browser gửi Preflight request (OPTIONS)                     │
+│     Origin: https://myapp.com                                   │
+│         │                                                       │
+│          ▼                                                      │
 │  2. S3 check CORS config → có allow myapp.com?                  │
-│          │                                                       │
-│          ▼                                                       │
-│  3. S3 trả về CORS headers                                       │
-│     Access-Control-Allow-Origin: https://myapp.com               │
-│     Access-Control-Allow-Methods: GET, PUT                       │
-│          │                                                       │
-│          ▼                                                       │
-│  4. Browser nhận → OK, cho phép request thật                     │
-│          │                                                       │
-│          ▼                                                       │
-│  5. Browser gửi actual request (GET/PUT...)                      │
-│                                                                  │
+│         │                                                       │
+│          ▼                                                      │
+│  3. S3 trả về CORS headers                                      │
+│     Access-Control-Allow-Origin: https://myapp.com              │
+│     Access-Control-Allow-Methods: GET, PUT                      │
+│         │                                                       │
+│          ▼                                                      │
+│  4. Browser nhận → OK, cho phép request thật                    │
+│         │                                                       │
+│          ▼                                                      │
+│  5. Browser gửi actual request (GET/PUT...)                     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -619,21 +619,21 @@ Bucket → Permissions → Cross-origin resource sharing (CORS):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    CORS USE CASES                                │
+│                    CORS USE CASES                               │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Static Website + S3 Assets                                   │
+│                                                                 │
+│  1. Static Website + S3 Assets                                  │
 │     Website ở CloudFront/Vercel, images/fonts ở S3              │
-│                                                                  │
-│  2. Direct Upload từ Browser                                     │
+│                                                                 │
+│  2. Direct Upload từ Browser                                    │
 │     User upload file trực tiếp lên S3 (với pre-signed URL)      │
-│                                                                  │
-│  3. SPA (React/Vue) + S3 API                                     │
+│                                                                 │
+│  3. SPA (React/Vue) + S3 API                                    │
 │     Frontend gọi S3 để lấy JSON/data files                      │
-│                                                                  │
-│  4. Web Fonts                                                    │
+│                                                                 │
+│  4. Web Fonts                                                   │
 │     Font files (.woff2) hosted trên S3                          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -675,23 +675,23 @@ Checklist:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MFA DELETE PROTECTION                         │
+│                    MFA DELETE PROTECTION                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Scenario nguy hiểm:                                             │
-│                                                                  │
+│                                                                 │
+│  Scenario nguy hiểm:                                            │
+│                                                                 │
 │  1. Hacker có được AWS credentials (access key bị lộ)           │
 │  2. Hacker xóa tất cả objects + versions                        │
-│  3. Hacker tắt versioning                                        │
-│  4. Data mất vĩnh viễn! 💀                                       │
-│                                                                  │
-│  Với MFA Delete enabled:                                         │
-│                                                                  │
-│  1. Hacker có credentials                                        │
+│  3. Hacker tắt versioning                                       │
+│  4. Data mất vĩnh viễn! 💀                                      │
+│                                                                 │
+│  Với MFA Delete enabled:                                        │
+│                                                                 │
+│  1. Hacker có credentials                                       │
 │  2. Hacker DELETE object version → ❌ DENIED (cần MFA code)     │
 │  3. Hacker tắt versioning → ❌ DENIED (cần MFA code)            │
-│  4. Data vẫn an toàn! ✅                                         │
-│                                                                  │
+│  4. Data vẫn an toàn! ✅                                        │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -711,18 +711,18 @@ Checklist:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MFA DELETE REQUIREMENTS                       │
+│                    MFA DELETE REQUIREMENTS                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. ✅ Bucket phải có Versioning ENABLED                         │
-│                                                                  │
+│                                                                 │
+│  1. ✅ Bucket phải có Versioning ENABLED                        │
+│                                                                 │
 │  2. ✅ Chỉ ROOT ACCOUNT owner mới có thể enable/disable         │
 │        (IAM users KHÔNG THỂ, kể cả có full admin permissions)   │
-│                                                                  │
+│                                                                 │
 │  3. ✅ Phải dùng AWS CLI (không thể dùng Console!)              │
-│                                                                  │
+│                                                                 │
 │  4. ✅ Root account phải có MFA device configured               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -779,24 +779,24 @@ Tạo temporary URLs để grant access **không cần AWS credentials**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    PRE-SIGNED URLs                               │
+│                    PRE-SIGNED URLs                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Use case: Cho user download private object qua browser          │
-│                                                                  │
-│  1. User request download                                        │
+│                                                                 │
+│  Use case: Cho user download private object qua browser         │
+│                                                                 │
+│  1. User request download                                       │
 │  2. Backend generate pre-signed URL (có thời hạn)               │
-│  3. Return URL cho user                                          │
-│  4. User download trực tiếp từ S3                                │
-│                                                                  │
+│  3. Return URL cho user                                         │
+│  4. User download trực tiếp từ S3                               │
+│                                                                 │
 │  ┌────────┐  request   ┌────────┐  generate   ┌────────┐        │
 │  │  User  │ ─────────► │ Backend│ ──────────► │   S3   │        │
 │  └────────┘            └───┬────┘             └────────┘        │
-│       ▲                    │                       ▲             │
-│       │    pre-signed URL  │                       │             │
-│       └────────────────────┘         download      │             │
-│       │────────────────────────────────────────────┘             │
-│                                                                  │
+│       ▲                    │                       ▲            │
+│       │    pre-signed URL  │                      │             │
+│       └────────────────────┘         download     │             │
+│       │────────────────────────────────────────────┘            │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -834,17 +834,17 @@ Truy cập S3 qua **private network** thay vì internet:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    VPC ENDPOINTS FOR S3                          │
+│                    VPC ENDPOINTS FOR S3                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Without VPC Endpoint:                                           │
+│                                                                 │
+│  Without VPC Endpoint:                                          │
 │  EC2 ──► NAT Gateway ──► Internet Gateway ──► Internet ──► S3   │
-│                           (tốn NAT cost, slow, less secure)      │
-│                                                                  │
-│  With Gateway Endpoint (FREE):                                   │
+│                           (tốn NAT cost, slow, less secure)     │
+│                                                                 │
+│  With Gateway Endpoint (FREE):                                  │
 │  EC2 ──────────────────► VPC Endpoint ──────────────────► S3    │
-│                           (private, fast, no NAT cost)           │
-│                                                                  │
+│                           (private, fast, no NAT cost)          │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -890,19 +890,19 @@ Truy cập S3 qua **private network** thay vì internet:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    S3 ACCESS LOGGING                             │
+│                    S3 ACCESS LOGGING                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌──────────────┐                    ┌──────────────────────┐   │
 │  │ Source Bucket│  ───► Logs ───►    │ Target Bucket (logs) │   │
 │  │ (my-data)    │                    │ (my-data-logs)       │   │
 │  └──────────────┘                    └──────────────────────┘   │
-│                                            │                     │
-│                                            ▼                     │
+│                                           │                     │
+│                                            ▼                    │
 │                               2024-01-15-00-45-32-ABC123.log    │
 │                               2024-01-15-01-12-45-DEF456.log    │
-│                               ...                                │
-│                                                                  │
+│                               ...                               │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

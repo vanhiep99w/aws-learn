@@ -25,22 +25,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Amazon Inspector                                      │
+│                        Amazon Inspector                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   "Tự động tìm lỗ hổng bảo mật trong EC2, Container Images, Lambda"        │
+│   "Tự động tìm lỗ hổng bảo mật trong EC2, Container Images, Lambda"         │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                     Scan Targets                                    │   │
 │   │                                                                     │   │
-│   │   ┌──────────┐     ┌──────────┐     ┌──────────┐                   │   │
-│   │   │   EC2    │     │   ECR    │     │  Lambda  │                   │   │
-│   │   │Instances │     │  Images  │     │Functions │                   │   │
-│   │   │          │     │          │     │          │                   │   │
-│   │   │ • OS     │     │ • Docker │     │ • Code   │                   │   │
-│   │   │ • Apps   │     │ • Base   │     │ • Deps   │                   │   │
-│   │   │ • Network│     │   image  │     │          │                   │   │
-│   │   └────┬─────┘     └────┬─────┘     └────┬─────┘                   │   │
+│   │   ┌──────────┐     ┌──────────┐     ┌──────────┐                    │   │
+│   │   │   EC2    │     │   ECR    │     │  Lambda  │                    │   │
+│   │   │Instances │     │  Images  │     │Functions │                    │   │
+│   │   │          │     │          │     │          │                    │   │
+│   │   │ • OS     │     │ • Docker │     │ • Code   │                    │   │
+│   │   │ • Apps   │     │ • Base   │     │ • Deps   │                    │   │
+│   │   │ • Network│     │   image  │     │          │                    │   │
+│   │   └────┬─────┘     └────┬─────┘     └────┬─────┘                    │   │
 │   │        │                │                │                          │   │
 │   │        └────────────────┼────────────────┘                          │   │
 │   │                         │                                           │   │
@@ -78,29 +78,29 @@ Amazon Inspector có thể scan 3 loại resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     What Inspector Scans                                     │
+│                     What Inspector Scans                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  EC2 Instances:                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  • Operating system packages (rpm, dpkg, etc.)                      │   │
-│  │  • Application dependencies                                          │   │
-│  │  • Network reachability (open ports, security groups)               │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  • Operating system packages (rpm, dpkg, etc.)                      │    │
+│  │  • Application dependencies                                         │    │
+│  │  • Network reachability (open ports, security groups)               │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  ECR Container Images:                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  • Base image vulnerabilities                                        │   │
-│  │  • OS packages trong image                                           │   │
-│  │  • Application dependencies (npm, pip, maven, etc.)                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  • Base image vulnerabilities                                       │    │
+│  │  • OS packages trong image                                          │    │
+│  │  • Application dependencies (npm, pip, maven, etc.)                 │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Lambda Functions:                                                          │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  • Function code dependencies                                        │   │
-│  │  • Lambda layers                                                     │   │
-│  │  • Package vulnerabilities                                           │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  • Function code dependencies                                       │    │
+│  │  • Lambda layers                                                    │    │
+│  │  • Package vulnerabilities                                          │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -113,21 +113,21 @@ Amazon Inspector có thể scan 3 loại resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Continuous Scanning                                      │
+│                     Continuous Scanning                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  KHÔNG CẦN schedule scan thủ công!                                          │
 │                                                                             │
 │  Inspector tự động rescan khi:                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                                                                     │   │
-│  │  ✅ Cài package mới trên EC2                                        │   │
-│  │  ✅ Push image mới lên ECR                                          │   │
-│  │  ✅ Deploy Lambda function mới                                       │   │
-│  │  ✅ CVE mới được publish                                             │   │
-│  │  ✅ Có thay đổi network config                                       │   │
-│  │                                                                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                                                                     │    │
+│  │  ✅ Cài package mới trên EC2                                        │    │
+│  │  ✅ Push image mới lên ECR                                          │    │
+│  │  ✅ Deploy Lambda function mới                                      │    │
+│  │  ✅ CVE mới được publish                                            │    │
+│  │  ✅ Có thay đổi network config                                      │    │
+│  │                                                                     │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -170,7 +170,7 @@ Khi phát hiện vulnerability, Inspector tạo **Finding** với:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   EC2 Scanning Requirements                                  │
+│                   EC2 Scanning Requirements                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   1. SSM Agent phải được cài và running                                     │
@@ -194,7 +194,7 @@ Khi phát hiện vulnerability, Inspector tạo **Finding** với:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   Multi-Account Management                                   │
+│                   Multi-Account Management                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────┐                                                   │
@@ -206,7 +206,7 @@ Khi phát hiện vulnerability, Inspector tạo **Finding** với:
 │              │                                                              │
 │              ▼                                                              │
 │   ┌─────────────────────┐                                                   │
-│   │  Delegated Admin    │  ← Security Team account                         │
+│   │  Delegated Admin    │  ← Security Team account                          │
 │   │  (Security Account) │                                                   │
 │   │                     │                                                   │
 │   │  • View all findings│                                                   │
@@ -219,8 +219,8 @@ Khi phát hiện vulnerability, Inspector tạo **Finding** với:
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                     Member Accounts                                 │   │
 │   │                                                                     │   │
-│   │   Account A    Account B    Account C    Account D                 │   │
-│   │   (scanned)    (scanned)    (scanned)    (scanned)                 │   │
+│   │   Account A    Account B    Account C    Account D                  │   │
+│   │   (scanned)    (scanned)    (scanned)    (scanned)                  │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -233,18 +233,18 @@ Khi phát hiện vulnerability, Inspector tạo **Finding** với:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Inspector Integrations                                │
+│                        Inspector Integrations                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Amazon Inspector                                                          │
 │        │                                                                    │
-│        ├──────────► AWS Security Hub                                       │
-│        │            → Aggregate findings với GuardDuty, Config, etc.       │
+│        ├──────────► AWS Security Hub                                        │
+│        │            → Aggregate findings với GuardDuty, Config, etc.        │
 │        │                                                                    │
-│        ├──────────► Amazon EventBridge                                     │
-│        │            → Trigger Lambda, SNS khi có new finding               │
+│        ├──────────► Amazon EventBridge                                      │
+│        │            → Trigger Lambda, SNS khi có new finding                │
 │        │                                                                    │
-│        └──────────► S3                                                     │
+│        └──────────► S3                                                      │
 │                     → Export findings reports                               │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -271,18 +271,18 @@ Finding → EventBridge → Lambda → SSM Run Command → Patch instance
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Security Services Positioning                             │
+│                    Security Services Positioning                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   TRƯỚC (Prevention):                                                       │
-│   → Inspector: "Có lỗ hổng nào không?" (vulnerability)                     │
-│   → Config: "Cấu hình đúng chưa?" (configuration)                          │
+│   → Inspector: "Có lỗ hổng nào không?" (vulnerability)                      │
+│   → Config: "Cấu hình đúng chưa?" (configuration)                           │
 │                                                                             │
 │   TRONG (Detection):                                                        │
-│   → GuardDuty: "Có ai đang tấn công không?" (threat)                       │
+│   → GuardDuty: "Có ai đang tấn công không?" (threat)                        │
 │                                                                             │
 │   SAU (Response):                                                           │
-│   → Security Hub: "Tổng hợp mọi thứ, action tiếp" (aggregate)              │
+│   → Security Hub: "Tổng hợp mọi thứ, action tiếp" (aggregate)               │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -355,7 +355,7 @@ Inspector re-scan → Finding closed
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Amazon Inspector Summary                                 │
+│                     Amazon Inspector Summary                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  🎯 WHAT: Vulnerability management service                                  │
@@ -377,8 +377,8 @@ Inspector re-scan → Finding closed
 │     • Lambda: Enable in Inspector                                           │
 │                                                                             │
 │  💡 REMEMBER:                                                               │
-│     • Inspector = "Có lỗ hổng nào không?" (preventive)                     │
-│     • GuardDuty = "Có ai đang tấn công không?" (detective)                 │
+│     • Inspector = "Có lỗ hổng nào không?" (preventive)                      │
+│     • GuardDuty = "Có ai đang tấn công không?" (detective)                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

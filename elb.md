@@ -35,20 +35,20 @@ ELB là **Regional service**, hoạt động trong **1 Region** và có thể sp
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    REGION (ap-southeast-1)                       │
-│                                                                  │
+│                    REGION (ap-southeast-1)                      │
+│                                                                 │
 │   ┌───────────────────────────────────────────────────────────┐ │
-│   │                         ELB                                │ │
+│   │                         ELB                               │ │
 │   │              (1 ELB, span nhiều AZ trong region)          │ │
 │   └───────────────────────────────────────────────────────────┘ │
 │              │                    │                    │        │
 │              ▼                    ▼                    ▼        │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐│
-│   │      AZ-1a      │  │      AZ-1b      │  │      AZ-1c      ││
-│   │  ┌───────────┐  │  │  ┌───────────┐  │  │  ┌───────────┐  ││
-│   │  │   EC2     │  │  │  │   EC2     │  │  │  │   EC2     │  ││
-│   │  └───────────┘  │  │  └───────────┘  │  │  └───────────┘  ││
-│   └─────────────────┘  └─────────────────┘  └─────────────────┘│
+│   ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────┐│
+│   │      AZ-1a      │  │      AZ-1b      │  │      AZ-1c       ││
+│   │  ┌───────────┐  │  │  ┌───────────┐  │  │  ┌───────────┐   ││
+│   │  │   EC2     │  │  │  │   EC2     │  │  │  │   EC2     │   ││
+│   │  └───────────┘  │  │  └───────────┘  │  │  └───────────┘   ││
+│   └─────────────────┘  └─────────────────┘  └──────────────────┘│
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -134,7 +134,7 @@ AWS cung cấp **4 loại** Load Balancer:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Application Load Balancer                 │
+│                    Application Load Balancer                │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │  Listener   │  │  Listener   │  │     Listener        │  │
 │  │  HTTP:80    │  │  HTTPS:443  │  │     HTTPS:8443      │  │
@@ -497,20 +497,20 @@ ELB sử dụng các **thuật toán routing** khác nhau để phân phối tra
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ROUND ROBIN ALGORITHM                         │
+│                    ROUND ROBIN ALGORITHM                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Request 1 ──▶ ALB ──▶ Instance A                               │
 │  Request 2 ──▶ ALB ──▶ Instance B                               │
 │  Request 3 ──▶ ALB ──▶ Instance C                               │
-│  Request 4 ──▶ ALB ──▶ Instance A  ← Quay lại từ đầu           │
+│  Request 4 ──▶ ALB ──▶ Instance A  ← Quay lại từ đầu            │
 │  Request 5 ──▶ ALB ──▶ Instance B                               │
 │  Request 6 ──▶ ALB ──▶ Instance C                               │
-│  ...                                                             │
-│                                                                  │
+│  ...                                                            │
+│                                                                 │
 │  ✅ Ưu điểm: Đơn giản, dễ hiểu, phân phối đều                   │
 │  ❌ Nhược điểm: Không xét đến instance đang bận hay rảnh        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -534,21 +534,21 @@ Round Robin:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               LEAST OUTSTANDING REQUESTS (LOR)                   │
+│               LEAST OUTSTANDING REQUESTS (LOR)                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Tình huống: Instance B đang xử lý request nặng                 │
-│                                                                  │
-│  Instance A: 0 requests đang xử lý                               │
+│                                                                 │
+│  Instance A: 0 requests đang xử lý                              │
 │  Instance B: 3 requests đang xử lý  ← Đang bận!                 │
-│  Instance C: 1 request đang xử lý                                │
-│                                                                  │
-│  LOR quyết định:                                                 │
+│  Instance C: 1 request đang xử lý                               │
+│                                                                 │
+│  LOR quyết định:                                                │
 │  Request mới ──▶ ALB ──▶ Instance A  ← Chọn A (0 outstanding)   │
-│                                                                  │
+│                                                                 │
 │  ✅ Ưu điểm: Thông minh hơn, không gửi đến instance đang bận    │
 │  ✅ Tốt cho: Requests có thời gian xử lý KHÁC NHAU              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -575,23 +575,23 @@ aws elbv2 modify-target-group-attributes \
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    FLOW HASH ALGORITHM (NLB)                     │
+│                    FLOW HASH ALGORITHM (NLB)                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  5-tuple = { Source IP, Source Port, Dest IP, Dest Port, Proto }│
-│                                                                  │
+│                                                                 │
 │  Connection từ Client A (1.2.3.4:50123):                        │
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │ Hash(1.2.3.4, 50123, 10.0.1.5, 443, TCP) = 12345            ││
 │  │ 12345 % 3 instances = Instance B                            ││
 │  └─────────────────────────────────────────────────────────────┘│
-│                                                                  │
-│  → TẤT CẢ packets của connection này đều đến Instance B        │
-│  → Connection ổn định, không bị chuyển instance giữa chừng     │
-│                                                                  │
+│                                                                 │
+│  → TẤT CẢ packets của connection này đều đến Instance B         │
+│  → Connection ổn định, không bị chuyển instance giữa chừng      │
+│                                                                 │
 │  ✅ Phù hợp: TCP connections dài (database, gaming)             │
-│  ✅ Preserve connection: Cùng flow luôn đến cùng target        │
-│                                                                  │
+│  ✅ Preserve connection: Cùng flow luôn đến cùng target         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -716,8 +716,8 @@ T=0s          T=300s (default timeout)
 ┌─────────────────────────────────────┐
 │         DRAINING PERIOD             │
 │                                     │
-│  ✓ Requests cũ: tiếp tục xử lý     │
-│  ✗ Requests mới: đi instance khác  │
+│  ✓ Requests cũ: tiếp tục xử lý      │
+│  ✗ Requests mới: đi instance khác   │
 │                                     │
 └─────────────────────────────────────┘
                 │
@@ -731,16 +731,16 @@ Config của **Target Group** (không phải instance hay LB):
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  Load Balancer                       │
+│                  Load Balancer                      │
 │                                                     │
 │   ┌─────────────────────────────────────────────┐   │
-│   │            Target Group                      │   │
+│   │            Target Group                     │   │
 │   │                                             │   │
 │   │   deregistration_delay = 300s  ← CONFIG     │   │
 │   │                                             │   │
-│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐ │   │
-│   │   │Instance 1│  │Instance 2│  │Instance 3│ │   │
-│   │   └──────────┘  └──────────┘  └──────────┘ │   │
+│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  │   │
+│   │   │Instance 1│  │Instance 2│  │Instance 3│  │   │
+│   │   └──────────┘  └──────────┘  └──────────┘  │   │
 │   └─────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────┘
 
@@ -778,26 +778,26 @@ aws elbv2 modify-target-group-attributes \
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    SSL CERTIFICATE TYPES                         │
+│                    SSL CERTIFICATE TYPES                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1️⃣ SINGLE DOMAIN CERTIFICATE                                  │
+│                                                                 │
+│  1️⃣ SINGLE DOMAIN CERTIFICATE                                   │
 │     → example.com         (root domain) ✅                      │
 │     → api.example.com     (subdomain)   ✅                      │
 │     → Chỉ cho 1 domain duy nhất                                 │
-│                                                                  │
-│  2️⃣ WILDCARD CERTIFICATE (*.example.com)                       │
+│                                                                 │
+│  2️⃣ WILDCARD CERTIFICATE (*.example.com)                        │
 │     → *.example.com       (tất cả subdomains)                   │
 │        ├── api.example.com   ✅                                 │
 │        ├── www.example.com   ✅                                 │
-│        └── example.com       ❌ KHÔNG bao gồm root!            │
-│                                                                  │
-│  3️⃣ SAN CERTIFICATE (Subject Alternative Names)                │
+│        └── example.com       ❌ KHÔNG bao gồm root!             │
+│                                                                 │
+│  3️⃣ SAN CERTIFICATE (Subject Alternative Names)                 │
 │     → Nhiều domains trong 1 cert:                               │
 │        ├── example.com       ✅ root domain                     │
 │        ├── *.example.com     ✅ all subdomains                  │
 │        └── example.org       ✅ domain khác                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -819,27 +819,27 @@ aws elbv2 modify-target-group-attributes \
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    KHÔNG CÓ STICKY SESSIONS                      │
+│                    KHÔNG CÓ STICKY SESSIONS                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                   │
-│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance B  ← Khác instance! │
-│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance C  ← Khác nữa!      │
-│                                                                  │
+│                                                                 │
+│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                    │
+│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance B  ← Khác instance!  │
+│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance C  ← Khác nữa!       │
+│                                                                 │
 │  → Mỗi request có thể đến instance khác nhau                    │
-│  → Session data (giỏ hàng, login) có thể BỊ MẤT!               │
-│                                                                  │
+│  → Session data (giỏ hàng, login) có thể BỊ MẤT!                │
+│                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│                    CÓ STICKY SESSIONS                            │
+│                    CÓ STICKY SESSIONS                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                   │
-│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance A  ← Cùng instance! │
-│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance A  ← Cùng instance! │
-│                                                                  │
+│                                                                 │
+│  Client ──▶ Request 1 ──▶ ALB ──▶ Instance A                    │
+│  Client ──▶ Request 2 ──▶ ALB ──▶ Instance A  ← Cùng instance!  │
+│  Client ──▶ Request 3 ──▶ ALB ──▶ Instance A  ← Cùng instance!  │
+│                                                                 │
 │  → Tất cả requests từ client đi đến CÙNG 1 instance             │
 │  → Session data được giữ nguyên                                 │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -952,14 +952,14 @@ Internet
 ┌─────────┐
 │   ELB   │ ◀─── Health Check ────┐
 └────┬────┘                       │
-     │                            │
-     ▼                            │
+     │    │
+     ▼    │
 ┌─────────────────────────────────┴──────────┐
 │           Auto Scaling Group                │
 │  ┌────────┐  ┌────────┐  ┌────────┐        │
 │  │  EC2   │  │  EC2   │  │  EC2   │        │
 │  └────────┘  └────────┘  └────────┘        │
-└─────────────────────────────────────────────┘
+└─────────┘
 ```
 
 - ASG tự động register/deregister instances với ELB

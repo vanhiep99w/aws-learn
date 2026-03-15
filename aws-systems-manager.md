@@ -24,32 +24,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS Systems Manager                                   │
+│                        AWS Systems Manager                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                    Managed Nodes                                    │   │
 │   │                                                                     │   │
-│   │   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    │   │
-│   │   │   EC2    │    │   EC2    │    │On-Premise│    │Multicloud│    │   │
-│   │   │Instance  │    │Instance  │    │  Server  │    │   VM     │    │   │
-│   │   │          │    │          │    │          │    │          │    │   │
-│   │   │SSM Agent │    │SSM Agent │    │SSM Agent │    │SSM Agent │    │   │
-│   │   └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘    │   │
-│   │        │               │               │               │          │   │
-│   └────────┼───────────────┼───────────────┼───────────────┼──────────┘   │
-│            │               │               │               │              │
-│            └───────────────┴───────────────┴───────────────┘              │
-│                                    │                                       │
-│                                    ▼                                       │
-│            ┌─────────────────────────────────────────────────┐            │
-│            │           AWS Systems Manager                    │            │
-│            │                                                  │            │
-│            │  • Run Command      • Session Manager            │            │
-│            │  • Patch Manager    • Parameter Store            │            │
-│            │  • Automation       • State Manager              │            │
-│            │  • Inventory        • Maintenance Windows        │            │
-│            └─────────────────────────────────────────────────┘            │
+│   │   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐      │   │
+│   │   │   EC2    │    │   EC2    │    │On-Premise│    │Multicloud│      │   │
+│   │   │Instance  │    │Instance  │    │  Server  │    │   VM     │      │   │
+│   │   │          │    │          │    │          │    │          │      │   │
+│   │   │SSM Agent │    │SSM Agent │    │SSM Agent │    │SSM Agent │      │   │
+│   │   └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘      │   │
+│   │        │               │               │               │            │   │
+│   └────────┼───────────────┼───────────────┼───────────────┼────────────┘   │
+│            │               │               │                 │              │
+│            └───────────────┴───────────────┴───────────────┘                │
+│                                     │                                       │
+│                                    ▼                                        │
+│            ┌─────────────────────────────────────────────────┐              │
+│            │           AWS Systems Manager                   │              │
+│            │                                                 │              │
+│            │  • Run Command      • Session Manager           │              │
+│            │  • Patch Manager    • Parameter Store           │              │
+│            │  • Automation       • State Manager             │              │
+│            │  • Inventory        • Maintenance Windows       │              │
+│            └─────────────────────────────────────────────────┘              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -77,28 +77,28 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    SSM Agent - Cách hoạt động                                 │
+│                    SSM Agent - Cách hoạt động                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ⚠️ QUAN TRỌNG: Agent KHÔNG lắng nghe connections!                         │
-│   Agent CHỦ ĐỘNG gọi RA NGOÀI đến SSM Service                               │
+│   ⚠️ QUAN TRỌNG: Agent KHÔNG lắng nghe connections!                           │
+│   Agent CHỦ ĐỘNG gọi RA NGOÀI đến SSM Service                                │
 │                                                                              │
-│   ┌─────────────────────┐                                                   │
-│   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                 │
-│   │   (trên cloud)      │                                                   │
+│   ┌─────────────────────┐                                                    │
+│   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                  │
+│   │   (trên cloud)      │                                                    │
 │   └──────────▲──────────┘                        p                           │
 │              │                                                               │
-│              │  WebSocket (Agent GỌI RA, giữ connection)                    │
+│              │  WebSocket (Agent GỌI RA, giữ connection)                     │
 │              │                                                               │
-│   ┌──────────┴──────────┐                                                   │
-│   │   SSM Agent         │  ← Phần mềm TRONG EC2                             │
-│   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện      │
-│   └─────────────────────┘                                                   │
+│   ┌──────────┴──────────┐                                                    │
+│   │   SSM Agent         │  ← Phần mềm TRONG EC2                              │
+│   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện       │
+│   └─────────────────────┘                                                    │
 │                                                                              │
 │   Workflow:                                                                  │
-│   1. Agent connect RA NGOÀI đến SSM Service (WebSocket)                     │
-│   2. Giữ connection, chờ commands/sessions                                  │
-│   3. Khi có command → Thực hiện và trả kết quả                              │
+│   1. Agent connect RA NGOÀI đến SSM Service (WebSocket)                      │
+│   2. Giữ connection, chờ commands/sessions                                   │
+│   3. Khi có command → Thực hiện và trả kết quả                               │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -122,28 +122,28 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                  Network Options cho SSM Agent                                │
+│                  Network Options cho SSM Agent                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   OPTION 1: Qua Internet                                                    │
+│   OPTION 1: Qua Internet                                                     │
 │   ────────────────────────                                                   │
-│   EC2 ──► NAT Gateway ──► Internet ──► SSM Service                          │
+│   EC2 ──► NAT Gateway ──► Internet ──► SSM Service                           │
 │                                                                              │
-│   Yêu cầu: EC2 có internet access (IGW hoặc NAT Gateway)                   │
-│   Cost: NAT Gateway ~$32/tháng + data transfer                              │
+│   Yêu cầu: EC2 có internet access (IGW hoặc NAT Gateway)                     │
+│   Cost: NAT Gateway ~$32/tháng + data transfer                               │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   OPTION 2: Qua VPC Endpoints (Private - không cần internet)                │
+│   OPTION 2: Qua VPC Endpoints (Private - không cần internet)                 │
 │   ───────────────────────────────────────────────────────────                │
-│   EC2 ──► VPC Endpoint ──► SSM Service (qua AWS PrivateLink)               │
+│   EC2 ──► VPC Endpoint ──► SSM Service (qua AWS PrivateLink)                 │
 │                                                                              │
-│   Yêu cầu: Tạo 3 Interface Endpoints (BẠN TỰ TẠO, AWS không tự tạo!)       │
+│   Yêu cầu: Tạo 3 Interface Endpoints (BẠN TỰ TẠO, AWS không tự tạo!)         │
 │   • com.amazonaws.{region}.ssm                                               │
 │   • com.amazonaws.{region}.ssmmessages                                       │
 │   • com.amazonaws.{region}.ec2messages                                       │
 │                                                                              │
-│   Cost: ~$0.01/hour/endpoint/AZ                                             │
+│   Cost: ~$0.01/hour/endpoint/AZ                                              │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -165,27 +165,27 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 │   ❌ SSH PORT 22 (INBOUND) - Attack surface lớn:                             │
 │   ──────────────────────────────────────────────                             │
 │                                                                              │
-│   Hacker ─────────────────────────────────► EC2 (port 22 OPEN)              │
-│          "Brute force password"              ▲                              │
-│          "Exploit SSH vulnerability"         │ LẮNG NGHE                    │
-│          "Scan port"                         │                              │
+│   Hacker ─────────────────────────────────► EC2 (port 22 OPEN)               │
+│          "Brute force password"              ▲                               │
+│          "Exploit SSH vulnerability"         │ LẮNG NGHE                     │
+│          "Scan port"                          │                              │
 │                                                                              │
-│   → EC2 mở port, chấp nhận connections từ BẤT KỲ AI                         │
-│   → Hacker có thể scan, brute force, exploit                                │
+│   → EC2 mở port, chấp nhận connections từ BẤT KỲ AI                          │
+│   → Hacker có thể scan, brute force, exploit                                 │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   ✅ SSM AGENT (OUTBOUND) - Attack surface = 0:                             │
+│   ✅ SSM AGENT (OUTBOUND) - Attack surface = 0:                              │
 │   ─────────────────────────────────────────────                              │
 │                                                                              │
-│   Hacker ──────────X──────────► EC2 (NO ports open)                         │
-│          "Không thể connect"      │                                         │
-│                                   ▼ OUTBOUND                                │
-│                             SSM Service (AWS managed)                       │
+│   Hacker ──────────X──────────► EC2 (NO ports open)                          │
+│          "Không thể connect"       │                                         │
+│                                   ▼ OUTBOUND                                 │
+│                             SSM Service (AWS managed)                        │
 │                                                                              │
-│   → EC2 KHÔNG mở port nào                                                   │
-│   → Hacker KHÔNG THỂ connect đến EC2                                       │
-│   → Agent chỉ gọi đến AWS endpoints (trusted)                              │
+│   → EC2 KHÔNG mở port nào                                                    │
+│   → Hacker KHÔNG THỂ connect đến EC2                                         │
+│   → Agent chỉ gọi đến AWS endpoints (trusted)                                │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -209,37 +209,37 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Systems Manager Tools                                │
+│                         Systems Manager Tools                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  🖥️ NODE TOOLS (Quản lý nodes)                                              │
+│  🖥️ NODE TOOLS (Quản lý nodes)                                               │
 │  ─────────────────────────────────────────────────────────────              │
-│  • Run Command       → Chạy commands từ xa trên nhiều nodes                │
-│  • Session Manager   → SSH/RDP không cần mở port, không cần key            │
-│  • Patch Manager     → Tự động patch OS và applications                    │
-│  • State Manager     → Duy trì cấu hình mong muốn trên nodes               │
-│  • Inventory         → Thu thập thông tin software trên nodes              │
-│  • Fleet Manager     → UI dashboard quản lý fleet                          │
-│  • Distributor       → Deploy packages đến nodes                           │
-│  • Compliance        → Check compliance của patches, configs               │
+│  • Run Command       → Chạy commands từ xa trên nhiều nodes                 │
+│  • Session Manager   → SSH/RDP không cần mở port, không cần key             │
+│  • Patch Manager     → Tự động patch OS và applications                     │
+│  • State Manager     → Duy trì cấu hình mong muốn trên nodes                │
+│  • Inventory         → Thu thập thông tin software trên nodes               │
+│  • Fleet Manager     → UI dashboard quản lý fleet                           │
+│  • Distributor       → Deploy packages đến nodes                            │
+│  • Compliance        → Check compliance của patches, configs                │
 │                                                                             │
 │  🔄 CHANGE MANAGEMENT (Quản lý thay đổi)                                    │
 │  ─────────────────────────────────────────────────────────────              │
-│  • Automation        → Tự động hóa tasks (tạo AMI, update, etc.)           │
-│  • Maintenance Win.  → Lên lịch chạy tasks định kỳ                         │
-│  • Change Calendar   → Định nghĩa khi nào được/không được thay đổi         │
-│  • Documents (SSM)   → Define actions (JSON/YAML)                          │
+│  • Automation        → Tự động hóa tasks (tạo AMI, update, etc.)            │
+│  • Maintenance Win.  → Lên lịch chạy tasks định kỳ                          │
+│  • Change Calendar   → Định nghĩa khi nào được/không được thay đổi          │
+│  • Documents (SSM)   → Define actions (JSON/YAML)                           │
 │                                                                             │
 │  📦 APPLICATION TOOLS (Quản lý applications)                                │
 │  ─────────────────────────────────────────────────────────────              │
-│  • Parameter Store   → Lưu trữ config, secrets (FREE tier available)       │
-│  • AppConfig         → Deploy app configurations với rollback              │
+│  • Parameter Store   → Lưu trữ config, secrets (FREE tier available)        │
+│  • AppConfig         → Deploy app configurations với rollback               │
 │                                                                             │
 │  📊 OPERATIONS TOOLS (Operations management)                                │
 │  ─────────────────────────────────────────────────────────────              │
-│  • OpsCenter         → Central dashboard cho operational issues            │
-│  • Explorer          → Aggregated view của OpsData                         │
-│  • Incident Manager  → Quản lý incidents                                   │
+│  • OpsCenter         → Central dashboard cho operational issues             │
+│  • Explorer          → Aggregated view của OpsData                          │
+│  • Incident Manager  → Quản lý incidents                                    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -254,10 +254,10 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           Run Command                                        │
+│                           Run Command                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  Ví dụ: Cần restart Apache trên 100 servers                                │
+│  Ví dụ: Cần restart Apache trên 100 servers                                 │
 │                                                                             │
 │  KHÔNG có Run Command:                                                      │
 │  → SSH vào từng server                                                      │
@@ -288,13 +288,13 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Session Manager                                      │
+│                         Session Manager                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   TRƯỚC ĐÂY (SSH truyền thống):                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
-│   │  User → Internet → Port 22 (phải mở) → EC2 Instance               │   │
+│   │  User → Internet → Port 22 (phải mở) → EC2 Instance                 │   │
 │   │         ↑                   ↑                                       │   │
 │   │   SSH Key required    Security risk                                 │   │
 │   │                                                                     │   │
@@ -303,9 +303,9 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 │   VỚI SESSION MANAGER:                                                      │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
-│   │  User → AWS Console/CLI → SSM Service → SSM Agent → EC2 Instance  │   │
+│   │  User → AWS Console/CLI → SSM Service → SSM Agent → EC2 Instance    │   │
 │   │              ↑                              ↑                       │   │
-│   │      IAM Auth (no SSH key)         No inbound ports needed         │   │
+│   │      IAM Auth (no SSH key)         No inbound ports needed          │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -331,29 +331,29 @@ Agent cần ĐƯỜNG ĐI để gọi ra SSM Service. Có 2 options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          Patch Manager                                       │
+│                          Patch Manager                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────┐                                                       │
 │   │  Patch Baseline │  ← Định nghĩa rules:                                  │
-│   │                 │     • Auto-approve patches sau X ngày                │
+│   │                 │     • Auto-approve patches sau X ngày                 │
 │   │                 │     • Approved/Rejected patches list                  │
 │   │                 │     • Severity levels                                 │
 │   └────────┬────────┘                                                       │
 │            │                                                                │
 │            ▼                                                                │
 │   ┌─────────────────┐                                                       │
-│   │  Patch Group    │  ← Nhóm instances (VD: "Production", "Dev")          │
+│   │  Patch Group    │  ← Nhóm instances (VD: "Production", "Dev")           │
 │   └────────┬────────┘                                                       │
 │            │                                                                │
 │            ▼                                                                │
 │   ┌─────────────────┐                                                       │
-│   │Maintenance Win. │  ← Lên lịch patching (VD: Chủ nhật 2AM)              │
+│   │Maintenance Win. │  ← Lên lịch patching (VD: Chủ nhật 2AM)               │
 │   └────────┬────────┘                                                       │
 │            │                                                                │
 │            ▼                                                                │
 │   ┌─────────────────┐                                                       │
-│   │ Patch Instances │  ← Scan → Install → Reboot (if needed)               │
+│   │ Patch Instances │  ← Scan → Install → Reboot (if needed)                │
 │   └─────────────────┘                                                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -405,20 +405,20 @@ Ví dụ Use Cases:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          Parameter Store                                     │
+│                          Parameter Store                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Parameter Types:                                                          │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  String         → Plain text value                                  │   │
-│   │                   VD: /app/config/db_host = "db.example.com"       │   │
+│   │                   VD: /app/config/db_host = "db.example.com"        │   │
 │   │                                                                     │   │
 │   │  StringList     → Comma-separated values                            │   │
-│   │                   VD: /app/config/servers = "srv1,srv2,srv3"       │   │
+│   │                   VD: /app/config/servers = "srv1,srv2,srv3"        │   │
 │   │                                                                     │   │
 │   │  SecureString   → Encrypted với KMS                                 │   │
-│   │                   VD: /app/secrets/db_password = "***encrypted***" │   │
+│   │                   VD: /app/secrets/db_password = "***encrypted***"  │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -427,10 +427,10 @@ Ví dụ Use Cases:
 │   │                                                                     │   │
 │   │  /myapp/                                                            │   │
 │   │    ├── dev/                                                         │   │
-│   │    │   ├── db_host         = "dev-db.example.com"                  │   │
+│   │    │   ├── db_host         = "dev-db.example.com"                   │   │
 │   │    │   └── db_password     = ***encrypted***                        │   │
 │   │    └── prod/                                                        │   │
-│   │        ├── db_host         = "prod-db.example.com"                 │   │
+│   │        ├── db_host         = "prod-db.example.com"                  │   │
 │   │        └── db_password     = ***encrypted***                        │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
@@ -484,7 +484,7 @@ Ví dụ Use Cases:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       Maintenance Window                                     │
+│                       Maintenance Window                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌──────────────────────────────────────────────────────────────────────┐  │
@@ -614,33 +614,33 @@ Run Command:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS Systems Manager Summary                            │
+│                       AWS Systems Manager Summary                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  🎯 WHAT:     Centralized management cho EC2, on-prem, multicloud          │
+│  🎯 WHAT:     Centralized management cho EC2, on-prem, multicloud           │
 │  💰 COST:     Hầu hết FREE                                                  │
 │  🔑 REQUIRES: SSM Agent + IAM Role                                          │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    Most Important Tools                              │   │
-│  │                                                                      │   │
-│  │  🚀 Run Command     → Execute commands at scale                      │   │
-│  │  🔐 Session Manager → Secure shell without SSH/ports                 │   │
-│  │  🔧 Patch Manager   → Automated OS patching                          │   │
-│  │  🔑 Parameter Store → Store configs/secrets (FREE!)                  │   │
-│  │  🤖 Automation      → Runbooks for complex tasks                     │   │
-│  │  ⏰ Maint. Windows  → Schedule maintenance tasks                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                    Most Important Tools                             │    │
+│  │                                                                     │    │
+│  │  🚀 Run Command     → Execute commands at scale                     │    │
+│  │  🔐 Session Manager → Secure shell without SSH/ports                │    │
+│  │  🔧 Patch Manager   → Automated OS patching                         │    │
+│  │  🔑 Parameter Store → Store configs/secrets (FREE!)                 │    │
+│  │  🤖 Automation      → Runbooks for complex tasks                    │    │
+│  │  ⏰ Maint. Windows  → Schedule maintenance tasks                    │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                       Key Benefits                                   │   │
-│  │                                                                      │   │
-│  │  ✅ No SSH keys, no bastion hosts, no open ports                    │   │
-│  │  ✅ Works with EC2, on-premises, multicloud                          │   │
-│  │  ✅ Centralized visibility and control                               │   │
-│  │  ✅ Mostly FREE!                                                     │   │
-│  │  ✅ Integrates with Organizations                                    │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                       Key Benefits                                  │    │
+│  │                                                                     │    │
+│  │  ✅ No SSH keys, no bastion hosts, no open ports                    │    │
+│  │  ✅ Works with EC2, on-premises, multicloud                         │    │
+│  │  ✅ Centralized visibility and control                              │    │
+│  │  ✅ Mostly FREE!                                                    │    │
+│  │  ✅ Integrates with Organizations                                   │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

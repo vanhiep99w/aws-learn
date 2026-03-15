@@ -322,7 +322,7 @@ Instance Store-backed: Root data nằm BÊN TRONG instance (local disk)
 ┌────────────────────────────────────┐
 │   Instance                         │
 │   ┌──────────────────────────────┐ │
-│   │  Instance Store (root /)     │ │  ← Root data ở ĐÂY
+│   │  Instance Store (root /)     │ │
 │   └──────────────────────────────┘ │
 └────────────────────────────────────┘
 ```
@@ -349,12 +349,12 @@ Instance Store-backed: Root data nằm BÊN TRONG instance (local disk)
 │  Instance Store-backed Instance:                                │
 │  ┌─────────────────────────────────┐                            │
 │  │ Physical Server                 │                            │
-│  │ ┌─────────────────────────────┐ │                            │
-│  │ │ EC2 Instance                │ │                            │
+│  │                 ┌───────────┐                 │              │
+│  │                 │ EC2 Instance                │                 │              │
 │  │ │ ┌─────────────────────────┐ │ │                            │
 │  │ │ │ Local SSD (root data)   │ │ │ ← Data trong server        │
 │  │ │ └─────────────────────────┘ │ │                            │
-│  │ └─────────────────────────────┘ │                            │
+│  │                 └───────────┘                 │              │
 │  └─────────────────────────────────┘                            │
 │  → Stop instance = Server giải phóng = Local SSD XÓA = MẤT DATA │
 │                                                                 │
@@ -593,10 +593,10 @@ AMI metadata:
 │                        AMI LIFECYCLE                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐ │
-│   │  Create  │───▶│ Register │───▶│   Use    │───▶│Deregister│ │
-│   │   AMI    │    │   AMI    │    │   AMI    │    │   AMI    │ │
-│   └──────────┘    └──────────┘    └──────────┘    └──────────┘ │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│   │  Create  │───▶│ Register │───▶│   Use    │───▶│Deregister│  │
+│   │   AMI    │    │   AMI    │    │   AMI    │    │   AMI    │  │
+│   └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
 │        │                               │                        │
 │        │                               ▼                        │
 │        │                         ┌──────────┐                   │

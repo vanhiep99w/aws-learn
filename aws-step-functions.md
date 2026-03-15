@@ -25,43 +25,43 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     WHAT IS AWS STEP FUNCTIONS?                       │
-│                                                                       │
-│   Step Functions = Serverless Workflow Orchestration Service          │
-│                                                                       │
+│                     WHAT IS AWS STEP FUNCTIONS?                     │
+│                                                                     │
+│   Step Functions = Serverless Workflow Orchestration Service        │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   Event Sources        Step Functions         AWS Services    │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   Event Sources        Step Functions         AWS Services  │   │
+│   │                                                             │   │
 │   │  ┌───────────┐      ┌─────────────────┐    ┌───────────┐    │   │
 │   │  │ API       │      │                 │    │  Lambda   │    │   │
 │   │  │ Gateway   │─────▶│  State Machine  │───▶│           │    │   │
 │   │  └───────────┘      │                 │    └───────────┘    │   │
-│   │                     │  ┌───────────┐  │                      │   │
+│   │                     │  ┌───────────┐  │                     │   │
 │   │  ┌───────────┐      │  │  Task     │  │    ┌───────────┐    │   │
 │   │  │ Event     │─────▶│  │  Choice   │  │───▶│ DynamoDB  │    │   │
 │   │  │ Bridge    │      │  │  Parallel │  │    └───────────┘    │   │
-│   │  └───────────┘      │  │  Map      │  │                      │   │
+│   │  └───────────┘      │  │  Map      │  │                     │   │
 │   │                     │  │  Wait     │  │    ┌───────────┐    │   │
 │   │  ┌───────────┐      │  │  Pass     │  │───▶│ ECS/EKS   │    │   │
 │   │  │ Schedule  │─────▶│  │  Succeed  │  │    └───────────┘    │   │
-│   │  │ (cron)    │      │  │  Fail     │  │                      │   │
+│   │  │ (cron)    │      │  │  Fail     │  │                     │   │
 │   │  └───────────┘      │  └───────────┘  │    ┌───────────┐    │   │
 │   │                     │                 │───▶│ SNS/SQS   │    │   │
 │   │  ┌───────────┐      │  Visual Editor  │    └───────────┘    │   │
-│   │  │ Lambda    │─────▶│  (Workflow      │                      │   │
+│   │  │ Lambda    │─────▶│  (Workflow      │                     │   │
 │   │  │ (nested)  │      │   Studio)       │    ┌───────────┐    │   │
 │   │  └───────────┘      └─────────────────┘───▶│ 200+ AWS  │    │   │
-│   │                                             │ Services  │    │   │
-│   │                                             └───────────┘    │   │
-│   │                                                               │   │
-│   │   KEY BENEFITS:                                               │   │
-│   ├── ✅ Visual workflows - thiết kế bằng drag-and-drop          │
-│   ├── ✅ Built-in error handling - Retry, Catch, Fallback        │
-│   ├── ✅ State management - tự động track state giữa các steps   │
-│   ├── ✅ 200+ AWS SDK integrations - gọi bất kỳ AWS service     │
-│   ├── ✅ Parallel & Map - xử lý song song và lặp dynamic         │
-│   └── ✅ Pay-per-use - chỉ trả cho state transitions thực tế     │
+│   │                                            │ Services  │    │   │
+│   │                                            └───────────┘    │   │
+│   │                                                             │   │
+│   │   KEY BENEFITS:                                             │   │
+│   ├── ✅ Visual workflows - thiết kế bằng drag-and-drop         │   │
+│   ├── ✅ Built-in error handling - Retry, Catch, Fallback       │   │
+│   ├── ✅ State management - tự động track state giữa các steps  │   │
+│   ├── ✅ 200+ AWS SDK integrations - gọi bất kỳ AWS service     │   │
+│   ├── ✅ Parallel & Map - xử lý song song và lặp dynamic        │   │
+│   └── ✅ Pay-per-use - chỉ trả cho state transitions thực tế    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -85,32 +85,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    STEP FUNCTIONS ARCHITECTURE                        │
-│                                                                       │
+│                    STEP FUNCTIONS ARCHITECTURE                      │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                   STATE MACHINE (Workflow)                    │   │
-│   │                                                               │   │
+│   │                   STATE MACHINE (Workflow)                  │   │
+│   │                                                             │   │
 │   │   Input ──▶ ┌─────────┐    ┌─────────┐    ┌─────────┐       │   │
-│   │             │  State   │───▶│  State   │───▶│  State   │      │   │
-│   │             │  (Task)  │    │ (Choice) │    │  (Task)  │      │   │
+│   │             │  State  │───▶│  State  │───▶│  State  │       │   │
+│   │             │  (Task) │    │ (Choice)│    │  (Task) │       │   │
 │   │             └─────────┘    └────┬────┘    └─────────┘       │   │
-│   │                                 │                             │   │
-│   │                          ┌──────┴──────┐                     │   │
-│   │                          │             │                     │   │
-│   │                     ┌────▼────┐  ┌─────▼────┐                │   │
-│   │                     │ Branch  │  │ Branch   │                │   │
-│   │                     │   A     │  │   B      │                │   │
-│   │                     └────┬────┘  └─────┬────┘                │   │
-│   │                          │             │                     │   │
-│   │                          └──────┬──────┘                     │   │
-│   │                                 │                             │   │
-│   │                          ┌──────▼──────┐                     │   │
-│   │                          │   End       │ ──▶ Output          │   │
-│   │                          └─────────────┘                     │   │
-│   │                                                               │   │
+│   │                                 │                           │   │
+│   │                          ┌──────┴──────┐                    │   │
+│   │                          │             │                    │   │
+│   │                     ┌────▼────┐  ┌─────▼────┐               │   │
+│   │                     │ Branch  │  │ Branch   │               │   │
+│   │                     │   A     │  │   B      │               │   │
+│   │                     └────┬────┘  └─────┬────┘               │   │
+│   │                          │             │                    │   │
+│   │                          └──────┬──────┘                    │   │
+│   │                                 │                           │   │
+│   │                          ┌──────▼──────┐                    │   │
+│   │                          │   End       │ ──▶ Output         │   │
+│   │                          └─────────────┘                    │   │
+│   │                                                             │   │
 │   │   EXECUTION = 1 lần chạy state machine                      │   │
-│   │   STATE = 1 bước trong workflow                              │   │
-│   │   TRANSITION = di chuyển từ state này sang state kế tiếp     │   │
+│   │   STATE = 1 bước trong workflow                             │   │
+│   │   TRANSITION = di chuyển từ state này sang state kế tiếp    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -136,36 +136,36 @@ Step Functions có **2 loại workflow**, và **không thể thay đổi** sau k
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    STANDARD vs EXPRESS WORKFLOWS                      │
-│                                                                       │
+│                    STANDARD vs EXPRESS WORKFLOWS                    │
+│                                                                     │
 │   ┌──────────────────────────┐   ┌──────────────────────────┐       │
-│   │     STANDARD WORKFLOW     │   │     EXPRESS WORKFLOW      │       │
-│   │                            │   │                            │       │
+│   │     STANDARD WORKFLOW    │   │     EXPRESS WORKFLOW     │       │
+│   │                          │   │                          │       │
 │   │  Duration: tối đa 1 NĂM  │   │  Duration: tối đa 5 PHÚT │       │
-│   │                            │   │                            │       │
-│   │  Execution: exactly-once  │   │  Execution: at-least-once │       │
-│   │                            │   │  (async) / at-most-once   │       │
-│   │  Rate: 2,000/giây         │   │  (sync)                   │       │
-│   │                            │   │  Rate: 100,000/giây       │       │
-│   │  Billing: per state       │   │                            │       │
-│   │  transition               │   │  Billing: per execution   │       │
-│   │                            │   │  + duration + memory      │       │
-│   │  History: Step Functions  │   │                            │       │
-│   │  console (90 ngày)        │   │  History: CloudWatch Logs │       │
-│   │                            │   │                            │       │
-│   │  Use for:                 │   │  Use for:                 │       │
-│   │  • Long-running workflows │   │  • High-volume events     │       │
-│   │  • Non-idempotent actions │   │  • IoT data ingestion     │       │
-│   │  • Human approval steps   │   │  • Streaming processing   │       │
-│   │  • Audit trail needed     │   │  • Idempotent actions     │       │
-│   │                            │   │  • API backends           │       │
-│   │  Supports:                │   │                            │       │
-│   │  ✅ Request Response      │   │  Supports:                │       │
-│   │  ✅ Run a Job (.sync)     │   │  ✅ Request Response      │       │
-│   │  ✅ Wait for Callback     │   │  ❌ Run a Job (.sync)     │       │
-│   │  ✅ Distributed Map       │   │  ❌ Wait for Callback     │       │
-│   │  ✅ Activities            │   │  ❌ Distributed Map       │       │
-│   │                            │   │  ❌ Activities            │       │
+│   │                          │   │                          │       │
+│   │  Execution: exactly-once │   │  Execution: at-least-once│       │
+│   │                          │   │  (async) / at-most-once  │       │
+│   │  Rate: 2,000/giây        │   │  (sync)                  │       │
+│   │                          │   │  Rate: 100,000/giây      │       │
+│   │  Billing: per state      │   │                          │       │
+│   │  transition              │   │  Billing: per execution  │       │
+│   │                          │   │  + duration + memory     │       │
+│   │  History: Step Functions │   │                          │       │
+│   │  console (90 ngày)       │   │  History: CloudWatch Logs│       │
+│   │                          │   │                          │       │
+│   │  Use for:                │   │  Use for:                │       │
+│   │  • Long-running workflows│   │  • High-volume events    │       │
+│   │  • Non-idempotent actions│   │  • IoT data ingestion    │       │
+│   │  • Human approval steps  │   │  • Streaming processing  │       │
+│   │  • Audit trail needed    │   │  • Idempotent actions    │       │
+│   │                          │   │  • API backends          │       │
+│   │  Supports:               │   │                          │       │
+│   │  ✅ Request Response     │   │  Supports:               │       │
+│   │  ✅ Run a Job (.sync)    │   │  ✅ Request Response     │       │
+│   │  ✅ Wait for Callback    │   │  ❌ Run a Job (.sync)    │       │
+│   │  ✅ Distributed Map      │   │  ❌ Wait for Callback    │       │
+│   │  ✅ Activities           │   │  ❌ Distributed Map      │       │
+│   │                          │   │  ❌ Activities           │       │
 │   └──────────────────────────┘   └──────────────────────────┘       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -204,51 +204,51 @@ Step Functions có **8 loại state** chia thành 2 nhóm: **Task states** (acti
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         WORKFLOW STATES                                │
-│                                                                       │
+│                         WORKFLOW STATES                             │
+│                                                                     │
 │   ┌─── ACTION STATE ───────────────────────────────────────────┐    │
-│   │                                                             │    │
-│   │  ┌──────────┐                                               │    │
+│   │                                                            │    │
+│   │  ┌──────────┐                                              │    │
 │   │  │   TASK   │  Thực hiện 1 unit of work                    │    │
 │   │  │          │  → Gọi Lambda, DynamoDB, ECS, HTTP, v.v.     │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
-│   └─────────────────────────────────────────────────────────────┘    │
-│                                                                       │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
+│   └────────────────────────────────────────────────────────────┘    │
+│                                                                     │
 │   ┌─── FLOW STATES ────────────────────────────────────────────┐    │
-│   │                                                             │    │
-│   │  ┌──────────┐  Rẽ nhánh dựa trên điều kiện (if/else)      │    │
-│   │  │  CHOICE  │  → Kiểm tra input và chọn branch phù hợp    │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
+│   │                                                            │    │
+│   │  ┌──────────┐  Rẽ nhánh dựa trên điều kiện (if/else)       │    │
+│   │  │  CHOICE  │  → Kiểm tra input và chọn branch phù hợp     │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
 │   │  ┌──────────┐  Chạy nhiều branches SONG SONG               │    │
 │   │  │ PARALLEL │  → Tất cả branches phải hoàn thành           │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
 │   │  ┌──────────┐  Lặp qua từng phần tử trong array            │    │
-│   │  │   MAP    │  → Inline (trong state machine)               │    │
-│   │  │          │  → Distributed (child executions, lên tới     │    │
-│   │  │          │    10,000 parallel)                            │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
+│   │  │   MAP    │  → Inline (trong state machine)              │    │
+│   │  │          │  → Distributed (child executions, lên tới    │    │
+│   │  │          │    10,000 parallel)                          │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
 │   │  ┌──────────┐  Chờ một khoảng thời gian hoặc timestamp     │    │
 │   │  │   WAIT   │  → Seconds, Timestamp, SecondsPath,          │    │
-│   │  │          │    TimestampPath                               │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
-│   │  ┌──────────┐  Truyền input → output (có thể transform)   │    │
+│   │  │          │    TimestampPath                             │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
+│   │  ┌──────────┐  Truyền input → output (có thể transform)    │    │
 │   │  │   PASS   │  → Dùng để inject fixed data hoặc debug      │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
 │   │  ┌──────────┐  Kết thúc workflow THÀNH CÔNG                │    │
-│   │  │ SUCCEED  │                                               │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
+│   │  │ SUCCEED  │                                              │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
 │   │  ┌──────────┐  Kết thúc workflow THẤT BẠI (Error + Cause)  │    │
-│   │  │   FAIL   │                                               │    │
-│   │  └──────────┘                                               │    │
-│   │                                                             │    │
-│   └─────────────────────────────────────────────────────────────┘    │
+│   │  │   FAIL   │                                              │    │
+│   │  └──────────┘                                              │    │
+│   │                                                            │    │
+│   └────────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -462,26 +462,26 @@ Step Functions tích hợp với **200+ AWS services** qua 9,000+ API actions.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SERVICE INTEGRATION PATTERNS                       │
-│                                                                       │
-│   1️⃣  REQUEST RESPONSE (default)                                     │
-│   ┌────────┐     ┌──────────┐     ┌────────┐                         │
-│   │  Step   │────▶│  AWS     │────▶│ Next   │   Gọi service,          │
-│   │Functions│     │ Service  │     │ State  │   nhận HTTP response,   │
-│   └────────┘     └──────────┘     └────────┘   chuyển ngay next state│
-│                                                                       │
-│   2️⃣  RUN A JOB (.sync) - Standard only                              │
-│   ┌────────┐     ┌──────────┐                  ┌────────┐            │
-│   │  Step   │────▶│  AWS     │  ⏳ đợi job     │ Next   │            │
-│   │Functions│     │ Service  │  hoàn thành ────▶│ State  │            │
-│   └────────┘     └──────────┘                  └────────┘            │
-│                                                                       │
-│   3️⃣  WAIT FOR CALLBACK (.waitForTaskToken) - Standard only          │
-│   ┌────────┐     ┌──────────┐                  ┌────────┐            │
-│   │  Step   │────▶│  SQS/    │  ⏳ đợi external│ Next   │            │
-│   │Functions│     │ Lambda   │  process gọi    │ State  │            │
-│   │ (pause) │     │ + token  │  SendTaskSuccess└────────┘            │
-│   └────────┘     └──────────┘                                        │
+│                    SERVICE INTEGRATION PATTERNS                     │
+│                                                                     │
+│   1️⃣  REQUEST RESPONSE (default)                                    │
+│   ┌─────────┐     ┌──────────┐     ┌────────┐                       │
+│   │  Step   │────▶│  AWS     │────▶│ Next   │   Gọi service,        │
+│   │Functions│     │ Service  │     │ State  │   nhận HTTP response, │
+│   └─────────┘     └──────────┘     └────────┘ chuyển ngay next state│
+│                                                                     │
+│   2️⃣  RUN A JOB (.sync) - Standard only                             │
+│   ┌─────────┐     ┌──────────┐                  ┌────────┐          │
+│   │  Step   │────▶│  AWS     │  ⏳ đợi job      │ Next   │          │
+│   │Functions│     │ Service  │  hoàn thành ────▶│ State  │          │
+│   └─────────┘     └──────────┘                  └────────┘          │
+│                                                                     │
+│   3️⃣  WAIT FOR CALLBACK (.waitForTaskToken) - Standard only         │
+│   ┌────────┐     ┌──────────┐                  ┌────────┐           │
+│   │  Step  │────▶│  SQS/    │  ⏳ đợi external │ Next   │           │
+│   │Functions│     │ Lambda   │  process gọi     │ State │           │
+│   │ (pause)│     │ + token  │  SendTaskSuccess └────────┘           │
+│   └────────┘     └──────────┘                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -745,27 +745,27 @@ Workflow có 4 states, chạy 100,000 lần/tháng:
 
 ```
 ┌──────────────────┬──────────────────┬──────────────────┬──────────────────┐
-│                  │  Step Functions   │  EventBridge      │  SQS + Lambda    │
-│                  │                  │  (Event-driven)    │  (Queue-based)   │
+│                  │  Step Functions   │  EventBridge      │  SQS + Lambda  │
+│                  │                  │  (Event-driven)    │  (Queue-based) │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Pattern          │ Orchestration     │ Choreography      │ Point-to-point   │
-│                  │ (central control) │ (event routing)   │ (decoupled)      │
+│ Pattern          │ Orchestration     │ Choreography      │ Point-to-point │
+│                  │ (central control) │ (event routing)   │ (decoupled)    │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ State            │ ✅ Managed by    │ ❌ Stateless       │ ❌ Stateless      │
-│ Management       │ Step Functions    │                   │                  │
+│ State            │ ✅ Managed by    │ ❌ Stateless       │ ❌ Stateless   │
+│ Management       │ Step Functions    │                 │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Visual           │ ✅ Workflow      │ ❌                 │ ❌                │
-│ Debugging        │ Studio           │                   │                  │
+│ Visual           │ ✅ Workflow      │ ❌                 │ ❌             │
+│ Debugging        │ Studio           │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Error Handling   │ ✅ Built-in      │ ⚠️ DLQ + retry     │ ⚠️ DLQ + retry    │
-│                  │ Retry/Catch      │                   │                  │
+│ Error Handling   │ ✅ Built-in      │ ⚠️ DLQ + retry     │ ⚠️ DLQ + retry │
+│                  │ Retry/Catch      │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Human Approval   │ ✅ Callback      │ ❌                 │ ❌                │
-│                  │ pattern          │                   │                  │
+│ Human Approval   │ ✅ Callback      │ ❌                 │ ❌             │
+│                  │ pattern          │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Best for         │ Complex,         │ Event routing,     │ Simple async     │
-│                  │ multi-step       │ many consumers     │ processing       │
-│                  │ workflows        │                   │                  │
+│ Best for         │ Complex,         │ Event routing,     │ Simple async   │
+│                  │ multi-step       │ many consumers     │ processing     │
+│                  │ workflows        │                  │                  │
 └──────────────────┴──────────────────┴──────────────────┴──────────────────┘
 ```
 

@@ -53,10 +53,10 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         AWS CodePipeline                                │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐                │
-│  │ CodeCommit   │ → │ CodeBuild    │ → │ CodeDeploy   │                │
-│  │   (Source)   │   │   (Build)    │   │  (Deploy)    │                │
-│  └──────────────┘   └──────────────┘   └──────────────┘                │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐                 │
+│  │ CodeCommit   │ → │ CodeBuild    │ → │ CodeDeploy   │                 │
+│  │   (Source)   │   │   (Build)    │   │  (Deploy)    │                 │
+│  └──────────────┘   └──────────────┘   └──────────────┘                 │
 │         ↑                  ↑                  ↑                         │
 │    Git Repository    Build & Test       Deploy to EC2,                  │
 │                                         ECS, Lambda...                  │
@@ -85,9 +85,9 @@ AWS tách riêng Build và Deploy thành các services khác nhau, mỗi service
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Config Files                                  │
-│                                                                      │
-│   CodeBuild                         CodeDeploy                       │
+│                        Config Files                                 │
+│                                                                     │
+│   CodeBuild                         CodeDeploy                      │
 │   ┌─────────────────┐              ┌─────────────────┐              │
 │   │ buildspec.yml   │              │ appspec.yml     │              │
 │   │                 │              │                 │              │
@@ -96,7 +96,7 @@ AWS tách riêng Build và Deploy thành các services khác nhau, mỗi service
 │   │ - Run tests     │              │ - Run hooks     │              │
 │   │ - Create output │              │ - Permissions   │              │
 │   └─────────────────┘              └─────────────────┘              │
-│                                                                      │
+│                                                                     │
 │   📍 Root of source                📍 Root of artifact              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -164,17 +164,17 @@ my-project/
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   CodeCommit Auth                        │
+│                   CodeCommit Auth                       │
 ├─────────────────────────────────────────────────────────┤
-│  1. HTTPS Git Credentials                                │
-│     └── IAM Console → Generate credentials               │
-│                                                          │
-│  2. SSH Keys                                             │
-│     └── IAM Console → Upload SSH public key              │
-│                                                          │
-│  3. AWS CLI Credential Helper                            │
-│     └── git config --global credential.helper            │
-│         '!aws codecommit credential-helper $@'           │
+│  1. HTTPS Git Credentials                               │
+│     └── IAM Console → Generate credentials              │
+│                                                         │
+│  2. SSH Keys                                            │
+│     └── IAM Console → Upload SSH public key             │
+│                                                         │
+│  3. AWS CLI Credential Helper                           │
+│     └── git config --global credential.helper           │
+│         '!aws codecommit credential-helper $@'          │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -217,14 +217,14 @@ aws sts assume-role --role-arn arn:aws:iam::ACCOUNT_A_ID:role/CrossAccountRole
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      CodeBuild Flow                          │
-│                                                              │
-│  Source        Build Environment        Output               │
+│                      CodeBuild Flow                         │
+│                                                             │
+│  Source        Build Environment        Output              │
 │  ┌─────┐      ┌─────────────────┐      ┌───────────┐        │
 │  │Code │ ──►  │ Docker Container│ ──►  │ Artifacts │        │
-│  │Commit│     │ (Managed/Custom)│      │ (S3)      │        │
+│  │Commit│      │ (Managed/Custom)│      │ (S3)     │        │
 │  │S3   │      │                 │      │           │        │
-│  │GitHub     │ buildspec.yml   │      │ Reports   │        │
+│  │GitHub     │ buildspec.yml   │      │ Reports    │        │
 │  └─────┘      └─────────────────┘      └───────────┘        │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -235,36 +235,36 @@ CodeBuild có thể được trigger theo nhiều cách:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     CodeBuild Trigger Methods                        │
+│                     CodeBuild Trigger Methods                       │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │  1. CodePipeline (Phổ biến nhất)                                    │
-│     ┌──────────┐    ┌────────────┐    ┌───────────┐                │
-│     │CodeCommit│───►│CodePipeline│───►│ CodeBuild │                │
-│     │ GitHub   │    │            │    │           │                │
-│     └──────────┘    └────────────┘    └───────────┘                │
-│                                                                      │
-│  2. EventBridge (CloudWatch Events)                                  │
-│     ┌──────────┐    ┌────────────┐    ┌───────────┐                │
-│     │CodeCommit│───►│EventBridge │───►│ CodeBuild │                │
-│     │ S3 Event │    │   Rule     │    │           │                │
-│     └──────────┘    └────────────┘    └───────────┘                │
-│                                                                      │
-│  3. GitHub/Bitbucket Webhooks                                        │
-│     ┌──────────┐    ┌────────────┐    ┌───────────┐                │
-│     │  GitHub  │───►│  Webhook   │───►│ CodeBuild │                │
-│     │ Bitbucket│    │            │    │           │                │
-│     └──────────┘    └────────────┘    └───────────┘                │
-│                                                                      │
-│  4. Manual / CLI / SDK                                               │
+│     ┌──────────┐    ┌────────────┐    ┌───────────┐                 │
+│     │CodeCommit│───►│CodePipeline│───►│ CodeBuild │                 │
+│     │ GitHub   │    │            │    │           │                 │
+│     └──────────┘    └────────────┘    └───────────┘                 │
+│                                                                     │
+│  2. EventBridge (CloudWatch Events)                                 │
+│     ┌──────────┐    ┌────────────┐    ┌───────────┐                 │
+│     │CodeCommit│───►│EventBridge │───►│ CodeBuild │                 │
+│     │ S3 Event │    │   Rule     │    │           │                 │
+│     └──────────┘    └────────────┘    └───────────┘                 │
+│                                                                     │
+│  3. GitHub/Bitbucket Webhooks                                       │
+│     ┌──────────┐    ┌────────────┐    ┌───────────┐                 │
+│     │  GitHub  │───►│  Webhook   │───►│ CodeBuild │                 │
+│     │ Bitbucket│    │            │    │           │                 │
+│     └──────────┘    └────────────┘    └───────────┘                 │
+│                                                                     │
+│  4. Manual / CLI / SDK                                              │
 │     aws codebuild start-build --project-name my-project             │
-│                                                                      │
-│  5. Scheduled (via EventBridge)                                      │
+│                                                                     │
+│  5. Scheduled (via EventBridge)                                     │
 │     cron(0 8 * * ? *) → Build daily at 8 AM UTC                     │
-│                                                                      │
-│  6. Lambda / Step Functions                                          │
+│                                                                     │
+│  6. Lambda / Step Functions                                         │
 │     Lambda gọi codebuild:StartBuild API                             │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -378,18 +378,18 @@ cache:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│             Environment Variables Sources                    │
+│             Environment Variables Sources                   │
 ├─────────────────────────────────────────────────────────────┤
 │  1. Plaintext (buildspec.yml)                               │
 │     └── Không nên dùng cho sensitive data                   │
-│                                                              │
-│  2. SSM Parameter Store                                      │
+│                                                             │
+│  2. SSM Parameter Store                                     │
 │     └── parameter-store: KEY: "/path/to/param"              │
-│                                                              │
-│  3. Secrets Manager                                          │
+│                                                             │
+│  3. Secrets Manager                                         │
 │     └── secrets-manager: KEY: "secret-name"                 │
-│                                                              │
-│  4. Build Project Settings                                   │
+│                                                             │
+│  4. Build Project Settings                                  │
 │     └── Console/CLI configuration                           │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -398,18 +398,18 @@ cache:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         VPC                                  │
+│                         VPC                                 │
 │   ┌─────────────────────────────────────────────────────┐   │
-│   │              Private Subnet                          │   │
+│   │              Private Subnet                         │   │
 │   │    ┌────────────┐        ┌────────────┐             │   │
-│   │    │ CodeBuild  │ ────►  │ RDS/        │             │   │
-│   │    │ Container  │        │ ElastiCache │             │   │
+│   │    │ CodeBuild  │ ────►  │ RDS/        │            │   │
+│   │    │ Container  │        │ ElastiCache │            │   │
 │   │    └────────────┘        └────────────┘             │   │
-│   │          │                                           │   │
-│   │          ▼                                           │   │
-│   │    ┌────────────┐                                    │   │
-│   │    │ NAT Gateway│ ──► Internet (for packages)        │   │
-│   │    └────────────┘                                    │   │
+│   │          │                                          │   │
+│   │          ▼                                          │   │
+│   │    ┌────────────┐                                   │   │
+│   │    │ NAT Gateway│ ──► Internet (for packages)       │   │
+│   │    └────────────┘                                   │   │
 │   └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -429,20 +429,20 @@ cache:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  CodeDeploy Targets                          │
-├───────────────┬──────────────────────────────────────────────┤
-│ EC2/On-prem   │ - CodeDeploy Agent required                  │
-│               │ - appspec.yml at root                        │
-│               │ - In-place or Blue/Green                     │
-├───────────────┼──────────────────────────────────────────────┤
-│ Lambda        │ - Traffic shifting                           │
-│               │ - Canary, Linear, AllAtOnce                  │
-│               │ - No agent needed                            │
-├───────────────┼──────────────────────────────────────────────┤
-│ ECS           │ - Blue/Green only                            │
-│               │ - Task definition update                     │
-│               │ - Load balancer traffic shift                │
-└───────────────┴──────────────────────────────────────────────┘
+│                  CodeDeploy Targets                         │
+├───────────────┬─────────────────────────────────────────────┤
+│ EC2/On-prem   │ - CodeDeploy Agent required                 │
+│               │ - appspec.yml at root                       │
+│               │ - In-place or Blue/Green                    │
+├───────────────┼─────────────────────────────────────────────┤
+│ Lambda        │ - Traffic shifting                          │
+│               │ - Canary, Linear, AllAtOnce                 │
+│               │ - No agent needed                           │
+├───────────────┼─────────────────────────────────────────────┤
+│ ECS           │ - Blue/Green only                           │
+│               │ - Task definition update                    │
+│               │ - Load balancer traffic shift               │
+└───────────────┴─────────────────────────────────────────────┘
 ```
 
 ## CodeDeploy Agent
@@ -453,8 +453,8 @@ CodeDeploy service nằm trên AWS Cloud, nhưng EC2/server là máy riêng bi�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CodeDeploy Agent Flow                             │
-│                                                                      │
+│                    CodeDeploy Agent Flow                            │
+│                                                                     │
 │   AWS Cloud                           Your EC2/On-prem              │
 │   ┌─────────────┐                    ┌─────────────────────┐        │
 │   │ CodeDeploy  │ ◄─── polling ───── │ CodeDeploy Agent    │        │
@@ -563,32 +563,32 @@ hooks:
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                    EC2 Deployment Lifecycle                       │
-│                                                                   │
+│                    EC2 Deployment Lifecycle                      │
+│                                                                  │
 │  ┌─────────────────┐                                             │
 │  │ ApplicationStop │  ← Stop current application                 │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ DownloadBundle  │  ← Download from S3/GitHub (built-in)       │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ BeforeInstall   │  ← Decrypt files, backup                    │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ Install         │  ← Copy files (built-in)                    │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ AfterInstall    │  ← Configure, change permissions            │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ ApplicationStart│  ← Start services                           │
 │  └────────┬────────┘                                             │
-│           ▼                                                       │
+│           ▼                                                      │
 │  ┌─────────────────┐                                             │
 │  │ ValidateService │  ← Health checks                            │
 │  └─────────────────┘                                             │
@@ -601,28 +601,28 @@ CodeDeploy có các deployment strategies khác nhau cho từng target:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              All Deployment Strategies by Target                     │
+│              All Deployment Strategies by Target                    │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │  EC2/On-premises:                                                   │
-│  ┌─────────────────┐  ┌─────────────────┐                          │
-│  │   In-Place      │  │   Blue/Green    │                          │
-│  │ - AllAtOnce     │  │ - New instances │                          │
-│  │ - OneAtATime    │  │ - Switch traffic│                          │
-│  │ - HalfAtATime   │  │ - Easy rollback │                          │
-│  └─────────────────┘  └─────────────────┘                          │
-│                                                                      │
-│  Lambda:                 (Traffic Shifting)                          │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │
-│  │   AllAtOnce     │  │   Canary        │  │   Linear        │     │
-│  │ (100% ngay)     │  │ (10% → 100%)    │  │ (10% mỗi phút)  │     │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘     │
-│                                                                      │
-│  ECS:                    (Blue/Green + Traffic Shifting)             │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │
-│  │   AllAtOnce     │  │   Canary        │  │   Linear        │     │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘     │
-│                                                                      │
+│  ┌─────────────────┐  ┌─────────────────┐                           │
+│  │   In-Place      │  │   Blue/Green    │                           │
+│  │ - AllAtOnce     │  │ - New instances │                           │
+│  │ - OneAtATime    │  │ - Switch traffic│                           │
+│  │ - HalfAtATime   │  │ - Easy rollback │                           │
+│  └─────────────────┘  └─────────────────┘                           │
+│                                                                     │
+│  Lambda:                 (Traffic Shifting)                         │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
+│  │   AllAtOnce     │  │   Canary        │  │   Linear        │      │
+│  │ (100% ngay)     │  │ (10% → 100%)    │  │ (10% mỗi phút)  │      │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘      │
+│                                                                     │
+│  ECS:                    (Blue/Green + Traffic Shifting)            │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
+│  │   AllAtOnce     │  │   Canary        │  │   Linear        │      │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -638,14 +638,14 @@ CodeDeploy có các deployment strategies khác nhau cho từng target:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    In-Place Deployment                       │
-│                                                              │
+│                    In-Place Deployment                      │
+│                                                             │
 │  Instance 1  ●──────────●  ✓ Updated                        │
 │  Instance 2       ●──────────●  ✓ Updated                   │
 │  Instance 3            ●──────────●  ✓ Updated              │
-│              ─────────────────────────────────► Time         │
-│                                                              │
-│  Configurations:                                             │
+│              ─────────────────────────────────► Time        │
+│                                                             │
+│  Configurations:                                            │
 │  - OneAtATime: 1 instance tại một thời điểm                 │
 │  - HalfAtATime: 50% instances                               │
 │  - AllAtOnce: Tất cả cùng lúc                               │
@@ -657,26 +657,26 @@ CodeDeploy có các deployment strategies khác nhau cho từng target:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                   Blue/Green Deployment                      │
-│                                                              │
-│  Step 1: New instances (Green) created                       │
+│                   Blue/Green Deployment                     │
+│                                                             │
+│  Step 1: New instances (Green) created                      │
 │  ┌─────────┐  ┌─────────┐                                   │
 │  │ Blue v1 │  │ Green v2│  ← Provisioning                   │
 │  │ (Live)  │  │ (New)   │                                   │
 │  └────┬────┘  └────┬────┘                                   │
-│       │            │                                         │
-│       ▼            ▼                                         │
+│       │           │                                         │
+│       ▼            ▼                                        │
 │  ┌─────────────────────┐                                    │
 │  │   Load Balancer     │                                    │
 │  └─────────────────────┘                                    │
-│                                                              │
-│  Step 2: Traffic shifted to Green                            │
+│                                                             │
+│  Step 2: Traffic shifted to Green                           │
 │  ┌─────────┐  ┌─────────┐                                   │
 │  │ Blue v1 │  │ Green v2│  ← Now receiving traffic          │
 │  │ (Old)   │  │ (Live)  │                                   │
 │  └─────────┘  └────┬────┘                                   │
-│       ↓            │                                         │
-│  Terminated        ▼                                         │
+│       ↓           │                                         │
+│  Terminated        ▼                                        │
 │  or kept      ┌─────────────────────┐                       │
 │               │   Load Balancer     │                       │
 │               └─────────────────────┘                       │
@@ -771,15 +771,15 @@ Hooks:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Rollback Options                          │
+│                    Rollback Options                         │
 ├─────────────────────────────────────────────────────────────┤
-│  1. Automatic Rollback                                       │
+│  1. Automatic Rollback                                      │
 │     └── Trigger: Deployment failure hoặc alarm threshold    │
-│                                                              │
-│  2. Manual Rollback                                          │
+│                                                             │
+│  2. Manual Rollback                                         │
 │     └── Redeploy previous revision                          │
-│                                                              │
-│  3. Disable Rollback                                         │
+│                                                             │
+│  3. Disable Rollback                                        │
 │     └── Không rollback, giữ failed state để debug           │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -796,9 +796,9 @@ Hooks:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         CodePipeline                                 │
-│                                                                      │
-│  Stage 1: Source                                                     │
+│                         CodePipeline                                │
+│                                                                     │
+│  Stage 1: Source                                                    │
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │ ┌──────────────┐  Output: SourceArtifact                       │ │
 │  │ │ CodeCommit   │  ──────────────────────────►                  │ │
@@ -806,41 +806,41 @@ Hooks:
 │  │ │ S3           │                                               │ │
 │  │ └──────────────┘                                               │ │
 │  └────────────────────────────────────────────────────────────────┘ │
-│                              │                                       │
-│                              ▼                                       │
-│  Stage 2: Build                                                      │
+│                             │                                       │
+│                              ▼                                      │
+│  Stage 2: Build                                                     │
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │ ┌──────────────┐  Input: SourceArtifact                        │ │
 │  │ │ CodeBuild    │  Output: BuildArtifact                        │ │
 │  │ │ Jenkins      │  ──────────────────────────►                  │ │
 │  │ └──────────────┘                                               │ │
 │  └────────────────────────────────────────────────────────────────┘ │
-│                              │                                       │
-│                              ▼                                       │
-│  Stage 3: Test                                                       │
+│                             │                                       │
+│                              ▼                                      │
+│  Stage 3: Test                                                      │
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │ ┌──────────────┐  ┌──────────────┐                             │ │
 │  │ │ CodeBuild    │  │ Third-party  │  (Parallel Actions)         │ │
 │  │ │ (Unit Tests) │  │ Testing Tool │                             │ │
 │  │ └──────────────┘  └──────────────┘                             │ │
 │  └────────────────────────────────────────────────────────────────┘ │
-│                              │                                       │
-│                              ▼                                       │
-│  Stage 4: Approval (Manual)                                          │
+│                             │                                       │
+│                              ▼                                      │
+│  Stage 4: Approval (Manual)                                         │
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │ ┌──────────────┐                                               │ │
 │  │ │ Manual       │  SNS Notification → Approve/Reject            │ │
 │  │ │ Approval     │                                               │ │
 │  │ └──────────────┘                                               │ │
 │  └────────────────────────────────────────────────────────────────┘ │
-│                              │                                       │
-│                              ▼                                       │
-│  Stage 5: Deploy                                                     │
+│                             │                                       │
+│                              ▼                                      │
+│  Stage 5: Deploy                                                    │
 │  ┌────────────────────────────────────────────────────────────────┐ │
-│  │ ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │ │
+│  │ ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │ │
 │  │ │ CodeDeploy   │  │ ECS          │  │ CloudFormation│          │ │
-│  │ │ (EC2)        │  │ (Containers) │  │ (Infrastructure)        │ │
-│  │ └──────────────┘  └──────────────┘  └──────────────┘          │ │
+│  │ │ (EC2)        │  │ (Containers) │  │ (Infrastructure)         │ │
+│  │ └──────────────┘  └──────────────┘  └──────────────┘           │ │
 │  └────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -849,15 +849,15 @@ Hooks:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Artifact Flow                             │
-│                                                              │
+│                    Artifact Flow                            │
+│                                                             │
 │  ┌─────────┐        ┌─────────────────┐        ┌─────────┐  │
 │  │ Stage 1 │──────► │ S3 Artifact     │──────► │ Stage 2 │  │
 │  │ Source  │        │ Bucket          │        │ Build   │  │
 │  └─────────┘        │ (Encrypted KMS) │        └─────────┘  │
-│                     └─────────────────┘                      │
-│                              │                               │
-│  Cross-region:               ▼                               │
+│                     └─────────────────┘                     │
+│                             │                               │
+│  Cross-region:               ▼                              │
 │  ┌─────────┐        ┌─────────────────┐                     │
 │  │Region A │──────► │ S3 Replication  │──────► Region B     │
 │  │Artifact │        │                 │        Deploy       │
@@ -896,24 +896,24 @@ Hooks:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                Stage: Deploy                                 │
-│                                                              │
-│  RunOrder 1 (Sequential):                                    │
+│                Stage: Deploy                                │
+│                                                             │
+│  RunOrder 1 (Sequential):                                   │
 │  ┌─────────────────────────────────────────────────────────┐│
-│  │ Prepare Environment                                      ││
+│  │ Prepare Environment                                     ││
 │  └─────────────────────────────────────────────────────────┘│
-│                              │                               │
-│                              ▼                               │
-│  RunOrder 2 (Parallel):                                      │
+│                             │                               │
+│                              ▼                              │
+│  RunOrder 2 (Parallel):                                     │
 │  ┌──────────────────┐ ┌──────────────────┐                  │
 │  │ Deploy to        │ │ Deploy to        │                  │
 │  │ Region A         │ │ Region B         │                  │
 │  └──────────────────┘ └──────────────────┘                  │
-│                              │                               │
-│                              ▼                               │
-│  RunOrder 3:                                                 │
+│                             │                               │
+│                              ▼                              │
+│  RunOrder 3:                                                │
 │  ┌─────────────────────────────────────────────────────────┐│
-│  │ Smoke Tests                                              ││
+│  │ Smoke Tests                                             ││
 │  └─────────────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -928,10 +928,10 @@ Hooks:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      CodeArtifact                                │
-│                                                                  │
+│                      CodeArtifact                               │
+│                                                                 │
 │  ┌─────────────────────────────────────────────────────────────┐│
-│  │                        Domain                                ││
+│  │                        Domain                               ││
 │  │  ┌────────────────┐  ┌────────────────┐                     ││
 │  │  │  Repository A  │  │  Repository B  │                     ││
 │  │  │  (npm, pip)    │  │  (maven)       │                     ││
@@ -941,8 +941,8 @@ Hooks:
 │  │  │ │ Package 2 │  │  │ │ Package Y │  │                     ││
 │  │  │ └───────────┘  │  │ └───────────┘  │                     ││
 │  │  └────────────────┘  └────────────────┘                     ││
-│  │           │                                                  ││
-│  │           ▼                                                  ││
+│  │           │                                                 ││
+│  │           ▼                                                 ││
 │  │  ┌────────────────────────────────────┐                     ││
 │  │  │ Upstream: npm, PyPI, Maven Central │                     ││
 │  │  └────────────────────────────────────┘                     ││
@@ -977,19 +977,19 @@ pip install my-package
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                  Upstream Flow                                │
-│                                                               │
-│  Developer Request     CodeArtifact         Public Registry   │
-│       │                    │                      │           │
-│       │  npm install       │                      │           │
-│       │ ────────────────►  │                      │           │
-│       │                    │  Not in cache?       │           │
-│       │                    │ ─────────────────►   │           │
-│       │                    │                      │           │
+│                  Upstream Flow                               │
+│                                                              │
+│  Developer Request     CodeArtifact         Public Registry  │
+│       │                    │                     │           │
+│       │  npm install       │                     │           │
+│       │ ────────────────►  │                     │           │
+│       │                    │  Not in cache?      │           │
+│       │                    │ ─────────────────►  │           │
+│       │                    │                     │           │
 │       │                    │  ◄───── Package ─────│           │
-│       │                    │  (Cached for future) │           │
-│       │  ◄──── Package ────│                      │           │
-│       │                    │                      │           │
+│       │                    │  (Cached for future)│           │
+│       │  ◄──── Package ────│                     │           │
+│       │                    │                     │           │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -1005,8 +1005,8 @@ pip install my-package
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       CodeGuru                               │
-│                                                              │
+│                       CodeGuru                              │
+│                                                             │
 │  ┌─────────────────────────┐  ┌─────────────────────────┐   │
 │  │     CodeGuru Reviewer   │  │    CodeGuru Profiler    │   │
 │  │                         │  │                         │   │
@@ -1026,18 +1026,18 @@ pip install my-package
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                                                               │
+│                                                              │
 │  Pull Request ──► CodeGuru Reviewer ──► Comments with        │
-│                        │                 Recommendations      │
-│                        │                                      │
-│                        ▼                                      │
-│  Detects:                                                     │
-│  - Resource leaks                                             │
-│  - Security vulnerabilities                                   │
-│  - Concurrency issues                                         │
-│  - Input validation problems                                  │
-│  - AWS best practice violations                               │
-│                                                               │
+│                        │                 Recommendations     │
+│                       │                                      │
+│                        ▼                                     │
+│  Detects:                                                    │
+│  - Resource leaks                                            │
+│  - Security vulnerabilities                                  │
+│  - Concurrency issues                                        │
+│  - Input validation problems                                 │
+│  - AWS best practice violations                              │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -1067,36 +1067,36 @@ pip install my-package
 ```yaml
 # Full Pipeline với tất cả services
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     Complete CI/CD Flow                              │
-│                                                                      │
-│  Developer                                                           │
-│      │                                                               │
-│      │ git push                                                      │
-│      ▼                                                               │
+│                     Complete CI/CD Flow                             │
+│                                                                     │
+│  Developer                                                          │
+│     │                                                               │
+│      │ git push                                                     │
+│      ▼                                                              │
 │  ┌──────────────┐                                                   │
 │  │ CodeCommit   │  ──► EventBridge ──► Triggers Pipeline            │
 │  └──────────────┘                                                   │
-│         │                                                            │
+│        │                                                            │
 │         ▼         ┌──────────────┐                                  │
 │  ┌──────────────┐ │ CodeArtifact │ ◄── Dependencies                 │
 │  │ CodeBuild    │─┤              │                                  │
 │  │ (Build+Test) │ └──────────────┘                                  │
-│  └──────────────┘                                                   │
-│         │                                                            │
-│         │ Artifacts ──► S3                                           │
-│         ▼                                                            │
+│                   └──────────────┘                                  │
+│        │                                                            │
+│         │ Artifacts ──► S3                                          │
+│         ▼                                                           │
 │  ┌──────────────┐                                                   │
 │  │ CodeGuru     │  ◄── Reviews code changes                         │
 │  │ Reviewer     │                                                   │
 │  └──────────────┘                                                   │
-│         │                                                            │
-│         ▼                                                            │
+│        │                                                            │
+│         ▼                                                           │
 │  ┌──────────────┐                                                   │
 │  │ Manual       │  ──► SNS Notification                             │
 │  │ Approval     │                                                   │
 │  └──────────────┘                                                   │
-│         │                                                            │
-│         ▼                                                            │
+│        │                                                            │
+│         ▼                                                           │
 │  ┌──────────────┐  ┌─────────────────────────────────────────┐      │
 │  │ CodeDeploy   │──│ EC2 / ECS / Lambda                      │      │
 │  └──────────────┘  │                                         │      │

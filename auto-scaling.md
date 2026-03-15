@@ -62,11 +62,11 @@ Console tập trung để quản lý scaling cho nhiều resources cùng lúc v�
 ┌────────────────────────────────────────────────────────────────────┐
 │                        Auto Scaling Group                          │
 │                                                                    │
-│  ┌────────────┐    ┌────────────┐    ┌────────────┐              │
-│  │    EC2     │    │    EC2     │    │    EC2     │   ...        │
-│  │ Instance 1 │    │ Instance 2 │    │ Instance 3 │              │
-│  │   (AZ-a)   │    │   (AZ-b)   │    │   (AZ-a)   │              │
-│  └────────────┘    └────────────┘    └────────────┘              │
+│  ┌────────────┐    ┌────────────┐    ┌────────────┐                │
+│  │    EC2     │    │    EC2     │    │    EC2     │   ...          │
+│  │ Instance 1 │    │ Instance 2 │    │ Instance 3 │                │
+│  │   (AZ-a)   │    │   (AZ-b)   │    │   (AZ-a)   │                │
+│  └────────────┘    └────────────┘    └────────────┘                │
 │                                                                    │
 │  Minimum Capacity: 1                                               │
 │  Desired Capacity: 3                                               │
@@ -112,17 +112,17 @@ ASG quản lý một nhóm EC2 instances:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Auto Scaling Group                        │
+│                    Auto Scaling Group                       │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │   Minimum ◄────────── Desired ──────────► Maximum           │
-│     1                    3                   10              │
-│     │                    │                   │               │
+│     1                    3                   10             │
+│     │                    │                  │               │
 │     │    ┌───┐ ┌───┐ ┌───┐                  │               │
 │     └───►│ I │ │ I │ │ I │◄─────────────────┘               │
-│          └───┘ └───┘ └───┘                                   │
-│          Current: 3 instances                                │
-│                                                              │
+│          └───┘ └───┘ └───┘                                  │
+│          Current: 3 instances                               │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -166,14 +166,14 @@ Scale theo các "bước" dựa trên mức độ alarm.
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│                    Step Scaling Policy                      │
+│                    Step Scaling Policy                     │
 ├────────────────────────────────────────────────────────────┤
-│                                                             │
+│                                                            │
 │  CPU 0-40%    │ Scale IN:  Remove 2 instances              │
 │  CPU 40-60%   │ No Action                                  │
 │  CPU 60-80%   │ Scale OUT: Add 1 instance                  │
 │  CPU 80-100%  │ Scale OUT: Add 3 instances                 │
-│                                                             │
+│                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
 
@@ -187,12 +187,12 @@ Scale một lượng cố định khi alarm triggered, sau đó có **cooldown p
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                                                               │
+│                                                              │
 │  Alarm "High CPU" triggered → Add 2 instances                │
 │                              ↓                               │
 │                     Cooldown: 300 seconds                    │
 │                     (Không scale trong 5 phút)               │
-│                                                               │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -232,21 +232,21 @@ Sử dụng Machine Learning để phân tích traffic patterns và **scale trư
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                     Predictive Scaling                          │
-│                                                                  │
-│  Traffic    ^                                                    │
-│  Pattern    │     ╭──╮                                          │
-│             │    ╱    ╲      ← ML dự đoán traffic tăng          │
-│             │   ╱      ╲                                        │
-│             │──╱────────╲──                                     │
-│             └──────────────────► Time                           │
-│                                                                  │
-│  Scaling    ^                                                    │
-│  Action     │  ╭──╮                                              │
-│             │ ╱    ╲         ← Scale TRƯỚC khi traffic tăng     │
-│             │╱      ╲                                           │
-│             └──────────────────► Time                           │
-│                                                                  │
+│                     Predictive Scaling                         │
+│                                                                │
+│  Traffic    ^                                                  │
+│  Pattern    │     ╭──╮                                         │
+│             │    ╱    ╲      ← ML dự đoán traffic tăng         │
+│             │   ╱      ╲                                       │
+│             │──╱────────╲──                                    │
+│             └──────────────────► Time                          │
+│                                                                │
+│  Scaling    ^                                                  │
+│  Action     │  ╭──╮                                            │
+│             │ ╱    ╲         ← Scale TRƯỚC khi traffic tăng    │
+│             │╱      ╲                                          │
+│             └──────────────────► Time                          │
+│                                                                │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -318,19 +318,19 @@ Khi ASG được attach với Target Group, việc register/deregister instances
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    ASG + TARGET GROUP AUTO REGISTRATION                  │
+│                    ASG + TARGET GROUP AUTO REGISTRATION                 │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  SCALE OUT (Thêm instance):                                              │
-│  ─────────────────────────────                                           │
-│  ASG launch instance ──► Boot & Health check ──► Auto register vào TG  │
+│                                                                         │
+│  SCALE OUT (Thêm instance):                                             │
+│  ─────────────────────────────                                          │
+│  ASG launch instance ──► Boot & Health check ──► Auto register vào TG   │
 │                                                  ──► LB gửi traffic     │
-│                                                                          │
-│  SCALE IN (Xóa instance):                                                │
-│  ────────────────────────                                                │
-│  ASG terminate ──► Auto deregister khỏi TG ──► Connection draining     │
+│                                                                         │
+│  SCALE IN (Xóa instance):                                               │
+│  ────────────────────────                                               │
+│  ASG terminate ──► Auto deregister khỏi TG ──► Connection draining      │
 │                                              ──► Instance terminated    │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -351,22 +351,22 @@ Khi ASG được attach với Target Group, việc register/deregister instances
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Health Check Types                          │
+│                      Health Check Types                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. EC2 Health Check (Default)                                  │
 │     └── Kiểm tra: Instance status = running                     │
 │     └── Khi fail: Instance bị terminate & replace               │
-│                                                                  │
+│                                                                 │
 │  2. ELB Health Check                                            │
 │     └── Kiểm tra: HTTP response từ application                  │
 │     └── Khi fail: Instance bị mark unhealthy                    │
 │     └── ASG sẽ terminate & launch instance mới                  │
-│                                                                  │
-│  3. Custom Health Check                                          │
+│                                                                 │
+│  3. Custom Health Check                                         │
 │     └── Sử dụng API: set-instance-health                        │
 │     └── Ứng dụng tự report health status                        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -407,18 +407,18 @@ Instance Launch ─────────────────────�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Instance Lifecycle                            │
-│                                                                      │
+│                        Instance Lifecycle                           │
+│                                                                     │
 │  ┌─────────┐    ┌─────────────┐    ┌───────────┐    ┌─────────────┐ │
 │  │ Pending │───►│Pending:Wait │───►│InService  │───►│ Terminating │ │
 │  └─────────┘    └─────────────┘    └───────────┘    └─────────────┘ │
 │       │              │                   │                │         │
 │       │              │                   │                │         │
-│       │         Lifecycle Hook     Normal Running    Lifecycle Hook│
+│       │         Lifecycle Hook     Normal Running    Lifecycle Hook │
 │       │         (optional)                            (optional)    │
 │       │                                                             │
 │  Launch                                                   Terminate │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -432,22 +432,22 @@ Cho phép thực hiện custom actions khi instance đang scale:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Lifecycle Hook Flow                         │
-│                                                                  │
-│  Scale OUT:                                                      │
+│                      Lifecycle Hook Flow                        │
+│                                                                 │
+│  Scale OUT:                                                     │
 │  Pending ──► Pending:Wait ──► [Custom Action] ──► InService     │
-│                    │                                             │
-│                    ├── Pull config from S3                       │
-│                    ├── Register to DNS                           │
-│                    └── Warm up cache                             │
-│                                                                  │
-│  Scale IN:                                                       │
+│                   │                                             │
+│                    ├── Pull config from S3                      │
+│                    ├── Register to DNS                          │
+│                    └── Warm up cache                            │
+│                                                                 │
+│  Scale IN:                                                      │
 │  InService ──► Terminating:Wait ──► [Custom Action] ──► Terminated│
-│                       │                                          │
-│                       ├── Drain connections                      │
-│                       ├── Upload logs to S3                      │
-│                       └── Notify monitoring system               │
-│                                                                  │
+│                      │                                          │
+│                       ├── Drain connections                     │
+│                       ├── Upload logs to S3                     │
+│                       └── Notify monitoring system              │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -461,18 +461,18 @@ ASG tự động phân phối instances đều giữa các Availability Zones:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Auto Scaling Group                            │
-│                    Desired: 6 instances                          │
-│                                                                  │
+│                    Auto Scaling Group                           │
+│                    Desired: 6 instances                         │
+│                                                                 │
 │    AZ-a              AZ-b              AZ-c                     │
 │  ┌──────┐          ┌──────┐          ┌──────┐                   │
 │  │ I-1  │          │ I-3  │          │ I-5  │                   │
 │  │ I-2  │          │ I-4  │          │ I-6  │                   │
 │  └──────┘          └──────┘          └──────┘                   │
 │    2 instances       2 instances       2 instances              │
-│                                                                  │
+│                                                                 │
 │  ✅ Evenly distributed across AZs                               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -500,23 +500,23 @@ Kết hợp On-Demand và Spot instances để tối ưu chi phí:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               Mixed Instances Auto Scaling                       │
-│                                                                  │
+│               Mixed Instances Auto Scaling                      │
+│                                                                 │
 │   On-Demand Instances (Base Capacity)                           │
 │   ┌────┐ ┌────┐                                                 │
 │   │ OD │ │ OD │  ← Guaranteed capacity (2 instances)            │
 │   └────┘ └────┘                                                 │
-│                                                                  │
+│                                                                 │
 │   Spot Instances (Scale capacity - 70% cheaper!)                │
-│   ┌────┐ ┌────┐ ┌────┐ ┌────┐                                  │
-│   │ SP │ │ SP │ │ SP │ │ SP │  ← Cost-optimized (4 instances)  │
-│   └────┘ └────┘ └────┘ └────┘                                  │
-│                                                                  │
-│   Configuration:                                                 │
+│   ┌────┐ ┌────┐ ┌────┐ ┌────┐                                   │
+│   │ SP │ │ SP │ │ SP │ │ SP │  ← Cost-optimized (4 instances)   │
+│   └────┘ └────┘ └────┘ └────┘                                   │
+│                                                                 │
+│   Configuration:                                                │
 │   • On-Demand Base: 2                                           │
 │   • On-Demand Percentage Above Base: 30%                        │
 │   • Spot Allocation: Lowest Price or Capacity Optimized         │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -528,17 +528,17 @@ Thời gian chờ giữa các scaling activities:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Cooldown Period                             │
-│                                                                  │
-│  Scale OUT ────► Cooldown (300s) ────► Ready for next scale    │
-│       │                                                          │
+│                      Cooldown Period                            │
+│                                                                 │
+│  Scale OUT ────► Cooldown (300s) ────► Ready for next scale     │
+│      │                                                          │
 │       │ Trong cooldown:                                         │
 │       │ • Không trigger thêm scaling                            │
 │       │ • Ignore CloudWatch alarms                              │
 │       │ • Chờ instances ổn định                                 │
-│                                                                  │
+│                                                                 │
 │  Default: 300 seconds (5 phút)                                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -570,22 +570,22 @@ Khi scale IN, ASG quyết định terminate instance nào dựa trên policy:
 │  1. Chọn AZ có nhiều instances nhất                                  │
 │           │                                                          │
 │           ▼                                                          │
-│  2. Tìm instances dùng outdated configurations (theo thứ tự):       │
-│     ① Instances dùng Launch Configuration (ưu tiên terminate đầu)   │
+│  2. Tìm instances dùng outdated configurations (theo thứ tự):        │
+│     ① Instances dùng Launch Configuration (ưu tiên terminate đầu)    │
 │     ② Instances dùng Launch Template khác với current LT             │
 │     ③ Instances dùng oldest version của current Launch Template      │
 │                                                                      │
-│     → Nếu nhiều instances cùng dùng Launch Config:                  │
+│     → Nếu nhiều instances cùng dùng Launch Config:                   │
 │       chọn instance có oldest Launch Config                          │
 │           │                                                          │
 │           ▼                                                          │
-│  3. Nếu vẫn nhiều instances cùng điều kiện:                         │
-│     Chọn instance gần next billing hour nhất                        │
+│  3. Nếu vẫn nhiều instances cùng điều kiện:                          │
+│     Chọn instance gần next billing hour nhất                         │
 │           │                                                          │
 │           ▼                                                          │
-│  4. Nếu vẫn còn tie: Random                                         │
+│  4. Nếu vẫn còn tie: Random                                          │
 │                                                                      │
-│  ⚠ Launch Config luôn bị coi là outdated hơn Launch Template!       │
+│  ⚠ Launch Config luôn bị coi là outdated hơn Launch Template!        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -621,16 +621,16 @@ Bảo vệ instances khỏi bị terminate khi scale IN:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Instance Protection                            │
-│                                                                  │
-│   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐               │
-│   │  EC2   │  │  EC2   │  │  EC2   │  │  EC2   │               │
-│   │  (🔒)  │  │        │  │  (🔒)  │  │        │               │
-│   └────────┘  └────────┘  └────────┘  └────────┘               │
+│                   Instance Protection                           │
+│                                                                 │
+│   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐                │
+│   │  EC2   │  │  EC2   │  │  EC2   │  │  EC2   │                │
+│   │  (🔒)  │  │        │  │  (🔒)  │  │        │                │
+│   └────────┘  └────────┘  └────────┘  └────────┘                │
 │   Protected   Normal      Protected   Normal                    │
-│                                                                  │
-│   Khi Scale IN: Chỉ terminate instances KHÔNG protected        │
-│                                                                  │
+│                                                                 │
+│   Khi Scale IN: Chỉ terminate instances KHÔNG protected         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -647,23 +647,23 @@ Update instances trong ASG với zero/minimal downtime:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Instance Refresh                              │
-│                                                                  │
+│                    Instance Refresh                             │
+│                                                                 │
 │  Before: All instances use AMI v1                               │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                           │
-│  │AMI-1 │ │AMI-1 │ │AMI-1 │ │AMI-1 │                           │
-│  └──────┘ └──────┘ └──────┘ └──────┘                           │
-│                                                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                            │
+│  │AMI-1 │ │AMI-1 │ │AMI-1 │ │AMI-1 │                            │
+│  └──────┘ └──────┘ └──────┘ └──────┘                            │
+│                                                                 │
 │  During Refresh (min healthy: 50%):                             │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                           │
-│  │AMI-2 │ │AMI-2 │ │AMI-1 │ │AMI-1 │  ← Rolling update         │
-│  └──────┘ └──────┘ └──────┘ └──────┘                           │
-│                                                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                            │
+│  │AMI-2 │ │AMI-2 │ │AMI-1 │ │AMI-1 │  ← Rolling update          │
+│  └──────┘ └──────┘ └──────┘ └──────┘                            │
+│                                                                 │
 │  After: All instances use AMI v2                                │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                           │
-│  │AMI-2 │ │AMI-2 │ │AMI-2 │ │AMI-2 │                           │
-│  └──────┘ └──────┘ └──────┘ └──────┘                           │
-│                                                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                            │
+│  │AMI-2 │ │AMI-2 │ │AMI-2 │ │AMI-2 │                            │
+│  └──────┘ └──────┘ └──────┘ └──────┘                            │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -681,24 +681,24 @@ Warm Pool là một nhóm các instances đã được **pre-initialized** (đã
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                         AUTO SCALING GROUP                                 │
+│                         AUTO SCALING GROUP                                │
 ├───────────────────────────────────────────────────────────────────────────┤
-│                                                                            │
-│   ACTIVE INSTANCES (InService)              WARM POOL                      │
-│   ================================          ==========================     │
-│                                                                            │
-│   ┌──────────┐ ┌──────────┐ ┌──────────┐   ┌──────────┐ ┌──────────┐     │
-│   │ Instance │ │ Instance │ │ Instance │   │ Instance │ │ Instance │     │
-│   │    A     │ │    B     │ │    C     │   │    D     │ │    E     │     │
-│   │ [RUNNING]│ │ [RUNNING]│ │ [RUNNING]│   │ [STOPPED]│ │ [STOPPED]│     │
-│   └──────────┘ └──────────┘ └──────────┘   └──────────┘ └──────────┘     │
+│                                                                           │
+│   ACTIVE INSTANCES (InService)              WARM POOL                     │
+│   ================================          ==========================    │
+│                                                                           │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐   ┌──────────┐ ┌──────────┐      │
+│   │ Instance │ │ Instance │ │ Instance │   │ Instance │ │ Instance │      │
+│   │    A     │ │    B     │ │    C     │   │    D     │ │    E     │      │
+│   │ [RUNNING]│ │ [RUNNING]│ │ [RUNNING]│   │ [STOPPED]│ │ [STOPPED]│      │
+│   └──────────┘ └──────────┘ └──────────┘   └──────────┘ └──────────┘      │
 │        │            │            │              │             │           │
 │        └────────────┴────────────┘              └─────────────┘           │
-│                     │                                  │                   │
+│                     │                                 │                   │
 │            Serving Traffic                    Pre-warmed, Ready           │
 │                                               (Boot completed,            │
 │                                                App installed)             │
-│                                                                            │
+│                                                                           │
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -706,29 +706,29 @@ Warm Pool là một nhóm các instances đã được **pre-initialized** (đã
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         SCALE OUT COMPARISON                             │
+│                         SCALE OUT COMPARISON                            │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  WITHOUT WARM POOL (Traditional):                                        │
-│  ─────────────────────────────────                                       │
-│                                                                          │
+│                                                                         │
+│  WITHOUT WARM POOL (Traditional):                                       │
+│  ─────────────────────────────────                                      │
+│                                                                         │
 │  CloudWatch     Launch        Boot OS      Install      Register        │
 │   Alarm    ──►  Instance  ──►  (60s)   ──►  App    ──►  to ELB    ──► Ready│
-│    │              │             │          (120s)       (30s)            │
-│    └──────────────┴─────────────┴────────────┴───────────┘               │
-│                        Total: 3-5 minutes                                │
-│                                                                          │
+│    │              │             │          (120s)       (30s)           │
+│    └──────────────┴─────────────┴────────────┴───────────┘              │
+│                        Total: 3-5 minutes                               │
+│                                                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  WITH WARM POOL (Optimized):                                             │
-│  ──────────────────────────────                                          │
-│                                                                          │
-│  CloudWatch     Start from      Register                                 │
-│   Alarm    ──►  Warm Pool   ──►  to ELB   ──► Ready                      │
-│    │            (10-20s)         (30s)                                   │
-│    └────────────┴────────────────┘                                       │
-│                Total: 30-60 seconds                                      │
-│                                                                          │
+│                                                                         │
+│  WITH WARM POOL (Optimized):                                            │
+│  ──────────────────────────────                                         │
+│                                                                         │
+│  CloudWatch     Start from      Register                                │
+│   Alarm    ──►  Warm Pool   ──►  to ELB   ──► Ready                     │
+│    │            (10-20s)         (30s)                                  │
+│    └────────────┴────────────────┘                                      │
+│                Total: 30-60 seconds                                     │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -20,27 +20,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              AWS TRANSFER FAMILY                                 │
+│              AWS TRANSFER FAMILY                                │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Legacy Systems / Partners / Clients                             │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐               │
-│  │  SFTP   │ │  FTPS   │ │   FTP   │ │   AS2   │               │
-│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘               │
-│       │           │           │           │                      │
-│       └───────────┴─────┬─────┴───────────┘                      │
-│                         ▼                                        │
-│              ┌─────────────────────┐                             │
-│              │   Transfer Family   │  ← Fully managed            │
-│              │      Server         │    No infrastructure        │
-│              └──────────┬──────────┘                             │
-│                         │                                        │
-│           ┌─────────────┴─────────────┐                          │
-│           ▼                           ▼                          │
-│    ┌─────────────┐            ┌─────────────┐                    │
-│    │     S3      │            │     EFS     │                    │
-│    └─────────────┘            └─────────────┘                    │
-│                                                                  │
+│                                                                 │
+│  Legacy Systems / Partners / Clients                            │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐                │
+│  │  SFTP   │ │  FTPS   │ │   FTP   │ │   AS2   │                │
+│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘                │
+│       │           │           │          │                      │
+│       └───────────┴─────┬─────┴───────────┘                     │
+│                         ▼                                       │
+│              ┌─────────────────────┐                            │
+│              │   Transfer Family   │  ← Fully managed           │
+│              │      Server         │    No infrastructure       │
+│              └──────────┬──────────┘                            │
+│                        │                                        │
+│           ┌─────────────┴─────────────┐                         │
+│           ▼                           ▼                         │
+│    ┌─────────────┐            ┌─────────────┐                   │
+│    │     S3      │            │     EFS     │                   │
+│    └─────────────┘            └─────────────┘                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -65,28 +65,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              PROTOCOL COMPARISON                                 │
+│              PROTOCOL COMPARISON                                │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  SFTP (SSH File Transfer Protocol):                              │
+│                                                                 │
+│  SFTP (SSH File Transfer Protocol):                             │
 │  • Chạy trên SSH (port 22)                                      │
 │  • Mọi thứ encrypted                                            │
-│  • ✅ Recommended cho new implementations                        │
-│                                                                  │
-│  FTPS (FTP Secure):                                              │
-│  • FTP + TLS/SSL encryption                                      │
+│  • ✅ Recommended cho new implementations                       │
+│                                                                 │
+│  FTPS (FTP Secure):                                             │
+│  • FTP + TLS/SSL encryption                                     │
 │  • 2 modes: Explicit (port 21) / Implicit (port 990)            │
 │  • Dùng khi partner chỉ support FTPS                            │
-│                                                                  │
-│  FTP (Plain):                                                    │
-│  • ⚠️ KHÔNG encrypted - chỉ dùng nội bộ                         │
-│  • Legacy compatibility only                                     │
-│                                                                  │
-│  AS2:                                                            │
-│  • HTTP-based, EDI transactions                                  │
-│  • Digital signatures, encryption, receipts                      │
+│                                                                 │
+│  FTP (Plain):                                                   │
+│  • ⚠️ KHÔNG encrypted - chỉ dùng nội bộ                          │
+│  • Legacy compatibility only                                    │
+│                                                                 │
+│  AS2:                                                           │
+│  • HTTP-based, EDI transactions                                 │
+│  • Digital signatures, encryption, receipts                     │
 │  • B2B commerce (retail, healthcare)                            │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -132,24 +132,24 @@ Transfer Family Server ──► EFS File System
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              AUTHENTICATION OPTIONS                              │
+│              AUTHENTICATION OPTIONS                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Service-managed (AWS managed):                               │
+│                                                                 │
+│  1. Service-managed (AWS managed):                              │
 │     • SSH keys stored in AWS                                    │
 │     • Đơn giản nhất                                             │
 │     • Quản lý qua Console/API                                   │
-│                                                                  │
-│  2. AWS Directory Service:                                       │
+│                                                                 │
+│  2. AWS Directory Service:                                      │
 │     • Microsoft AD / AD Connector                               │
 │     • Username/password từ AD                                   │
 │     • Tích hợp với existing AD                                  │
-│                                                                  │
+│                                                                 │
 │  3. Custom Identity Provider (Lambda):                          │
 │     • Lambda function xử lý authentication                      │
 │     • Tích hợp với bất kỳ IdP nào                               │
 │     • Flexible nhất                                             │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -199,9 +199,9 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         VPC                                      │
+│                         VPC                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌─────────────────┐         ┌─────────────────┐                │
 │  │  Private Subnet │         │  Private Subnet │                │
 │  │     (AZ-a)      │         │     (AZ-b)      │                │
@@ -210,19 +210,19 @@ def lambda_handler(event, context):
 │  │  │ 10.0.1.5  │  │         │  │ 10.0.2.5  │  │                │
 │  │  └─────┬─────┘  │         │  └─────┬─────┘  │                │
 │  └────────┼────────┘         └────────┼────────┘                │
-│           │                           │                          │
-│           └───────────┬───────────────┘                          │
-│                       ▼                                          │
-│              ┌─────────────────┐                                 │
-│              │ Transfer Family │                                 │
-│              │     Server      │                                 │
-│              └────────┬────────┘                                 │
-│                       │                                          │
-│                       ▼                                          │
-│              ┌─────────────────┐                                 │
-│              │       S3        │                                 │
-│              └─────────────────┘                                 │
-│                                                                  │
+│           │                          │                          │
+│           └───────────┬───────────────┘                         │
+│                       ▼                                         │
+│              ┌─────────────────┐                                │
+│              │ Transfer Family │                                │
+│              │     Server      │                                │
+│              └────────┬────────┘                                │
+│                      │                                          │
+│                       ▼                                         │
+│              ┌─────────────────┐                                │
+│              │       S3        │                                │
+│              └─────────────────┘                                │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
         │
         │ VPN / Direct Connect

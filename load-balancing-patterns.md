@@ -25,16 +25,16 @@ So sánh các giải pháp Load Balancing và Auto Scaling ở các layer khác 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Infrastructure                            │
+│                        Infrastructure                           │
 │  AWS ELB/ASG ─────────────────────────────────────────────────  │
 │  (Manage EC2 instances, hardware level)                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                    Container Orchestration                       │
-│  Kubernetes Service/Ingress/HPA ────────────────────────────── │
+│                    Container Orchestration                      │
+│  Kubernetes Service/Ingress/HPA ──────────────────────────────  │
 │  (Manage Pods/Containers)                                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                        Application                               │
-│  Spring Cloud LoadBalancer ─────────────────────────────────── │
+│                        Application                              │
+│  Spring Cloud LoadBalancer ───────────────────────────────────  │
 │  (Client-side, trong code)                                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -206,11 +206,11 @@ Eureka Server ❌ DOWN
 │ Browser  │
 │ (FE)     │  FE không có Spring Cloud LB!
 └────┬─────┘  FE chỉ biết 1 URL: api.example.com
-     │
+           │
      ▼
-┌─────────┐
+┌──────────┐
 │ AWS ELB │  ← BẮT BUỘC cần server-side LB
-└────┬────┘
+└────┬─────┘
      │
      ▼
 ┌─────────┐
@@ -281,7 +281,7 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                    AWS                           │
+│                    AWS                          │
 ├─────────────────────────────────────────────────┤
 │ Server-side LB:                                 │
 │   • ALB (Layer 7 - HTTP)                        │
@@ -290,14 +290,14 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 │                                                 │
 │ Client-side LB:                                 │
 │   • ❌ Không có native                          │
-│   • Phải dùng Spring Cloud LB hoặc gRPC client │
+│   • Phải dùng Spring Cloud LB hoặc gRPC client  │
 │                                                 │
 │ Service Discovery:                              │
 │   • AWS Cloud Map                               │
 │                                                 │
 │ Auto Scaling:                                   │
-│   • ASG (EC2 instances)                        │
-│   • ECS Service Auto Scaling                   │
+│   • ASG (EC2 instances)                         │
+│   • ECS Service Auto Scaling                    │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -305,27 +305,27 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                 Kubernetes                       │
+│                 Kubernetes                      │
 ├─────────────────────────────────────────────────┤
 │ Server-side LB:                                 │
-│   • Service (ClusterIP) - internal             │
-│   • Service (LoadBalancer) - external + cloud  │
-│   • Service (NodePort) - external              │
-│   • Ingress - Layer 7 routing                  │
+│   • Service (ClusterIP) - internal              │
+│   • Service (LoadBalancer) - external + cloud   │
+│   • Service (NodePort) - external               │
+│   • Ingress - Layer 7 routing                   │
 │                                                 │
 │ Client-side LB:                                 │
 │   • ❌ Không có native                          │
-│   • Envoy sidecar (Service Mesh - Istio)       │
-│   • gRPC client-side LB                        │
+│   • Envoy sidecar (Service Mesh - Istio)        │
+│   • gRPC client-side LB                         │
 │                                                 │
 │ Service Discovery:                              │
-│   • CoreDNS (built-in)                         │
-│   • kube-proxy                                 │
+│   • CoreDNS (built-in)                          │
+│   • kube-proxy                                  │
 │                                                 │
 │ Auto Scaling:                                   │
-│   • HPA (Horizontal Pod Autoscaler)            │
-│   • VPA (Vertical Pod Autoscaler)              │
-│   • Cluster Autoscaler (scale nodes)           │
+│   • HPA (Horizontal Pod Autoscaler)             │
+│   • VPA (Vertical Pod Autoscaler)               │
+│   • Cluster Autoscaler (scale nodes)            │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -333,24 +333,24 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                Spring Cloud                      │
+│                Spring Cloud                     │
 ├─────────────────────────────────────────────────┤
 │ Server-side LB:                                 │
-│   • ❌ Không có                                  │
-│   • Phải dùng Nginx, AWS ELB, K8s Service      │
+│   • ❌ Không có                                 │
+│   • Phải dùng Nginx, AWS ELB, K8s Service       │
 │                                                 │
 │ Client-side LB:                                 │
-│   • Spring Cloud LoadBalancer                  │
-│   • (cũ: Netflix Ribbon - deprecated)          │
+│   • Spring Cloud LoadBalancer                   │
+│   • (cũ: Netflix Ribbon - deprecated)           │
 │                                                 │
 │ Service Discovery:                              │
-│   • Eureka                                     │
-│   • Consul                                     │
-│   • AWS Cloud Map                              │
+│   • Eureka                                      │
+│   • Consul                                      │
+│   • AWS Cloud Map                               │
 │                                                 │
 │ Auto Scaling:                                   │
-│   • ❌ Không có                                  │
-│   • Phải dùng AWS ASG hoặc K8s HPA             │
+│   • ❌ Không có                                 │
+│   • Phải dùng AWS ASG hoặc K8s HPA              │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -394,21 +394,21 @@ Internet or Client (FE)
      │
      ▼
 ┌─────────────────────────────────────────────────────────┐
-│                    AWS ECS / EC2                         │
+│                    AWS ECS / EC2                        │
 │                                                         │
-│  ┌───────────┐    Spring Cloud LB    ┌───────────────┐ │
-│  │API Gateway│ ─────────────────────▶│ User Service  │ │
-│  │(ECS Task) │                       │ (3 tasks)     │ │
-│  └───────────┘                       └───────┬───────┘ │
-│                                              │         │
-│                              ┌───────────────┘         │
-│                              ▼                         │
-│                       ┌───────────────┐                │
-│                       │ Order Service │                │
-│                       │ (3 tasks)     │                │
-│                       └───────────────┘                │
-│                                                        │
-│  Service Discovery: AWS Cloud Map                      │
+│  ┌───────────┐    Spring Cloud LB    ┌───────────────┐  │
+│  │API Gateway│ ─────────────────────▶│ User Service  │  │
+│  │(ECS Task) │                       │ (3 tasks)     │  │
+│  └───────────┘                       └───────┬───────┘  │
+│                                               │         │
+│                              ┌───────────────┘          │
+│                              ▼                          │
+│                              ┌───────────────┐          │
+│                              │ Order Service │          │
+│                              │ (3 tasks)     │          │
+│                              └───────────────┘          │
+│                                                         │
+│  Service Discovery: AWS Cloud Map                       │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -430,27 +430,27 @@ Internet
     │
     ▼
 ┌─────────────────────────────────────────────────────────┐
-│              EKS Cluster                                 │
+│              EKS Cluster                                │
 │                                                         │
 │  ┌──────────────────┐                                   │
-│  │ AWS LB Controller│ → Tự tạo ALB                     │
+│  │ AWS LB Controller│ → Tự tạo ALB                      │
 │  └────────┬─────────┘                                   │
 │           │                                             │
 │           ▼                                             │
-│  ┌─────────────┐      K8s Service     ┌─────────────┐  │
-│  │ Ingress     │ ────────────────────▶│ User SVC    │  │
-│  │             │      (ClusterIP)     │ (3 pods)    │  │
-│  └─────────────┘                      └──────┬──────┘  │
-│                                              │         │
-│                              K8s Service     │         │
-│                              (ClusterIP)     │         │
-│                                              ▼         │
-│                                       ┌─────────────┐  │
-│                                       │ Order SVC   │  │
-│                                       │ (3 pods)    │  │
-│                                       └─────────────┘  │
-│                                                        │
-│  Service Discovery: CoreDNS (built-in, free)          │
+│  ┌─────────────┐      K8s Service     ┌─────────────┐   │
+│  │ Ingress     │ ────────────────────▶│ User SVC    │   │
+│  │             │      (ClusterIP)     │ (3 pods)    │   │
+│  └─────────────┘                      └──────┬──────┘   │
+│                                               │         │
+│                              K8s Service      │         │
+│                              (ClusterIP)      │         │
+│                                              ▼          │
+│                                       ┌─────────────┐   │
+│                                       │ Order SVC   │   │
+│                                       │ (3 pods)    │   │
+│                                       └─────────────┘   │
+│                                                         │
+│  Service Discovery: CoreDNS (built-in, free)            │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -473,31 +473,31 @@ Internet
     │
     ▼
 ┌─────────────────────────────────────────────────────────┐
-│              EKS Cluster + Istio                         │
+│              EKS Cluster + Istio                        │
 │                                                         │
 │  ┌─────────────────┐                                    │
-│  │ Istio Ingress   │  ← Thay thế K8s Ingress           │
+│  │ Istio Ingress   │  ← Thay thế K8s Ingress            │
 │  │ Gateway         │                                    │
 │  └────────┬────────┘                                    │
 │           │                                             │
 │           ▼                                             │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │ User Service Pod                                │   │
-│  │ ┌─────────────┐  ┌─────────────┐               │   │
-│  │ │ App         │  │ Envoy Proxy │ ← Sidecar     │   │
-│  │ │ Container   │◀▶│ (LB + mTLS) │               │   │
-│  │ └─────────────┘  └──────┬──────┘               │   │
-│  └─────────────────────────┼───────────────────────┘   │
-│                            │                           │
-│                            ▼ Client-side LB            │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │ Order Service Pod                               │   │
-│  │ ┌─────────────┐  ┌─────────────┐               │   │
-│  │ │ App         │◀▶│ Envoy Proxy │               │   │
-│  │ └─────────────┘  └─────────────┘               │   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                        │
-│  Features: mTLS, tracing, circuit breaker, retries    │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │ User Service Pod                                │    │
+│  │ ┌─────────────┐  ┌─────────────┐                 │   │
+│  │ │ App         │  │ Envoy Proxy │ ← Sidecar       │   │
+│  │ │ Container   │◀▶│ (LB + mTLS) │                 │   │
+│  │ └─────────────┘  └──────┬──────┘                 │   │
+│  └─────────────────────────┼───────────────────────┘    │
+│                             │                           │
+│                            ▼ Client-side LB             │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │ Order Service Pod                               │    │
+│  │ ┌─────────────┐  ┌─────────────┐                 │   │
+│  │ │ App         │◀▶│ Envoy Proxy │                 │   │
+│  │ └─────────────┘  └─────────────┘                 │   │
+│  └─────────────────────────────────────────────────┘    │
+│                                                         │
+│  Features: mTLS, tracing, circuit breaker, retries      │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -526,20 +526,20 @@ Internet
          │
          ▼
 ┌─────────────────────────────────────────────────────────┐
-│                    AWS Lambda                            │
+│                    AWS Lambda                           │
 │                                                         │
-│  ┌───────────────┐       ┌───────────────┐             │
-│  │ User Function │       │ Order Function│             │
-│  │ (auto-scale)  │◀─────▶│ (auto-scale)  │             │
-│  └───────────────┘  SDK  └───────────────┘             │
+│  ┌───────────────┐       ┌───────────────┐              │
+│  │ User Function │       │ Order Function│              │
+│  │ (auto-scale)  │◀─────▶│ (auto-scale)  │              │
+│  └───────────────┘  SDK  └───────────────┘              │
 │         │           call          │                     │
 │         │                         │                     │
 │         ▼                         ▼                     │
-│  ┌───────────────────────────────────────┐             │
-│  │            DynamoDB                    │             │
-│  └───────────────────────────────────────┘             │
-│                                                        │
-│  No LB needed! API Gateway + Lambda = auto-scale      │
+│  ┌───────────────────────────────────────┐              │
+│  │            DynamoDB                   │              │
+│  └───────────────────────────────────────┘              │
+│                                                         │
+│  No LB needed! API Gateway + Lambda = auto-scale        │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -563,13 +563,13 @@ Internet
 ┌─────────┐
 │ AWS ALB │ ← Server-side (external traffic)
 └────┬────┘    + WAF, Shield, ACM
-     │
+          │
      ▼
-┌─────────────────────────────────────────────────────┐
+┌─────────┐
 │              Kubernetes Cluster                      │
-│                                                     │
+│         │
 │  ┌─────────────┐                                    │
-│  │ K8s Ingress │ ← Server-side (routing rules)     │
+│  │ K8s Ingress │ ← Server-side (routing rules)      │
 │  └──────┬──────┘                                    │
 │         │                                           │
 │         ▼                                           │
@@ -584,14 +584,14 @@ Internet
 │                                        │           │
 │                              ┌─────────┘           │
 │                              ▼                     │
-│                       ┌─────────────┐              │
-│                       │Order Service│              │
-│                       │ (3 Pods)    │              │
-│                       └─────────────┘              │
+│                              ┌─────────┐           │
+│                              │Order Service│           │
+│                              │ (3 Pods)│           │
+│                              └─────────┘           │
 │                              ↑                     │
 │                    Client-side LB                  │
 │                    (Spring Cloud, gọi thẳng)       │
-└─────────────────────────────────────────────────────┘
+└─────────┘
 ```
 
 ---
@@ -620,17 +620,17 @@ Traffic: 10M requests/tháng, 3 services × 3 instances
 ┌────────────────┬─────────────────────────────────────────┐
 │                │              Cost/tháng                 │
 │   Kiến trúc    ├─────────┬─────────┬─────────┬──────────┤
-│                │ Compute │   LB    │  Other  │  Total   │
-├────────────────┼─────────┼─────────┼─────────┼──────────┤
-│ AWS ECS        │  $150   │  $25    │  $5     │  ~$180   │
-├────────────────┼─────────┼─────────┼─────────┼──────────┤
-│ K8s + Service  │  $165   │  $25    │  $0     │  ~$190   │
-├────────────────┼─────────┼─────────┼─────────┼──────────┤
-│ K8s + Istio    │  $255   │  $25    │  $0     │  ~$280   │
-├────────────────┼─────────┼─────────┼─────────┼──────────┤
-│ Serverless     │  $2     │  $35    │  $10    │  ~$50    │
-│ (Lambda)       │         │ (APIGW) │ (DynamoDB)         │
-└────────────────┴─────────┴─────────┴─────────┴──────────┘
+│                │ Compute │   LB    │  Other  │  Total    │
+├────────────────┼─────────┼─────────┼─────────┼───────────┤
+│ AWS ECS        │  $150   │  $25    │  $5     │  ~$180    │
+├────────────────┼─────────┼─────────┼─────────┼───────────┤
+│ K8s + Service  │  $165   │  $25    │  $0     │  ~$190    │
+├────────────────┼─────────┼─────────┼─────────┼───────────┤
+│ K8s + Istio    │  $255   │  $25    │  $0     │  ~$280    │
+├────────────────┼─────────┼─────────┼─────────┼───────────┤
+│ Serverless     │  $2     │  $35    │  $10    │  ~$50     │
+│ (Lambda)       │         │ (APIGW) │ (DynamoDB)          │
+└────────────────┴─────────┴─────────┴─────────┴───────────┘
 
 * Serverless rẻ nhất với traffic thấp-trung bình
 * Traffic cao → Container/EC2 rẻ hơn Lambda

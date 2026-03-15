@@ -25,26 +25,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    INFRASTRUCTURE AS CODE TOOLS                      │
-│                                                                       │
-│   CloudFormation          Terraform              AWS CDK             │
-│   ─────────────           ─────────              ───────             │
-│   YAML/JSON               HCL                    TypeScript/Python   │
-│       │                     │                         │              │
-│       │                     │                         │              │
-│       ▼                     ▼                         ▼              │
+│                    INFRASTRUCTURE AS CODE TOOLS                     │
+│                                                                     │
+│   CloudFormation          Terraform              AWS CDK            │
+│   ─────────────           ─────────              ───────            │
+│   YAML/JSON               HCL                    TypeScript/Python  │
+│       │                     │                        │              │
+│       │                     │                        │              │
+│       ▼                     ▼                         ▼             │
 │   Declarative           Declarative             Imperative          │
 │   (mô tả state)         (mô tả state)           (viết logic)        │
-│                                                       │              │
-│                                                       ▼              │
-│                                              ┌───────────────┐       │
-│                                              │ CDK Synth     │       │
-│                                              │ (compile)     │       │
-│                                              └───────┬───────┘       │
-│                                                      │               │
-│                                                      ▼               │
-│                                              CloudFormation          │
-│                                              Template (YAML)         │
+│                                                      │              │
+│                                                       ▼             │
+│                                              ┌───────────────┐      │
+│                                              │ CDK Synth     │      │
+│                                              │ (compile)     │      │
+│                                              └───────┬───────┘      │
+│                                                     │               │
+│                                                      ▼              │
+│                                              CloudFormation         │
+│                                              Template (YAML)        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -68,12 +68,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        CDK ARCHITECTURE                              │
-│                                                                       │
+│                        CDK ARCHITECTURE                             │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                          APP                                 │   │
+│   │                          APP                                │   │
 │   │   (Entry point - 1 app có thể có nhiều stacks)              │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   ┌─────────────────────┐   ┌─────────────────────┐         │   │
 │   │   │       STACK 1       │   │       STACK 2       │         │   │
 │   │   │   (NetworkStack)    │   │   (ComputeStack)    │         │   │
@@ -88,9 +88,9 @@
 │   │   │   └───────────────┘ │   │   └───────────────┘ │         │   │
 │   │   └─────────────────────┘   └─────────────────────┘         │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   App    = Container cho tất cả stacks                               │
-│   Stack  = Tương đương 1 CloudFormation stack                        │
+│                                                                     │
+│   App    = Container cho tất cả stacks                              │
+│   Stack  = Tương đương 1 CloudFormation stack                       │
 │   Construct = Building block (VPC, EC2, Lambda, S3...)              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -99,32 +99,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CONSTRUCT LEVELS                                  │
-│                                                                       │
-│   L3 - PATTERNS (High-level)                                         │
+│                    CONSTRUCT LEVELS                                 │
+│                                                                     │
+│   L3 - PATTERNS (High-level)                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  ApplicationLoadBalancedFargateService                       │   │
+│   │  ApplicationLoadBalancedFargateService                      │   │
 │   │  → Tạo ALB + ECS Fargate + Target Group + Security Groups   │   │
-│   │  → 1 dòng code = 10+ resources                               │   │
+│   │  → 1 dòng code = 10+ resources                              │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                              │                                       │
-│                              ▼                                       │
-│   L2 - CURATED (Recommended)                                         │
+│                             │                                       │
+│                              ▼                                      │
+│   L2 - CURATED (Recommended)                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  s3.Bucket, ec2.Vpc, lambda.Function                        │   │
-│   │  → Sensible defaults, helper methods                         │   │
+│   │  → Sensible defaults, helper methods                        │   │
 │   │  → bucket.grantRead(lambda) thay vì viết IAM policy         │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                              │                                       │
-│                              ▼                                       │
-│   L1 - CFN RESOURCES (Low-level)                                     │
+│                             │                                       │
+│                              ▼                                      │
+│   L1 - CFN RESOURCES (Low-level)                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  CfnBucket, CfnVPC, CfnFunction                             │   │
-│   │  → 1:1 mapping với CloudFormation resources                  │   │
-│   │  → Không có helper methods                                   │   │
-│   │  → Prefix: Cfn*                                              │   │
+│   │  → 1:1 mapping với CloudFormation resources                 │   │
+│   │  → Không có helper methods                                  │   │
+│   │  → Prefix: Cfn*                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   Recommendation: Dùng L2 cho hầu hết cases, L3 khi có sẵn          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -494,21 +494,21 @@ new ec2.Instance(this, 'Instance', {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         AWS CDK SUMMARY                              │
-│                                                                       │
+│                         AWS CDK SUMMARY                             │
+│                                                                     │
 │   ✅ Viết Infrastructure bằng TypeScript/Python                     │
 │   ✅ Full IDE support (autocomplete, type checking)                 │
 │   ✅ High-level abstractions (ít code hơn CloudFormation)           │
 │   ✅ grant* methods tự động tạo IAM policies                        │
-│   ✅ Unit testing với Jest/pytest                                    │
-│   ✅ Generates CloudFormation templates                              │
-│                                                                       │
-│   📚 Learning Path:                                                  │
-│   1. Cài đặt CDK CLI                                                 │
-│   2. cdk init → tạo project                                          │
-│   3. Viết Stack với L2 constructs                                    │
-│   4. cdk synth → xem generated template                              │
-│   5. cdk deploy → deploy to AWS                                      │
+│   ✅ Unit testing với Jest/pytest                                   │
+│   ✅ Generates CloudFormation templates                             │
+│                                                                     │
+│   📚 Learning Path:                                                 │
+│   1. Cài đặt CDK CLI                                                │
+│   2. cdk init → tạo project                                         │
+│   3. Viết Stack với L2 constructs                                   │
+│   4. cdk synth → xem generated template                             │
+│   5. cdk deploy → deploy to AWS                                     │
 │   6. Học custom constructs để tái sử dụng                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```

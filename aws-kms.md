@@ -25,21 +25,21 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       AWS KMS                                    │
+│                       AWS KMS                                   │
 │       "Create and control encryption keys easily"               │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   KMS Key ──────► Encrypt Data ──────► Encrypted Data           │
-│      │                                       │                   │
-│      │                                       │                   │
+│      │                                      │                   │
+│      │                                      │                   │
 │      └─────────► Decrypt Data ◄──────────────┘                  │
-│                                                                  │
+│                                                                 │
 │   Integrates with 100+ AWS services:                            │
 │   S3, EBS, RDS, DynamoDB, Lambda, Secrets Manager...            │
-│                                                                  │
+│                                                                 │
 │   ✅ FIPS 140-2 Level 2 validated                               │
 │   ✅ All key usage logged in CloudTrail                         │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -77,28 +77,28 @@ KMS = Dịch vụ quản lý chìa khóa cho bạn
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Types of KMS Keys                             │
+│                    Types of KMS Keys                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. AWS Owned Keys                                               │
+│                                                                 │
+│  1. AWS Owned Keys                                              │
 │     └── AWS tạo và quản lý hoàn toàn                            │
 │     └── Bạn KHÔNG thấy trong KMS console                        │
-│     └── Dùng cho nhiều accounts                                  │
-│     └── FREE                                                     │
-│                                                                  │
+│     └── Dùng cho nhiều accounts                                 │
+│     └── FREE                                                    │
+│                                                                 │
 │  2. AWS Managed Keys (aws/service-name)                         │
 │     └── AWS tạo, bạn thấy trong console                         │
-│     └── Auto-rotate mỗi năm                                      │
+│     └── Auto-rotate mỗi năm                                     │
 │     └── Không thể delete hoặc modify policy                     │
-│     └── FREE                                                     │
+│     └── FREE                                                    │
 │     └── VD: aws/s3, aws/rds, aws/ebs                            │
-│                                                                  │
-│  3. Customer Managed Keys (CMK)                                  │
+│                                                                 │
+│  3. Customer Managed Keys (CMK)                                 │
 │     └── BẠN tạo và quản lý                                      │
 │     └── Full control (policy, rotation, delete)                 │
 │     └── $1/month + $0.03/10,000 API calls                       │
 │     └── Best for: sensitive data, compliance                    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -129,33 +129,33 @@ KMS dùng **Envelope Encryption** để encrypt data lớn một cách hiệu qu
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Envelope Encryption                            │
+│                   Envelope Encryption                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Vấn đề: KMS chỉ encrypt được 4KB data trực tiếp               │
+│                                                                 │
+│  Vấn đề: KMS chỉ encrypt được 4KB data trực tiếp                │
 │          Làm sao encrypt file 1GB?                              │
-│                                                                  │
+│                                                                 │
 │  Giải pháp: 2 levels of keys                                    │
-│                                                                  │
+│                                                                 │
 │  ┌─────────────┐                                                │
-│  │  KMS Key    │  (Root key - stays in KMS)                    │
+│  │  KMS Key    │  (Root key - stays in KMS)                     │
 │  │  (Master)   │                                                │
 │  └──────┬──────┘                                                │
-│         │ encrypts                                               │
-│         ▼                                                        │
+│         │ encrypts                                              │
+│         ▼                                                       │
 │  ┌─────────────┐                                                │
-│  │  Data Key   │  (Generated by KMS)                           │
+│  │  Data Key   │  (Generated by KMS)                            │
 │  └──────┬──────┘                                                │
-│         │ encrypts                                               │
-│         ▼                                                        │
+│         │ encrypts                                              │
+│         ▼                                                       │
 │  ┌─────────────┐                                                │
-│  │  Your Data  │  (Any size - 1GB, 10GB...)                    │
+│  │  Your Data  │  (Any size - 1GB, 10GB...)                     │
 │  │   (File)    │                                                │
 │  └─────────────┘                                                │
-│                                                                  │
-│  Lưu trữ: Encrypted Data Key + Encrypted Data                  │
-│  Khi decrypt: KMS decrypt Data Key → Data Key decrypt Data     │
-│                                                                  │
+│                                                                 │
+│  Lưu trữ: Encrypted Data Key + Encrypted Data                   │
+│  Khi decrypt: KMS decrypt Data Key → Data Key decrypt Data      │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -173,22 +173,22 @@ KMS dùng **Envelope Encryption** để encrypt data lớn một cách hiệu qu
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Key Rotation                                  │
+│                    Key Rotation                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  AWS Managed Keys:                                               │
-│  └── Auto-rotate mỗi năm (bắt buộc)                            │
-│                                                                  │
-│  Customer Managed Keys:                                          │
-│  └── Optional, cấu hình rotation period (90 days - 7 years)    │
+│                                                                 │
+│  AWS Managed Keys:                                              │
+│  └── Auto-rotate mỗi năm (bắt buộc)                             │
+│                                                                 │
+│  Customer Managed Keys:                                         │
+│  └── Optional, cấu hình rotation period (90 days - 7 years)     │
 │  └── Có thể rotate on-demand                                    │
-│                                                                  │
-│  Khi rotate:                                                     │
+│                                                                 │
+│  Khi rotate:                                                    │
 │  ├── Key ID giữ nguyên                                          │
-│  ├── KMS giữ lại old key material (để decrypt old data)        │
+│  ├── KMS giữ lại old key material (để decrypt old data)         │
 │  ├── New encryptions dùng new key material                      │
 │  └── Hoàn toàn transparent cho applications                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -236,27 +236,27 @@ Key Policies contrrol ai có thể dùng KMS key:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               KMS Integration (100+ services)                    │
+│               KMS Integration (100+ services)                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Storage:                                                        │
+│                                                                 │
+│  Storage:                                                       │
 │  ├── S3: Server-Side Encryption (SSE-KMS)                       │
 │  ├── EBS: Encrypted volumes                                     │
 │  └── EFS: Encrypt file system                                   │
-│                                                                  │
-│  Database:                                                       │
+│                                                                 │
+│  Database:                                                      │
 │  ├── RDS: Encrypt at rest                                       │
 │  ├── DynamoDB: Encrypt tables                                   │
 │  └── Aurora: Encrypt cluster                                    │
-│                                                                  │
-│  Secrets:                                                        │
+│                                                                 │
+│  Secrets:                                                       │
 │  ├── Secrets Manager: Encrypt secrets                           │
 │  └── Parameter Store: Encrypt parameters                        │
-│                                                                  │
-│  Compute:                                                        │
+│                                                                 │
+│  Compute:                                                       │
 │  ├── Lambda: Encrypt env variables                              │
 │  └── ECS: Encrypt secrets                                       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -266,24 +266,24 @@ Key Policies contrrol ai có thể dùng KMS key:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Multi-Region Keys                               │
+│                  Multi-Region Keys                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │     Region A (Primary)          Region B (Replica)              │
 │    ┌─────────────┐             ┌─────────────┐                  │
 │    │  KMS Key    │────────────►│  KMS Key    │                  │
 │    │  (primary)  │  replicate  │  (replica)  │                  │
 │    └─────────────┘             └─────────────┘                  │
-│          │                           │                           │
-│          ▼                           ▼                           │
-│    Encrypt data              Decrypt same data                   │
-│    in Region A               in Region B                         │
-│                                                                  │
-│  Use cases:                                                      │
-│  ├── Disaster Recovery                                           │
-│  ├── Global applications                                         │
-│  └── Data encrypted in one region, decrypted in another        │
-│                                                                  │
+│          │                          │                           │
+│          ▼                           ▼                          │
+│    Encrypt data              Decrypt same data                  │
+│    in Region A               in Region B                        │
+│                                                                 │
+│  Use cases:                                                     │
+│  ├── Disaster Recovery                                          │
+│  ├── Global applications                                        │
+│  └── Data encrypted in one region, decrypted in another         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -364,26 +364,26 @@ Key Policies contrrol ai có thể dùng KMS key:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     AWS KMS Summary                              │
+│                     AWS KMS Summary                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Managed encryption key service                              │
 │  ✅ Integrates with 100+ AWS services                           │
 │  ✅ FIPS 140-2 Level 2 validated                                │
 │  ✅ All usage logged in CloudTrail                              │
-│                                                                  │
-│  Key Types:                                                      │
+│                                                                 │
+│  Key Types:                                                     │
 │  ├── AWS Owned (free, invisible)                                │
-│  ├── AWS Managed (free, visible, limited control)              │
+│  ├── AWS Managed (free, visible, limited control)               │
 │  └── Customer Managed ($1/month, full control)                  │
-│                                                                  │
-│  Features:                                                       │
-│  ├── Envelope Encryption (encrypt large data)                  │
-│  ├── Key Rotation (automatic or on-demand)                     │
-│  ├── Multi-Region Keys (DR, global apps)                       │
+│                                                                 │
+│  Features:                                                      │
+│  ├── Envelope Encryption (encrypt large data)                   │
+│  ├── Key Rotation (automatic or on-demand)                      │
+│  ├── Multi-Region Keys (DR, global apps)                        │
 │  └── Key Policies (access control)                              │
-│                                                                  │
+│                                                                 │
 │  Pricing: $1/key/month + $0.03/10K API calls                    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

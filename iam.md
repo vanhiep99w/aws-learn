@@ -54,23 +54,23 @@ WHO (Authentication)     +     WHAT (Authorization)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     AWS Account vs IAM User                                   │
+│                     AWS Account vs IAM User                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   AWS ACCOUNT = "Ngôi nhà" (Container)                                       │
-│   ─────────────────────────────────────                                       │
-│   • Là đơn vị billing (thanh toán)                                          │
-│   • Chứa TẤT CẢ resources: EC2, S3, RDS, VPC, ...                          │
-│   • Có Account ID riêng (12 chữ số: 123456789012)                           │
-│   • Có Root user (owner, toàn quyền)                                        │
+│   ─────────────────────────────────────                                      │
+│   • Là đơn vị billing (thanh toán)                                           │
+│   • Chứa TẤT CẢ resources: EC2, S3, RDS, VPC, ...                            │
+│   • Có Account ID riêng (12 chữ số: 123456789012)                            │
+│   • Có Root user (owner, toàn quyền)                                         │
 │   • 1 email = 1 account                                                      │
 │                                                                              │
-│   IAM USER = "Người sống trong nhà" (Identity)                              │
-│   ──────────────────────────────────────────────                              │
-│   • Là người/application sử dụng resources trong account                    │
-│   • Có username + credentials (password/access keys)                        │
-│   • Được gán permissions qua policies                                       │
-│   • 1 account có thể có NHIỀU IAM users                                     │
+│   IAM USER = "Người sống trong nhà" (Identity)                               │
+│   ──────────────────────────────────────────────                             │
+│   • Là người/application sử dụng resources trong account                     │
+│   • Có username + credentials (password/access keys)                         │
+│   • Được gán permissions qua policies                                        │
+│   • 1 account có thể có NHIỀU IAM users                                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -83,21 +83,21 @@ WHO (Authentication)     +     WHAT (Authorization)
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  AWS ACCOUNT (Account ID: 123456789012)                             │   │
 │   │  Email: admin@company.com                                           │   │
-│   │  ─────────────────────────────────────                               │   │
-│   │                                                                      │   │
+│   │  ─────────────────────────────────────                              │   │
+│   │                                                                     │   │
 │   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
 │   │   │  Root    │  │  User    │  │  User    │  │  User    │            │   │
 │   │   │  User    │  │  "John"  │  │  "Jane"  │  │  "Dev"   │            │   │
 │   │   │ (owner)  │  │  (Admin) │  │  (Dev)   │  │  (App)   │            │   │
 │   │   └──────────┘  └──────────┘  └──────────┘  └──────────┘            │   │
-│   │                                                                      │   │
-│   │   Resources trong account này:                                       │   │
+│   │                                                                     │   │
+│   │   Resources trong account này:                                      │   │
 │   │   ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐            │   │
 │   │   │  EC2   │ │   S3   │ │  RDS   │ │  VPC   │ │ Lambda │            │   │
 │   │   └────────┘ └────────┘ └────────┘ └────────┘ └────────┘            │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   │   → TẤT CẢ resources + users = 1 BILL chung                         │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -132,27 +132,27 @@ IAM User     =  Nhân viên (Employee)
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                                                                             │
 │   KHÔNG CÓ Organizations:           CÓ Organizations:                       │
-│   ──────────────────────            ─────────────────                        │
+│   ──────────────────────            ─────────────────                       │
 │   (Các accounts ĐỘC LẬP)            (Các accounts LINKED)                   │
 │                                                                             │
-│   ┌──────────┐                      ┌─────────────────────────────────┐    │
-│   │ Account A│  (riêng lẻ)          │       AWS Organizations         │    │
-│   │ Bill: $$ │                      │                                 │    │
-│   └──────────┘                      │   ┌──────────┐                  │    │
-│                                     │   │Management│                  │    │
-│   ┌──────────┐                      │   │ Account  │                  │    │
-│   │ Account B│  (riêng lẻ)          │   └────┬─────┘                  │    │
-│   │ Bill: $$ │                      │        │                        │    │
-│   └──────────┘                      │   ┌────┴────┬────────┐          │    │
-│                                     │   ▼         ▼        ▼          │    │
-│   ┌──────────┐                      │ ┌───────┐┌───────┐┌───────┐    │    │
-│   │ Account C│  (riêng lẻ)          │ │Acct A ││Acct B ││Acct C │    │    │
-│   │ Bill: $$ │                      │ └───────┘└───────┘└───────┘    │    │
-│   └──────────┘                      │                                 │    │
-│                                     │   1 Bill tổng (consolidated)    │    │
-│   3 BILLS riêng lẻ                  │   Centralized management        │    │
-│   Không quản lý chung              │   SCPs có thể GIỚI HẠN quyền    │    │
-│                                     └─────────────────────────────────┘    │
+│   ┌──────────┐                      ┌─────────────────────────────────┐     │
+│   │ Account A│  (riêng lẻ)          │       AWS Organizations         │     │
+│   │ Bill: $$ │                      │                                 │     │
+│   └──────────┘                      │   ┌──────────┐                   │    │
+│   │          │Management            │                                 │     │
+│   ┌──────────┐                      │   │ Account  │                   │    │
+│   │ Account B│  (riêng lẻ)          │   └────┬─────┘                   │    │
+│   │ Bill: $$ │                      │        │                         │    │
+│   └──────────┘                      │   ┌────┴────┬────────┐           │    │
+│                                     │   ▼         ▼        ▼           │    │
+│   ┌──────────┐                      │ ┌───────┐┌───────┐┌───────┐      │    │
+│   │ Account C│  (riêng lẻ)          │ │Acct A ││Acct B ││Acct C │      │    │
+│   │ Bill: $$ │                      │ └───────┘└───────┘└───────┘      │    │
+│   └──────────┘                      │                                 │     │
+│                                     │   1 Bill tổng (consolidated)     │    │
+│   3 BILLS riêng lẻ                  │   Centralized management         │    │
+│   Không quản lý chung              │   SCPs có thể GIỚI HẠN quyền      │    │
+│                                     └─────────────────────────────────┘     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -262,16 +262,16 @@ arn:aws:ec2:us-east-1:123456789012:instance/i-123
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  GLOBAL SERVICES (không có region):                             │
-│  ├── IAM        → arn:aws:iam::account:...                     │
-│  ├── S3         → arn:aws:s3:::bucket-name                     │
-│  ├── CloudFront → arn:aws:cloudfront::account:...              │
-│  └── Route53    → arn:aws:route53:::...                        │
-│                                                                   │
+│  ├── IAM        → arn:aws:iam::account:...                      │
+│  ├── S3         → arn:aws:s3:::bucket-name                      │
+│  ├── CloudFront → arn:aws:cloudfront::account:...               │
+│  └── Route53    → arn:aws:route53:::...                         │
+│                                                                 │
 │  REGIONAL SERVICES (có đầy đủ region + account):                │
-│  ├── EC2        → arn:aws:ec2:region:account:...               │
-│  ├── Lambda     → arn:aws:lambda:region:account:...            │
-│  ├── RDS        → arn:aws:rds:region:account:...               │
-│  └── ECS        → arn:aws:ecs:region:account:...               │
+│  ├── EC2        → arn:aws:ec2:region:account:...                │
+│  ├── Lambda     → arn:aws:lambda:region:account:...             │
+│  ├── RDS        → arn:aws:rds:region:account:...                │
+│  └── ECS        → arn:aws:ecs:region:account:...                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -414,22 +414,22 @@ Có Alias:        https://my-company.signin.aws.amazon.com/console
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    LOGIN COMPARISON                              │
+│                    LOGIN COMPARISON                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ROOT USER:                                                      │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Email:    admin@mycompany.com                           │   │
-│  │  Password: ********                                      │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  IAM USER:                                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Account ID or Alias: 123456789012 (hoặc my-company)    │   │
-│  │  Username: developer-john                                │   │
-│  │  Password: ********                                      │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
+│  ROOT USER:                                                     │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Email:    admin@mycompany.com                          │    │
+│  │  Password: ********                                     │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  IAM USER:                                                      │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Account ID or Alias: 123456789012 (hoặc my-company)    │    │
+│  │  Username: developer-john                               │    │
+│  │  Password: ********                                     │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -525,7 +525,7 @@ Group: developers           Group: read-only-s3
 ┌─────────────────────────────────────────┐
 │              EC2 Instance               │
 │  ┌───────────────────────────────────┐  │
-│  │     Application needs S3 access  │  │
+│  │     Application needs S3 access   │  │
 │  └───────────────────────────────────┘  │
 │                   │                     │
 │                   ▼                     │
@@ -580,19 +580,19 @@ Mỗi Role có **2 loại policy**:
 │                      IAM ROLE                           │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  TRUST POLICY (Ai được mượn role?)                     │
+│  TRUST POLICY (Ai được mượn role?)                      │
 │  ─────────────────────────────────                      │
-│  "Cho phép EC2 service assume role này"                │
-│  "Cho phép Account B assume role này"                  │
-│  "Cho phép User X assume role này"                     │
+│  "Cho phép EC2 service assume role này"                 │
+│  "Cho phép Account B assume role này"                   │
+│  "Cho phép User X assume role này"                      │
 │                                                         │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  PERMISSIONS POLICY (Mượn role rồi được làm gì?)       │
+│  PERMISSIONS POLICY (Mượn role rồi được làm gì?)        │
 │  ───────────────────────────────────────────────        │
-│  "Được đọc S3 bucket ABC"                              │
-│  "Được ghi DynamoDB table XYZ"                         │
-│  "KHÔNG được xóa bất cứ thứ gì"                        │
+│  "Được đọc S3 bucket ABC"                               │
+│  "Được ghi DynamoDB table XYZ"                          │
+│  "KHÔNG được xóa bất cứ thứ gì"                         │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -606,15 +606,15 @@ Mỗi Role có **2 loại policy**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Phân biệt Trust Policy vs Permission Policy                │
+│                    Phân biệt Trust Policy vs Permission Policy               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   TRUST POLICY:                          PERMISSION POLICY:                  │
 │   ─────────────                          ──────────────────                  │
 │   {                                      {                                   │
 │     "Effect": "Allow",                     "Effect": "Allow",                │
-│     "Principal": {...},  ← CÓ             "Action": ["s3:GetObject"],       │
-│     "Action": "sts:AssumeRole" ← FIXED    "Resource": "..." ← CÓ            │
+│     "Principal": {...},  ← CÓ             "Action": ["s3:GetObject"],        │
+│     "Action": "sts:AssumeRole" ← FIXED    "Resource": "..." ← CÓ             │
 │   }                                      }                                   │
 │                                                                              │
 │   ✅ Có "Principal"                      ❌ KHÔNG có "Principal"             │
@@ -628,39 +628,39 @@ Mỗi Role có **2 loại policy**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│            Workflow: Trust Policy + Permission Policy                         │
+│            Workflow: Trust Policy + Permission Policy                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Ví dụ: EC2 instance cần đọc S3                                            │
+│   Ví dụ: EC2 instance cần đọc S3                                             │
 │                                                                              │
-│   STEP 1: Check TRUST POLICY                                                │
+│   STEP 1: Check TRUST POLICY                                                 │
 │   ──────────────────────────────                                             │
-│   "EC2 có được assume role này không?"                                      │
+│   "EC2 có được assume role này không?"                                       │
 │                                                                              │
-│   ┌─────────────┐         ┌─────────────────────────────────┐               │
-│   │    EC2      │         │          IAM ROLE               │               │
-│   │  Instance   │ ──────► │                                 │               │
-│   │             │ Assume? │ Trust Policy:                   │               │
-│   └─────────────┘         │ Principal: ec2.amazonaws.com ✅ │               │
-│                           └─────────────────────────────────┘               │
+│   ┌─────────────┐         ┌─────────────────────────────────┐                │
+│   │    EC2      │         │          IAM ROLE               │                │
+│   │  Instance   │ ──────► │                                 │                │
+│   │             │ Assume? │ Trust Policy:                   │                │
+│   └─────────────┘         │ Principal: ec2.amazonaws.com ✅ │                │
+│                           └─────────────────────────────────┘                │
 │                                                                              │
-│   STEP 2: Nhận TEMPORARY CREDENTIALS                                        │
+│   STEP 2: Nhận TEMPORARY CREDENTIALS                                         │
 │   ────────────────────────────────────                                       │
-│   EC2 assume thành công → Nhận credentials với quyền từ Permission Policy  │
+│   EC2 assume thành công → Nhận credentials với quyền từ Permission Policy    │
 │                                                                              │
-│   STEP 3: Thực hiện action, check PERMISSION POLICY                         │
+│   STEP 3: Thực hiện action, check PERMISSION POLICY                          │
 │   ───────────────────────────────────────────────────                        │
-│   "Credentials này có quyền s3:GetObject không?"                            │
+│   "Credentials này có quyền s3:GetObject không?"                             │
 │                                                                              │
-│   ┌─────────────┐                                                           │
-│   │    EC2      │  s3:GetObject("my-bucket/file.txt")                       │
-│   │  (có creds) │ ────────────────────────────────────►  S3 Bucket          │
-│   └─────────────┘                                                           │
+│   ┌─────────────┐                                                            │
+│   │    EC2      │  s3:GetObject("my-bucket/file.txt")                        │
+│   │  (có creds) │ ────────────────────────────────────►  S3 Bucket           │
+│   └─────────────┘                                                            │
 │         │                                                                    │
 │         ▼                                                                    │
-│   Permission Policy check: s3:GetObject allowed? ✅                         │
+│   Permission Policy check: s3:GetObject allowed? ✅                          │
 │                                                                              │
-│   → Thành công! EC2 đọc được file từ S3                                     │
+│   → Thành công! EC2 đọc được file từ S3                                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -759,17 +759,17 @@ User ←── Policy                   User ──→ Role ──→ Temp Crede
 ┌─────────────────────────────────────────────────────────┐
 │                     EC2 Instance                        │
 │                                                         │
-│  App gọi: s3.getObject("file.txt")                     │
+│  App gọi: s3.getObject("file.txt")                      │
 │              │                                          │
 │              ▼                                          │
 │  AWS SDK tự động gọi Instance Metadata Service          │
-│  (http://169.254.169.254/latest/meta-data/iam/...)     │
+│  (http://169.254.169.254/latest/meta-data/iam/...)      │
 │              │                                          │
 │              ▼                                          │
-│  Nhận credentials mới (nếu cũ sắp hết hạn)             │
+│  Nhận credentials mới (nếu cũ sắp hết hạn)              │
 │              │                                          │
 │              ▼                                          │
-│  Gọi S3 với credentials mới ✅                         │
+│  Gọi S3 với credentials mới ✅                          │
 └─────────────────────────────────────────────────────────┘
 
 → App không cần code xử lý, SDK lo hết
@@ -987,17 +987,17 @@ Chỉ cấp ĐÚNG quyền cần thiết, KHÔNG hơn
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                Multi-Factor Authentication                       │
+│                Multi-Factor Authentication                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   Factor 1: Something you KNOW                                   │
-│   └── Password                                                   │
-│                                                                  │
-│   Factor 2: Something you HAVE                                   │
+│                                                                 │
+│   Factor 1: Something you KNOW                                  │
+│   └── Password                                                  │
+│                                                                 │
+│   Factor 2: Something you HAVE                                  │
 │   └── MFA device (phone app, hardware key...)                   │
-│                                                                  │
+│                                                                 │
 │   Password + MFA Code = ✅ Access granted                       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1016,26 +1016,26 @@ Phổ biến nhất, sử dụng app trên smartphone.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Virtual MFA Setup                             │
+│                    Virtual MFA Setup                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. Cài app: Google Authenticator / Authy                       │
-│                                                                  │
+│                                                                 │
 │  2. IAM Console → User → Security credentials → Assign MFA      │
-│                                                                  │
+│                                                                 │
 │  3. Scan QR code bằng app                                       │
 │     ┌──────────────┐                                            │
-│     │   [QR CODE]  │  ← Scan với app                           │
-│     │              │                                             │
+│     │   [QR CODE]  │  ← Scan với app                            │
+│     │              │                                            │
 │     └──────────────┘                                            │
-│                                                                  │
+│                                                                 │
 │  4. Nhập 2 consecutive MFA codes                                │
-│     Code 1: 123456                                               │
-│     (Đợi code đổi)                                               │
-│     Code 2: 789012                                               │
-│                                                                  │
-│  5. Done! ✅                                                     │
-│                                                                  │
+│     Code 1: 123456                                              │
+│     (Đợi code đổi)                                              │
+│     Code 2: 789012                                              │
+│                                                                 │
+│  5. Done! ✅                                                    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1054,9 +1054,9 @@ Phổ biến nhất, sử dụng app trên smartphone.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    U2F Security Key                              │
+│                    U2F Security Key                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │                    ┌──────────────────┐                         │
 │                    │   ┌──────────┐   │                         │
 │                    │   │ YubiKey  │   │ ← Hardware key          │
@@ -1064,16 +1064,16 @@ Phổ biến nhất, sử dụng app trên smartphone.
 │                    │   └──────────┘   │                         │
 │                    │       USB        │                         │
 │                    └────────┬─────────┘                         │
-│                             │                                    │
-│                             ▼                                    │
-│                    Cắm vào USB port                              │
-│                             │                                    │
-│                             ▼                                    │
+│                            │                                    │
+│                             ▼                                   │
+│                    Cắm vào USB port                             │
+│                            │                                    │
+│                             ▼                                   │
 │                    Chạm key khi được yêu cầu                    │
-│                             │                                    │
-│                             ▼                                    │
-│                    ✅ Authenticated                              │
-│                                                                  │
+│                            │                                    │
+│                             ▼                                   │
+│                    ✅ Authenticated                             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1125,20 +1125,20 @@ Legacy hardware tokens, ít phổ biến hơn.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 Hardware MFA Token                               │
+│                 Hardware MFA Token                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │               ┌──────────────────────┐                          │
 │               │  ┌────────────────┐  │                          │
 │               │  │   347829       │  │ ← Màn hình hiển thị code │
 │               │  └────────────────┘  │                          │
 │               │      [GEMALTO]       │                          │
 │               └──────────────────────┘                          │
-│                                                                  │
+│                                                                 │
 │   • Mỗi 30-60 giây đổi code mới                                 │
-│   • Không cần điện thoại                                         │
-│   • Tốn phí mua device                                           │
-│                                                                  │
+│   • Không cần điện thoại                                        │
+│   • Tốn phí mua device                                          │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1159,17 +1159,17 @@ Legacy hardware tokens, ít phổ biến hơn.
 ┌─────────────────────────────────────────────────────────────────┐
 │                    ⚠️ ROOT USER MFA                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   Root user có FULL ACCESS → BẮT BUỘC enable MFA                │
-│                                                                  │
-│   Best practice cho Root:                                        │
-│   ├── 1. Enable MFA ngay sau khi tạo account                   │
-│   ├── 2. Dùng U2F Security Key (phishing resistant)            │
-│   ├── 3. Có BACKUP MFA device (2 keys hoặc virtual backup)     │
+│                                                                 │
+│   Best practice cho Root:                                       │
+│   ├── 1. Enable MFA ngay sau khi tạo account                    │
+│   ├── 2. Dùng U2F Security Key (phishing resistant)             │
+│   ├── 3. Có BACKUP MFA device (2 keys hoặc virtual backup)      │
 │   └── 4. Lưu backup codes an toàn                               │
-│                                                                  │
+│                                                                 │
 │   AWS khuyến nghị: U2F Key > Hardware Token > Virtual MFA       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

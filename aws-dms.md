@@ -21,26 +21,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS DMS                                       │
+│                    AWS DMS                                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  🎯 MỤC ĐÍCH: Migrate databases với minimal downtime            │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                         │   │
-│  │  Source DB                     Target DB                │   │
-│  │  ┌──────────┐                  ┌──────────┐             │   │
-│  │  │ Oracle   │                  │ Aurora   │             │   │
-│  │  │ MySQL    │  ─────DMS─────►  │ RDS      │             │   │
-│  │  │ SQL Srv  │                  │ DynamoDB │             │   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  Source DB                     Target DB                │    │
+│  │  ┌──────────┐                  ┌──────────┐              │   │
+│  │  │ Oracle   │                  │ Aurora   │              │   │
+│  │  │ MySQL    │  ─────DMS─────►  │ RDS      │              │   │
+│  │  │ SQL Srv  │                  │ DynamoDB │              │   │
 │  │  │ PostgreSQL│                  │ Redshift │             │   │
-│  │  └──────────┘                  └──────────┘             │   │
-│  │  On-prem/EC2/RDS                AWS                     │   │
-│  │                                                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  ✅ Source DB KHÔNG bị downtime trong khi migration            │
-│                                                                  │
+│  │  └──────────┘                  └──────────┘              │   │
+│  │  On-prem/EC2/RDS                AWS                     │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ✅ Source DB KHÔNG bị downtime trong khi migration             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -63,37 +63,37 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    6Rs MIGRATION STRATEGIES                      │
+│                    6Rs MIGRATION STRATEGIES                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │                                                          │  │
-│  │  1. REHOST          "Lift and Shift"                    │  │
-│  │     └─ Chuyển nguyên xi, không thay đổi gì              │  │
-│  │     └─ VD: MySQL → MySQL trên EC2                       │  │
-│  │                                                          │  │
-│  │  2. REPLATFORM      "Lift and Reshape"                  │  │
-│  │     └─ Thay đổi một chút để tận dụng cloud              │  │
-│  │     └─ VD: MySQL → RDS MySQL (managed)                  │  │
-│  │                                                          │  │
-│  │  3. REPURCHASE      "Drop and Shop"                     │  │
-│  │     └─ Mua solution mới (SaaS)                          │  │
-│  │     └─ VD: CRM cũ → Salesforce                          │  │
-│  │                                                          │  │
-│  │  4. REFACTOR        "Re-architect"                      │  │
-│  │     └─ Viết lại code để cloud-native                    │  │
-│  │     └─ VD: Monolith → Microservices + Aurora Serverless │  │
-│  │                                                          │  │
-│  │  5. RETIRE          "Tắt đi"                            │  │
-│  │     └─ Không dùng nữa, decommission                     │  │
-│  │     └─ VD: App cũ không còn users                       │  │
-│  │                                                          │  │
-│  │  6. RETAIN          "Giữ lại"                           │  │
-│  │     └─ Giữ on-prem, không migrate                       │  │
-│  │     └─ VD: Legacy system quá phức tạp để migrate        │  │
-│  │                                                          │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                  │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │                                                          │   │
+│  │  1. REHOST          "Lift and Shift"                     │   │
+│  │     └─ Chuyển nguyên xi, không thay đổi gì                │  │
+│  │     └─ VD: MySQL → MySQL trên EC2                         │  │
+│  │                                                          │   │
+│  │  2. REPLATFORM      "Lift and Reshape"                   │   │
+│  │     └─ Thay đổi một chút để tận dụng cloud                │  │
+│  │     └─ VD: MySQL → RDS MySQL (managed)                    │  │
+│  │                                                          │   │
+│  │  3. REPURCHASE      "Drop and Shop"                      │   │
+│  │     └─ Mua solution mới (SaaS)                            │  │
+│  │     └─ VD: CRM cũ → Salesforce                            │  │
+│  │                                                          │   │
+│  │  4. REFACTOR        "Re-architect"                       │   │
+│  │     └─ Viết lại code để cloud-native                      │  │
+│  │     └─ VD: Monolith → Microservices + Aurora Serverless   │  │
+│  │                                                          │   │
+│  │  5. RETIRE          "Tắt đi"                             │   │
+│  │     └─ Không dùng nữa, decommission                       │  │
+│  │     └─ VD: App cũ không còn users                         │  │
+│  │                                                          │   │
+│  │  6. RETAIN          "Giữ lại"                            │   │
+│  │     └─ Giữ on-prem, không migrate                         │  │
+│  │     └─ VD: Legacy system quá phức tạp để migrate          │  │
+│  │                                                          │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -112,29 +112,29 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                REHOST vs REPLATFORM                              │
+│                REHOST vs REPLATFORM                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  REHOST (Lift & Shift):                                         │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  MySQL on-prem → MySQL trên EC2                          │   │
-│  │                                                         │   │
-│  │  • Y hệt như cũ, chỉ đổi chỗ                            │   │
-│  │  • BẠN vẫn phải quản lý OS, patching, backup            │   │
-│  │  • Operational burden: KHÔNG GIẢM                       │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  MySQL on-prem → MySQL trên EC2                         │    │
+│  │                                                         │    │
+│  │  • Y hệt như cũ, chỉ đổi chỗ                            │    │
+│  │  • BẠN vẫn phải quản lý OS, patching, backup            │    │
+│  │  • Operational burden: KHÔNG GIẢM                       │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  REPLATFORM (Lift & Reshape):                                   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  MySQL on-prem → RDS MySQL (managed)                     │   │
-│  │                                                         │   │
-│  │  • Vẫn là MySQL, nhưng giờ là MANAGED SERVICE           │   │
-│  │  • AWS lo OS, patching, backup, scaling                 │   │
-│  │  • Operational burden: GIẢM ĐÁNG KỂ ✓                   │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  → Câu hỏi "reduce operational burden" = REPLATFORM            │
-│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  MySQL on-prem → RDS MySQL (managed)                    │    │
+│  │                                                         │    │
+│  │  • Vẫn là MySQL, nhưng giờ là MANAGED SERVICE           │    │
+│  │  • AWS lo OS, patching, backup, scaling                 │    │
+│  │  • Operational burden: GIẢM ĐÁNG KỂ ✓                   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  → Câu hỏi "reduce operational burden" = REPLATFORM             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -153,25 +153,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DMS ARCHITECTURE                              │
+│                    DMS ARCHITECTURE                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────┐      ┌──────────────────┐      ┌──────────┐      │
-│  │  Source  │      │  DMS Replication │      │  Target  │      │
-│  │ Database │─────►│     Instance     │─────►│ Database │      │
-│  │          │      │                  │      │          │      │
-│  └──────────┘      │  ┌────────────┐  │      └──────────┘      │
-│                    │  │ Replication│  │                        │
-│                    │  │    Task    │  │                        │
-│                    │  └────────────┘  │                        │
-│                    └──────────────────┘                        │
-│                                                                  │
-│  Components:                                                     │
-│  • Source Endpoint: Connection info của source DB              │
-│  • Target Endpoint: Connection info của target DB              │
-│  • Replication Instance: EC2 chạy DMS software                 │
-│  • Replication Task: Định nghĩa migrate cái gì, như thế nào    │
-│                                                                  │
+│                                                                 │
+│  ┌──────────┐      ┌──────────────────┐      ┌──────────┐       │
+│  │  Source  │      │  DMS Replication │      │  Target   │      │
+│  │ Database │─────►│     Instance     │─────►│ Database  │      │
+│  │          │      │                  │      │           │      │
+│  └──────────┘      │  ┌────────────┐  │      └──────────┘       │
+│                    │  │ Replication│   │                        │
+│                    │  │    Task    │   │                        │
+│                    │  └────────────┘   │                        │
+│                    └──────────────────┘                         │
+│                                                                 │
+│  Components:                                                    │
+│  • Source Endpoint: Connection info của source DB               │
+│  • Target Endpoint: Connection info của target DB               │
+│  • Replication Instance: EC2 chạy DMS software                  │
+│  • Replication Task: Định nghĩa migrate cái gì, như thế nào     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -193,16 +193,16 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                HOMOGENEOUS MIGRATION                             │
+│                HOMOGENEOUS MIGRATION                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  MySQL (on-prem)  ───DMS───►  RDS MySQL                        │
-│  PostgreSQL       ───DMS───►  Aurora PostgreSQL                │
-│  Oracle           ───DMS───►  RDS Oracle                       │
-│                                                                  │
+│                                                                 │
+│  MySQL (on-prem)  ───DMS───►  RDS MySQL                         │
+│  PostgreSQL       ───DMS───►  Aurora PostgreSQL                 │
+│  Oracle           ───DMS───►  RDS Oracle                        │
+│                                                                 │
 │  → KHÔNG cần AWS SCT                                            │
 │  → Schema và data types giống nhau                              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -212,26 +212,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               HETEROGENEOUS MIGRATION                            │
+│               HETEROGENEOUS MIGRATION                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Step 1: Convert Schema (dùng AWS SCT)                         │
-│  ┌──────────┐     ┌─────────┐     ┌──────────┐                 │
-│  │ Oracle   │────►│   SCT   │────►│ Aurora   │                 │
-│  │ Schema   │     │         │     │ Schema   │                 │
-│  └──────────┘     └─────────┘     └──────────┘                 │
-│                                                                  │
-│  Step 2: Migrate Data (dùng AWS DMS)                           │
-│  ┌──────────┐     ┌─────────┐     ┌──────────┐                 │
-│  │ Oracle   │────►│   DMS   │────►│ Aurora   │                 │
-│  │ Data     │     │         │     │ Data     │                 │
-│  └──────────┘     └─────────┘     └──────────┘                 │
-│                                                                  │
-│  Examples:                                                       │
+│                                                                 │
+│  Step 1: Convert Schema (dùng AWS SCT)                          │
+│  ┌──────────┐     ┌─────────┐     ┌──────────┐                  │
+│  │ Oracle   │────►│   SCT   │────►│ Aurora   │                  │
+│  │ Schema   │     │         │     │ Schema   │                  │
+│  └──────────┘     └─────────┘     └──────────┘                  │
+│                                                                 │
+│  Step 2: Migrate Data (dùng AWS DMS)                            │
+│  ┌──────────┐     ┌─────────┐     ┌──────────┐                  │
+│  │ Oracle   │────►│   DMS   │────►│ Aurora   │                  │
+│  │ Data     │     │         │     │ Data     │                  │
+│  └──────────┘     └─────────┘     └──────────┘                  │
+│                                                                 │
+│  Examples:                                                      │
 │  • Oracle → Aurora PostgreSQL                                   │
 │  • SQL Server → Aurora MySQL                                    │
 │  • Oracle → DynamoDB                                            │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -265,32 +265,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS SCT                                       │
+│                    AWS SCT                                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  🎯 Converts:                                                    │
+│                                                                 │
+│  🎯 Converts:                                                   │
 │     • Tables, Views, Indexes                                    │
 │     • Stored Procedures, Functions                              │
 │     • Triggers, Sequences                                       │
 │     • Data types                                                │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                         │   │
-│  │  Oracle PL/SQL        SCT         Aurora PostgreSQL    │   │
-│  │  ┌──────────────┐    ─────►      ┌──────────────┐      │   │
-│  │  │ CREATE TABLE │               │ CREATE TABLE │      │   │
-│  │  │ VARCHAR2     │    Convert    │ VARCHAR      │      │   │
-│  │  │ NUMBER       │    ─────►     │ NUMERIC      │      │   │
-│  │  │ PROCEDURE    │               │ FUNCTION     │      │   │
-│  │  └──────────────┘               └──────────────┘      │   │
-│  │                                                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  Oracle PL/SQL        SCT         Aurora PostgreSQL     │    │
+│  │  ┌──────────────┐    ─────►      ┌──────────────┐        │   │
+│  │  │ CREATE TABLE │               │ CREATE TABLE │         │   │
+│  │  │ VARCHAR2     │    Convert    │ VARCHAR      │         │   │
+│  │  │ NUMBER       │    ─────►     │ NUMERIC      │         │   │
+│  │  │ PROCEDURE    │               │ FUNCTION     │         │   │
+│  │  └──────────────┘               └──────────────┘         │   │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  📊 Assessment Report:                                          │
-│     • % code có thể auto-convert                               │
-│     • % code cần manual fix                                    │
+│     • % code có thể auto-convert                                │
+│     • % code cần manual fix                                     │
 │     • Estimated effort                                          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -319,25 +319,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DECISION TREE                                 │
+│                    DECISION TREE                                │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Source và Target cùng DB engine?                                │
-│                │                                                 │
+│                                                                 │
+│  Source và Target cùng DB engine?                               │
+│               │                                                 │
 │        ┌───────┴───────┐                                        │
 │        │               │                                        │
 │       YES             NO                                        │
 │        │               │                                        │
 │        ▼               ▼                                        │
-│   Dùng DMS        Dùng SCT + DMS                               │
-│   (không cần       (SCT convert schema,                        │
-│    SCT)             DMS migrate data)                          │
-│                                                                  │
-│  Examples:                                                       │
-│  MySQL → RDS MySQL        = DMS only                           │
-│  Oracle → Aurora MySQL    = SCT + DMS                          │
-│  SQL Server → PostgreSQL  = SCT + DMS                          │
-│                                                                  │
+│   Dùng DMS        Dùng SCT + DMS                                │
+│   (không cần       (SCT convert schema,                         │
+│    SCT)             DMS migrate data)                           │
+│                                                                 │
+│  Examples:                                                      │
+│  MySQL → RDS MySQL        = DMS only                            │
+│  Oracle → Aurora MySQL    = SCT + DMS                           │
+│  SQL Server → PostgreSQL  = SCT + DMS                           │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

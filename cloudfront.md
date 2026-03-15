@@ -57,34 +57,34 @@ Có CDN (CloudFront):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              CloudFront Distribution                              │
+│                              CloudFront Distribution                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                   │
+│                                                                                 │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐       │
 │  │    User     │    │    User     │    │    User     │    │    User     │       │
 │  │  (Vietnam)  │    │   (Japan)   │    │   (Europe)  │    │    (US)     │       │
 │  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘       │
-│         │                  │                  │                  │               │
-│         ▼                  ▼                  ▼                  ▼               │
+│         │                  │                  │                 │               │
+│         ▼                  ▼                  ▼                  ▼              │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐       │
 │  │    Edge     │    │    Edge     │    │    Edge     │    │    Edge     │       │
 │  │  Location   │    │  Location   │    │  Location   │    │  Location   │       │
 │  │ (Singapore) │    │  (Tokyo)    │    │ (Frankfurt) │    │ (Virginia)  │       │
 │  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘       │
-│         │                  │                  │                  │               │
-│         └──────────────────┴────────┬─────────┴──────────────────┘               │
-│                                     ▼                                             │
-│                          ┌───────────────────┐                                   │
-│                          │  Regional Edge    │  (Mid-tier cache)                 │
-│                          │     Cache         │                                   │
-│                          └─────────┬─────────┘                                   │
-│                                    │                                              │
-│                                    ▼                                              │
-│                          ┌───────────────────┐                                   │
+│         │                  │                  │                 │               │
+│         └──────────────────┴────────┬─────────┴──────────────────┘              │
+│                                     ▼                                           │
+│                          ┌───────────────────┐                                  │
+│                          │  Regional Edge    │  (Mid-tier cache)                │
+│                          │     Cache         │                                  │
+│                          └─────────┬─────────┘                                  │
+│                                  │                                              │
+│                                    ▼                                            │
+│                          ┌───────────────────┐                                  │
 │                          │   Origin Shield   │  (Optional - Centralized cache)  │
-│                          │                   │                                   │
-│                          └─────────┬─────────┘                                   │
-│                                    │                                              │
+│                          │                   │                                  │
+│                          └─────────┬─────────┘                                  │
+│                                  │                                              │
 └────────────────────────────────────┼────────────────────────────────────────────┘
                                      ▼
                     ┌─────────────────────────────────────┐
@@ -232,9 +232,9 @@ OriginGroup:
 ```
 Request từ User:
 ┌────────────────────────────────────────────────────────────────┐
-│ GET /images/logo.png HTTP/1.1                                   │
-│ Host: cdn.example.com                                           │
-│ Accept: image/*                                                 │
+│ GET /images/logo.png HTTP/1.1                                  │
+│ Host: cdn.example.com                                          │
+│ Accept: image/*                                                │
 └────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -608,15 +608,15 @@ OAC (Origin Access Control) là cơ chế cho phép **CloudFront access S3 bucke
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Origin Access Control (OAC)                 │
+│                    Origin Access Control (OAC)                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  User → CloudFront → [OAC Sign Request] → S3 (private)         │
+│  User → CloudFront → [OAC Sign Request] → S3 (private)          │
 │                              ↑                                  │
 │                    AWS Signature V4                             │
 │                                                                 │
-│  User truy cập S3 trực tiếp: ❌ 403 Forbidden                  │
-│  User truy cập qua CloudFront: ✅ 200 OK                       │
+│  User truy cập S3 trực tiếp: ❌ 403 Forbidden                   │
+│  User truy cập qua CloudFront: ✅ 200 OK                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -942,20 +942,20 @@ build/
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   CloudFront Cache                       │
+│                   CloudFront Cache                      │
 ├─────────────────────────────────────────────────────────┤
-│                                                          │
+│                                                         │
 │  index.html ────── ❌ KHÔNG cache                       │
 │                    → Luôn lấy version mới               │
 │                    → Chứa link đến JS/CSS mới           │
-│                                                          │
+│                                                         │
 │  static/js/*.js ── ✅ Cache 1 NĂM (immutable)           │
-│  static/css/*.css  → Có hash trong tên file            │
+│  static/css/*.css  → Có hash trong tên file             │
 │                    → Code đổi → tên file đổi            │
 │                    → KHÔNG CẦN invalidate!              │
-│                                                          │
+│                                                         │
 │  assets/images/* ─ ✅ Cache 1 tháng - 1 năm             │
-│                                                          │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -1173,13 +1173,13 @@ Distribution:
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                         Route 53                                  │
-│  cdn.example.com ──▶ Alias Record ──▶ d123.cloudfront.net       │
+│                         Route 53                                 │
+│  cdn.example.com ──▶ Alias Record ──▶ d123.cloudfront.net        │
 └──────────────────────────────────────────────────────────────────┘
                                 │
                                 ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│                        CloudFront                                 │
+│                        CloudFront                                │
 │  Distribution: d123.cloudfront.net                               │
 │  Alternate Domain: cdn.example.com                               │
 │  Certificate: *.example.com (ACM - us-east-1)                    │

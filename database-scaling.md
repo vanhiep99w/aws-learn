@@ -35,22 +35,22 @@ Hãy tưởng tượng bạn có **1 quán phở** đang đông khách:
 │                                                             │
 │   Trước:          Sau:                                      │
 │   ┌──────┐        ┌──────────────┐                          │
-│   │Server│   →    │  BIG Server  │  (Thêm CPU, RAM, SSD)   │
+│   │Server│   →    │  BIG Server  │  (Thêm CPU, RAM, SSD)    │
 │   │ 4 CPU│        │  32 CPU      │                          │
 │   │ 8 GB │        │  128 GB      │                          │
 │   └──────┘        └──────────────┘                          │
 │                                                             │
-│   → Có giới hạn vật lý (không thể tăng mãi)                │
+│   → Có giới hạn vật lý (không thể tăng mãi)                 │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
 │                   HORIZONTAL SCALING                        │
 │                                                             │
 │   Trước:          Sau:                                      │
-│   ┌──────┐        ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐     │
-│   │Server│   →    │Server│ │Server│ │Server│ │Server│      │
-│   │ 4 CPU│        │ 4 CPU│ │ 4 CPU│ │ 4 CPU│ │ 4 CPU│     │
-│   └──────┘        └──────┘ └──────┘ └──────┘ └──────┘     │
+│   ┌──────┐        ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       │
+│   │Server│   →    │Server│ │Server│ │Server│ │Server│       │
+│   │ 4 CPU│        │ 4 CPU│ │ 4 CPU│ │ 4 CPU│ │ 4 CPU│       │
+│   └──────┘        └──────┘ └──────┘ └──────┘ └──────┘       │
 │                                                             │
 │   → Gần như không giới hạn (thêm server thoải mái)          │
 └─────────────────────────────────────────────────────────────┘
@@ -131,18 +131,18 @@ Tăng:    10,000,000 users → 500 Servers             → $50,000/tháng
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                       REPLICATION                                │
-│          "Photocopy" — mỗi server có BẢN SAO GIỐNG HỆT          │
+│          "Photocopy" — mỗi server có BẢN SAO GIỐNG HỆT           │
 │                                                                  │
-│   Server 1 (Primary)    Server 2 (Replica)   Server 3 (Replica) │
-│   ┌──────────────┐      ┌──────────────┐     ┌──────────────┐   │
-│   │ User A       │      │ User A       │     │ User A       │   │
-│   │ User B       │ ───→ │ User B       │ ──→ │ User B       │   │
-│   │ User C       │      │ User C       │     │ User C       │   │
-│   │ User D       │      │ User D       │     │ User D       │   │
-│   └──────────────┘      └──────────────┘     └──────────────┘   │
+│   Server 1 (Primary)    Server 2 (Replica)   Server 3 (Replica)  │
+│   ┌──────────────┐      ┌──────────────┐     ┌──────────────┐    │
+│   │ User A       │      │ User A       │     │ User A       │    │
+│   │ User B       │ ───→ │ User B       │ ──→ │ User B       │    │
+│   │ User C       │      │ User C       │     │ User C       │    │
+│   │ User D       │      │ User D       │     │ User D       │    │
+│   └──────────────┘      └──────────────┘     └──────────────┘    │
 │                                                                  │
-│   → 3 servers đều có CÙNG DỮ LIỆU (A, B, C, D)                 │
-│   → WRITE chỉ vào Primary, sau đó sync sang Replicas            │
+│   → 3 servers đều có CÙNG DỮ LIỆU (A, B, C, D)                   │
+│   → WRITE chỉ vào Primary, sau đó sync sang Replicas             │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -164,16 +164,16 @@ Tăng:    10,000,000 users → 500 Servers             → $50,000/tháng
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                        SHARDING                                  │
-│          "Chia bánh" — mỗi server giữ 1 PHẦN dữ liệu           │
+│          "Chia bánh" — mỗi server giữ 1 PHẦN dữ liệu             │
 │                                                                  │
-│   Shard 1               Shard 2              Shard 3            │
-│   ┌──────────────┐      ┌──────────────┐     ┌──────────────┐   │
-│   │ User A       │      │ User C       │     │ User E       │   │
-│   │ User B       │      │ User D       │     │ User F       │   │
-│   └──────────────┘      └──────────────┘     └──────────────┘   │
+│   Shard 1               Shard 2              Shard 3             │
+│   ┌──────────────┐      ┌──────────────┐     ┌──────────────┐    │
+│   │ User A       │      │ User C       │     │ User E       │    │
+│   │ User B       │      │ User D       │     │ User F       │    │
+│   └──────────────┘      └──────────────┘     └──────────────┘    │
 │                                                                  │
-│   → Mỗi server có DỮ LIỆU KHÁC NHAU                             │
-│   → Mỗi shard xử lý cả READ + WRITE cho phần data của mình     │
+│   → Mỗi server có DỮ LIỆU KHÁC NHAU                              │
+│   → Mỗi shard xử lý cả READ + WRITE cho phần data của mình       │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -201,22 +201,22 @@ Tăng:    10,000,000 users → 500 Servers             → $50,000/tháng
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│          SHARDING + REPLICATION (thực tế production)            │
+│          SHARDING + REPLICATION (thực tế production)             │
 │                                                                  │
-│   Shard 1                          Shard 2                      │
-│   ┌─────────────┐                  ┌─────────────┐              │
-│   │ Primary     │                  │ Primary     │              │
-│   │ User A, B   │                  │ User C, D   │              │
-│   └──┬──────┬───┘                  └──┬──────┬───┘              │
-│      │      │                        │      │                   │
-│      ▼      ▼                        ▼      ▼                   │
-│   ┌──────┐┌──────┐               ┌──────┐┌──────┐              │
-│   │Rep 1 ││Rep 2 │               │Rep 1 ││Rep 2 │              │
-│   │A, B  ││A, B  │               │C, D  ││C, D  │              │
-│   └──────┘└──────┘               └──────┘└──────┘              │
+│   Shard 1                          Shard 2                       │
+│   ┌─────────────┐                  ┌─────────────┐               │
+│   │ Primary     │                  │ Primary     │               │
+│   │ User A, B   │                  │ User C, D   │               │
+│   └──┬──────┬───┘                  └──┬──────┬───┘               │
+│      │      │                        │       │                   │
+│      ▼      ▼                        ▼      ▼                    │
+│   ┌──────┐┌──────┐               ┌──────┐┌──────┐                │
+│   │Rep 1 ││Rep 2 │               │Rep 1 ││Rep 2 │                │
+│   │A, B  ││A, B  │               │C, D  ││C, D  │                │
+│   └──────┘└──────┘               └──────┘└──────┘                │
 │                                                                  │
-│   Sharding → chia data ra nhiều phần (scale write + storage)    │
-│   Replication → sao chép MỖI shard (HA + scale read)           │
+│   Sharding → chia data ra nhiều phần (scale write + storage)     │
+│   Replication → sao chép MỖI shard (HA + scale read)             │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -289,23 +289,23 @@ WHERE o.order_date > '2024-01-01';
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    DỮ LIỆU BỊ CHIA RA 3 SERVERS                   │
+│                    DỮ LIỆU BỊ CHIA RA 3 SERVERS                     │
 │                                                                     │
 │   Server 1           Server 2           Server 3                    │
-│   ┌──────────┐       ┌──────────┐       ┌──────────┐              │
-│   │ users    │       │ products │       │ orders   │               │
-│   │ id=1..100│       │ id=1..500│       │ id=1..1M │              │
-│   └──────────┘       └──────────┘       └──────────┘              │
+│   ┌──────────┐       ┌──────────┐       ┌──────────┐                │
+│   │ users    │       │ products │       │ orders   │                │
+│   │ id=1..100│       │ id=1..500│       │ id=1..1M │                │
+│   └──────────┘       └──────────┘       └──────────┘                │
 │                                                                     │
 │   Query: SELECT u.name, p.name FROM orders o                        │
 │          JOIN users u ON o.user_id = u.id                           │
 │          JOIN products p ON o.product_id = p.id                     │
 │                                                                     │
-│   → Server 3 có orders, nhưng cần dữ liệu từ Server 1 (users)     │
-│     VÀ Server 2 (products)                                         │
-│   → Phải gửi request qua NETWORK giữa các servers                  │
-│   → RẤT CHẬM so với truy cập dữ liệu local                        │
-│   → Càng nhiều JOINs → càng nhiều network calls → càng chậm        │
+│   → Server 3 có orders, nhưng cần dữ liệu từ Server 1 (users)       │
+│     VÀ Server 2 (products)                                          │
+│   → Phải gửi request qua NETWORK giữa các servers                   │
+│   → RẤT CHẬM so với truy cập dữ liệu local                          │
+│   → Càng nhiều JOINs → càng nhiều network calls → càng chậm         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -341,20 +341,20 @@ COMMIT;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│          TRANSACTION CHUYỂN TIỀN GIỮA 2 SERVERS                    │
+│          TRANSACTION CHUYỂN TIỀN GIỮA 2 SERVERS                     │
 │                                                                     │
-│   Server 1 (có tài khoản A)    Server 2 (có tài khoản B)          │
-│   ┌──────────────────┐         ┌──────────────────┐               │
-│   │ A: 5,000,000 VND │         │ B: 2,000,000 VND │               │
-│   └──────────────────┘         └──────────────────┘               │
+│   Server 1 (có tài khoản A)    Server 2 (có tài khoản B)            │
+│   ┌──────────────────┐         ┌──────────────────┐                 │
+│   │ A: 5,000,000 VND │         │ B: 2,000,000 VND │                 │
+│   └──────────────────┘         └──────────────────┘                 │
 │                                                                     │
-│   Bước 1: Trừ tiền A trên Server 1  ✅                             │
-│   Bước 2: Cộng tiền B trên Server 2  ❌ (Server 2 bị lỗi!)       │
+│   Bước 1: Trừ tiền A trên Server 1  ✅                              │
+│   Bước 2: Cộng tiền B trên Server 2  ❌ (Server 2 bị lỗi!)          │
 │                                                                     │
-│   → Phải ROLLBACK bước 1 trên Server 1                             │
-│   → Cần "2-Phase Commit" protocol để đồng bộ                       │
-│   → Rất chậm, phức tạp, dễ deadlock                                │
-│   → Nếu network bị đứt giữa 2 servers → DỮ LIỆU INCONSISTENT!    │
+│   → Phải ROLLBACK bước 1 trên Server 1                              │
+│   → Cần "2-Phase Commit" protocol để đồng bộ                        │
+│   → Rất chậm, phức tạp, dễ deadlock                                 │
+│   → Nếu network bị đứt giữa 2 servers → DỮ LIỆU INCONSISTENT!       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -373,18 +373,18 @@ VALUES (999, 1, 5);
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│           FOREIGN KEY CHECK GIỮA CÁC SERVERS                       │
+│           FOREIGN KEY CHECK GIỮA CÁC SERVERS                        │
 │                                                                     │
-│   Server 1 (orders)              Server 2 (users)                  │
-│   ┌────────────────┐             ┌────────────────┐                │
-│   │ INSERT order   │──verify──→  │ user_id=999    │                │
-│   │ user_id=999    │             │ exists?        │                │
-│   └────────────────┘             └────────────────┘                │
+│   Server 1 (orders)              Server 2 (users)                   │
+│   ┌────────────────┐             ┌────────────────┐                 │
+│   │ INSERT order   │──verify──→  │ user_id=999    │                 │
+│   │ user_id=999    │             │ exists?        │                 │
+│   └────────────────┘             └────────────────┘                 │
 │                                                                     │
-│   Mỗi INSERT/UPDATE đều phải check FK qua network                  │
+│   Mỗi INSERT/UPDATE đều phải check FK qua network                   │
 │   → Latency tăng                                                    │
 │   → Throughput giảm                                                 │
-│   → Nếu network lỗi → không INSERT được                            │
+│   → Nếu network lỗi → không INSERT được                             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -423,22 +423,22 @@ NoSQL giải quyết các vấn đề trên bằng cách **thay đổi cách lư
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│          NOSQL: MỖI RECORD ĐẦY ĐỦ THÔNG TIN                       │
+│          NOSQL: MỖI RECORD ĐẦY ĐỦ THÔNG TIN                         │
 │                                                                     │
 │   Server 1                Server 2                Server 3          │
-│   ┌─────────────┐        ┌─────────────┐        ┌─────────────┐   │
-│   │ ORD-001     │        │ ORD-501     │        │ ORD-1001    │    │
-│   │  user: {...}│        │  user: {...}│        │  user: {...}│    │
-│   │  prod: {...}│        │  prod: {...}│        │  prod: {...}│    │
-│   │             │        │             │        │             │    │
-│   │ ORD-002     │        │ ORD-502     │        │ ORD-1002    │    │
-│   │  user: {...}│        │  user: {...}│        │  user: {...}│    │
-│   │  prod: {...}│        │  prod: {...}│        │  prod: {...}│    │
-│   └─────────────┘        └─────────────┘        └─────────────┘   │
+│   ┌─────────────┐        ┌─────────────┐        ┌─────────────┐     │
+│   │ ORD-001     │        │ ORD-501     │        │ ORD-1001    │     │
+│   │  user: {...}│        │  user: {...}│        │  user: {...}│     │
+│   │  prod: {...}│        │  prod: {...}│        │  prod: {...}│     │
+│   │             │        │             │        │             │     │
+│   │ ORD-002     │        │ ORD-502     │        │ ORD-1002    │     │
+│   │  user: {...}│        │  user: {...}│        │  user: {...}│     │
+│   │  prod: {...}│        │  prod: {...}│        │  prod: {...}│     │
+│   └─────────────┘        └─────────────┘        └─────────────┘     │
 │                                                                     │
-│   Query: Lấy đơn hàng ORD-501?                                     │
-│   → Chỉ cần hỏi Server 2, KHÔNG cần hỏi server nào khác!          │
-│   → Nhanh, đơn giản, không phụ thuộc server khác                   │
+│   Query: Lấy đơn hàng ORD-501?                                      │
+│   → Chỉ cần hỏi Server 2, KHÔNG cần hỏi server nào khác!            │
+│   → Nhanh, đơn giản, không phụ thuộc server khác                    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -450,30 +450,30 @@ NoSQL chấp nhận **BASE** model:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    EVENTUAL CONSISTENCY                              │
+│                    EVENTUAL CONSISTENCY                             │
 │                                                                     │
-│   Thời điểm T0: User A cập nhật tên thành "Nguyễn Văn B"           │
+│   Thời điểm T0: User A cập nhật tên thành "Nguyễn Văn B"            │
 │                                                                     │
-│   Server 1 (write)       Server 2 (replica)      Server 3 (replica)│
-│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐   │
-│   │ name: "B"   │  ──→  │ name: "A"   │   ──→   │ name: "A"   │   │
-│   │ (đã update) │  sync │ (chưa sync) │   sync  │ (chưa sync) │   │
-│   └─────────────┘       └─────────────┘         └─────────────┘   │
+│   Server 1 (write)       Server 2 (replica)      Server 3 (replica) │
+│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐     │
+│   │ name: "B"   │  ──→  │ name: "A"   │   ──→   │ name: "A"   │     │
+│   │ (đã update) │  sync │ (chưa sync) │   sync  │ (chưa sync) │     │
+│   └─────────────┘       └─────────────┘         └─────────────┘     │
 │                                                                     │
-│   Thời điểm T0 + 50ms:                                             │
-│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐   │
-│   │ name: "B"   │       │ name: "B"   │         │ name: "A"   │   │
-│   │ (đã update) │       │ (đã sync)   │         │ (chưa sync) │   │
-│   └─────────────┘       └─────────────┘         └─────────────┘   │
+│   Thời điểm T0 + 50ms:                                              │
+│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐     │
+│   │ name: "B"   │       │ name: "B"   │         │ name: "A"   │     │
+│   │ (đã update) │       │ (đã sync)   │         │ (chưa sync) │     │
+│   └─────────────┘       └─────────────┘         └─────────────┘     │
 │                                                                     │
-│   Thời điểm T0 + 100ms: TẤT CẢ đã sync                            │
-│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐   │
-│   │ name: "B"   │       │ name: "B"   │         │ name: "B"   │   │
-│   └─────────────┘       └─────────────┘         └─────────────┘   │
+│   Thời điểm T0 + 100ms: TẤT CẢ đã sync                              │
+│   ┌─────────────┐       ┌─────────────┐         ┌─────────────┐     │
+│   │ name: "B"   │       │ name: "B"   │         │ name: "B"   │     │
+│   └─────────────┘       └─────────────┘         └─────────────┘     │
 │                                                                     │
-│   → Trong khoảng 50-100ms, đọc từ Server 3 sẽ thấy dữ liệu CŨ    │
-│   → Nhưng SAU ĐÓ, tất cả sẽ consistent                            │
-│   → Đổi lấy: tốc độ write cực nhanh + dễ scale                    │
+│   → Trong khoảng 50-100ms, đọc từ Server 3 sẽ thấy dữ liệu CŨ       │
+│   → Nhưng SAU ĐÓ, tất cả sẽ consistent                              │
+│   → Đổi lấy: tốc độ write cực nhanh + dễ scale                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -483,24 +483,24 @@ NoSQL dùng **Partition Key** để quyết định dữ liệu nằm trên serv
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│           PARTITION KEY TRONG DYNAMODB                               │
+│           PARTITION KEY TRONG DYNAMODB                              │
 │                                                                     │
 │   Partition Key = user_id                                           │
-│   Hash function quyết định dữ liệu đi đâu                         │
+│   Hash function quyết định dữ liệu đi đâu                           │
 │                                                                     │
 │   hash("U-001") = 0x3A → Partition 1                                │
 │   hash("U-002") = 0x7F → Partition 2                                │
 │   hash("U-003") = 0xB2 → Partition 3                                │
 │   hash("U-004") = 0x15 → Partition 1                                │
 │                                                                     │
-│   Partition 1          Partition 2          Partition 3              │
-│   ┌──────────┐        ┌──────────┐        ┌──────────┐            │
-│   │ U-001    │        │ U-002    │        │ U-003    │             │
-│   │ U-004    │        │          │        │          │             │
-│   └──────────┘        └──────────┘        └──────────┘            │
+│   Partition 1          Partition 2          Partition 3             │
+│   ┌──────────┐        ┌──────────┐        ┌──────────┐              │
+│   │ U-001    │        │ U-002    │        │ U-003    │              │
+│   │ U-004    │        │          │        │          │              │
+│   └──────────┘        └──────────┘        └──────────┘              │
 │                                                                     │
-│   Khi cần thêm capacity → DynamoDB tự chia thêm partitions         │
-│   → Hoàn toàn tự động, không cần can thiệp                         │
+│   Khi cần thêm capacity → DynamoDB tự chia thêm partitions          │
+│   → Hoàn toàn tự động, không cần can thiệp                          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -632,15 +632,15 @@ LIMIT 50;
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                     ACID (Relational DB)                      │
+│                     ACID (Relational DB)                     │
 │                                                              │
-│   ✅ Dữ liệu LUÔN chính xác                                 │
-│   ✅ Phù hợp: Ngân hàng, tài chính, kế toán                 │
+│   ✅ Dữ liệu LUÔN chính xác                                  │
+│   ✅ Phù hợp: Ngân hàng, tài chính, kế toán                  │
 │   ❌ Khó scale horizontal                                    │
 │   ❌ Chậm hơn khi phân tán                                   │
 │                                                              │
 │   Ví dụ: Chuyển tiền ngân hàng                               │
-│   → PHẢI đảm bảo trừ A và cộng B CÙNG thành công            │
+│   → PHẢI đảm bảo trừ A và cộng B CÙNG thành công             │
 │   → Không chấp nhận "eventually" correct                     │
 └──────────────────────────────────────────────────────────────┘
 
@@ -649,12 +649,12 @@ LIMIT 50;
 │                                                              │
 │   ✅ Scale horizontal dễ dàng                                │
 │   ✅ Throughput cao, latency thấp                            │
-│   ❌ Dữ liệu có thể "tạm thời" không nhất quán             │
-│   ❌ Dữ liệu lặp lại (denormalized)                         │
+│   ❌ Dữ liệu có thể "tạm thời" không nhất quán               │
+│   ❌ Dữ liệu lặp lại (denormalized)                          │
 │                                                              │
-│   Ví dụ: Like trên Facebook                                 │
-│   → 1 giây chênh lệch giữa "1,000 likes" và "1,001 likes"  │
-│   → Không ai quan tâm → chấp nhận được                      │
+│   Ví dụ: Like trên Facebook                                  │
+│   → 1 giây chênh lệch giữa "1,000 likes" và "1,001 likes"    │
+│   → Không ai quan tâm → chấp nhận được                       │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -684,19 +684,19 @@ LIMIT 50;
 │                     RDS SCALING OPTIONS                             │
 │                                                                     │
 │   Vertical Scaling:                                                 │
-│   db.t3.micro → db.t3.medium → db.r6g.xlarge → db.r6g.16xlarge    │
-│   (2 vCPU)      (2 vCPU)       (4 vCPU)         (64 vCPU)         │
-│   → Có giới hạn: max 64 vCPU, 512 GB RAM                          │
+│   db.t3.micro → db.t3.medium → db.r6g.xlarge → db.r6g.16xlarge      │
+│   (2 vCPU)      (2 vCPU)       (4 vCPU)         (64 vCPU)           │
+│   → Có giới hạn: max 64 vCPU, 512 GB RAM                            │
 │                                                                     │
-│   Read Replicas (một dạng horizontal scaling CHỈ cho READ):        │
-│   ┌──────────┐     ┌──────────┐                                    │
-│   │  Primary │────→│ Replica 1│  (read-only)                       │
-│   │  (R+W)   │────→│ Replica 2│  (read-only)                       │
+│   Read Replicas (một dạng horizontal scaling CHỈ cho READ):         │
+│   ┌──────────┐     ┌──────────┐                                     │
+│   │  Primary │────→│ Replica 1│  (read-only)                        │
+│   │  (R+W)   │────→│ Replica 2│  (read-only)                        │
 │   │          │────→│ Replica 3│  (read-only)                        │
-│   └──────────┘     └──────────┘                                    │
-│   → Max 5-15 replicas tùy engine                                   │
-│   → CHỈ scale READ, KHÔNG scale WRITE                              │
-│   → Write vẫn phải đi qua 1 Primary duy nhất                      │
+│   └──────────┘     └──────────┘                                     │
+│   → Max 5-15 replicas tùy engine                                    │
+│   → CHỈ scale READ, KHÔNG scale WRITE                               │
+│   → Write vẫn phải đi qua 1 Primary duy nhất                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -704,17 +704,17 @@ LIMIT 50;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    AURORA SCALING OPTIONS                            │
+│                    AURORA SCALING OPTIONS                           │
 │                                                                     │
-│   → Lên tới 15 Read Replicas (tốt hơn RDS)                        │
-│   → Auto Scaling replicas dựa trên load                            │
-│   → Aurora Serverless: tự scale compute                            │
-│   → Storage tự động tăng (max 128 TB)                              │
+│   → Lên tới 15 Read Replicas (tốt hơn RDS)                          │
+│   → Auto Scaling replicas dựa trên load                             │
+│   → Aurora Serverless: tự scale compute                             │
+│   → Storage tự động tăng (max 128 TB)                               │
 │                                                                     │
 │   NHƯNG VẪN:                                                        │
 │   → 1 Primary instance cho WRITE                                    │
-│   → Không thể chia dữ liệu ra nhiều write nodes dễ dàng            │
-│   → Multi-Master có nhưng giới hạn (max 4 write nodes)             │
+│   → Không thể chia dữ liệu ra nhiều write nodes dễ dàng             │
+│   → Multi-Master có nhưng giới hạn (max 4 write nodes)              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -724,24 +724,24 @@ LIMIT 50;
 ┌─────────────────────────────────────────────────────────────────────┐
 │                   DYNAMODB SCALING                                  │
 │                                                                     │
-│   Horizontal Scaling TỰ ĐỘNG:                                      │
+│   Horizontal Scaling TỰ ĐỘNG:                                       │
 │                                                                     │
 │   Traffic thấp:                                                     │
-│   ┌────────┐ ┌────────┐ ┌────────┐                                │
-│   │ Part 1 │ │ Part 2 │ │ Part 3 │      (3 partitions)            │
-│   └────────┘ └────────┘ └────────┘                                │
+│   ┌────────┐ ┌────────┐ ┌────────┐                                  │
+│   │ Part 1 │ │ Part 2 │ │ Part 3 │      (3 partitions)              │
+│   └────────┘ └────────┘ └────────┘                                  │
 │                                                                     │
 │   Traffic cao (tự động split):                                      │
-│   ┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐        │
-│   │ P1 ││ P2 ││ P3 ││ P4 ││ P5 ││ P6 ││ P7 ││ P8 ││ P9 │       │
-│   └────┘└────┘└────┘└────┘└────┘└────┘└────┘└────┘└────┘        │
-│   (9 partitions - tự động, không cần can thiệp)                    │
+│   ┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐            │
+│   │ P1 ││ P2 ││ P3 ││ P4 ││ P5 ││ P6 ││ P7 ││ P8 ││ P9 │            │
+│   └────┘└────┘└────┘└────┘└────┘└────┘└────┘└────┘└────┘            │
+│   (9 partitions - tự động, không cần can thiệp)                     │
 │                                                                     │
 │   ✅ Không giới hạn throughput (On-Demand mode)                     │
-│   ✅ Không giới hạn storage                                        │
-│   ✅ Single-digit millisecond latency dù TB dữ liệu               │
-│   ✅ Không cần quản lý servers                                     │
-│   ✅ CẢ READ VÀ WRITE đều scale                                   │
+│   ✅ Không giới hạn storage                                         │
+│   ✅ Single-digit millisecond latency dù TB dữ liệu                 │
+│   ✅ Không cần quản lý servers                                      │
+│   ✅ CẢ READ VÀ WRITE đều scale                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -904,14 +904,14 @@ Trong NoSQL — phổ biến nhất: tạo **metadata document**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  LOẠI 1: WRITE CONFLICT (2 người ghi cùng lúc)                 │
-│  → Giải quyết bằng: Version Locking, Atomic Ops                │
-│  → Cả SQL và NoSQL đều gặp                                     │
+│  LOẠI 1: WRITE CONFLICT (2 người ghi cùng lúc)                   │
+│  → Giải quyết bằng: Version Locking, Atomic Ops                  │
+│  → Cả SQL và NoSQL đều gặp                                       │
 │                                                                  │
-│  LOẠI 2: READ STALE DATA (đọc data cũ từ replica)              │
-│  → Đây mới là EVENTUAL CONSISTENCY                              │
-│  → Xảy ra khi có ASYNC REPLICATION                              │
-│  → Cả SQL và NoSQL đều CÓ THỂ gặp                              │
+│  LOẠI 2: READ STALE DATA (đọc data cũ từ replica)                │
+│  → Đây mới là EVENTUAL CONSISTENCY                               │
+│  → Xảy ra khi có ASYNC REPLICATION                               │
+│  → Cả SQL và NoSQL đều CÓ THỂ gặp                                │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1123,16 +1123,16 @@ Strong Consistency ◄───────────────────�
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │   Cần ACID / Transactions phức tạp?                             │
-│   ├── CÓ → SQL (RDS/Aurora)                                    │
+│   ├── CÓ → SQL (RDS/Aurora)                                     │
 │   └── KHÔNG ↓                                                   │
 │                                                                 │
-│   Cần scale lớn + không muốn quản lý server?                   │
-│   ├── CÓ → DynamoDB                                            │
+│   Cần scale lớn + không muốn quản lý server?                    │
+│   ├── CÓ → DynamoDB                                             │
 │   └── KHÔNG ↓                                                   │
 │                                                                 │
-│   Cần query linh hoạt + team tự quản lý được?                  │
-│   ├── CÓ → MongoDB                                             │
-│   └── KHÔNG → SQL (mặc định, đơn giản nhất)                    │
+│   Cần query linh hoạt + team tự quản lý được?                   │
+│   ├── CÓ → MongoDB                                              │
+│   └── KHÔNG → SQL (mặc định, đơn giản nhất)                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

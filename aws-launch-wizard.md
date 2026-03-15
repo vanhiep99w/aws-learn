@@ -97,19 +97,19 @@ CÓ Launch Wizard:
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │  ┌─────────────── VPC ──────────────────────────────────────────────┐   │
-│  │                                                                   │   │
-│  │  ┌──── Public Subnet ────┐    ┌──── Public Subnet ────┐         │   │
-│  │  │  NAT Gateway          │    │  NAT Gateway          │         │   │
-│  │  │  RDGW (Remote Desktop)│    │  RDGW (Remote Desktop)│         │   │
-│  │  └───────────────────────┘    └───────────────────────┘         │   │
-│  │                                                                   │   │
-│  │  ┌──── Private Subnet ───┐    ┌──── Private Subnet ───┐         │   │
-│  │  │  AD Domain Controller │    │  AD Domain Controller │         │   │
-│  │  │  SQL Server Node 1    │    │  SQL Server Node 2    │         │   │
-│  │  │  (Primary)            │    │  (Secondary)          │         │   │
-│  │  └───────────────────────┘    └───────────────────────┘         │   │
+│  │                                                                  │   │
+│  │  ┌──── Public Subnet ────┐    ┌──── Public Subnet ────┐          │   │
+│  │  │  NAT Gateway          │    │  NAT Gateway          │          │   │
+│  │  │  RDGW (Remote Desktop)│    │  RDGW (Remote Desktop)│          │   │
+│  │  └───────────────────────┘    └───────────────────────┘          │   │
+│  │                                                                  │   │
+│  │  ┌──── Private Subnet ───┐    ┌──── Private Subnet ───┐          │   │
+│  │  │  AD Domain Controller │    │  AD Domain Controller │          │   │
+│  │  │  SQL Server Node 1    │    │  SQL Server Node 2    │          │   │
+│  │  │  (Primary)            │    │  (Secondary)          │          │   │
+│  │  └───────────────────────┘    └───────────────────────┘          │   │
 │  │         AZ 1                         AZ 2                        │   │
-│  └───────────────────────────────────────────────────────────────────┘   │
+│  └──────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
 │  + CloudWatch Monitoring (one-click setup)                              │
 │  + Security Groups auto-configured                                      │
@@ -173,17 +173,17 @@ CÓ Launch Wizard:
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │  ┌─────────────── VPC ──────────────────────────────────────────────┐   │
-│  │                                                                   │   │
-│  │  ┌──── AZ 1 ─────────────┐    ┌──── AZ 2 ─────────────┐         │   │
-│  │  │                       │    │                       │         │   │
-│  │  │  Domain Controller 1  │    │  Domain Controller 2  │         │   │
-│  │  │  (Primary)            │◄──►│  (Replica)            │         │   │
-│  │  │                       │    │                       │         │   │
-│  │  │  DNS Server           │    │  DNS Server           │         │   │
-│  │  │                       │    │                       │         │   │
-│  │  └───────────────────────┘    └───────────────────────┘         │   │
-│  │                                                                   │   │
-│  └───────────────────────────────────────────────────────────────────┘   │
+│  │                                                                  │   │
+│  │  ┌──── AZ 1 ─────────────┐    ┌──── AZ 2 ─────────────┐          │   │
+│  │  │                       │    │                       │          │   │
+│  │  │  Domain Controller 1  │    │  Domain Controller 2  │          │   │
+│  │  │  (Primary)            │◄──►│  (Replica)            │          │   │
+│  │  │                       │    │                       │          │   │
+│  │  │  DNS Server           │    │  DNS Server           │          │   │
+│  │  │                       │    │                       │          │   │
+│  │  └───────────────────────┘    └───────────────────────┘          │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
 │  + Security Groups (ports 53, 88, 389, 445, 636...)                     │
 │  + Route tables + NAT Gateways                                          │

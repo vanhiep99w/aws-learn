@@ -27,10 +27,10 @@ Khi sử dụng AWS, **trách nhiệm bảo mật được chia sẻ** giữa AW
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    CUSTOMER RESPONSIBILITY                       │
-│                  "Security IN the Cloud"                         │
+│                    CUSTOMER RESPONSIBILITY                      │
+│                  "Security IN the Cloud"                        │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │  Customer Data                                             │  │
+│  │  Customer Data                                            │  │
 │  ├───────────────────────────────────────────────────────────┤  │
 │  │  Platform, Applications, Identity & Access Management     │  │
 │  ├───────────────────────────────────────────────────────────┤  │
@@ -41,12 +41,12 @@ Khi sử dụng AWS, **trách nhiệm bảo mật được chia sẻ** giữa AW
 │  │                       │                   │  Protection   │  │
 │  └───────────────────────────────────────────────────────────┘  │
 ├─────────────────────────────────────────────────────────────────┤
-│                      AWS RESPONSIBILITY                          │
-│                  "Security OF the Cloud"                         │
+│                      AWS RESPONSIBILITY                         │
+│                  "Security OF the Cloud"                        │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │  Software: Compute, Storage, Database, Networking         │  │
 │  ├───────────────────────────────────────────────────────────┤  │
-│  │  Hardware/AWS Global Infrastructure                        │  │
+│  │  Hardware/AWS Global Infrastructure                       │  │
 │  │  Regions, Availability Zones, Edge Locations              │  │
 │  └───────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
@@ -286,21 +286,21 @@ Thực tế:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     CÁCH NHỚ NHANH                               │
+│                     CÁCH NHỚ NHANH                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  OF = Infrastructure VẬT LÝ → AWS lo                            │
 │  ├── Data centers, servers, networking                          │
 │  ├── Hypervisor, virtualization                                 │
 │  └── Global infrastructure (Regions, AZs)                       │
-│                                                                  │
+│                                                                 │
 │  IN = Những gì bạn ĐẶT LÊN cloud → Customer lo                  │
-│  ├── Data encryption                                             │
+│  ├── Data encryption                                            │
 │  ├── IAM (users, roles, MFA)                                    │
 │  ├── OS patching (EC2)                                          │
 │  ├── Security groups, network config                            │
-│  └── Application code                                            │
-│                                                                  │
+│  └── Application code                                           │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

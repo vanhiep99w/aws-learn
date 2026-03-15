@@ -29,38 +29,38 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TRADITIONAL (EC2/ECS)                             │
-│                                                                       │
-│   Bạn phải quản lý:                                                  │
-│   ├── Provision servers (EC2 instances)                              │
-│   ├── Scale up/down servers                                          │
-│   ├── Patch và update OS                                             │
-│   ├── Monitor server health                                          │
-│   ├── Trả tiền kể cả khi idle                                        │
-│   └── Capacity planning (cần bao nhiêu servers?)                     │
-│                                                                       │
+│                    TRADITIONAL (EC2/ECS)                            │
+│                                                                     │
+│   Bạn phải quản lý:                                                 │
+│   ├── Provision servers (EC2 instances)                             │
+│   ├── Scale up/down servers                                         │
+│   ├── Patch và update OS                                            │
+│   ├── Monitor server health                                         │
+│   ├── Trả tiền kể cả khi idle                                       │
+│   └── Capacity planning (cần bao nhiêu servers?)                    │
+│                                                                     │
 │   ┌─────────┐ ┌─────────┐ ┌─────────┐                               │
-│   │ Server 1│ │ Server 2│ │ Server 3│   ← Bạn quản lý TẤT CẢ       │
+│   │ Server 1│ │ Server 2│ │ Server 3│   ← Bạn quản lý TẤT CẢ        │
 │   │ (EC2)   │ │ (EC2)   │ │ (EC2)   │                               │
 │   └─────────┘ └─────────┘ └─────────┘                               │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         SERVERLESS (Lambda)                          │
-│                                                                       │
-│   Bạn chỉ cần:                                                       │
-│   └── Viết code và deploy                                            │
-│                                                                       │
-│   AWS lo:                                                            │
-│   ├── Provision compute resources                                    │
+│                         SERVERLESS (Lambda)                         │
+│                                                                     │
+│   Bạn chỉ cần:                                                      │
+│   └── Viết code và deploy                                           │
+│                                                                     │
+│   AWS lo:                                                           │
+│   ├── Provision compute resources                                   │
 │   ├── Auto-scale (từ 0 đến hàng ngàn concurrent executions)         │
-│   ├── Patch và update                                                │
-│   ├── High availability                                              │
-│   └── Bạn chỉ trả tiền khi code chạy!                                │
-│                                                                       │
+│   ├── Patch và update                                               │
+│   ├── High availability                                             │
+│   └── Bạn chỉ trả tiền khi code chạy!                               │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │              ☁️  AWS MANAGED INFRASTRUCTURE  ☁️              │   │
-│   │                    (Bạn không thấy servers)                  │   │
+│   │              ☁️  AWS MANAGED INFRASTRUCTURE  ☁️               │   │
+│   │                    (Bạn không thấy servers)                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,15 +71,15 @@
 HIỂU ĐÚNG VỀ SERVERLESS:
 ┌─────────────────────────────────────────────────────────────────────┐
 │  "Serverless" = Servers less to manage (Ít servers phải quản lý)    │
-│                                                                       │
-│  Thực tế:                                                            │
+│                                                                     │
+│  Thực tế:                                                           │
 │  ├── Servers VẪN TỒN TẠI (đâu đó trong AWS data centers)            │
 │  ├── Nhưng BẠN KHÔNG BIẾT, KHÔNG THẤY, KHÔNG QUẢN LÝ                │
-│  └── AWS quản lý hoàn toàn servers đó                                │
-│                                                                       │
-│   ❌ Bạn: Không SSH được vào Lambda                                  │
-│   ❌ Bạn: Không biết Lambda chạy trên EC2 nào                        │
-│   ✅ Bạn: Chỉ upload code và chạy                                    │
+│  └── AWS quản lý hoàn toàn servers đó                               │
+│                                                                     │
+│   ❌ Bạn: Không SSH được vào Lambda                                 │
+│   ❌ Bạn: Không biết Lambda chạy trên EC2 nào                       │
+│   ✅ Bạn: Chỉ upload code và chạy                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -101,9 +101,9 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        LAMBDA ARCHITECTURE                           │
-│                                                                       │
-│   TRIGGER/EVENT SOURCE           LAMBDA FUNCTION         DESTINATION │
+│                        LAMBDA ARCHITECTURE                          │
+│                                                                     │
+│   TRIGGER/EVENT SOURCE           LAMBDA FUNCTION         DESTINATION│
 │   ┌─────────────────┐           ┌─────────────────┐    ┌──────────┐ │
 │   │ • API Gateway   │           │                 │    │ • S3     │ │
 │   │ • S3 Events     │──────────▶│   Your Code     │───▶│ • DynamoDB│ │
@@ -113,9 +113,9 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │   │ • EventBridge   │                   │              └──────────┘ │
 │   │ • Kinesis       │                   │                           │
 │   │ • ALB           │           ┌───────▼───────┐                   │
-│   └─────────────────┘           │ Execution Role │                   │
+│   └─────────────────┘           │ Execution Role│                   │
 │                                 │ (IAM Permissions)│                  │
-│                                 └─────────────────┘                   │
+│                                 └─────────────────┘                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,40 +123,40 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       LAMBDA FUNCTION                                │
-│                                                                       │
+│                       LAMBDA FUNCTION                               │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  CONFIGURATION                                               │   │
-│   │  ├── Function name: my-function                              │   │
+│   │  CONFIGURATION                                              │   │
+│   │  ├── Function name: my-function                             │   │
 │   │  ├── Runtime: Python 3.12, Node.js 20.x, Java 21, etc.      │   │
 │   │  ├── Memory: 128 MB - 10,240 MB (10 GB)                     │   │
-│   │  ├── Timeout: 1 second - 15 minutes                          │   │
-│   │  ├── Execution Role: IAM role cho permissions                │   │
-│   │  └── Environment Variables                                    │   │
+│   │  ├── Timeout: 1 second - 15 minutes                         │   │
+│   │  ├── Execution Role: IAM role cho permissions               │   │
+│   │  └── Environment Variables                                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  CODE                                                         │   │
-│   │                                                               │   │
-│   │  # Python example                                             │   │
-│   │  def handler(event, context):                                 │   │
-│   │      # event = input data từ trigger                         │   │
-│   │      # context = runtime information                          │   │
-│   │                                                               │   │
-│   │      # Your business logic here                               │   │
-│   │      result = process(event)                                  │   │
-│   │                                                               │   │
-│   │      return {                                                 │   │
-│   │          'statusCode': 200,                                   │   │
-│   │          'body': json.dumps(result)                           │   │
-│   │      }                                                        │   │
+│   │  CODE                                                       │   │
+│   │                                                             │   │
+│   │  # Python example                                           │   │
+│   │  def handler(event, context):                               │   │
+│   │      # event = input data từ trigger                        │   │
+│   │      # context = runtime information                        │   │
+│   │                                                             │   │
+│   │      # Your business logic here                             │   │
+│   │      result = process(event)                                │   │
+│   │                                                             │   │
+│   │      return {                                               │   │
+│   │          'statusCode': 200,                                 │   │
+│   │          'body': json.dumps(result)                         │   │
+│   │      }                                                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  DEPENDENCIES                                                 │   │
-│   │  ├── Deployment Package (ZIP) ≤ 50 MB compressed             │   │
-│   │  ├── Uncompressed: ≤ 250 MB                                  │   │
-│   │  └── Lambda Layers (để chia sẻ libraries)                    │   │
+│   │  DEPENDENCIES                                               │   │
+│   │  ├── Deployment Package (ZIP) ≤ 50 MB compressed            │   │
+│   │  ├── Uncompressed: ≤ 250 MB                                 │   │
+│   │  └── Lambda Layers (để chia sẻ libraries)                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -171,31 +171,31 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         COLD START ❄️                                │
 │      (Lần đầu tiên hoặc sau thời gian idle)                         │
-│                                                                       │
+│                                                                     │
 │  Request ─┬─▶ [Create Container] ─▶ [Download Code] ─▶ [Init Runtime]│
-│           │         ↓                      ↓               ↓         │
-│           │      ~100ms               ~50ms            ~200ms        │
-│           │                                                          │
+│           │         ↓                      ↓               ↓        │
+│           │      ~100ms               ~50ms            ~200ms       │
+│          │                                                          │
 │           └───────────────────────────────────────────────────────▶ │
-│                            Cold Start Latency: ~500ms - 3s+          │
-│                                                                       │
+│                            Cold Start Latency: ~500ms - 3s+         │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  1. AWS tạo container/microVM mới                           │   │
-│   │  2. Download code từ S3                                      │   │
-│   │  3. Khởi tạo runtime (Python, Node.js, Java...)            │   │
+│   │  2. Download code từ S3                                     │   │
+│   │  3. Khởi tạo runtime (Python, Node.js, Java...)             │   │
 │   │  4. Chạy initialization code (outside handler)              │   │
-│   │  5. Execute handler function                                 │   │
+│   │  5. Execute handler function                                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         WARM START 🔥                                │
+│                         WARM START 🔥                               │
 │      (Container đã có sẵn từ request trước)                         │
-│                                                                       │
+│                                                                     │
 │  Request ─────────────────────────────────────────────▶ [Handler]   │
-│                                                                       │
-│                          Warm Start Latency: ~1-10ms                 │
-│                                                                       │
+│                                                                     │
+│                          Warm Start Latency: ~1-10ms                │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Container vẫn còn "warm" → AWS reuse container             │   │
 │   │  → Skip initialization → Execute handler ngay               │   │
@@ -207,25 +207,25 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              STRATEGIES ĐỂ GIẢM COLD START                           │
-│                                                                       │
+│              STRATEGIES ĐỂ GIẢM COLD START                          │
+│                                                                     │
 │  1. PROVISIONED CONCURRENCY (Tốn tiền nhưng hiệu quả)               │
 │     ┌─────────────────────────────────────────────────────────┐     │
 │     │  Giữ N instances luôn WARM và sẵn sàng                  │     │
-│     │  → Cold start = 0                                        │     │
+│     │  → Cold start = 0                                       │     │
 │     │  → Trả tiền để giữ instances luôn sẵn sàng              │     │
 │     └─────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  2. OPTIMIZE CODE                                                    │
-│     ├── Giảm deployment package size                                 │
-│     ├── Lazy loading dependencies                                    │
+│                                                                     │
+│  2. OPTIMIZE CODE                                                   │
+│     ├── Giảm deployment package size                                │
+│     ├── Lazy loading dependencies                                   │
 │     ├── Đưa initialization code ra ngoài handler                    │
 │     └── Sử dụng lightweight runtime (Python, Node.js > Java)        │
-│                                                                       │
-│  3. USE SNAPSTART (Java only)                                        │
+│                                                                     │
+│  3. USE SNAPSTART (Java only)                                       │
 │     └── Snapshot memory state sau init → restore nhanh              │
-│                                                                       │
-│  4. KEEP FUNCTIONS WARM                                              │
+│                                                                     │
+│  4. KEEP FUNCTIONS WARM                                             │
 │     └── Ping function định kỳ (CloudWatch Events/EventBridge)       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -238,44 +238,44 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      LAMBDA TRIGGERS                                 │
-│                                                                       │
-│   SYNCHRONOUS (Đợi response)                                         │
+│                      LAMBDA TRIGGERS                                │
+│                                                                     │
+│   SYNCHRONOUS (Đợi response)                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  ┌─────────────┐    ┌────────────┐    ┌─────────────────┐   │   │
 │   │  │ API Gateway │───▶│   Lambda   │───▶│ Return Response │   │   │
-│   │  │ ALB         │    │            │    │ (Wait for result)│   │   │
+│   │  │ ALB         │    │            │    │ (Wait for result)│  │   │
 │   │  │ SDK Invoke  │    └────────────┘    └─────────────────┘   │   │
-│   │  └─────────────┘                                             │   │
-│   │                                                               │   │
-│   │  Use case: REST APIs, real-time responses                    │   │
+│   │  └─────────────┘                                            │   │
+│   │                                                             │   │
+│   │  Use case: REST APIs, real-time responses                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ASYNCHRONOUS (Fire-and-forget)                                     │
+│                                                                     │
+│   ASYNCHRONOUS (Fire-and-forget)                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  ┌─────────────┐    ┌──────────┐    ┌────────────┐          │   │
 │   │  │ S3 Events   │───▶│  Queue   │───▶│   Lambda   │          │   │
-│   │  │ SNS         │    │ (internal)│    │            │          │   │
+│   │  │ SNS         │    │ (internal)│    │            │         │   │
 │   │  │ EventBridge │    └──────────┘    └────────────┘          │   │
-│   │  └─────────────┘                                             │   │
-│   │                                                               │   │
-│   │  • Lambda tự retry khi fail (0, 1, 2 phút)                   │   │
-│   │  • Có thể configure Dead Letter Queue (DLQ)                  │   │
-│   │  Use case: Background processing, notifications              │   │
+│   │  └─────────────┘                                            │   │
+│   │                                                             │   │
+│   │  • Lambda tự retry khi fail (0, 1, 2 phút)                  │   │
+│   │  • Có thể configure Dead Letter Queue (DLQ)                 │   │
+│   │  Use case: Background processing, notifications             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   POLL-BASED (Lambda polls from source)                              │
+│                                                                     │
+│   POLL-BASED (Lambda polls from source)                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  ┌─────────────┐          ┌────────────┐                     │   │
+│   │  ┌─────────────┐          ┌────────────┐                    │   │
 │   │  │ SQS Queue   │◀─ Poll ─│   Lambda   │                     │   │
-│   │  │ Kinesis     │          │            │                     │   │
-│   │  │ DynamoDB    │          └────────────┘                     │   │
-│   │  │ Streams     │                                             │   │
-│   │  └─────────────┘                                             │   │
-│   │                                                               │   │
+│   │  │ Kinesis     │          │            │                    │   │
+│   │  │ DynamoDB    │          └────────────┘                    │   │
+│   │  │ Streams     │                                            │   │
+│   │  └─────────────┘                                            │   │
+│   │                                                             │   │
 │   │  • Lambda tự động poll và lấy messages/records              │   │
 │   │  • Batching: xử lý nhiều records cùng lúc                   │   │
-│   │  Use case: Stream processing, message queues                 │   │
+│   │  Use case: Stream processing, message queues                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -284,28 +284,28 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              USE CASE: Image Processing Pipeline                     │
-│                                                                       │
-│   User uploads         S3 triggers        Lambda creates             │
-│   image to S3          Lambda              thumbnail                  │
-│        │                  │                    │                     │
-│        ▼                  ▼                    ▼                     │
+│              USE CASE: Image Processing Pipeline                    │
+│                                                                     │
+│   User uploads         S3 triggers        Lambda creates            │
+│   image to S3          Lambda              thumbnail                │
+│        │                  │                   │                     │
+│        ▼                  ▼                    ▼                    │
 │   ┌─────────┐      ┌────────────┐      ┌─────────────┐              │
 │   │ S3      │      │  Lambda    │      │ S3          │              │
 │   │ bucket  │─────▶│  resize-   │─────▶│ thumbnails/ │              │
 │   │ uploads/│      │  image     │      │ bucket      │              │
 │   └─────────┘      └────────────┘      └─────────────┘              │
-│                                                                       │
-│   Event example:                                                      │
-│   {                                                                   │
-│     "Records": [{                                                     │
-│       "eventName": "ObjectCreated:Put",                              │
-│       "s3": {                                                         │
-│         "bucket": { "name": "my-uploads" },                          │
-│         "object": { "key": "photos/vacation.jpg" }                   │
-│       }                                                               │
-│     }]                                                                │
-│   }                                                                   │
+│                                                                     │
+│   Event example:                                                    │
+│   {                                                                 │
+│     "Records": [{                                                   │
+│       "eventName": "ObjectCreated:Put",                             │
+│       "s3": {                                                       │
+│         "bucket": { "name": "my-uploads" },                         │
+│         "object": { "key": "photos/vacation.jpg" }                  │
+│       }                                                             │
+│     }]                                                              │
+│   }                                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -317,32 +317,32 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      LAMBDA PRICING MODEL                            │
-│                                                                       │
-│   Trả tiền theo:                                                     │
+│                      LAMBDA PRICING MODEL                           │
+│                                                                     │
+│   Trả tiền theo:                                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. NUMBER OF REQUESTS                                       │   │
-│   │     • $0.20 per 1 million requests                           │   │
-│   │     • Free tier: 1 million requests/month                    │   │
-│   │                                                               │   │
-│   │  2. DURATION (GB-seconds)                                    │   │
-│   │     • $0.0000166667 per GB-second                            │   │
-│   │     • Free tier: 400,000 GB-seconds/month                    │   │
-│   │                                                               │   │
-│   │     Duration = Time your code runs                            │   │
-│   │     GB-second = Memory allocated × Duration                   │   │
+│   │  1. NUMBER OF REQUESTS                                      │   │
+│   │     • $0.20 per 1 million requests                          │   │
+│   │     • Free tier: 1 million requests/month                   │   │
+│   │                                                             │   │
+│   │  2. DURATION (GB-seconds)                                   │   │
+│   │     • $0.0000166667 per GB-second                           │   │
+│   │     • Free tier: 400,000 GB-seconds/month                   │   │
+│   │                                                             │   │
+│   │     Duration = Time your code runs                          │   │
+│   │     GB-second = Memory allocated × Duration                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   EXAMPLE CALCULATION:                                               │
+│                                                                     │
+│   EXAMPLE CALCULATION:                                              │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Function: 512 MB memory, runs 200ms, 1 million requests    │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │  GB-seconds = 0.5 GB × 0.2s × 1,000,000 = 100,000 GB-s      │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │  Cost = (100,000 × $0.0000166667) + (1M × $0.20/1M)         │   │
-│   │       = $1.67 + $0.20                                        │   │
-│   │       = $1.87/month                                          │   │
-│   │                                                               │   │
+│   │       = $1.67 + $0.20                                       │   │
+│   │       = $1.87/month                                         │   │
+│   │                                                             │   │
 │   │  So với EC2 t3.small chạy 24/7: ~$15/month                  │   │
 │   │  → Lambda rẻ hơn 8x cho workload này!                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
@@ -353,26 +353,26 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│           LAMBDA VS EC2: KHI NÀO CHỌN CÁI NÀO?                       │
-│                                                                       │
-│              Requests/second                                          │
-│                    │                                                  │
-│   Lambda rẻ hơn   │             EC2 rẻ hơn                           │
-│         ◀─────────┼─────────────▶                                    │
-│                    │                                                  │
-│    ┌───────────────┼────────────────────────────────────────────┐    │
-│    │               │                                             │    │
-│    │   LAMBDA      │          EC2/ECS                           │    │
-│    │   ✓ Sporadic  │          ✓ Constant load                   │    │
-│    │   ✓ Variable  │          ✓ High traffic                    │    │
-│    │   ✓ Bursty    │          ✓ Long-running                    │    │
-│    │   ✓ < 15min   │          ✓ > 15min jobs                    │    │
-│    │               │                                             │    │
-│    └───────────────┴────────────────────────────────────────────┘    │
-│                    │                                                  │
-│              Break-even point                                         │
-│              (~1M requests/day                                        │
-│               hoặc ~11 req/sec)                                       │
+│           LAMBDA VS EC2: KHI NÀO CHỌN CÁI NÀO?                      │
+│                                                                     │
+│              Requests/second                                        │
+│                  │                                                  │
+│   Lambda rẻ hơn   │             EC2 rẻ hơn                          │
+│         ◀─────────┼─────────────▶                                   │
+│                  │                                                  │
+│    ┌───────────────┼────────────────────────────────────────────┐   │
+│    │               │                                           │    │
+│    │   LAMBDA      │          EC2/ECS                          │    │
+│    │   ✓ Sporadic  │          ✓ Constant load                  │    │
+│    │   ✓ Variable  │          ✓ High traffic                   │    │
+│    │   ✓ Bursty    │          ✓ Long-running                   │    │
+│    │   ✓ < 15min   │          ✓ > 15min jobs                   │    │
+│    │               │                                           │    │
+│    └───────────────┴────────────────────────────────────────────┘   │
+│                  │                                                  │
+│              Break-even point                                       │
+│              (~1M requests/day                                      │
+│               hoặc ~11 req/sec)                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -384,43 +384,43 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    LAMBDA EXECUTION ROLE                             │
-│                                                                       │
+│                    LAMBDA EXECUTION ROLE                            │
+│                                                                     │
 │   Lambda function cần PERMISSIONS để truy cập AWS resources         │
-│   → Gán IAM Role cho Lambda                                          │
-│                                                                       │
+│   → Gán IAM Role cho Lambda                                         │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    Lambda Function                           │   │
-│   │                         │                                    │   │
-│   │                         │ Assumes Role                       │   │
-│   │                         ▼                                    │   │
+│   │                    Lambda Function                          │   │
+│   │                         │                                   │   │
+│   │                         │ Assumes Role                      │   │
+│   │                         ▼                                   │   │
 │   │              ┌─────────────────────┐                        │   │
 │   │              │   Execution Role    │                        │   │
 │   │              │ (IAM Role)          │                        │   │
 │   │              └──────────┬──────────┘                        │   │
-│   │                         │                                    │   │
+│   │                         │                                   │   │
 │   │            ┌────────────┼────────────┐                      │   │
 │   │            ▼            ▼            ▼                      │   │
-│   │      ┌─────────┐  ┌─────────┐  ┌─────────┐                 │   │
-│   │      │ S3      │  │ DynamoDB│  │ Secrets │                 │   │
-│   │      │ Access  │  │ Access  │  │ Manager │                 │   │
-│   │      └─────────┘  └─────────┘  └─────────┘                 │   │
+│   │      ┌─────────┐  ┌─────────┐  ┌─────────┐                  │   │
+│   │      │ S3      │  │ DynamoDB│  │ Secrets │                  │   │
+│   │      │ Access  │  │ Access  │  │ Manager │                  │   │
+│   │      └─────────┘  └─────────┘  └─────────┘                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Trust Policy (ai được assume role):                                │
-│   {                                                                   │
-│     "Principal": {                                                    │
-│       "Service": "lambda.amazonaws.com"                              │
-│     },                                                                │
-│     "Action": "sts:AssumeRole"                                       │
-│   }                                                                   │
-│                                                                       │
-│   Permission Policy (được làm gì):                                   │
-│   {                                                                   │
-│     "Effect": "Allow",                                                │
-│     "Action": ["s3:GetObject", "dynamodb:PutItem"],                  │
-│     "Resource": ["arn:aws:s3:::my-bucket/*", ...]                    │
-│   }                                                                   │
+│                                                                     │
+│   Trust Policy (ai được assume role):                               │
+│   {                                                                 │
+│     "Principal": {                                                  │
+│       "Service": "lambda.amazonaws.com"                             │
+│     },                                                              │
+│     "Action": "sts:AssumeRole"                                      │
+│   }                                                                 │
+│                                                                     │
+│   Permission Policy (được làm gì):                                  │
+│   {                                                                 │
+│     "Effect": "Allow",                                              │
+│     "Action": ["s3:GetObject", "dynamodb:PutItem"],                 │
+│     "Resource": ["arn:aws:s3:::my-bucket/*", ...]                   │
+│   }                                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -428,9 +428,9 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  RESOURCE-BASED POLICY                               │
-│           (Ai được phép INVOKE Lambda này?)                          │
-│                                                                       │
+│                  RESOURCE-BASED POLICY                              │
+│           (Ai được phép INVOKE Lambda này?)                         │
+│                                                                     │
 │   ┌─────────────┐      Invoke?      ┌────────────────┐              │
 │   │ API Gateway │ ─────────────────▶│ Lambda         │              │
 │   └─────────────┘                   │ Function       │              │
@@ -439,21 +439,21 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │   │ S3 Bucket   │ ─────────────────▶│ cho phép ai    │              │
 │   └─────────────┘                   │ invoke?        │              │
 │                                     └────────────────┘              │
-│                                                                       │
-│   Ví dụ Resource Policy:                                             │
-│   {                                                                   │
-│     "Effect": "Allow",                                                │
-│     "Principal": {                                                    │
-│       "Service": "s3.amazonaws.com"                                  │
-│     },                                                                │
-│     "Action": "lambda:InvokeFunction",                               │
-│     "Resource": "arn:aws:lambda:...:my-function",                    │
-│     "Condition": {                                                    │
-│       "ArnLike": {                                                    │
-│         "AWS:SourceArn": "arn:aws:s3:::my-bucket"                    │
-│       }                                                               │
-│     }                                                                 │
-│   }                                                                   │
+│                                                                     │
+│   Ví dụ Resource Policy:                                            │
+│   {                                                                 │
+│     "Effect": "Allow",                                              │
+│     "Principal": {                                                  │
+│       "Service": "s3.amazonaws.com"                                 │
+│     },                                                              │
+│     "Action": "lambda:InvokeFunction",                              │
+│     "Resource": "arn:aws:lambda:...:my-function",                   │
+│     "Condition": {                                                  │
+│       "ArnLike": {                                                  │
+│         "AWS:SourceArn": "arn:aws:s3:::my-bucket"                   │
+│       }                                                             │
+│     }                                                               │
+│   }                                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -465,40 +465,40 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    LAMBDA NETWORKING MODES                           │
-│                                                                       │
-│   MODE 1: Default (No VPC)                                           │
+│                    LAMBDA NETWORKING MODES                          │
+│                                                                     │
+│   MODE 1: Default (No VPC)                                          │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                         Internet                             │   │
-│   │                            │                                 │   │
+│   │                         Internet                            │   │
+│   │                            │                                │   │
 │   │                     ┌──────▼──────┐                         │   │
 │   │                     │   Lambda    │ ← Có Internet access    │   │
 │   │                     │   Function  │ ← Gọi được AWS APIs     │   │
 │   │                     └─────────────┘ ← KHÔNG access VPC      │   │
-│   │                                       resources              │   │
+│   │                                       resources             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   MODE 2: VPC-enabled Lambda                                         │
+│                                                                     │
+│   MODE 2: VPC-enabled Lambda                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                           VPC                                │   │
+│   │                           VPC                               │   │
 │   │   ┌─────────────────────────────────────────────────────┐   │   │
-│   │   │  Private Subnet                                      │   │   │
+│   │   │  Private Subnet                                      │  │   │
 │   │   │  ┌───────────┐        ┌───────────┐                 │   │   │
 │   │   │  │  Lambda   │───────▶│    RDS    │                 │   │   │
 │   │   │  │  (ENI)    │        │ (Private) │                 │   │   │
 │   │   │  └───────────┘        └───────────┘                 │   │   │
-│   │   │       │                                              │   │   │
-│   │   │       │ Cần NAT Gateway                              │   │   │
-│   │   │       │ để access Internet                           │   │   │
-│   │   │       ▼                                              │   │   │
+│   │   │       │                                              │  │   │
+│   │   │       │ Cần NAT Gateway                              │  │   │
+│   │   │       │ để access Internet                           │  │   │
+│   │   │       ▼                                              │  │   │
 │   │   │  ┌───────────┐     ┌───────────┐                    │   │   │
 │   │   │  │    NAT    │────▶│  Internet │                    │   │   │
 │   │   │  │  Gateway  │     │  Gateway  │────▶ Internet      │   │   │
 │   │   │  └───────────┘     └───────────┘                    │   │   │
 │   │   └─────────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ⚠️ VPC Lambda trước đây có cold start lâu (~10s) do phải tạo ENI │
+│                                                                     │
+│   ⚠️ VPC Lambda trước đây có cold start lâu (~10s) do phải tạo ENI   │
 │   ✅ Từ 2019: AWS Hyperplane cải thiện xuống còn ~1s                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -511,27 +511,27 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       LAMBDA LIMITS                                  │
-│                                                                       │
+│                       LAMBDA LIMITS                                 │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  EXECUTION                                                   │   │
+│   │  EXECUTION                                                  │   │
 │   │  ├── Max timeout: 15 minutes                                │   │
 │   │  ├── Max memory: 10,240 MB (10 GB)                          │   │
 │   │  ├── Max concurrent executions: 1000 (default, có thể tăng) │   │
 │   │  └── /tmp storage: 512 MB - 10,240 MB                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  DEPLOYMENT                                                  │   │
+│   │  DEPLOYMENT                                                 │   │
 │   │  ├── Deployment package (ZIP): 50 MB compressed             │   │
 │   │  ├── Uncompressed: 250 MB                                   │   │
 │   │  ├── Container image: 10 GB                                 │   │
 │   │  └── Environment variables: 4 KB total                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  PAYLOAD                                                     │   │
-│   │  ├── Synchronous (RequestResponse): 6 MB                   │   │
+│   │  PAYLOAD                                                    │   │
+│   │  ├── Synchronous (RequestResponse): 6 MB                    │   │
 │   │  └── Asynchronous (Event): 256 KB                           │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -541,37 +541,37 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    LAMBDA BEST PRACTICES                             │
-│                                                                       │
-│  1. KEEP FUNCTIONS SMALL & FOCUSED                                   │
+│                    LAMBDA BEST PRACTICES                            │
+│                                                                     │
+│  1. KEEP FUNCTIONS SMALL & FOCUSED                                  │
 │     ┌─────────────────────────────────────────────────────────┐     │
-│     │  ❌ 1 function làm: validate → process → save → notify │     │
-│     │  ✅ Tách thành nhiều functions nhỏ, mỗi cái 1 việc     │     │
+│     │  ❌ 1 function làm: validate → process → save → notify  │     │
+│     │  ✅ Tách thành nhiều functions nhỏ, mỗi cái 1 việc      │     │
 │     └─────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  2. INITIALIZE OUTSIDE HANDLER                                       │
+│                                                                     │
+│  2. INITIALIZE OUTSIDE HANDLER                                      │
 │     ┌─────────────────────────────────────────────────────────┐     │
-│     │  # ✅ ĐÚNG: Initialize một lần, reuse nhiều lần        │     │
+│     │  # ✅ ĐÚNG: Initialize một lần, reuse nhiều lần         │     │
 │     │  import boto3                                           │     │
 │     │  db_client = boto3.client('dynamodb')  # Outside        │     │
-│     │                                                          │     │
-│     │  def handler(event, context):                            │     │
-│     │      db_client.put_item(...)  # Reuse connection         │     │
+│     │                                                         │     │
+│     │  def handler(event, context):                           │     │
+│     │      db_client.put_item(...)  # Reuse connection        │     │
 │     └─────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  3. USE ENVIRONMENT VARIABLES FOR CONFIG                             │
+│                                                                     │
+│  3. USE ENVIRONMENT VARIABLES FOR CONFIG                            │
 │     ┌─────────────────────────────────────────────────────────┐     │
 │     │  DB_NAME = os.environ['DB_NAME']                        │     │
 │     │  API_KEY = os.environ['API_KEY']  # Từ Secrets Manager  │     │
 │     └─────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  4. HANDLE ERRORS GRACEFULLY                                         │
-│     ├── Log errors to CloudWatch                                     │
-│     ├── Use Dead Letter Queue (DLQ) for async                        │
-│     └── Return proper error responses                                │
-│                                                                       │
-│  5. RIGHT-SIZE MEMORY                                                │
-│     ├── More memory = More CPU = Faster execution                    │
+│                                                                     │
+│  4. HANDLE ERRORS GRACEFULLY                                        │
+│     ├── Log errors to CloudWatch                                    │
+│     ├── Use Dead Letter Queue (DLQ) for async                       │
+│     └── Return proper error responses                               │
+│                                                                     │
+│  5. RIGHT-SIZE MEMORY                                               │
+│     ├── More memory = More CPU = Faster execution                   │
 │     ├── Sweet spot: thử nghiệm với AWS Lambda Power Tuning          │
 │     └── Đôi khi tăng memory → giảm duration → giảm cost!            │
 └─────────────────────────────────────────────────────────────────────┘
@@ -583,21 +583,21 @@ Nếu Lambda chạy quá **15 phút**, function sẽ bị **terminate** ngay l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    LAMBDA 15-MINUTE TIMEOUT                          │
-│                                                                       │
+│                    LAMBDA 15-MINUTE TIMEOUT                         │
+│                                                                     │
 │   Lambda bắt đầu                                             ⚠️ FAIL │
-│        │                                                       │     │
-│        ▼                                                       ▼     │
+│        │                                                      │     │
+│        ▼                                                       ▼    │
 │   ─────●───────────────────────────────────────────────────────●─────│
-│        0 min                                              15 min     │
-│                                                                       │
-│   Điều gì xảy ra khi timeout:                                        │
+│        0 min                                              15 min    │
+│                                                                     │
+│   Điều gì xảy ra khi timeout:                                       │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Function bị TERMINATE ngay lập tức                       │   │
 │   │  • Error: "Task timed out after 900.00 seconds"             │   │
-│   │  • KHÔNG có graceful shutdown                                │   │
-│   │  • Data đang xử lý có thể bị MẤT nếu chưa save             │   │
-│   │  • CloudWatch logs ghi nhận timeout event                    │   │
+│   │  • KHÔNG có graceful shutdown                               │   │
+│   │  • Data đang xử lý có thể bị MẤT nếu chưa save              │   │
+│   │  • CloudWatch logs ghi nhận timeout event                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -606,62 +606,62 @@ Nếu Lambda chạy quá **15 phút**, function sẽ bị **terminate** ngay l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              ALTERNATIVES FOR LONG-RUNNING TASKS                     │
-│                                                                       │
+│              ALTERNATIVES FOR LONG-RUNNING TASKS                    │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  1. CHUNKING (Chia nhỏ công việc)                           │   │
-│   │                                                               │   │
-│   │     ❌ Before: Lambda → Process 1M records → TIMEOUT!        │   │
-│   │                                                               │   │
-│   │     ✅ After:  Lambda 1 → 10K records → Done                 │   │
+│   │                                                             │   │
+│   │     ❌ Before: Lambda → Process 1M records → TIMEOUT!       │   │
+│   │                                                             │   │
+│   │     ✅ After:  Lambda 1 → 10K records → Done                │   │
 │   │               Lambda 2 → 10K records → Done                 │   │
-│   │               ...                                            │   │
-│   │               Lambda 100 → 10K records → Done                │   │
+│   │               ...                                           │   │
+│   │               Lambda 100 → 10K records → Done               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  2. STEP FUNCTIONS (Orchestration)                          │   │
-│   │                                                               │   │
-│   │     ┌──────────┐    ┌──────────┐    ┌──────────┐           │   │
-│   │     │ Lambda 1 │───▶│ Lambda 2 │───▶│ Lambda 3 │           │   │
-│   │     │ (10 min) │    │ (10 min) │    │ (10 min) │           │   │
-│   │     └──────────┘    └──────────┘    └──────────┘           │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │     ┌──────────┐    ┌──────────┐    ┌──────────┐            │   │
+│   │     │ Lambda 1 │───▶│ Lambda 2 │───▶│ Lambda 3 │            │   │
+│   │     │ (10 min) │    │ (10 min) │    │ (10 min) │            │   │
+│   │     └──────────┘    └──────────┘    └──────────┘            │   │
+│   │                                                             │   │
 │   │     Tổng: 30 phút, mỗi Lambda < 15 phút!                    │   │
 │   │     Step Functions có thể chạy tới 1 NĂM!                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  3. FARGATE (Serverless Containers)                         │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │     • Không giới hạn thời gian chạy                         │   │
 │   │     • Vẫn serverless (không quản lý EC2)                    │   │
-│   │     • Pay per vCPU + memory used                             │   │
+│   │     • Pay per vCPU + memory used                            │   │
 │   │     • Best for: Jobs cần 15 min - vài giờ                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  4. AWS BATCH (Large Batch Processing)                      │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │     • Không giới hạn thời gian                              │   │
-│   │     • Tự động scale compute resources                        │   │
-│   │     • Queue-based job scheduling                             │   │
+│   │     • Tự động scale compute resources                       │   │
+│   │     • Queue-based job scheduling                            │   │
 │   │     • Dùng EC2 Spot Instances → tiết kiệm ~70% cost         │   │
 │   │     • Best for: ETL, ML training, video processing          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  5. RECURSIVE LAMBDA (Tự gọi lại)                           │   │
-│   │                                                               │   │
-│   │     Lambda → Process batch → Check remaining time            │   │
-│   │                                   │                          │   │
+│   │                                                             │   │
+│   │     Lambda → Process batch → Check remaining time           │   │
+│   │                                   │                         │   │
 │   │                            ┌──────┴──────┐                  │   │
 │   │                            ▼             ▼                  │   │
 │   │                      Time left?    No time left?            │   │
 │   │                            │             │                  │   │
 │   │                      Continue      Invoke new Lambda        │   │
 │   │                      processing    with remaining items     │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -721,8 +721,8 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              COMPARISON: LONG-RUNNING TASK SOLUTIONS                 │
-│                                                                       │
+│              COMPARISON: LONG-RUNNING TASK SOLUTIONS                │
+│                                                                     │
 │   ┌──────────────┬───────────┬───────────┬───────────┬───────────┐  │
 │   │   Solution   │ Max Time  │Complexity │   Cost    │ Best For  │  │
 │   ├──────────────┼───────────┼───────────┼───────────┼───────────┤  │
@@ -741,15 +741,15 @@ def process_item(item):
 │   │ EC2          │ Unlimited │   High    │   High    │ Full      │  │
 │   │              │           │           │           │ control   │  │
 │   └──────────────┴───────────┴───────────┴───────────┴───────────┘  │
-│                                                                       │
-│   DECISION GUIDE:                                                     │
+│                                                                     │
+│   DECISION GUIDE:                                                   │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Task duration         → Best solution                      │   │
 │   │  ───────────────────────────────────────────────────────    │   │
 │   │  < 15 minutes          → Lambda ✅                          │   │
 │   │  15 - 30 minutes       → Step Functions + Multiple Lambdas  │   │
-│   │  30 min - vài giờ     → Fargate hoặc AWS Batch             │   │
-│   │  Cần chạy liên tục    → ECS/EKS                            │   │
+│   │  30 min - vài giờ     → Fargate hoặc AWS Batch              │   │
+│   │  Cần chạy liên tục    → ECS/EKS                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -762,32 +762,32 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        LAMBDA LAYERS                                 │
-│                                                                       │
+│                        LAMBDA LAYERS                                │
+│                                                                     │
 │   Layer = ZIP archive chứa libraries, dependencies, custom runtime  │
-│   → Chia sẻ code/dependencies giữa nhiều functions                   │
-│                                                                       │
-│   WITHOUT LAYERS:                                                     │
+│   → Chia sẻ code/dependencies giữa nhiều functions                  │
+│                                                                     │
+│   WITHOUT LAYERS:                                                   │
 │   ┌────────────────────────────────────────────────────────────┐    │
 │   │  Function A          Function B          Function C        │    │
-│   │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   │    │
-│   │  │ Your Code    │   │ Your Code    │   │ Your Code    │   │    │
-│   │  │ + numpy      │   │ + numpy      │   │ + numpy      │   │    │
-│   │  │ + pandas     │   │ + pandas     │   │ + pandas     │   │    │
-│   │  │ + requests   │   │ + requests   │   │ + requests   │   │    │
-│   │  │ (50 MB each) │   │ (50 MB each) │   │ (50 MB each) │   │    │
-│   │  └──────────────┘   └──────────────┘   └──────────────┘   │    │
+│   │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐    │    │
+│   │  │ Your Code    │   │ Your Code    │   │ Your Code    │    │    │
+│   │  │ + numpy      │   │ + numpy      │   │ + numpy      │    │    │
+│   │  │ + pandas     │   │ + pandas     │   │ + pandas     │    │    │
+│   │  │ + requests   │   │ + requests   │   │ + requests   │    │    │
+│   │  │ (50 MB each) │   │ (50 MB each) │   │ (50 MB each) │    │    │
+│   │  └──────────────┘   └──────────────┘   └──────────────┘    │    │
 │   │                                                            │    │
 │   │  Total: 150 MB duplicated libraries!                       │    │
 │   └────────────────────────────────────────────────────────────┘    │
-│                                                                       │
-│   WITH LAYERS:                                                        │
+│                                                                     │
+│   WITH LAYERS:                                                      │
 │   ┌────────────────────────────────────────────────────────────┐    │
 │   │  Function A          Function B          Function C        │    │
-│   │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   │    │
-│   │  │ Your Code    │   │ Your Code    │   │ Your Code    │   │    │
-│   │  │ (1 MB)       │   │ (1 MB)       │   │ (1 MB)       │   │    │
-│   │  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘   │    │
+│   │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐    │    │
+│   │  │ Your Code    │   │ Your Code    │   │ Your Code    │    │    │
+│   │  │ (1 MB)       │   │ (1 MB)       │   │ (1 MB)       │    │    │
+│   │  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘    │    │
 │   │         │                  │                  │            │    │
 │   │         └──────────────────┼──────────────────┘            │    │
 │   │                            ▼                               │    │
@@ -799,11 +799,11 @@ def process_item(item):
 │   │                                                            │    │
 │   │  Total: 53 MB (3 + 50)                                     │    │
 │   └────────────────────────────────────────────────────────────┘    │
-│                                                                       │
-│   Benefits:                                                           │
-│   ├── Reduce deployment package size                                 │
-│   ├── Share common dependencies                                      │
-│   ├── Separate logic from dependencies                               │
+│                                                                     │
+│   Benefits:                                                         │
+│   ├── Reduce deployment package size                                │
+│   ├── Share common dependencies                                     │
+│   ├── Separate logic from dependencies                              │
 │   └── Faster deployments (code changes only)                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -816,33 +816,33 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              PATTERN: Serverless REST API                            │
-│                                                                       │
-│   Client                                                              │
-│     │                                                                 │
-│     │ HTTPS                                                           │
-│     ▼                                                                 │
-│   ┌─────────────────┐                                                │
-│   │   API Gateway   │ ← REST API endpoint                            │
+│              PATTERN: Serverless REST API                           │
+│                                                                     │
+│   Client                                                            │
+│   │                                                                 │
+│     │ HTTPS                                                         │
+│     ▼                                                               │
+│   ┌─────────────────┐                                               │
+│   │   API Gateway   │ ← REST API endpoint                           │
 │   │   (HTTPS)       │ ← Authentication (Cognito, API Keys)          │
-│   └────────┬────────┘ ← Rate limiting, caching                       │
-│            │                                                          │
-│      ┌─────┴─────┬─────────────┐                                     │
-│      ▼           ▼             ▼                                     │
+│   └────────┬────────┘ ← Rate limiting, caching                      │
+│          │                                                          │
+│      ┌─────┴─────┬─────────────┐                                    │
+│      ▼           ▼             ▼                                    │
 │  ┌───────┐  ┌───────┐    ┌───────┐                                  │
 │  │Lambda │  │Lambda │    │Lambda │                                  │
 │  │ GET   │  │ POST  │    │DELETE │                                  │
 │  │/users │  │/users │    │/users │                                  │
 │  └───┬───┘  └───┬───┘    └───┬───┘                                  │
-│      │          │            │                                       │
-│      └──────────┼────────────┘                                       │
-│                 ▼                                                     │
-│         ┌─────────────┐                                              │
-│         │  DynamoDB   │ ← NoSQL database                             │
-│         └─────────────┘                                              │
-│                                                                       │
-│   Cost: Chỉ trả tiền khi có request!                                 │
-│   Scale: Tự động từ 0 → millions requests                            │
+│      │          │           │                                       │
+│      └──────────┼──────────────┘                                    │
+│                 ▼                                                   │
+│         ┌─────────────┐                                             │
+│         │  DynamoDB   │ ← NoSQL database                            │
+│         └─────────────┘                                             │
+│                                                                     │
+│   Cost: Chỉ trả tiền khi có request!                                │
+│   Scale: Tự động từ 0 → millions requests                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -850,35 +850,35 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│           PATTERN: Event-Driven Processing                           │
-│                                                                       │
+│           PATTERN: Event-Driven Processing                          │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                     Event Sources                            │   │
-│   │                                                               │   │
-│   │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │   │
-│   │  │   S3    │  │   SQS   │  │  SNS    │  │Kinesis  │        │   │
-│   │  │ Upload  │  │ Message │  │ Notif.  │  │ Stream  │        │   │
-│   │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │   │
+│   │                     Event Sources                           │   │
+│   │                                                             │   │
+│   │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐         │   │
+│   │  │   S3    │  │   SQS   │  │  SNS    │  │Kinesis  │         │   │
+│   │  │ Upload  │  │ Message │  │ Notif.  │  │ Stream  │         │   │
+│   │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘         │   │
 │   │       │            │            │            │              │   │
 │   └───────┼────────────┼────────────┼────────────┼──────────────┘   │
-│           │            │            │            │                   │
-│           └────────────┴─────┬──────┴────────────┘                   │
-│                              ▼                                       │
-│                    ┌──────────────────┐                              │
-│                    │   EventBridge    │ ← Central event bus          │
-│                    └────────┬─────────┘                              │
-│                             │                                        │
+│           │            │            │           │                   │
+│           └────────────┴─────┬──────┴────────────┘                  │
+│                              ▼                                      │
+│                    ┌──────────────────┐                             │
+│                    │   EventBridge    │ ← Central event bus         │
+│                    └────────┬─────────┘                             │
+│                            │                                        │
 │              ┌──────────────┼──────────────┐                        │
 │              ▼              ▼              ▼                        │
 │         ┌────────┐    ┌────────┐    ┌────────┐                      │
 │         │Lambda  │    │Lambda  │    │Lambda  │                      │
 │         │Process │    │Archive │    │Notify  │                      │
 │         └────────┘    └────────┘    └────────┘                      │
-│                                                                       │
-│   Benefits:                                                           │
-│   ├── Decoupled components                                           │
-│   ├── Async processing                                               │
-│   └── Easy to add new processors                                     │
+│                                                                     │
+│   Benefits:                                                         │
+│   ├── Decoupled components                                          │
+│   ├── Async processing                                              │
+│   └── Easy to add new processors                                    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -886,38 +886,38 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              PATTERN: Scheduled/Cron Jobs                            │
-│                                                                       │
+│              PATTERN: Scheduled/Cron Jobs                           │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    EventBridge Scheduler                     │   │
-│   │                                                               │   │
+│   │                    EventBridge Scheduler                    │   │
+│   │                                                             │   │
 │   │    ┌────────────────────────────────────────────────────┐   │   │
-│   │    │  Schedule Expression:                               │   │   │
-│   │    │  • rate(5 minutes)     → Mỗi 5 phút               │   │   │
-│   │    │  • rate(1 hour)        → Mỗi giờ                  │   │   │
-│   │    │  • cron(0 9 * * ? *)   → Mỗi ngày 9AM UTC         │   │   │
-│   │    │  • cron(0 0 1 * ? *)   → Ngày 1 mỗi tháng         │   │   │
+│   │    │  Schedule Expression:                               │  │   │
+│   │    │  • rate(5 minutes)     → Mỗi 5 phút               │    │   │
+│   │    │  • rate(1 hour)        → Mỗi giờ                  │    │   │
+│   │    │  • cron(0 9 * * ? *)   → Mỗi ngày 9AM UTC         │    │   │
+│   │    │  • cron(0 0 1 * ? *)   → Ngày 1 mỗi tháng         │    │   │
 │   │    └────────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────┬───────────────────────────┘   │
-│                                     │                                │
-│                                     ▼                                │
-│                            ┌──────────────┐                          │
-│                            │   Lambda     │                          │
-│                            │              │                          │
-│                            └──────┬───────┘                          │
-│                                   │                                  │
+│                                    │                                │
+│                                     ▼                               │
+│                            ┌──────────────┐                         │
+│                            │   Lambda     │                         │
+│                            │              │                         │
+│                            └──────┬───────┘                         │
+│                                  │                                  │
 │              ┌────────────────────┼────────────────────┐            │
 │              ▼                    ▼                    ▼            │
-│        ┌──────────┐        ┌──────────┐        ┌──────────┐        │
-│        │ Cleanup  │        │ Reports  │        │  Sync    │        │
-│        │ old data │        │ generate │        │  data    │        │
-│        └──────────┘        └──────────┘        └──────────┘        │
-│                                                                       │
-│   Use cases:                                                          │
-│   ├── Daily reports                                                  │
-│   ├── Data cleanup/archival                                          │
-│   ├── Sync with external systems                                     │
-│   └── Health checks                                                  │
+│        ┌──────────┐        ┌──────────┐        ┌──────────┐         │
+│        │ Cleanup  │        │ Reports  │        │  Sync    │         │
+│        │ old data │        │ generate │        │  data    │         │
+│        └──────────┘        └──────────┘        └──────────┘         │
+│                                                                     │
+│   Use cases:                                                        │
+│   ├── Daily reports                                                 │
+│   ├── Data cleanup/archival                                         │
+│   ├── Sync with external systems                                    │
+│   └── Health checks                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -930,48 +930,48 @@ def process_item(item):
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │               LAMBDA vs ECS vs EKS: KHI NÀO DÙNG GÌ?                │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  LAMBDA                                                      │   │
-│   │  ├── Max execution: 15 minutes                               │   │
+│   │  LAMBDA                                                     │   │
+│   │  ├── Max execution: 15 minutes                              │   │
 │   │  ├── Short-lived, event-driven tasks                        │   │
-│   │  ├── Auto-scale to zero                                      │   │
-│   │  ├── No server management                                    │   │
-│   │  └── Pay per execution                                       │   │
-│   │                                                               │   │
-│   │  Best for:                                                    │   │
-│   │  • API backends                                               │   │
-│   │  • Data processing                                            │   │
-│   │  • Scheduled tasks                                            │   │
-│   │  • Event handlers                                             │   │
+│   │  ├── Auto-scale to zero                                     │   │
+│   │  ├── No server management                                   │   │
+│   │  └── Pay per execution                                      │   │
+│   │                                                             │   │
+│   │  Best for:                                                  │   │
+│   │  • API backends                                             │   │
+│   │  • Data processing                                          │   │
+│   │  • Scheduled tasks                                          │   │
+│   │  • Event handlers                                           │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  ECS (Elastic Container Service)                             │   │
-│   │  ├── Long-running containers                                 │   │
-│   │  ├── More control over infrastructure                        │   │
-│   │  ├── Consistent performance                                  │   │
+│   │  ECS (Elastic Container Service)                            │   │
+│   │  ├── Long-running containers                                │   │
+│   │  ├── More control over infrastructure                       │   │
+│   │  ├── Consistent performance                                 │   │
 │   │  └── Fargate = serverless containers                        │   │
-│   │                                                               │   │
-│   │  Best for:                                                    │   │
-│   │  • Web applications                                          │   │
-│   │  • Microservices                                              │   │
-│   │  • Batch processing                                          │   │
-│   │  • Background workers                                        │   │
+│   │                                                             │   │
+│   │  Best for:                                                  │   │
+│   │  • Web applications                                         │   │
+│   │  • Microservices                                            │   │
+│   │  • Batch processing                                         │   │
+│   │  • Background workers                                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  EKS (Elastic Kubernetes Service)                            │   │
-│   │  ├── Full Kubernetes                                         │   │
-│   │  ├── Portable across clouds                                  │   │
-│   │  ├── Maximum flexibility                                     │   │
-│   │  └── Complex but powerful                                    │   │
-│   │                                                               │   │
-│   │  Best for:                                                    │   │
-│   │  • Complex microservices                                     │   │
-│   │  • Multi-cloud strategy                                      │   │
-│   │  • Team already knows K8s                                    │   │
-│   │  • Need advanced scheduling                                  │   │
+│   │  EKS (Elastic Kubernetes Service)                           │   │
+│   │  ├── Full Kubernetes                                        │   │
+│   │  ├── Portable across clouds                                 │   │
+│   │  ├── Maximum flexibility                                    │   │
+│   │  └── Complex but powerful                                   │   │
+│   │                                                             │   │
+│   │  Best for:                                                  │   │
+│   │  • Complex microservices                                    │   │
+│   │  • Multi-cloud strategy                                     │   │
+│   │  • Team already knows K8s                                   │   │
+│   │  • Need advanced scheduling                                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -980,14 +980,14 @@ def process_item(item):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    COMPUTE SERVICE DECISION TREE                     │
-│                                                                       │
-│                         Start Here                                    │
-│                             │                                         │
-│              ┌──────────────┴──────────────┐                         │
-│              ▼                             ▼                         │
-│    Runs < 15 minutes?              Runs longer?                      │
-│              │                             │                         │
+│                    COMPUTE SERVICE DECISION TREE                    │
+│                                                                     │
+│                         Start Here                                  │
+│                           │                                         │
+│              ┌──────────────┴──────────────┐                        │
+│              ▼                             ▼                        │
+│    Runs < 15 minutes?              Runs longer?                     │
+│              │                            │                         │
 │       ┌──────┴──────┐              ┌───────┴───────┐                │
 │       ▼             ▼              ▼               ▼                │
 │   Event-driven? Always running?  Need K8s?    Just containers?      │
@@ -997,16 +997,16 @@ def process_item(item):
 │   │LAMBDA │         │          │  EKS  │     │   ECS    │           │
 │   └───────┘         │          └───────┘     │(Fargate) │           │
 │                     │                        └──────────┘           │
-│                     ▼                                                │
-│              Need to manage                                          │
-│              servers yourself?                                       │
-│                     │                                                │
+│                     ▼                                               │
+│              Need to manage                                         │
+│              servers yourself?                                      │
+│                    │                                                │
 │           ┌────────┴────────┐                                       │
 │           ▼                 ▼                                       │
-│     ┌──────────┐     ┌──────────┐                                   │
-│     │ECS (EC2) │     │ Fargate  │                                   │
-│     │Full ctrl │     │Serverless│                                   │
-│     └──────────┘     └──────────┘                                   │
+│       ┌─────────────┐              ┌───────────────┐                │
+│       │ECS (EC2)    │              │ Fargate       │                │
+│       │Full ctrl    │              │Serverless     │                │
+│       └─────────────┘              └───────────────┘                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1177,37 +1177,37 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       LAMBDA KEY POINTS                              │
-│                                                                       │
-│  1. SERVERLESS ≠ NO SERVERS                                          │
-│     → Servers vẫn có, AWS quản lý hoàn toàn                          │
-│                                                                       │
-│  2. PAY-PER-USE                                                       │
-│     → Chỉ trả tiền khi code chạy (requests + duration)               │
-│     → Perfect cho workloads sporadic/variable                        │
-│                                                                       │
-│  3. AUTO-SCALING                                                      │
-│     → Scale từ 0 đến thousands concurrent executions                 │
-│     → Không cần configure ASG                                        │
-│                                                                       │
-│  4. EVENT-DRIVEN                                                      │
-│     → Nhiều triggers: API Gateway, S3, SQS, SNS, EventBridge...      │
-│     → Perfect cho event-driven architectures                         │
-│                                                                       │
-│  5. LIMITS TO REMEMBER                                                │
-│     → Max timeout: 15 minutes                                        │
-│     → Max memory: 10 GB                                              │
-│     → Payload: 6 MB sync, 256 KB async                               │
-│                                                                       │
-│  6. COLD START                                                        │
-│     → First invocation = slower                                       │
-│     → Use Provisioned Concurrency for latency-sensitive apps         │
-│                                                                       │
-│  7. WHEN TO USE LAMBDA                                                │
-│     ✅ Short-running tasks (< 15 min)                                │
-│     ✅ Variable/sporadic traffic                                     │
-│     ✅ Event-driven processing                                       │
-│     ❌ Long-running processes                                        │
+│                       LAMBDA KEY POINTS                             │
+│                                                                     │
+│  1. SERVERLESS ≠ NO SERVERS                                         │
+│     → Servers vẫn có, AWS quản lý hoàn toàn                         │
+│                                                                     │
+│  2. PAY-PER-USE                                                     │
+│     → Chỉ trả tiền khi code chạy (requests + duration)              │
+│     → Perfect cho workloads sporadic/variable                       │
+│                                                                     │
+│  3. AUTO-SCALING                                                    │
+│     → Scale từ 0 đến thousands concurrent executions                │
+│     → Không cần configure ASG                                       │
+│                                                                     │
+│  4. EVENT-DRIVEN                                                    │
+│     → Nhiều triggers: API Gateway, S3, SQS, SNS, EventBridge...     │
+│     → Perfect cho event-driven architectures                        │
+│                                                                     │
+│  5. LIMITS TO REMEMBER                                              │
+│     → Max timeout: 15 minutes                                       │
+│     → Max memory: 10 GB                                             │
+│     → Payload: 6 MB sync, 256 KB async                              │
+│                                                                     │
+│  6. COLD START                                                      │
+│     → First invocation = slower                                     │
+│     → Use Provisioned Concurrency for latency-sensitive apps        │
+│                                                                     │
+│  7. WHEN TO USE LAMBDA                                              │
+│     ✅ Short-running tasks (< 15 min)                               │
+│     ✅ Variable/sporadic traffic                                    │
+│     ✅ Event-driven processing                                      │
+│     ❌ Long-running processes                                       │
 │     ❌ Constant high traffic (có thể tốn hơn EC2)                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1220,42 +1220,42 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    AWS SERVERLESS ECOSYSTEM                          │
-│                                                                       │
+│                    AWS SERVERLESS ECOSYSTEM                         │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                        COMPUTE                               │   │
-│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐              │   │
-│   │   │  Lambda   │  │  Fargate  │  │ App Runner│              │   │
-│   │   │ Functions │  │ Containers│  │   Apps    │              │   │
-│   │   └───────────┘  └───────────┘  └───────────┘              │   │
+│   │                        COMPUTE                              │   │
+│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐               │   │
+│   │   │  Lambda   │  │  Fargate  │  │ App Runner│               │   │
+│   │   │ Functions │  │ Containers│  │   Apps    │               │   │
+│   │   └───────────┘  └───────────┘  └───────────┘               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                       DATA STORES                            │   │
-│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐              │   │
-│   │   │ DynamoDB  │  │    S3     │  │  Aurora   │              │   │
-│   │   │   NoSQL   │  │  Objects  │  │ Serverless│              │   │
-│   │   └───────────┘  └───────────┘  └───────────┘              │   │
+│   │                       DATA STORES                           │   │
+│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐               │   │
+│   │   │ DynamoDB  │  │    S3     │  │  Aurora   │               │   │
+│   │   │   NoSQL   │  │  Objects  │  │ Serverless│               │   │
+│   │   └───────────┘  └───────────┘  └───────────┘               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                   API & INTEGRATION                          │   │
-│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐              │   │
-│   │   │    API    │  │ EventBrdg │  │  AppSync  │              │   │
-│   │   │  Gateway  │  │  Events   │  │  GraphQL  │              │   │
-│   │   └───────────┘  └───────────┘  └───────────┘              │   │
+│   │                   API & INTEGRATION                         │   │
+│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐               │   │
+│   │   │    API    │  │ EventBrdg │  │  AppSync  │               │   │
+│   │   │  Gateway  │  │  Events   │  │  GraphQL  │               │   │
+│   │   └───────────┘  └───────────┘  └───────────┘               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      MESSAGING                               │   │
-│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐              │   │
-│   │   │    SQS    │  │    SNS    │  │  Kinesis  │              │   │
-│   │   │   Queue   │  │   Topics  │  │  Streams  │              │   │
-│   │   └───────────┘  └───────────┘  └───────────┘              │   │
+│   │                      MESSAGING                              │   │
+│   │   ┌───────────┐  ┌───────────┐  ┌───────────┐               │   │
+│   │   │    SQS    │  │    SNS    │  │  Kinesis  │               │   │
+│   │   │   Queue   │  │   Topics  │  │  Streams  │               │   │
+│   │   └───────────┘  └───────────┘  └───────────┘               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                   ORCHESTRATION                              │   │
+│   │                   ORCHESTRATION                             │   │
 │   │   ┌───────────┐  ┌───────────┐                              │   │
 │   │   │   Step    │  │ EventBrdg │                              │   │
 │   │   │ Functions │  │ Scheduler │                              │   │
@@ -1274,43 +1274,43 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        API GATEWAY                                   │
-│                                                                       │
+│                        API GATEWAY                                  │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3 LOẠI API:                                                 │   │
-│   │                                                               │   │
-│   │  1. REST API (Regional/Edge-optimized/Private)               │   │
+│   │  3 LOẠI API:                                                │   │
+│   │                                                             │   │
+│   │  1. REST API (Regional/Edge-optimized/Private)              │   │
 │   │     ├── Full-featured, caching, request validation          │   │
-│   │     └── API keys, usage plans, throttling                    │   │
-│   │                                                               │   │
-│   │  2. HTTP API (Mới hơn, rẻ hơn 70%)                           │   │
-│   │     ├── Simpler, lower latency                               │   │
-│   │     ├── OIDC/OAuth 2.0 built-in                              │   │
-│   │     └── Best for Lambda/HTTP proxies                         │   │
-│   │                                                               │   │
-│   │  3. WebSocket API                                             │   │
-│   │     ├── Real-time two-way communication                      │   │
-│   │     └── Chat apps, live dashboards, gaming                   │   │
+│   │     └── API keys, usage plans, throttling                   │   │
+│   │                                                             │   │
+│   │  2. HTTP API (Mới hơn, rẻ hơn 70%)                          │   │
+│   │     ├── Simpler, lower latency                              │   │
+│   │     ├── OIDC/OAuth 2.0 built-in                             │   │
+│   │     └── Best for Lambda/HTTP proxies                        │   │
+│   │                                                             │   │
+│   │  3. WebSocket API                                           │   │
+│   │     ├── Real-time two-way communication                     │   │
+│   │     └── Chat apps, live dashboards, gaming                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ARCHITECTURE:                                                       │
+│                                                                     │
+│   ARCHITECTURE:                                                     │
 │   ┌───────────────────────────────────────────────────────────┐     │
-│   │                                                            │     │
-│   │   Client     API Gateway            Backend                │     │
-│   │     │            │                     │                   │     │
-│   │     │  Request   │                     │                   │     │
-│   │     │───────────▶│                     │                   │     │
-│   │     │            │ • Authentication    │                   │     │
-│   │     │            │ • Rate Limiting     │                   │     │
-│   │     │            │ • Caching           │                   │     │
-│   │     │            │ • Request Transform │                   │     │
-│   │     │            │                     │                   │     │
+│   │                                                           │     │
+│   │   Client     API Gateway            Backend               │     │
+│   │     │            │                     │                  │     │
+│   │     │  Request   │                     │                  │     │
+│   │     │───────────▶│                     │                  │     │
+│   │     │            │ • Authentication    │                  │     │
+│   │     │            │ • Rate Limiting     │                  │     │
+│   │     │            │ • Caching           │                  │     │
+│   │     │            │ • Request Transform │                  │     │
+│   │     │            │                     │                  │     │
 │   │     │            │────────────────────▶│ Lambda/EC2/HTTP  │     │
-│   │     │            │                     │                   │     │
-│   │     │            │◀────────────────────│                   │     │
-│   │     │◀───────────│                     │                   │     │
-│   │     │  Response  │                     │                   │     │
-│   │                                                            │     │
+│   │     │            │                     │                  │     │
+│   │     │            │◀────────────────────│                  │     │
+│   │     │◀───────────│                     │                  │     │
+│   │     │  Response  │                     │                  │     │
+│   │                                                           │     │
 │   └───────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1319,14 +1319,14 @@ def lambda_handler(event, context):
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │  USE CASE: E-commerce API                                          │
-│                                                                     │
+│                                                                    │
 │   https://api.myshop.com                                           │
-│            │                                                        │
-│            ▼                                                        │
+│           │                                                        │
+│            ▼                                                       │
 │   ┌─────────────────┐                                              │
 │   │   API Gateway   │                                              │
 │   └────────┬────────┘                                              │
-│            │                                                        │
+│           │                                                        │
 │   ┌────────┼────────┬───────────────┐                              │
 │   │        │        │               │                              │
 │   ▼        ▼        ▼               ▼                              │
@@ -1335,8 +1335,8 @@ def lambda_handler(event, context):
 │    ▼        ▼       ▼               ▼                              │
 │ Lambda   Lambda  Cognito      Third-party                          │
 │ + DDB    + DDB   Authorizer   Payment API                          │
-│                                                                     │
-│  Features:                                                          │
+│                                                                    │
+│  Features:                                                         │
 │  • Rate limiting: 1000 req/s per client                            │
 │  • Caching: GET /products cached 5 mins                            │
 │  • Auth: JWT tokens via Cognito                                    │
@@ -1352,21 +1352,21 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          DYNAMODB                                    │
-│                                                                       │
-│   ĐẶC ĐIỂM CHÍNH:                                                    │
+│                          DYNAMODB                                   │
+│                                                                     │
+│   ĐẶC ĐIỂM CHÍNH:                                                   │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  ✅ Fully managed - không cần quản lý servers              │   │
-│   │  ✅ Automatic scaling - capacity tự động điều chỉnh        │   │
-│   │  ✅ Single-digit ms latency - nhanh như chớp               │   │
-│   │  ✅ Built-in security - encryption at rest/in transit      │   │
-│   │  ✅ Global Tables - multi-region replication              │   │
-│   │  ✅ Point-in-time recovery - backup tự động               │   │
+│   │  ✅ Fully managed - không cần quản lý servers               │   │
+│   │  ✅ Automatic scaling - capacity tự động điều chỉnh         │   │
+│   │  ✅ Single-digit ms latency - nhanh như chớp                │   │
+│   │  ✅ Built-in security - encryption at rest/in transit       │   │
+│   │  ✅ Global Tables - multi-region replication                │   │
+│   │  ✅ Point-in-time recovery - backup tự động                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   DATA MODEL:                                                         │
+│                                                                     │
+│   DATA MODEL:                                                       │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                         TABLE                                │   │
+│   │                         TABLE                               │   │
 │   │  ┌───────────────────────────────────────────────────────┐  │   │
 │   │  │ Partition Key │ Sort Key    │ Attributes...           │  │   │
 │   │  ├───────────────┼─────────────┼─────────────────────────┤  │   │
@@ -1374,17 +1374,17 @@ def lambda_handler(event, context):
 │   │  │ user_123      │ order_002   │ {total: 85, items: []}  │  │   │
 │   │  │ user_456      │ order_001   │ {total: 200, items: []} │  │   │
 │   │  └───────────────┴─────────────┴─────────────────────────┘  │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │  • Partition Key = tìm partition nào chứa data              │   │
 │   │  • Sort Key = sắp xếp items trong partition                 │   │
 │   │  • Attributes = schema-less, flexible                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   CAPACITY MODES:                                                     │
+│                                                                     │
+│   CAPACITY MODES:                                                   │
 │   ┌──────────────────────────┬──────────────────────────────────┐   │
 │   │      ON-DEMAND           │        PROVISIONED               │   │
 │   │  (Pay-per-request)       │    (Reserved capacity)           │   │
-│   │                          │                                   │   │
+│   │                          │                                  │   │
 │   │  ✅ Unpredictable load   │  ✅ Predictable workload         │   │
 │   │  ✅ Auto scales          │  ✅ Giá rẻ hơn ~70%              │   │
 │   │  ✅ No capacity plan     │  ✅ Consistent performance       │   │
@@ -1428,33 +1428,33 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              SNS                                     │
-│                  (Publish/Subscribe Messaging)                       │
-│                                                                       │
+│                              SNS                                    │
+│                  (Publish/Subscribe Messaging)                      │
+│                                                                     │
 │   CONCEPT: 1 message → gửi tới NHIỀU subscribers                    │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │     Publisher                    Subscribers                  │   │
-│   │         │                                                     │   │
-│   │         │         ┌──────────┐                               │   │
-│   │         │         │   SNS    │                               │   │
+│   │                                                             │   │
+│   │     Publisher                    Subscribers                │   │
+│   │         │                                                   │   │
+│   │         │         ┌──────────┐                              │   │
+│   │         │         │   SNS    │                              │   │
 │   │         └────────▶│  TOPIC   │──────┬──────┬──────┬────────▶│   │
-│   │                   │          │      │      │      │          │   │
-│   │                   └──────────┘      │      │      │          │   │
-│   │                                     ▼      ▼      ▼          │   │
+│   │                   │          │      │      │      │         │   │
+│   │                   └──────────┘      │      │      │         │   │
+│   │                                     ▼      ▼      ▼         │   │
 │   │                                  ┌─────┐ ┌─────┐ ┌─────┐    │   │
-│   │                                  │Lambda│ │ SQS │ │Email│    │   │
+│   │                                  │Lambda│ │ SQS │ │Email│   │   │
 │   │                                  └─────┘ └─────┘ └─────┘    │   │
-│   │                                                              │   │
-│   │   Supported Subscribers:                                     │   │
-│   │   • Lambda functions                                         │   │
-│   │   • SQS queues                                               │   │
-│   │   • HTTP/HTTPS endpoints                                     │   │
-│   │   • Email/Email-JSON                                         │   │
-│   │   • SMS                                                       │   │
-│   │   • Mobile push (iOS, Android)                               │   │
-│   │   • Kinesis Data Firehose                                    │   │
+│   │                                                             │   │
+│   │   Supported Subscribers:                                    │   │
+│   │   • Lambda functions                                        │   │
+│   │   • SQS queues                                              │   │
+│   │   • HTTP/HTTPS endpoints                                    │   │
+│   │   • Email/Email-JSON                                        │   │
+│   │   • SMS                                                     │   │
+│   │   • Mobile push (iOS, Android)                              │   │
+│   │   • Kinesis Data Firehose                                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1462,22 +1462,22 @@ def lambda_handler(event, context):
 **Ví dụ use case:**
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│  USE CASE: Order Notification System                                │
-│                                                                     │
-│           Order placed                                              │
-│               │                                                     │
-│               ▼                                                     │
+│  USE CASE: Order Notification System                               │
+│                                                                    │
+│           Order placed                                             │
+│              │                                                     │
+│               ▼                                                    │
 │        ┌─────────────┐                                             │
 │        │ order-topic │                                             │
 │        └──────┬──────┘                                             │
-│               │                                                     │
+│              │                                                     │
 │   ┌───────────┼───────────┬───────────────┐                        │
 │   │           │           │               │                        │
 │   ▼           ▼           ▼               ▼                        │
 │ Lambda     Lambda      Lambda          Email                       │
 │ Update     Send        Analytics        to                         │
 │ Inventory  Email       Processing      Admin                       │
-│                                                                     │
+│                                                                    │
 │  → 1 event kích hoạt 4 actions song song!                          │
 └────────────────────────────────────────────────────────────────────┘
 ```
@@ -1490,34 +1490,34 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              SQS                                     │
-│                    (Message Queue Service)                           │
-│                                                                       │
+│                              SQS                                    │
+│                    (Message Queue Service)                          │
+│                                                                     │
 │   CONCEPT: Decouple producers và consumers                          │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   Producer           Queue              Consumer              │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   Producer           Queue              Consumer            │   │
+│   │                                                             │   │
 │   │  ┌───────┐      ┌───────────────┐      ┌───────────┐        │   │
-│   │  │ App A │─────▶│ ■ ■ ■ ■ ■ ■ │─────▶│ Lambda/   │        │   │
+│   │  │ App A │─────▶│ ■ ■ ■ ■ ■ ■ │─────▶│ Lambda/   │          │   │
 │   │  └───────┘      │ (messages)    │      │ Worker    │        │   │
 │   │                 └───────────────┘      └───────────┘        │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   Producer gửi     Messages chờ     Consumer xử lý          │   │
 │   │   nhanh chóng      trong queue       theo tốc độ riêng      │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   2 LOẠI QUEUE:                                                       │
+│                                                                     │
+│   2 LOẠI QUEUE:                                                     │
 │   ┌─────────────────────────────┬───────────────────────────────┐   │
 │   │       STANDARD              │            FIFO               │   │
 │   │                             │    (First-In-First-Out)       │   │
-│   │                             │                                │   │
+│   │                             │                               │   │
 │   │  ✅ Unlimited throughput    │  ✅ Order guaranteed          │   │
 │   │  ✅ At-least-once delivery  │  ✅ Exactly-once processing   │   │
 │   │  ❌ Order not guaranteed    │  ❌ 3000 msg/s (with batch)   │   │
-│   │                             │                                │   │
+│   │                             │                               │   │
 │   │  Use: Thumbnails, logs      │  Use: Orders, payments        │   │
 │   └─────────────────────────────┴───────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -1526,25 +1526,25 @@ def lambda_handler(event, context):
 **SNS + SQS Pattern (Fan-out):**
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│  PATTERN: SNS + SQS Fan-out                                         │
-│                                                                     │
+│  PATTERN: SNS + SQS Fan-out                                        │
+│                                                                    │
 │                    ┌─────────────┐                                 │
 │                    │  SNS Topic  │                                 │
 │                    └──────┬──────┘                                 │
-│                           │                                         │
+│                          │                                         │
 │           ┌───────────────┼───────────────┐                        │
 │           │               │               │                        │
 │           ▼               ▼               ▼                        │
-│      ┌─────────┐    ┌─────────┐    ┌─────────┐                    │
-│      │  SQS 1  │    │  SQS 2  │    │  SQS 3  │                    │
-│      │ Email Q │    │ Analytics│   │ Archive │                    │
-│      └────┬────┘    └────┬────┘    └────┬────┘                    │
+│      ┌─────────┐    ┌─────────┐    ┌─────────┐                     │
+│      │  SQS 1  │    │  SQS 2  │    │  SQS 3  │                     │
+│      │ Email Q │    │ Analytics│    │ Archive│                     │
+│      └────┬────┘    └────┬────┘    └────┬────┘                     │
 │           │              │              │                          │
 │           ▼              ▼              ▼                          │
 │       Lambda 1      Lambda 2       Lambda 3                        │
 │       send email    process data   store S3                        │
-│                                                                     │
-│  Lợi ích:                                                           │
+│                                                                    │
+│  Lợi ích:                                                          │
 │  • Mỗi consumer xử lý độc lập                                      │
 │  • Retry riêng biệt nếu fail                                       │
 │  • Scale từng queue riêng                                          │
@@ -1559,75 +1559,75 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         EVENTBRIDGE                                  │
-│               (Serverless Event Bus & Scheduler)                     │
-│                                                                       │
+│                         EVENTBRIDGE                                 │
+│               (Serverless Event Bus & Scheduler)                    │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   Event Sources           Event Bus           Targets         │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   Event Sources           Event Bus           Targets       │   │
+│   │                                                             │   │
 │   │  ┌───────────┐        ┌─────────────┐     ┌───────────┐     │   │
 │   │  │AWS Services│       │             │     │  Lambda   │     │   │
 │   │  │ S3, EC2... │──────▶│             │────▶│           │     │   │
 │   │  └───────────┘        │             │     └───────────┘     │   │
-│   │                       │   DEFAULT   │                        │   │
+│   │                       │   DEFAULT   │                       │   │
 │   │  ┌───────────┐        │    BUS      │     ┌───────────┐     │   │
-│   │  │ Custom    │──────▶│             │────▶│  SQS/SNS  │     │   │
+│   │  │ Custom    │──────▶│             │────▶│  SQS/SNS  │      │   │
 │   │  │ Events    │        │    Rules    │     └───────────┘     │   │
-│   │  └───────────┘        │   filter    │                        │   │
+│   │  └───────────┘        │   filter    │                       │   │
 │   │                       │   & route   │     ┌───────────┐     │   │
 │   │  ┌───────────┐        │             │────▶│Step Funcs │     │   │
-│   │  │ SaaS Apps │──────▶│             │     └───────────┘     │   │
-│   │  │Shopify etc│        └─────────────┘                        │   │
-│   │  └───────────┘                                               │   │
-│   │                                                               │   │
+│   │  │ SaaS Apps │──────▶│             │     └───────────┘      │   │
+│   │  │Shopify etc│        └─────────────┘                       │   │
+│   │  └───────────┘                                              │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   EVENT STRUCTURE:                                                    │
-│   {                                                                   │
-│     "version": "0",                                                   │
-│     "source": "myapp.orders",                                        │
-│     "detail-type": "Order Created",                                  │
-│     "detail": {                                                       │
-│       "order_id": "12345",                                           │
-│       "customer": "user_123",                                        │
-│       "total": 99.99                                                 │
-│     }                                                                 │
-│   }                                                                   │
-│                                                                       │
-│   RULE EXAMPLE (filter orders > $100):                               │
-│   {                                                                   │
-│     "source": ["myapp.orders"],                                      │
-│     "detail-type": ["Order Created"],                                │
-│     "detail": {                                                       │
+│                                                                     │
+│   EVENT STRUCTURE:                                                  │
+│   {                                                                 │
+│     "version": "0",                                                 │
+│     "source": "myapp.orders",                                       │
+│     "detail-type": "Order Created",                                 │
+│     "detail": {                                                     │
+│       "order_id": "12345",                                          │
+│       "customer": "user_123",                                       │
+│       "total": 99.99                                                │
+│     }                                                               │
+│   }                                                                 │
+│                                                                     │
+│   RULE EXAMPLE (filter orders > $100):                              │
+│   {                                                                 │
+│     "source": ["myapp.orders"],                                     │
+│     "detail-type": ["Order Created"],                               │
+│     "detail": {                                                     │
 │       "total": [{"numeric": [">", 100]}]                            │
-│     }                                                                 │
-│   }                                                                   │
+│     }                                                               │
+│   }                                                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 **EventBridge Scheduler:**
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│  EVENTBRIDGE SCHEDULER (Thay thế CloudWatch Events)                 │
-│                                                                     │
+│  EVENTBRIDGE SCHEDULER (Thay thế CloudWatch Events)                │
+│                                                                    │
 │  ┌───────────────────────────────────────────────────────────────┐ │
-│  │  Schedule Types:                                               │ │
-│  │                                                                │ │
+│  │  Schedule Types:                                              │ │
+│  │                                                               │ │
 │  │  1. Rate-based: rate(5 minutes), rate(1 hour)                 │ │
-│  │                                                                │ │
-│  │  2. Cron-based: cron(0 9 * * ? *)  → 9AM daily               │ │
-│  │                                                                │ │
+│  │                                                               │ │
+│  │  2. Cron-based: cron(0 9 * * ? *)  → 9AM daily                │ │
+│  │                                                               │ │
 │  │  3. One-time: at(2024-12-25T00:00:00)                         │ │
-│  │                                                                │ │
+│  │                                                               │ │
 │  │  Targets: Lambda, Step Functions, SQS, SNS, ECS Task...       │ │
 │  └───────────────────────────────────────────────────────────────┘ │
-│                                                                     │
-│  Use cases:                                                         │
-│  • Daily reports                                                    │
-│  • Database cleanup                                                 │
-│  • Scheduled notifications                                          │
-│  • Batch processing                                                 │
+│                                                                    │
+│  Use cases:                                                        │
+│  • Daily reports                                                   │
+│  • Database cleanup                                                │
+│  • Scheduled notifications                                         │
+│  • Batch processing                                                │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1639,65 +1639,65 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       STEP FUNCTIONS                                 │
-│              (Visual Workflow / State Machine)                       │
-│                                                                       │
-│   Orchestrate nhiều Lambda functions và AWS services                 │
-│                                                                       │
+│                       STEP FUNCTIONS                                │
+│              (Visual Workflow / State Machine)                      │
+│                                                                     │
+│   Orchestrate nhiều Lambda functions và AWS services                │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    STATE MACHINE EXAMPLE                     │   │
-│   │                                                               │   │
-│   │          ┌─────────────────┐                                 │   │
+│   │                    STATE MACHINE EXAMPLE                    │   │
+│   │                                                             │   │
+│   │          ┌─────────────────┐                                │   │
 │   │          │  Process Order  │ ← Start                        │   │
-│   │          └────────┬────────┘                                 │   │
-│   │                   │                                          │   │
-│   │          ┌────────▼────────┐                                 │   │
-│   │          │ Check Inventory │                                 │   │
-│   │          └────────┬────────┘                                 │   │
-│   │                   │                                          │   │
+│   │          └────────┬────────┘                                │   │
+│   │                   │                                         │   │
+│   │          ┌────────▼────────┐                                │   │
+│   │          │ Check Inventory │                                │   │
+│   │          └────────┬────────┘                                │   │
+│   │                   │                                         │   │
 │   │         ┌─────────┴─────────┐                               │   │
 │   │         ▼                   ▼                               │   │
-│   │   In Stock?            Out of Stock                          │   │
+│   │   In Stock?            Out of Stock                         │   │
 │   │         │                   │                               │   │
 │   │         ▼                   ▼                               │   │
 │   │   ┌──────────┐        ┌──────────┐                          │   │
 │   │   │ Payment  │        │ Backorder│                          │   │
 │   │   └────┬─────┘        └────┬─────┘                          │   │
-│   │        │                   │                                 │   │
-│   │        ▼                   │                                 │   │
-│   │   ┌──────────┐             │                                 │   │
-│   │   │ Shipping │             │ Wait for stock                  │   │
-│   │   └────┬─────┘             │                                 │   │
-│   │        │                   │                                 │   │
-│   │        └───────┬───────────┘                                 │   │
-│   │                ▼                                             │   │
-│   │          ┌──────────┐                                        │   │
-│   │          │  Notify  │                                        │   │
-│   │          └────┬─────┘                                        │   │
-│   │               │                                              │   │
-│   │               ▼                                              │   │
-│   │             [End]                                            │   │
-│   │                                                               │   │
+│   │        │                   │                                │   │
+│   │        ▼                   │                                │   │
+│   │   ┌──────────┐             │                                │   │
+│   │   │ Shipping │             │ Wait for stock                 │   │
+│   │   └────┬─────┘             │                                │   │
+│   │        │                   │                                │   │
+│   │        └───────┬───────────┘                                │   │
+│   │                ▼                                            │   │
+│   │          ┌──────────┐                                       │   │
+│   │          │  Notify  │                                       │   │
+│   │          └────┬─────┘                                       │   │
+│   │               │                                             │   │
+│   │               ▼                                             │   │
+│   │             [End]                                           │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   STATE TYPES:                                                        │
-│   • Task     - Run Lambda, call API                                  │
-│   • Choice   - Branch based on condition                             │
-│   • Parallel - Run states concurrently                               │
-│   • Wait     - Delay for time or until timestamp                     │
-│   • Map      - Process items in array                                │
-│   • Pass     - Pass input to output                                  │
-│   • Succeed/Fail - End states                                        │
-│                                                                       │
-│   2 WORKFLOW TYPES:                                                   │
+│                                                                     │
+│   STATE TYPES:                                                      │
+│   • Task     - Run Lambda, call API                                 │
+│   • Choice   - Branch based on condition                            │
+│   • Parallel - Run states concurrently                              │
+│   • Wait     - Delay for time or until timestamp                    │
+│   • Map      - Process items in array                               │
+│   • Pass     - Pass input to output                                 │
+│   • Succeed/Fail - End states                                       │
+│                                                                     │
+│   2 WORKFLOW TYPES:                                                 │
 │   ┌─────────────────────────┬───────────────────────────────────┐   │
-│   │      STANDARD           │          EXPRESS                   │   │
-│   │                         │                                    │   │
+│   │      STANDARD           │          EXPRESS                  │   │
+│   │                         │                                   │   │
 │   │  ✅ Up to 1 year        │  ✅ Up to 5 minutes               │   │
 │   │  ✅ Exactly-once        │  ✅ At-least-once                 │   │
 │   │  ✅ Full execution hist │  ✅ 100K executions/sec           │   │
 │   │  ❌ $0.025/1K trans     │  ✅ Pay per request+duration      │   │
-│   │                         │                                    │   │
+│   │                         │                                   │   │
 │   │  Use: Long workflows    │  Use: High-volume, quick tasks    │   │
 │   └─────────────────────────┴───────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -1752,31 +1752,31 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          FARGATE                                     │
-│              (Serverless Containers - No EC2 to manage)              │
-│                                                                       │
+│                          FARGATE                                    │
+│              (Serverless Containers - No EC2 to manage)             │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │  TRƯỚC ĐÂY (EC2 Launch Type):                                │   │
+│   │                                                             │   │
+│   │  TRƯỚC ĐÂY (EC2 Launch Type):                               │   │
 │   │  ┌─────────────────────────────────────────────────────┐    │   │
-│   │  │  Bạn phải quản lý:                                   │    │   │
-│   │  │  • Provision EC2 instances                           │    │   │
-│   │  │  • Scale EC2 cluster                                 │    │   │
-│   │  │  • Patch/update AMIs                                 │    │   │
-│   │  │  • Monitor instance health                           │    │   │
+│   │  │  Bạn phải quản lý:                                   │   │   │
+│   │  │  • Provision EC2 instances                           │   │   │
+│   │  │  • Scale EC2 cluster                                 │   │   │
+│   │  │  • Patch/update AMIs                                 │   │   │
+│   │  │  • Monitor instance health                           │   │   │
 │   │  └─────────────────────────────────────────────────────┘    │   │
-│   │                                                               │   │
-│   │  VỚI FARGATE:                                                │   │
+│   │                                                             │   │
+│   │  VỚI FARGATE:                                               │   │
 │   │  ┌─────────────────────────────────────────────────────┐    │   │
-│   │  │  Bạn chỉ cần:                                        │    │   │
-│   │  │  • Define CPU & Memory cho task                      │    │   │
-│   │  │  • Deploy container                                  │    │   │
-│   │  │  → AWS lo phần còn lại!                              │    │   │
+│   │  │  Bạn chỉ cần:                                        │   │   │
+│   │  │  • Define CPU & Memory cho task                      │   │   │
+│   │  │  • Deploy container                                  │   │   │
+│   │  │  → AWS lo phần còn lại!                              │   │   │
 │   │  └─────────────────────────────────────────────────────┘    │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   FARGATE vs EC2 vs LAMBDA:                                          │
+│                                                                     │
+│   FARGATE vs EC2 vs LAMBDA:                                         │
 │   ┌─────────────────┬───────────────┬────────────────────────────┐  │
 │   │     Lambda      │    Fargate    │          EC2               │  │
 │   ├─────────────────┼───────────────┼────────────────────────────┤  │
@@ -1786,12 +1786,12 @@ def lambda_handler(event, context):
 │   │ Pay per exec    │ Pay per vCPU  │ Pay per hour               │  │
 │   │ No containers   │ Docker images │ Any software               │  │
 │   └─────────────────┴───────────────┴────────────────────────────┘  │
-│                                                                       │
-│   USE CASES:                                                          │
-│   • Web apps, APIs (long-running)                                    │
-│   • Microservices                                                    │
-│   • Batch processing (longer than 15 mins)                           │
-│   • Machine learning inference                                       │
+│                                                                     │
+│   USE CASES:                                                        │
+│   • Web apps, APIs (long-running)                                   │
+│   • Microservices                                                   │
+│   • Batch processing (longer than 15 mins)                          │
+│   • Machine learning inference                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1803,48 +1803,48 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          APPSYNC                                     │
-│                    (Managed GraphQL Service)                         │
-│                                                                       │
+│                          APPSYNC                                    │
+│                    (Managed GraphQL Service)                        │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   Client Apps              AppSync           Data Sources     │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   Client Apps              AppSync           Data Sources   │   │
+│   │                                                             │   │
 │   │  ┌─────────┐           ┌─────────────┐     ┌───────────┐    │   │
 │   │  │  Web    │           │             │     │ DynamoDB  │    │   │
 │   │  │  App    │◀─────────▶│             │────▶│           │    │   │
 │   │  └─────────┘           │   GraphQL   │     └───────────┘    │   │
-│   │                        │    API      │                       │   │
+│   │                        │    API      │                      │   │
 │   │  ┌─────────┐           │             │     ┌───────────┐    │   │
 │   │  │ Mobile  │◀─────────▶│  Resolvers  │────▶│  Lambda   │    │   │
 │   │  │  App    │           │             │     └───────────┘    │   │
-│   │  └─────────┘           │             │                       │   │
+│   │  └─────────┘           │             │                      │   │
 │   │                        │             │     ┌───────────┐    │   │
 │   │  ┌─────────┐           │             │────▶│   RDS     │    │   │
 │   │  │   IoT   │◀─────────▶│             │     └───────────┘    │   │
-│   │  │ Device  │  Real-time└─────────────┘                       │   │
-│   │  └─────────┘  subscriptions                                  │   │
-│   │                                                               │   │
+│   │  │ Device  │  Real-time└─────────────┘                      │   │
+│   │  └─────────┘  subscriptions                                 │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   FEATURES:                                                           │
-│   • Real-time subscriptions (WebSocket)                              │
-│   • Offline sync (mobile apps)                                       │
-│   • Fine-grained authorization                                       │
-│   • Conflict resolution                                              │
-│   • Built-in caching                                                 │
-│                                                                       │
-│   GRAPHQL vs REST:                                                    │
+│                                                                     │
+│   FEATURES:                                                         │
+│   • Real-time subscriptions (WebSocket)                             │
+│   • Offline sync (mobile apps)                                      │
+│   • Fine-grained authorization                                      │
+│   • Conflict resolution                                             │
+│   • Built-in caching                                                │
+│                                                                     │
+│   GRAPHQL vs REST:                                                  │
 │   ┌──────────────────────────┬──────────────────────────────────┐   │
-│   │          REST            │           GraphQL                 │   │
-│   │                          │                                   │   │
-│   │  GET /users              │  query {                          │   │
-│   │  GET /users/123          │    user(id: 123) {                │   │
-│   │  GET /users/123/orders   │      name                         │   │
+│   │          REST            │           GraphQL                │   │
+│   │                          │                                  │   │
+│   │  GET /users              │  query {                         │   │
+│   │  GET /users/123          │    user(id: 123) {               │   │
+│   │  GET /users/123/orders   │      name                        │   │
 │   │  (3 requests)            │      orders { id, total }        │   │
-│   │                          │    }                              │   │
-│   │                          │  }                                │   │
-│   │                          │  (1 request, exactly what needed) │   │
+│   │                          │    }                             │   │
+│   │                          │  }                               │   │
+│   │                          │  (1 request, exactly what needed)│   │
 │   └──────────────────────────┴──────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1857,32 +1857,32 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       AURORA SERVERLESS                              │
-│                 (Serverless Relational Database)                     │
-│                                                                       │
+│                       AURORA SERVERLESS                             │
+│                 (Serverless Relational Database)                    │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │  AURORA SERVERLESS V2:                                       │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │  AURORA SERVERLESS V2:                                      │   │
+│   │                                                             │   │
 │   │  ┌─────────────────────────────────────────────────────┐    │   │
-│   │  │                                                      │    │   │
-│   │  │   Capacity                                           │    │   │
-│   │  │      ▲                                               │    │   │
-│   │  │      │            ___                                │    │   │
-│   │  │      │           /   \___                            │    │   │
-│   │  │      │      ___/         \___                        │    │   │
-│   │  │      │   __/                  \___                   │    │   │
-│   │  │      │  /                         \__                │    │   │
-│   │  │      └────────────────────────────────▶ Time         │    │   │
-│   │  │                                                      │    │   │
-│   │  │   Auto-scales dựa trên workload thực tế            │    │   │
-│   │  │   • Min: 0.5 ACU (có thể pause = $0)               │    │   │
+│   │  │                                                      │   │   │
+│   │  │   Capacity                                           │   │   │
+│   │  │      ▲                                               │   │   │
+│   │  │      │            ___                                │   │   │
+│   │  │      │           /   \___                            │   │   │
+│   │  │      │      ___/         \___                        │   │   │
+│   │  │      │   __/                  \___                   │   │   │
+│   │  │      │  /                         \__                │   │   │
+│   │  │      └────────────────────────────────▶ Time         │   │   │
+│   │  │                                                      │   │   │
+│   │  │   Auto-scales dựa trên workload thực tế            │     │   │
+│   │  │   • Min: 0.5 ACU (có thể pause = $0)               │     │   │
 │   │  │   • Max: 128 ACUs                                   │    │   │
 │   │  │   • Scale trong vài giây                            │    │   │
-│   │  │                                                      │    │   │
+│   │  │                                                      │   │   │
 │   │  └─────────────────────────────────────────────────────┘    │   │
-│   │                                                               │   │
-│   │  AURORA SERVERLESS vs RDS:                                   │   │
+│   │                                                             │   │
+│   │  AURORA SERVERLESS vs RDS:                                  │   │
 │   │  ┌────────────────────────┬────────────────────────────┐    │   │
 │   │  │    RDS (Provisioned)   │    Aurora Serverless       │    │   │
 │   │  ├────────────────────────┼────────────────────────────┤    │   │
@@ -1891,13 +1891,13 @@ def lambda_handler(event, context):
 │   │  │ Manual scaling         │ Automatic scaling          │    │   │
 │   │  │ Always running         │ Can pause when idle        │    │   │
 │   │  └────────────────────────┴────────────────────────────┘    │   │
-│   │                                                               │   │
-│   │  BEST FOR:                                                    │   │
-│   │  • Variable workloads                                        │   │
-│   │  • Development/test environments                             │   │
-│   │  • Infrequently used applications                            │   │
-│   │  • New apps with unknown load                                │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │  BEST FOR:                                                  │   │
+│   │  • Variable workloads                                       │   │
+│   │  • Development/test environments                            │   │
+│   │  • Infrequently used applications                           │   │
+│   │  • New apps with unknown load                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1910,33 +1910,33 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          COGNITO                                     │
-│            (Serverless Authentication & Authorization)               │
-│                                                                       │
+│                          COGNITO                                    │
+│            (Serverless Authentication & Authorization)              │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   2 COMPONENTS:                                               │   │
-│   │                                                               │   │
-│   │   1. USER POOLS (Authentication - "Who are you?")            │   │
+│   │                                                             │   │
+│   │   2 COMPONENTS:                                             │   │
+│   │                                                             │   │
+│   │   1. USER POOLS (Authentication - "Who are you?")           │   │
 │   │   ┌─────────────────────────────────────────────────────┐   │   │
-│   │   │                                                      │   │   │
+│   │   │                                                      │  │   │
 │   │   │   User ──▶ Sign up/Sign in ──▶ User Pool ──▶ JWT    │   │   │
-│   │   │                                    │                 │   │   │
-│   │   │   Features:                        │                 │   │   │
-│   │   │   • Username/password              ▼                 │   │   │
+│   │   │                                    │                 │  │   │
+│   │   │   Features:                        │                 │  │   │
+│   │   │   • Username/password              ▼                 │  │   │
 │   │   │   • Social login (Google, FB)   ┌──────────┐        │   │   │
 │   │   │   • MFA                         │ ID Token │        │   │   │
 │   │   │   • Email/Phone verification    │ Access   │        │   │   │
 │   │   │   • Password policies           │ Token    │        │   │   │
 │   │   │                                 └──────────┘        │   │   │
 │   │   └─────────────────────────────────────────────────────┘   │   │
-│   │                                                               │   │
-│   │   2. IDENTITY POOLS (Authorization - "What can you do?")     │   │
+│   │                                                             │   │
+│   │   2. IDENTITY POOLS (Authorization - "What can you do?")    │   │
 │   │   ┌─────────────────────────────────────────────────────┐   │   │
-│   │   │                                                      │   │   │
-│   │   │   JWT ──▶ Identity Pool ──▶ AWS Credentials          │   │   │
-│   │   │   from                        │                      │   │   │
-│   │   │   User Pool                   ▼                      │   │   │
+│   │   │                                                      │  │   │
+│   │   │   JWT ──▶ Identity Pool ──▶ AWS Credentials          │  │   │
+│   │   │   from                        │                      │  │   │
+│   │   │   User Pool                   ▼                      │  │   │
 │   │   │                         ┌───────────────┐           │   │   │
 │   │   │   Federated             │ Temporary AWS │           │   │   │
 │   │   │   identities:           │ credentials   │           │   │   │
@@ -1945,32 +1945,32 @@ def lambda_handler(event, context):
 │   │   │   • SAML, OIDC                  │                   │   │   │
 │   │   │                                 ▼                   │   │   │
 │   │   │                          Access S3, DynamoDB...     │   │   │
-│   │   │                                                      │   │   │
+│   │   │                                                      │  │   │
 │   │   └─────────────────────────────────────────────────────┘   │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   TYPICAL FLOW:                                                       │
+│                                                                     │
+│   TYPICAL FLOW:                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   User        User Pool      Identity Pool     AWS Services  │   │
-│   │     │             │               │                  │       │   │
-│   │     │ Login       │               │                  │       │   │
-│   │     │────────────▶│               │                  │       │   │
-│   │     │             │               │                  │       │   │
-│   │     │◀────────────│               │                  │       │   │
-│   │     │  JWT Tokens │               │                  │       │   │
-│   │     │             │               │                  │       │   │
-│   │     │─────────────│──────────────▶│                  │       │   │
-│   │     │             │  Exchange JWT │                  │       │   │
-│   │     │             │               │                  │       │   │
-│   │     │◀────────────│───────────────│                  │       │   │
-│   │     │   AWS Credentials           │                  │       │   │
-│   │     │             │               │                  │       │   │
-│   │     │─────────────│───────────────│─────────────────▶│       │   │
-│   │     │             │               │   Access S3,     │       │   │
-│   │     │             │               │   DynamoDB, etc  │       │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   User        User Pool      Identity Pool     AWS Services │   │
+│   │     │             │               │                  │      │   │
+│   │     │ Login       │               │                  │      │   │
+│   │     │────────────▶│               │                  │      │   │
+│   │     │             │               │                  │      │   │
+│   │     │◀────────────│               │                  │      │   │
+│   │     │  JWT Tokens │               │                  │      │   │
+│   │     │             │               │                  │      │   │
+│   │     │─────────────│──────────────▶│                  │      │   │
+│   │     │             │  Exchange JWT │                  │      │   │
+│   │     │             │               │                  │      │   │
+│   │     │◀────────────│───────────────│                  │      │   │
+│   │     │   AWS Credentials           │                  │      │   │
+│   │     │             │               │                  │      │   │
+│   │     │─────────────│───────────────│─────────────────▶│      │   │
+│   │     │             │               │   Access S3,     │      │   │
+│   │     │             │               │   DynamoDB, etc  │      │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1981,40 +1981,40 @@ def lambda_handler(event, context):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                   SERVERLESS SERVICE SELECTION                       │
-│                                                                       │
-│   Tôi cần...              → Dùng dịch vụ                             │
-│   ────────────────────────────────────────────────────────────       │
-│   Run code < 15 mins      → Lambda                                   │
-│   Run containers long     → Fargate (ECS/EKS)                        │
-│   REST/HTTP API           → API Gateway (HTTP API)                   │
-│   GraphQL API             → AppSync                                  │
-│   NoSQL database          → DynamoDB                                 │
-│   SQL database            → Aurora Serverless                        │
-│   Object storage          → S3                                       │
-│   User authentication     → Cognito User Pools                       │
-│   AWS credentials         → Cognito Identity Pools                   │
-│   Pub/Sub messaging       → SNS                                      │
-│   Queue processing        → SQS                                      │
-│   Event routing           → EventBridge                              │
-│   Cron jobs               → EventBridge Scheduler                    │
-│   Orchestrate workflows   → Step Functions                           │
-│   Real-time data          → Kinesis / AppSync subscriptions          │
-│                                                                       │
-│   ──────────────────────────────────────────────────────────────     │
-│                                                                       │
-│   EXAMPLE: E-commerce Application (100% Serverless)                  │
-│                                                                       │
+│                   SERVERLESS SERVICE SELECTION                      │
+│                                                                     │
+│   Tôi cần...              → Dùng dịch vụ                            │
+│   ────────────────────────────────────────────────────────────      │
+│   Run code < 15 mins      → Lambda                                  │
+│   Run containers long     → Fargate (ECS/EKS)                       │
+│   REST/HTTP API           → API Gateway (HTTP API)                  │
+│   GraphQL API             → AppSync                                 │
+│   NoSQL database          → DynamoDB                                │
+│   SQL database            → Aurora Serverless                       │
+│   Object storage          → S3                                      │
+│   User authentication     → Cognito User Pools                      │
+│   AWS credentials         → Cognito Identity Pools                  │
+│   Pub/Sub messaging       → SNS                                     │
+│   Queue processing        → SQS                                     │
+│   Event routing           → EventBridge                             │
+│   Cron jobs               → EventBridge Scheduler                   │
+│   Orchestrate workflows   → Step Functions                          │
+│   Real-time data          → Kinesis / AppSync subscriptions         │
+│                                                                     │
+│   ──────────────────────────────────────────────────────────────    │
+│                                                                     │
+│   EXAMPLE: E-commerce Application (100% Serverless)                 │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │          CloudFront (CDN)                                    │   │
-│   │                │                                             │   │
+│   │          CloudFront (CDN)                                   │   │
+│   │                │                                            │   │
 │   │      ┌─────────┴──────────┐                                 │   │
 │   │      ▼                    ▼                                 │   │
 │   │   S3 (SPA)           API Gateway                            │   │
 │   │   React App            │                                    │   │
 │   │                ┌───────┴───────┐                            │   │
 │   │                ▼               ▼                            │   │
-│   │           Cognito         Lambda functions                   │   │
+│   │           Cognito         Lambda functions                  │   │
 │   │           (Auth)           │         │                      │   │
 │   │                    ┌───────┴───┐     │                      │   │
 │   │                    ▼           ▼     ▼                      │   │
@@ -2025,7 +2025,7 @@ def lambda_handler(event, context):
 │   │                          Lambda    EventBridge              │   │
 │   │                          (Send       (Schedule)             │   │
 │   │                           Email)                            │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │   Cost: Pay only when users are shopping!                   │   │
 │   │   Scale: From 0 to millions automatically                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │

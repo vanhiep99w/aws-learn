@@ -43,25 +43,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    AWS Systems Manager                               │
-│                                                                      │
+│                    AWS Systems Manager                              │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐│
-│  │                    Operations Management                         ││
+│  │                    Operations Management                        ││
 │  │  Explorer │ OpsCenter │ CloudWatch Dashboard │ PHD              ││
 │  └─────────────────────────────────────────────────────────────────┘│
-│                                                                      │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐│
-│  │                    Application Management                        ││
+│  │                    Application Management                       ││
 │  │  Parameter Store │ AppConfig                                    ││
 │  └─────────────────────────────────────────────────────────────────┘│
-│                                                                      │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐│
-│  │                    Change Management                             ││
+│  │                    Change Management                            ││
 │  │  Change Manager │ Automation │ Change Calendar │ Maintenance    ││
 │  └─────────────────────────────────────────────────────────────────┘│
-│                                                                      │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐│
-│  │                    Node Management                               ││
+│  │                    Node Management                              ││
 │  │  Fleet Manager │ Session Manager │ Run Command │ Patch Manager  ││
 │  │  State Manager │ Inventory                                      ││
 │  └─────────────────────────────────────────────────────────────────┘│
@@ -89,8 +89,8 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SSM Agent Architecture                            │
-│                                                                      │
+│                    SSM Agent Architecture                           │
+│                                                                     │
 │   AWS Cloud                           Your EC2/On-prem              │
 │   ┌─────────────┐                    ┌─────────────────────┐        │
 │   │ Systems     │ ◄─── polling ───── │ SSM Agent           │        │
@@ -100,7 +100,7 @@
 │   │             │                    │  → Collect inventory│        │
 │   │             │ ◄─── results ───── │  → Report status    │        │
 │   └─────────────┘                    └─────────────────────┘        │
-│                                                                      │
+│                                                                     │
 │   Không cần SSH! Chỉ cần HTTPS outbound (443)                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -118,19 +118,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SSM Requirements                                  │
+│                    SSM Requirements                                 │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  1. SSM Agent installed and running                                  │
+│                                                                     │
+│  1. SSM Agent installed and running                                 │
 │     └── Pre-installed on modern AMIs                                │
-│                                                                      │
+│                                                                     │
 │  2. IAM Role với managed policy:                                    │
 │     └── AmazonSSMManagedInstanceCore                                │
-│                                                                      │
-│  3. Network connectivity:                                            │
+│                                                                     │
+│  3. Network connectivity:                                           │
 │     └── HTTPS outbound (443) to SSM endpoints                       │
 │     └── Hoặc VPC Endpoints cho private subnets                      │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -145,20 +145,20 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 Traditional SSH vs Session Manager                   │
-│                                                                      │
-│  Traditional SSH:                                                    │
-│  ┌──────────┐   SSH (22)   ┌──────────┐   SSH (22)   ┌──────────┐  │
-│  │ User     │────────────► │ Bastion  │────────────► │ Private  │  │
-│  │          │              │ Host     │              │ EC2      │  │
-│  └──────────┘              └──────────┘              └──────────┘  │
-│       ⚠️ Cần quản lý SSH keys, mở ports, maintain bastion          │
-│                                                                      │
-│  Session Manager:                                                    │
-│  ┌──────────┐  HTTPS (443) ┌──────────┐              ┌──────────┐  │
-│  │ User     │────────────► │ SSM      │◄─────────────│ SSM Agent│  │
-│  │ (Console │              │ Service  │   polling    │ (EC2)    │  │
-│  │  or CLI) │              └──────────┘              └──────────┘  │
+│                 Traditional SSH vs Session Manager                  │
+│                                                                     │
+│  Traditional SSH:                                                   │
+│  ┌──────────┐   SSH (22)   ┌──────────┐   SSH (22)   ┌──────────┐   │
+│  │ User     │────────────► │ Bastion  │────────────► │ Private  │   │
+│  │          │              │ Host     │              │ EC2      │   │
+│  └──────────┘              └──────────┘              └──────────┘   │
+│       ⚠️ Cần quản lý SSH keys, mở ports, maintain bastion            │
+│                                                                     │
+│  Session Manager:                                                   │
+│  ┌──────────┐  HTTPS (443) ┌──────────┐              ┌──────────┐   │
+│  │ User     │────────────► │ SSM      │◄─────────────│ SSM Agent│   │
+│  │ (Console │              │ Service  │   polling    │ (EC2)    │   │
+│  │  or CLI) │              └──────────┘              └──────────┘   │
 │       ✅ Không cần SSH keys, không mở port, có audit logs           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -167,9 +167,9 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                    SESSION MANAGER ARCHITECTURE                           │
+│                    SESSION MANAGER ARCHITECTURE                          │
 ├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
+│                                                                          │
 │  USER                        AWS CLOUD                    EC2 INSTANCE   │
 │  ┌─────────┐                                              ┌─────────────┐│
 │  │ Browser │──┐                                           │   Private   ││
@@ -181,15 +181,15 @@
 │  │   IAM   │───authenticate─│  - WebSocket    │           │  No port 22 ││
 │  │  User   │                │  - Encryption   │           │  No SSH key ││
 │  └─────────┘                └────────┬────────┘           └─────────────┘│
-│                                      │                                    │
+│                                     │                                    │
 │                              ┌───────┴───────┐                           │
 │                              ▼               ▼                           │
-│                       ┌──────────┐    ┌──────────┐                       │
-│                       │CloudWatch│    │    S3    │                       │
-│                       │  Logs    │    │  Bucket  │                       │
-│                       │ (Audit)  │    │ (Audit)  │                       │
-│                       └──────────┘    └──────────┘                       │
-│                                                                           │
+│  ┌─────────┐                                              ┌─────────────┐│
+│  │CloudWatch│                                              │    S3      ││
+│  │  Logs   │                                              │  Bucket     ││
+│  │ (Audit) │                                              │ (Audit)     ││
+│  └─────────┘                                              └─────────────┘│
+│                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -211,18 +211,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              SESSION MANAGER REQUIREMENTS CHECKLIST                  │
+│              SESSION MANAGER REQUIREMENTS CHECKLIST                 │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │  ☑️ 1. SSM AGENT                                                     │
 │     • Pre-installed on Amazon Linux 2/2023, Ubuntu 16.04+,          │
 │       Windows Server 2016+                                          │
-│     • Must be running                                                │
-│                                                                      │
+│     • Must be running                                               │
+│                                                                     │
 │  ☑️ 2. IAM INSTANCE PROFILE                                          │
 │     • Attach role với policy: AmazonSSMManagedInstanceCore          │
 │     • Hoặc custom policy với ssm:* permissions                      │
-│                                                                      │
+│                                                                     │
 │  ☑️ 3. NETWORK CONNECTIVITY                                          │
 │     Option A: Public subnet với Internet Gateway                    │
 │     Option B: Private subnet + NAT Gateway                          │
@@ -230,12 +230,12 @@
 │               • ssm.region.amazonaws.com                            │
 │               • ssmmessages.region.amazonaws.com                    │
 │               • ec2messages.region.amazonaws.com                    │
-│                                                                      │
+│                                                                     │
 │  ☑️ 4. USER IAM PERMISSIONS                                          │
 │     • ssm:StartSession                                              │
 │     • ssm:ResumeSession                                             │
 │     • ssm:TerminateSession                                          │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -243,11 +243,11 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│           ACCESS PRIVATE EC2 WITHOUT INTERNET                            │
-│                                                                          │
-│     VPC                                                                  │
+│           ACCESS PRIVATE EC2 WITHOUT INTERNET                           │
+│                                                                         │
+│     VPC                                                                 │
 │     ┌─────────────────────────────────────────────────────────────────┐ │
-│     │                                                                  │ │
+│     │                                                                 │ │
 │     │  Private Subnet (No Internet)          VPC Endpoints            │ │
 │     │  ┌───────────────────┐                ┌───────────────────────┐ │ │
 │     │  │                   │                │ com.amazonaws.region. │ │ │
@@ -261,7 +261,7 @@
 │     │  └───────────────────┘                   AWS PrivateLink        │ │
 │     │                                          (to SSM Service)       │ │
 │     └─────────────────────────────────────────────────────────────────┘ │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -324,19 +324,19 @@ mysql -h 127.0.0.1 -P 9999 -u admin -p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PORT FORWARDING                                   │
-│                                                                      │
+│                    PORT FORWARDING                                  │
+│                                                                     │
 │  Your Laptop              SSM Service              EC2 Instance     │
-│  ┌──────────┐            ┌──────────┐            ┌──────────────┐  │
-│  │localhost │   HTTPS    │          │   HTTPS    │              │  │
-│  │:9999     │◄──────────►│ Session  │◄──────────►│ RDS/MySQL    │  │
-│  │          │  WebSocket │ Manager  │  Tunnel    │ :3306        │  │
-│  └────┬─────┘            └──────────┘            └──────────────┘  │
-│       │                                                              │
-│       ▼                                                              │
-│  ┌──────────┐                                                        │
+│  ┌──────────┐            ┌──────────┐            ┌──────────────┐   │
+│  │localhost │   HTTPS    │          │   HTTPS    │              │   │
+│  │:9999     │◄──────────►│ Session  │◄──────────►│ RDS/MySQL    │   │
+│  │          │  WebSocket │ Manager  │  Tunnel    │ :3306        │   │
+│  └────┬─────┘            └──────────┘            └──────────────┘   │
+│      │                                                              │
+│       ▼                                                             │
+│  ┌──────────┐                                                       │
 │  │ MySQL    │  Connect to localhost:9999                            │
-│  │ Client   │  → Tunnel through SSM                                  │
+│  │ Client   │  → Tunnel through SSM                                 │
 │  └──────────┘  → Reach RDS on :3306                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -355,31 +355,31 @@ aws ssm start-session \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SESSION LOGGING OPTIONS                           │
+│                    SESSION LOGGING OPTIONS                          │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │  Session Manager Preferences (console hoặc CLI):                    │
-│                                                                      │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │ CloudWatch Logs:                                               │  │
+│  │ CloudWatch Logs:                                              │  │
 │  │   • Log Group: /aws/ssm/sessions                              │  │
-│  │   • Stream: session-id                                         │  │
-│  │   • Contains: All commands executed                            │  │
+│  │   • Stream: session-id                                        │  │
+│  │   • Contains: All commands executed                           │  │
 │  └───────────────────────────────────────────────────────────────┘  │
-│                                                                      │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │ S3 Bucket:                                                     │  │
+│  │ S3 Bucket:                                                    │  │
 │  │   • Bucket: my-ssm-session-logs                               │  │
 │  │   • Path: /session-id/session.log                             │  │
-│  │   • Encrypt with KMS key                                       │  │
+│  │   • Encrypt with KMS key                                      │  │
 │  └───────────────────────────────────────────────────────────────┘  │
-│                                                                      │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │ KMS Encryption:                                                │  │
+│  │ KMS Encryption:                                               │  │
 │  │   • Encrypt session data in transit                           │  │
-│  │   • Encrypt logs at rest                                       │  │
+│  │   • Encrypt logs at rest                                      │  │
 │  └───────────────────────────────────────────────────────────────┘  │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -451,26 +451,26 @@ aws ssm start-session \
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                SESSION MANAGER vs SSH - WHEN TO USE?                      │
+│                SESSION MANAGER vs SSH - WHEN TO USE?                     │
 ├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
-│  ✅ USE SESSION MANAGER when:                                             │
-│     • AWS EC2 instances                                                   │
-│     • Need audit logging                                                  │
+│                                                                          │
+│  ✅ USE SESSION MANAGER when:                                            │
+│     • AWS EC2 instances                                                  │
+│     • Need audit logging                                                 │
 │     • Want to eliminate SSH key management                               │
 │     • Private subnet access without bastion                              │
-│     • Compliance requirements (session recording)                         │
+│     • Compliance requirements (session recording)                        │
 │     • Centralized IAM access control                                     │
-│                                                                           │
+│                                                                          │
 │  ⚠️ CONSIDER SSH when:                                                    │
-│     • Non-AWS servers                                                     │
+│     • Non-AWS servers                                                    │
 │     • Need SCP file transfer (workaround: use S3)                        │
 │     • Legacy tools requiring SSH                                         │
 │     • SSH tunneling for specific protocols                               │
-│                                                                           │
-│  💡 HYBRID: Use SSH through Session Manager proxy                         │
-│     → Get benefits of both!                                               │
-│                                                                           │
+│                                                                          │
+│  💡 HYBRID: Use SSH through Session Manager proxy                        │
+│     → Get benefits of both!                                              │
+│                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -505,8 +505,8 @@ aws ssm start-session \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      Run Command Flow                                │
-│                                                                      │
+│                      Run Command Flow                               │
+│                                                                     │
 │  ┌──────────────┐                                                   │
 │  │ Run Command  │ ──────► Select targets (tags, instance IDs)       │
 │  │              │                                                   │
@@ -514,12 +514,12 @@ aws ssm start-session \
 │  │ AWS-RunShell │                                                   │
 │  │ Script       │ ──────► Execute on all targets                    │
 │  └──────────────┘                                                   │
-│         │                                                            │
-│         ▼                                                            │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐               │
-│  │ EC2 #1   │ │ EC2 #2   │ │ EC2 #3   │ │ EC2 #N   │               │
-│  │ (Agent)  │ │ (Agent)  │ │ (Agent)  │ │ (Agent)  │               │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘               │
+│        │                                                            │
+│         ▼                                                           │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                │
+│  │ EC2 #1   │ │ EC2 #2   │ │ EC2 #3   │ │ EC2 #N   │                │
+│  │ (Agent)  │ │ (Agent)  │ │ (Agent)  │ │ (Agent)  │                │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -557,19 +557,19 @@ Targets có thể specify bằng:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Parameter Store                                   │
-│                                                                      │
-│  Hierarchy:                                                          │
-│  /myapp/                                                             │
-│  ├── dev/                                                            │
+│                    Parameter Store                                  │
+│                                                                     │
+│  Hierarchy:                                                         │
+│  /myapp/                                                            │
+│  ├── dev/                                                           │
 │  │   ├── db/host          = "dev-db.example.com"                    │
 │  │   ├── db/password      = "encrypted-value" (SecureString)        │
 │  │   └── api-key          = "dev-key-123"                           │
-│  ├── prod/                                                           │
+│  ├── prod/                                                          │
 │  │   ├── db/host          = "prod-db.example.com"                   │
 │  │   ├── db/password      = "encrypted-value" (SecureString)        │
 │  │   └── api-key          = "prod-key-456"                          │
-│  └── shared/                                                         │
+│  └── shared/                                                        │
 │      └── config           = "common-config"                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -616,18 +616,18 @@ aws ssm get-parameters-by-path \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                Parameter Store Integrations                          │
-│                                                                      │
+│                Parameter Store Integrations                         │
+│                                                                     │
 │  ┌──────────────┐                                                   │
 │  │ Parameter    │                                                   │
 │  │ Store        │                                                   │
 │  └──────┬───────┘                                                   │
-│         │                                                            │
+│        │                                                            │
 │    ┌────┴────┬──────────┬──────────┬──────────┐                     │
 │    ▼         ▼          ▼          ▼          ▼                     │
-│ ┌──────┐ ┌──────┐ ┌──────────┐ ┌──────┐ ┌──────────┐               │
-│ │Lambda│ │ ECS  │ │CodeBuild │ │ EC2  │ │CloudForm.│               │
-│ └──────┘ └──────┘ └──────────┘ └──────┘ └──────────┘               │
+│ ┌──────┐ ┌──────┐ ┌──────────┐ ┌──────┐ ┌──────────┐                │
+│ │Lambda│ │ ECS  │ │CodeBuild │ │ EC2  │ │CloudForm.│                │
+│ └──────┘ └──────┘ └──────────┘ └──────┘ └──────────┘                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -654,20 +654,20 @@ aws ssm get-parameters-by-path \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Patch Manager Flow                                │
-│                                                                      │
-│  1. Define Patch Baseline                                            │
+│                    Patch Manager Flow                               │
+│                                                                     │
+│  1. Define Patch Baseline                                           │
 │     └── Rules cho approved/rejected patches                         │
-│                                                                      │
-│  2. Define Patch Groups                                              │
+│                                                                     │
+│  2. Define Patch Groups                                             │
 │     └── Group instances bằng tags                                   │
-│                                                                      │
-│  3. Define Maintenance Window                                        │
+│                                                                     │
+│  3. Define Maintenance Window                                       │
 │     └── Schedule khi nào patch                                      │
-│                                                                      │
-│  4. Run Patching                                                     │
-│     └── Scan → Install → Reboot (if needed)                        │
-│                                                                      │
+│                                                                     │
+│  4. Run Patching                                                    │
+│     └── Scan → Install → Reboot (if needed)                         │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -701,14 +701,14 @@ aws ssm get-parameters-by-path \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  Auto-Remediation Pattern                            │
-│                                                                      │
+│                  Auto-Remediation Pattern                           │
+│                                                                     │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐           │
 │  │ AWS Config   │───►│ EventBridge  │───►│ SSM          │           │
 │  │ (Non-        │    │ Rule         │    │ Automation   │           │
 │  │  compliant)  │    │              │    │ (Remediate)  │           │
 │  └──────────────┘    └──────────────┘    └──────────────┘           │
-│                                                                      │
+│                                                                     │
 │  Example: Security Group mở port 22 → Tự động close port            │
 └─────────────────────────────────────────────────────────────────────┘
 ```

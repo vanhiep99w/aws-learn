@@ -23,32 +23,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    WHAT IS API GATEWAY?                              │
-│                                                                       │
-│   API Gateway = "Cửa ngõ" cho backend services                       │
-│                                                                       │
+│                    WHAT IS API GATEWAY?                             │
+│                                                                     │
+│   API Gateway = "Cửa ngõ" cho backend services                      │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │    Clients              API Gateway           Backend          │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │    Clients              API Gateway           Backend       │   │
+│   │                                                             │   │
 │   │   ┌─────────┐       ┌───────────────┐      ┌───────────┐    │   │
 │   │   │   Web   │       │               │      │  Lambda   │    │   │
 │   │   │   App   │──────▶│ • Routing     │─────▶│           │    │   │
 │   │   └─────────┘       │ • Auth        │      └───────────┘    │   │
-│   │                     │ • Throttling  │                        │   │
+│   │                     │ • Throttling  │                       │   │
 │   │   ┌─────────┐       │ • Caching     │      ┌───────────┐    │   │
 │   │   │ Mobile  │──────▶│ • Monitoring  │─────▶│   EC2     │    │   │
 │   │   │   App   │       │ • Transform   │      └───────────┘    │   │
-│   │   └─────────┘       │               │                        │   │
+│   │   └─────────┘       │               │                       │   │
 │   │                     │               │      ┌───────────┐    │   │
 │   │   ┌─────────┐       │               │─────▶│   HTTP    │    │   │
 │   │   │   IoT   │──────▶│               │      │ Endpoint  │    │   │
 │   │   │ Device  │       └───────────────┘      └───────────┘    │   │
-│   │   └─────────┘                                                │   │
-│   │                                                               │   │
+│   │   └─────────┘                                               │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   KEY BENEFITS:                                                       │
+│                                                                     │
+│   KEY BENEFITS:                                                     │
 │   ├── ✅ Fully managed - không cần quản lý servers                  │
 │   ├── ✅ Auto-scaling - xử lý hàng triệu requests                   │
 │   ├── ✅ Pay-per-use - chỉ trả tiền khi có traffic                  │
@@ -66,71 +66,71 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      API GATEWAY TYPES                               │
-│                                                                       │
+│                      API GATEWAY TYPES                              │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. REST API                                                  │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  Full-featured API với nhiều tính năng:            │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ✅ API Keys & Usage Plans                         │    │   │
-│   │     │  ✅ Request/Response validation                    │    │   │
-│   │     │  ✅ Request/Response transformation               │    │   │
-│   │     │  ✅ Caching                                         │    │   │
-│   │     │  ✅ WAF integration                                │    │   │
-│   │     │  ✅ Private APIs (VPC only)                        │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Endpoint types:                                    │    │   │
-│   │     │  • Regional - Deploy in AWS Region                 │    │   │
-│   │     │  • Edge-optimized - Via CloudFront                 │    │   │
-│   │     │  • Private - Only within VPC                       │    │   │
-│   │     │                                                     │    │   │
-│   │     │  💰 $3.50 per million requests                     │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  1. REST API                                                │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  Full-featured API với nhiều tính năng:            │  │   │
+│   │     │                                                     │ │   │
+│   │     │  ✅ API Keys & Usage Plans                         │  │   │
+│   │     │  ✅ Request/Response validation                    │  │   │
+│   │     │  ✅ Request/Response transformation               │   │   │
+│   │     │  ✅ Caching                                         │ │   │
+│   │     │  ✅ WAF integration                                │  │   │
+│   │     │  ✅ Private APIs (VPC only)                        │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Endpoint types:                                    │ │   │
+│   │     │  • Regional - Deploy in AWS Region                 │  │   │
+│   │     │  • Edge-optimized - Via CloudFront                 │  │   │
+│   │     │  • Private - Only within VPC                       │  │   │
+│   │     │                                                     │ │   │
+│   │     │  💰 $3.50 per million requests                     │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  2. HTTP API (Recommended cho đa số use cases)              │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  Simpler, faster, cheaper than REST API:           │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ✅ 70% cheaper than REST API                      │    │   │
-│   │     │  ✅ Lower latency                                  │    │   │
-│   │     │  ✅ OIDC/OAuth 2.0 built-in                        │    │   │
-│   │     │  ✅ CORS support built-in                          │    │   │
-│   │     │  ✅ Auto-deploy                                     │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ❌ Không có: API Keys, caching, WAF, transforms  │    │   │
-│   │     │                                                     │    │   │
-│   │     │  💰 $1.00 per million requests                     │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Best for: Lambda/HTTP proxies, simple APIs        │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  Simpler, faster, cheaper than REST API:           │  │   │
+│   │     │                                                     │ │   │
+│   │     │  ✅ 70% cheaper than REST API                      │  │   │
+│   │     │  ✅ Lower latency                                  │  │   │
+│   │     │  ✅ OIDC/OAuth 2.0 built-in                        │  │   │
+│   │     │  ✅ CORS support built-in                          │  │   │
+│   │     │  ✅ Auto-deploy                                     │ │   │
+│   │     │                                                     │ │   │
+│   │     │  ❌ Không có: API Keys, caching, WAF, transforms  │   │   │
+│   │     │                                                     │ │   │
+│   │     │  💰 $1.00 per million requests                     │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Best for: Lambda/HTTP proxies, simple APIs        │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. WebSocket API                                            │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  Real-time two-way communication:                  │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Client ◀─────────────────────────▶ Backend        │    │   │
-│   │     │         Persistent connection                       │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Routes events (JSON):                             │    │   │
-│   │     │  • $connect - Client connects                      │    │   │
-│   │     │  • $disconnect - Client disconnects                │    │   │
-│   │     │  • $default - Default route                        │    │   │
-│   │     │  • Custom routes (e.g., "sendMessage")             │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Use cases:                                        │    │   │
-│   │     │  • Chat applications                               │    │   │
-│   │     │  • Live dashboards                                 │    │   │
-│   │     │  • Real-time notifications                         │    │   │
-│   │     │  • Gaming                                          │    │   │
-│   │     │                                                     │    │   │
-│   │     │  💰 $1.00 per million messages                     │    │   │
-│   │     │      + $0.25 per million connection minutes        │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  3. WebSocket API                                           │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  Real-time two-way communication:                  │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Client ◀─────────────────────────▶ Backend        │  │   │
+│   │     │         Persistent connection                       │ │   │
+│   │     │                                                     │ │   │
+│   │     │  Routes events (JSON):                             │  │   │
+│   │     │  • $connect - Client connects                      │  │   │
+│   │     │  • $disconnect - Client disconnects                │  │   │
+│   │     │  • $default - Default route                        │  │   │
+│   │     │  • Custom routes (e.g., "sendMessage")             │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Use cases:                                        │  │   │
+│   │     │  • Chat applications                               │  │   │
+│   │     │  • Live dashboards                                 │  │   │
+│   │     │  • Real-time notifications                         │  │   │
+│   │     │  • Gaming                                          │  │   │
+│   │     │                                                     │ │   │
+│   │     │  💰 $1.00 per million messages                     │  │   │
+│   │     │      + $0.25 per million connection minutes        │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -139,13 +139,13 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                   REST API vs HTTP API                               │
-│                                                                       │
+│                   REST API vs HTTP API                              │
+│                                                                     │
 │   ┌──────────────────────────┬──────────────────────────────────┐   │
 │   │        Feature           │   REST API   │    HTTP API       │   │
 │   ├──────────────────────────┼──────────────┼───────────────────┤   │
-│   │ Price (per 1M requests)  │    $3.50     │     $1.00        │   │
-│   │ Latency                  │    Higher    │     ~40% lower   │   │
+│   │ Price (per 1M requests)  │    $3.50     │     $1.00         │   │
+│   │ Latency                  │    Higher    │     ~40% lower    │   │
 │   │ Lambda integration       │      ✅      │       ✅          │   │
 │   │ HTTP backend             │      ✅      │       ✅          │   │
 │   │ Private integration      │      ✅      │       ✅          │   │
@@ -161,10 +161,10 @@ API Gateway hỗ trợ 3 loại API:
 │   │ Private endpoints        │      ✅      │       ❌          │   │
 │   │ Mutual TLS               │      ✅      │       ✅          │   │
 │   └──────────────────────────┴──────────────┴───────────────────┘   │
-│                                                                       │
-│   RECOMMENDATION:                                                     │
+│                                                                     │
+│   RECOMMENDATION:                                                   │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Bắt đầu với HTTP API, chỉ dùng REST API khi cần:          │   │
+│   │  Bắt đầu với HTTP API, chỉ dùng REST API khi cần:           │   │
 │   │  • API Keys & Usage Plans (monetization)                    │   │
 │   │  • Request caching                                          │   │
 │   │  • Request/Response transformation                          │   │
@@ -182,55 +182,55 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  API GATEWAY REQUEST FLOW                            │
-│                                                                       │
-│   Client Request                                                      │
-│        │                                                              │
-│        ▼                                                              │
+│                  API GATEWAY REQUEST FLOW                           │
+│                                                                     │
+│   Client Request                                                    │
+│      │                                                              │
+│        ▼                                                            │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      API GATEWAY                             │   │
-│   │                                                               │   │
+│   │                      API GATEWAY                            │   │
+│   │                                                             │   │
 │   │  ┌───────────────────────────────────────────────────────┐  │   │
-│   │  │  1. METHOD REQUEST                                     │  │   │
-│   │  │     • Validate request parameters                      │  │   │
-│   │  │     • Check API Key                                    │  │   │
-│   │  │     • Authorization (IAM, Cognito, Lambda)             │  │   │
+│   │  │  1. METHOD REQUEST                                     │ │   │
+│   │  │     • Validate request parameters                      │ │   │
+│   │  │     • Check API Key                                    │ │   │
+│   │  │     • Authorization (IAM, Cognito, Lambda)             │ │   │
 │   │  └───────────────────────────────────────────────────────┘  │   │
-│   │                          │                                   │   │
-│   │                          ▼                                   │   │
+│   │                          │                                  │   │
+│   │                          ▼                                  │   │
 │   │  ┌───────────────────────────────────────────────────────┐  │   │
-│   │  │  2. INTEGRATION REQUEST                                │  │   │
-│   │  │     • Transform request (mapping templates)            │  │   │
-│   │  │     • Add headers if needed                            │  │   │
-│   │  │     • Route to backend                                 │  │   │
+│   │  │  2. INTEGRATION REQUEST                                │ │   │
+│   │  │     • Transform request (mapping templates)            │ │   │
+│   │  │     • Add headers if needed                            │ │   │
+│   │  │     • Route to backend                                 │ │   │
 │   │  └───────────────────────────────────────────────────────┘  │   │
-│   │                          │                                   │   │
-│   └──────────────────────────┼───────────────────────────────────┘   │
-│                              ▼                                        │
+│   │                          │                                  │   │
+│   └──────────────────────────┼──────────────────────────────────┘   │
+│                              ▼                                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                     BACKEND                                  │   │
-│   │         Lambda / HTTP / AWS Service / Mock                   │   │
+│   │                     BACKEND                                 │   │
+│   │         Lambda / HTTP / AWS Service / Mock                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                              │                                        │
-│   ┌──────────────────────────┼───────────────────────────────────┐   │
-│   │                          ▼                                   │   │
+│                            │                                        │
+│   ┌──────────────────────────┼───────────────────────────────────┐  │
+│   │                          ▼                                   │  │
 │   │  ┌───────────────────────────────────────────────────────┐  │   │
-│   │  │  3. INTEGRATION RESPONSE                               │  │   │
-│   │  │     • Receive response from backend                    │  │   │
-│   │  │     • Transform response                               │  │   │
+│   │  │  3. INTEGRATION RESPONSE                               │ │   │
+│   │  │     • Receive response from backend                    │ │   │
+│   │  │     • Transform response                               │ │   │
 │   │  └───────────────────────────────────────────────────────┘  │   │
-│   │                          │                                   │   │
-│   │                          ▼                                   │   │
+│   │                          │                                  │   │
+│   │                          ▼                                   │  │
 │   │  ┌───────────────────────────────────────────────────────┐  │   │
-│   │  │  4. METHOD RESPONSE                                    │  │   │
-│   │  │     • Set response headers                             │  │   │
-│   │  │     • Set status codes                                 │  │   │
+│   │  │  4. METHOD RESPONSE                                    │ │   │
+│   │  │     • Set response headers                             │ │   │
+│   │  │     • Set status codes                                 │ │   │
 │   │  └───────────────────────────────────────────────────────┘  │   │
-│   │                                                               │   │
-│   └───────────────────────────────────────────────────────────────┘   │
-│                              │                                        │
-│                              ▼                                        │
-│                     Client Response                                   │
+│   │                                                              │  │
+│   └──────────────────────────────────────────────────────────────┘  │
+│                            │                                        │
+│                              ▼                                      │
+│                     Client Response                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -238,43 +238,43 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    STAGES & DEPLOYMENT                               │
-│                                                                       │
-│   API Definition (Resources, Methods, Integrations)                  │
-│        │                                                              │
-│        │  Deploy                                                      │
-│        ▼                                                              │
+│                    STAGES & DEPLOYMENT                              │
+│                                                                     │
+│   API Definition (Resources, Methods, Integrations)                 │
+│      │                                                              │
+│        │  Deploy                                                    │
+│        ▼                                                            │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                        STAGES                                │   │
-│   │                                                               │   │
-│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │   │
-│   │   │    dev      │  │   staging   │  │    prod     │        │   │
-│   │   └──────┬──────┘  └──────┬──────┘  └──────┬──────┘        │   │
+│   │                        STAGES                               │   │
+│   │                                                             │   │
+│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │   │
+│   │   │    dev      │  │   staging   │  │    prod     │         │   │
+│   │   └──────┬──────┘  └──────┬──────┘  └──────┬──────┘         │   │
 │   │          │                │                │                │   │
 │   │          ▼                ▼                ▼                │   │
-│   │   api.com/dev/     api.com/staging/   api.com/prod/        │   │
-│   │                                                               │   │
-│   │   Mỗi stage có:                                              │   │
-│   │   • Stage variables (như env vars)                           │   │
-│   │   • Logging settings                                         │   │
-│   │   • Throttling settings                                      │   │
-│   │   • Cache settings                                           │   │
-│   │   • Canary deployments                                       │   │
-│   │                                                               │   │
+│   │   api.com/dev/     api.com/staging/   api.com/prod/         │   │
+│   │                                                             │   │
+│   │   Mỗi stage có:                                             │   │
+│   │   • Stage variables (như env vars)                          │   │
+│   │   • Logging settings                                        │   │
+│   │   • Throttling settings                                     │   │
+│   │   • Cache settings                                          │   │
+│   │   • Canary deployments                                      │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   STAGE VARIABLES:                                                    │
+│                                                                     │
+│   STAGE VARIABLES:                                                  │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Stage: dev                                                  │   │
+│   │  Stage: dev                                                 │   │
 │   │  ├── lambda_alias = "dev"                                   │   │
 │   │  └── db_table = "users-dev"                                 │   │
-│   │                                                               │   │
-│   │  Stage: prod                                                 │   │
+│   │                                                             │   │
+│   │  Stage: prod                                                │   │
 │   │  ├── lambda_alias = "prod"                                  │   │
 │   │  └── db_table = "users-prod"                                │   │
-│   │                                                               │   │
-│   │  Integration:                                                 │   │
-│   │  arn:aws:lambda:...:my-function:${stageVariables.lambda_alias}│
+│   │                                                             │   │
+│   │  Integration:                                               │   │
+│   │  arn:aws:lambda:...:my-function:${stageVariables.lambda_alias}  │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -285,80 +285,80 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    INTEGRATION TYPES                                 │
-│                                                                       │
+│                    INTEGRATION TYPES                                │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. LAMBDA FUNCTION                                          │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  API Gateway → Lambda                              │    │   │
-│   │     │                                                     │    │   │
-│   │     │  • Lambda Proxy: Pass entire request to Lambda    │    │   │
-│   │     │    (Đơn giản, phổ biến nhất)                       │    │   │
-│   │     │                                                     │    │   │
-│   │     │  • Lambda Custom: Use mapping templates            │    │   │
-│   │     │    (Transform request/response)                    │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  1. LAMBDA FUNCTION                                         │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  API Gateway → Lambda                              │  │   │
+│   │     │                                                     │ │   │
+│   │     │  • Lambda Proxy: Pass entire request to Lambda    │   │   │
+│   │     │    (Đơn giản, phổ biến nhất)                       │  │   │
+│   │     │                                                     │ │   │
+│   │     │  • Lambda Custom: Use mapping templates            │  │   │
+│   │     │    (Transform request/response)                    │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. HTTP                                                     │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  API Gateway → Any HTTP endpoint                   │    │   │
-│   │     │                                                     │    │   │
-│   │     │  • HTTP Proxy: Forward request as-is              │    │   │
-│   │     │  • HTTP Custom: Transform request/response        │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Example: api.example.com → internal.backend.com   │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  2. HTTP                                                    │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  API Gateway → Any HTTP endpoint                   │  │   │
+│   │     │                                                     │ │   │
+│   │     │  • HTTP Proxy: Forward request as-is              │   │   │
+│   │     │  • HTTP Custom: Transform request/response        │   │   │
+│   │     │                                                     │ │   │
+│   │     │  Example: api.example.com → internal.backend.com   │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. AWS SERVICE                                              │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  API Gateway → AWS Services directly               │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Ví dụ:                                            │    │   │
-│   │     │  • POST /upload → S3 PutObject                     │    │   │
-│   │     │  • POST /message → SQS SendMessage                 │    │   │
-│   │     │  • POST /event → SNS Publish                       │    │   │
-│   │     │  • POST /item → DynamoDB PutItem                   │    │   │
-│   │     │                                                     │    │   │
-│   │     │  → Không cần Lambda! Giảm cost & latency          │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  3. AWS SERVICE                                             │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  API Gateway → AWS Services directly               │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Ví dụ:                                            │  │   │
+│   │     │  • POST /upload → S3 PutObject                     │  │   │
+│   │     │  • POST /message → SQS SendMessage                 │  │   │
+│   │     │  • POST /event → SNS Publish                       │  │   │
+│   │     │  • POST /item → DynamoDB PutItem                   │  │   │
+│   │     │                                                     │ │   │
+│   │     │  → Không cần Lambda! Giảm cost & latency          │   │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  4. VPC LINK (Private Integration)                          │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  API Gateway → Resources in VPC                    │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ┌─────────────┐     ┌─────────────────────────┐  │    │   │
-│   │     │  │API Gateway  │────▶│    VPC Link             │  │    │   │
-│   │     │  └─────────────┘     │        │                │  │    │   │
-│   │     │                      │        ▼                │  │    │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  API Gateway → Resources in VPC                    │  │   │
+│   │     │                                                     │ │   │
+│   │     │  ┌─────────────┐     ┌─────────────────────────┐  │   │   │
+│   │     │  │API Gateway  │────▶│    VPC Link             │  │   │   │
+│   │     │  └─────────────┘     │        │                │  │   │   │
+│   │     │                      │        ▼                │  │   │   │
 │   │     │                      │  ┌───────────────┐     │  │    │   │
 │   │     │                      │  │ NLB/ALB       │     │  │    │   │
 │   │     │                      │  └───────┬───────┘     │  │    │   │
 │   │     │                      │          ▼             │  │    │   │
 │   │     │                      │  ┌───────────────┐     │  │    │   │
-│   │     │                      │  │ ECS/EC2/EKS  │     │  │    │   │
+│   │     │                      │  │ ECS/EC2/EKS  │     │  │     │   │
 │   │     │                      │  │ (Private)     │     │  │    │   │
 │   │     │                      │  └───────────────┘     │  │    │   │
-│   │     │                      └─────────────────────────┘  │    │   │
-│   │     └───────────────────────────────────────────────┘    │   │
+│   │     │                      └─────────────────────────┘  │   │   │
+│   │     └───────────────────────────────────────────────┘       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  5. MOCK                                                     │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  API Gateway trả về response cố định               │    │   │
-│   │     │  (Không call backend)                               │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Use cases:                                         │    │   │
-│   │     │  • Testing/Development                              │    │   │
-│   │     │  • CORS preflight (OPTIONS)                        │    │   │
-│   │     │  • Health checks                                   │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  5. MOCK                                                    │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  API Gateway trả về response cố định               │  │   │
+│   │     │  (Không call backend)                               │ │   │
+│   │     │                                                     │ │   │
+│   │     │  Use cases:                                         │ │   │
+│   │     │  • Testing/Development                              │ │   │
+│   │     │  • CORS preflight (OPTIONS)                        │  │   │
+│   │     │  • Health checks                                   │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -369,71 +369,71 @@ API Gateway hỗ trợ 3 loại API:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  AUTHENTICATION & AUTHORIZATION                      │
-│                                                                       │
+│                  AUTHENTICATION & AUTHORIZATION                     │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. IAM AUTHORIZATION                                        │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  Client ──(SigV4)──▶ API Gateway ──▶ IAM ──▶ OK   │    │   │
-│   │     │                                                     │    │   │
-│   │     │  • Dùng AWS credentials để sign request            │    │   │
-│   │     │  • Best for: AWS services, internal apps           │    │   │
-│   │     │  • IAM Policy controls access                      │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  1. IAM AUTHORIZATION                                       │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  Client ──(SigV4)──▶ API Gateway ──▶ IAM ──▶ OK   │   │   │
+│   │     │                                                     │ │   │
+│   │     │  • Dùng AWS credentials để sign request            │  │   │
+│   │     │  • Best for: AWS services, internal apps           │  │   │
+│   │     │  • IAM Policy controls access                      │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. COGNITO USER POOLS                                       │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │                                                     │    │   │
-│   │     │  1. User ──(login)──▶ Cognito ──▶ JWT Token        │    │   │
-│   │     │                                                     │    │   │
-│   │     │  2. User ──(JWT)──▶ API Gateway ──▶ Cognito ──▶ OK │    │   │
-│   │     │                                                     │    │   │
-│   │     │  • Fully managed user directory                    │    │   │
-│   │     │  • Built-in sign-up/sign-in                        │    │   │
-│   │     │  • Social login (Google, Facebook, Apple)          │    │   │
-│   │     │  • MFA support                                     │    │   │
-│   │     │  • Best for: Web/mobile apps                       │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  2. COGNITO USER POOLS                                      │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │                                                     │ │   │
+│   │     │  1. User ──(login)──▶ Cognito ──▶ JWT Token        │  │   │
+│   │     │                                                     │ │   │
+│   │     │  2. User ──(JWT)──▶ API Gateway ──▶ Cognito ──▶ OK │  │   │
+│   │     │                                                     │ │   │
+│   │     │  • Fully managed user directory                    │  │   │
+│   │     │  • Built-in sign-up/sign-in                        │  │   │
+│   │     │  • Social login (Google, Facebook, Apple)          │  │   │
+│   │     │  • MFA support                                     │  │   │
+│   │     │  • Best for: Web/mobile apps                       │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  3. LAMBDA AUTHORIZER (Custom Authorizer)                   │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │                                                     │    │   │
-│   │     │  Request ──▶ API Gateway ──▶ Lambda Authorizer     │    │   │
-│   │     │                                      │              │    │   │
-│   │     │                               ┌──────┴──────┐       │    │   │
-│   │     │                               ▼             ▼       │    │   │
-│   │     │                            Allow         Deny       │    │   │
-│   │     │                               │             │       │    │   │
-│   │     │                               ▼             ▼       │    │   │
-│   │     │                          Backend       403 Error    │    │   │
-│   │     │                                                     │    │   │
-│   │     │  2 types:                                           │    │   │
-│   │     │  • Token-based: Validate JWT/OAuth tokens          │    │   │
-│   │     │  • Request-based: Check headers, query params      │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Best for: Custom auth logic, 3rd party tokens     │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ⚡ Tip: Enable caching to reduce Lambda calls     │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │                                                     │ │   │
+│   │     │  Request ──▶ API Gateway ──▶ Lambda Authorizer     │  │   │
+│   │     │                                      │              │ │   │
+│   │     │                               ┌──────┴──────┐       │ │   │
+│   │     │                               ▼             ▼       │ │   │
+│   │     │                            Allow         Deny       │ │   │
+│   │     │                               │             │       │ │   │
+│   │     │                               ▼             ▼       │ │   │
+│   │     │                          Backend       403 Error    │ │   │
+│   │     │                                                     │ │   │
+│   │     │  2 types:                                           │ │   │
+│   │     │  • Token-based: Validate JWT/OAuth tokens          │  │   │
+│   │     │  • Request-based: Check headers, query params      │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Best for: Custom auth logic, 3rd party tokens     │  │   │
+│   │     │                                                     │ │   │
+│   │     │  ⚡ Tip: Enable caching to reduce Lambda calls     │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  4. API KEYS                                                 │   │
-│   │     ┌───────────────────────────────────────────────────┐    │   │
-│   │     │  Request (x-api-key: xxx) ──▶ API Gateway         │    │   │
-│   │     │                                                     │    │   │
-│   │     │  ⚠️ Không phải auth mechanism!                     │    │   │
-│   │     │     API Keys chỉ dùng để:                          │    │   │
-│   │     │     • Identify clients                             │    │   │
-│   │     │     • Track usage                                  │    │   │
-│   │     │     • Apply quotas/throttling                      │    │   │
-│   │     │                                                     │    │   │
-│   │     │  Luôn kết hợp với auth mechanism khác!             │    │   │
-│   │     └───────────────────────────────────────────────────┘    │   │
+│   │  4. API KEYS                                                │   │
+│   │     ┌───────────────────────────────────────────────────┐   │   │
+│   │     │  Request (x-api-key: xxx) ──▶ API Gateway         │   │   │
+│   │     │                                                     │ │   │
+│   │     │  ⚠️ Không phải auth mechanism!                     │   │   │
+│   │     │     API Keys chỉ dùng để:                          │  │   │
+│   │     │     • Identify clients                             │  │   │
+│   │     │     • Track usage                                  │  │   │
+│   │     │     • Apply quotas/throttling                      │  │   │
+│   │     │                                                     │ │   │
+│   │     │  Luôn kết hợp với auth mechanism khác!             │  │   │
+│   │     └───────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -492,35 +492,35 @@ def generate_policy(principal_id, effect, resource):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       API GATEWAY CACHING                            │
-│                    (REST API only)                                   │
-│                                                                       │
+│                       API GATEWAY CACHING                           │
+│                    (REST API only)                                  │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │  Request ──▶ API Gateway ──▶ Cache Hit? ──▶ Return cached   │   │
-│   │                                   │                          │   │
-│   │                                   ▼ Miss                     │   │
-│   │                              Backend ──▶ Cache ──▶ Return    │   │
-│   │                                                               │   │
-│   │  Configuration:                                               │   │
-│   │  • Capacity: 0.5 GB to 237 GB                                │   │
-│   │  • TTL: 0 to 3600 seconds (default 300s)                     │   │
-│   │  • Per-method override                                        │   │
-│   │  • Encryption option                                          │   │
-│   │                                                               │   │
-│   │  Cost: $0.020 - $3.800 per hour (depends on size)            │   │
-│   │                                                               │   │
-│   │  Cache Key:                                                   │   │
-│   │  • URL path                                                   │   │
-│   │  • Query strings (configurable)                              │   │
-│   │  • Headers (configurable)                                    │   │
-│   │                                                               │   │
+│   │                                   │                         │   │
+│   │                                   ▼ Miss                    │   │
+│   │                              Backend ──▶ Cache ──▶ Return   │   │
+│   │                                                             │   │
+│   │  Configuration:                                             │   │
+│   │  • Capacity: 0.5 GB to 237 GB                               │   │
+│   │  • TTL: 0 to 3600 seconds (default 300s)                    │   │
+│   │  • Per-method override                                      │   │
+│   │  • Encryption option                                        │   │
+│   │                                                             │   │
+│   │  Cost: $0.020 - $3.800 per hour (depends on size)           │   │
+│   │                                                             │   │
+│   │  Cache Key:                                                 │   │
+│   │  • URL path                                                 │   │
+│   │  • Query strings (configurable)                             │   │
+│   │  • Headers (configurable)                                   │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ⚡ Cache Invalidation:                                             │
-│   • Console: Flush entire stage cache                                │
+│                                                                     │
+│   ⚡ Cache Invalidation:                                            │
+│   • Console: Flush entire stage cache                               │
 │   • Client header: Cache-Control: max-age=0                         │
-│      (Requires client to have IAM permission)                        │
+│      (Requires client to have IAM permission)                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -528,43 +528,43 @@ def generate_policy(principal_id, effect, resource):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       THROTTLING                                     │
-│                                                                       │
+│                       THROTTLING                                    │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  DEFAULT LIMITS (per region, per account):                   │   │
-│   │                                                               │   │
-│   │  • 10,000 requests/second (RPS)                              │   │
-│   │  • 5,000 burst capacity                                      │   │
-│   │                                                               │   │
+│   │  DEFAULT LIMITS (per region, per account):                  │   │
+│   │                                                             │   │
+│   │  • 10,000 requests/second (RPS)                             │   │
+│   │  • 5,000 burst capacity                                     │   │
+│   │                                                             │   │
 │   │  Có thể request tăng qua AWS Support                        │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   THROTTLING LEVELS:                                                  │
+│                                                                     │
+│   THROTTLING LEVELS:                                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │   Account Level (10,000/s)                                   │   │
-│   │        │                                                      │   │
-│   │        ▼                                                      │   │
-│   │   Stage Level (configure per stage)                          │   │
-│   │        │                                                      │   │
-│   │        ▼                                                      │   │
-│   │   Method Level (configure per method)                        │   │
-│   │        │                                                      │   │
-│   │        ▼                                                      │   │
-│   │   Usage Plan (per API Key)                                   │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │   Account Level (10,000/s)                                  │   │
+│   │        │                                                    │   │
+│   │        ▼                                                    │   │
+│   │   Stage Level (configure per stage)                         │   │
+│   │        │                                                    │   │
+│   │        ▼                                                    │   │
+│   │   Method Level (configure per method)                       │   │
+│   │        │                                                    │   │
+│   │        ▼                                                    │   │
+│   │   Usage Plan (per API Key)                                  │   │
+│   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   When throttled: 429 Too Many Requests                              │
-│                                                                       │
-│   USAGE PLANS:                                                        │
+│                                                                     │
+│   When throttled: 429 Too Many Requests                             │
+│                                                                     │
+│   USAGE PLANS:                                                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Plan: Basic                                                 │   │
+│   │  Plan: Basic                                                │   │
 │   │  ├── Throttle: 100 requests/second                          │   │
 │   │  ├── Burst: 200 requests                                    │   │
 │   │  └── Quota: 10,000 requests/month                           │   │
-│   │                                                               │   │
-│   │  Plan: Premium                                               │   │
+│   │                                                             │   │
+│   │  Plan: Premium                                              │   │
 │   │  ├── Throttle: 1,000 requests/second                        │   │
 │   │  ├── Burst: 2,000 requests                                  │   │
 │   │  └── Quota: 1,000,000 requests/month                        │   │
@@ -576,27 +576,27 @@ def generate_policy(principal_id, effect, resource):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          CORS                                        │
-│                                                                       │
+│                          CORS                                       │
+│                                                                     │
 │   Browser (https://myapp.com) ──▶ API (https://api.myapp.com)       │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  PREFLIGHT REQUEST (OPTIONS):                                │   │
-│   │                                                               │   │
-│   │  Browser ──(OPTIONS)──▶ API Gateway                          │   │
-│   │                               │                              │   │
-│   │                               ▼                              │   │
-│   │  Response Headers:                                           │   │
+│   │  PREFLIGHT REQUEST (OPTIONS):                               │   │
+│   │                                                             │   │
+│   │  Browser ──(OPTIONS)──▶ API Gateway                         │   │
+│   │                               │                             │   │
+│   │                               ▼                             │   │
+│   │  Response Headers:                                          │   │
 │   │  • Access-Control-Allow-Origin: https://myapp.com           │   │
 │   │  • Access-Control-Allow-Methods: GET, POST, PUT             │   │
 │   │  • Access-Control-Allow-Headers: Content-Type, Auth         │   │
-│   │                                                               │   │
-│   │  Sau đó:                                                      │   │
+│   │                                                             │   │
+│   │  Sau đó:                                                    │   │
 │   │  Browser ──(GET/POST)──▶ API Gateway ──▶ Backend            │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   HTTP API: CORS built-in, just enable                               │
-│   REST API: Must configure manually or use Mock integration          │
+│                                                                     │
+│   HTTP API: CORS built-in, just enable                              │
+│   REST API: Must configure manually or use Mock integration         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -606,40 +606,40 @@ def generate_policy(principal_id, effect, resource):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       API GATEWAY PRICING                            │
-│                                                                       │
+│                       API GATEWAY PRICING                           │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  REST API                                                    │   │
+│   │  REST API                                                   │   │
 │   │  ├── First 333 million requests/month: $3.50 / million      │   │
 │   │  ├── Next 667 million: $2.80 / million                      │   │
 │   │  └── Over 1 billion: $2.38 / million                        │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │  + Caching: $0.020 - $3.80 / hour (optional)                │   │
-│   │  + Data transfer out: Standard AWS rates                     │   │
+│   │  + Data transfer out: Standard AWS rates                    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  HTTP API (70% cheaper!)                                     │   │
+│   │  HTTP API (70% cheaper!)                                    │   │
 │   │  ├── First 300 million requests/month: $1.00 / million      │   │
 │   │  └── Over 300 million: $0.90 / million                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  WebSocket API                                               │   │
+│   │  WebSocket API                                              │   │
 │   │  ├── Messages: $1.00 / million                              │   │
 │   │  └── Connection minutes: $0.25 / million                    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   EXAMPLE CALCULATION:                                                │
+│                                                                     │
+│   EXAMPLE CALCULATION:                                              │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  10 million requests/month (HTTP API):                       │   │
-│   │                                                               │   │
+│   │  10 million requests/month (HTTP API):                      │   │
+│   │                                                             │   │
 │   │  API Gateway: 10M × $1.00/1M = $10.00                       │   │
 │   │  Lambda (128MB, 100ms): ~$2.00                              │   │
 │   │  DynamoDB (on-demand): ~$3.00                               │   │
-│   │  ─────────────────────────────────                           │   │
+│   │  ─────────────────────────────────                          │   │
 │   │  Total: ~$15/month for Serverless API                       │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │  So với EC2 t3.medium 24/7: ~$30/month                      │   │
 │   │  → Serverless rẻ hơn 50%!                                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
@@ -652,9 +652,9 @@ def generate_policy(principal_id, effect, resource):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    API GATEWAY BEST PRACTICES                        │
-│                                                                       │
-│   1. CHOOSE THE RIGHT API TYPE                                        │
+│                    API GATEWAY BEST PRACTICES                       │
+│                                                                     │
+│   1. CHOOSE THE RIGHT API TYPE                                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Start with HTTP API (cheaper, simpler)                   │   │
 │   │  • Use REST API only when you need:                         │   │
@@ -663,36 +663,36 @@ def generate_policy(principal_id, effect, resource):
 │   │    - Request transformation                                 │   │
 │   │    - WAF integration                                        │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   2. USE LAMBDA PROXY INTEGRATION                                    │
+│                                                                     │
+│   2. USE LAMBDA PROXY INTEGRATION                                   │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Simpler to set up                                        │   │
 │   │  • Full control in Lambda (routing, validation)             │   │
 │   │  • Easier testing (same event format)                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   3. ENABLE CACHING FOR READ-HEAVY APIs                              │
+│                                                                     │
+│   3. ENABLE CACHING FOR READ-HEAVY APIs                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Cache GET requests                                       │   │
 │   │  • Set appropriate TTL                                      │   │
 │   │  • Use Cache-Control headers                                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   4. IMPLEMENT PROPER ERROR HANDLING                                 │
+│                                                                     │
+│   4. IMPLEMENT PROPER ERROR HANDLING                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Return proper HTTP status codes                          │   │
 │   │  • Consistent error response format                         │   │
 │   │  • Log errors to CloudWatch                                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   5. USE STAGES FOR ENVIRONMENTS                                     │
+│                                                                     │
+│   5. USE STAGES FOR ENVIRONMENTS                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • dev, staging, prod stages                                │   │
 │   │  • Stage variables for configuration                        │   │
 │   │  • Different Lambda aliases per stage                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   6. SECURITY                                                         │
+│                                                                     │
+│   6. SECURITY                                                       │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Enable CloudWatch logging                                │   │
 │   │  • Use WAF for protection                                   │   │
@@ -700,14 +700,14 @@ def generate_policy(principal_id, effect, resource):
 │   │  • Use HTTPS only (default)                                 │   │
 │   │  • Implement proper CORS                                    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   7. MONITORING                                                       │
+│                                                                     │
+│   7. MONITORING                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Key CloudWatch Metrics:                                    │   │
 │   │  • Count (request count)                                    │   │
 │   │  • 4XXError, 5XXError                                       │   │
-│   │  • Latency, IntegrationLatency                             │   │
-│   │  • CacheHitCount, CacheMissCount                           │   │
+│   │  • Latency, IntegrationLatency                              │   │
+│   │  • CacheHitCount, CacheMissCount                            │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -945,36 +945,36 @@ Resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  API GATEWAY KEY POINTS                              │
-│                                                                       │
-│  1. 3 TYPES OF APIs                                                   │
+│                  API GATEWAY KEY POINTS                             │
+│                                                                     │
+│  1. 3 TYPES OF APIs                                                 │
 │     • HTTP API: Simple, cheap ($1/million), recommended             │
 │     • REST API: Full-featured ($3.50/million)                       │
-│     • WebSocket: Real-time bidirectional                             │
-│                                                                       │
-│  2. INTEGRATION TYPES                                                 │
-│     • Lambda Proxy (most common)                                     │
-│     • HTTP Proxy                                                      │
-│     • AWS Service (direct DynamoDB, S3, etc.)                        │
-│     • VPC Link (private resources)                                   │
-│                                                                       │
-│  3. AUTHENTICATION                                                    │
-│     • IAM: AWS services, internal                                    │
-│     • Cognito: Web/mobile apps                                       │
-│     • Lambda Authorizer: Custom logic                                │
+│     • WebSocket: Real-time bidirectional                            │
+│                                                                     │
+│  2. INTEGRATION TYPES                                               │
+│     • Lambda Proxy (most common)                                    │
+│     • HTTP Proxy                                                    │
+│     • AWS Service (direct DynamoDB, S3, etc.)                       │
+│     • VPC Link (private resources)                                  │
+│                                                                     │
+│  3. AUTHENTICATION                                                  │
+│     • IAM: AWS services, internal                                   │
+│     • Cognito: Web/mobile apps                                      │
+│     • Lambda Authorizer: Custom logic                               │
 │     • API Keys: NOT for auth, only identity/throttling              │
-│                                                                       │
-│  4. KEY FEATURES                                                      │
-│     • Caching (REST API only)                                        │
-│     • Throttling (protect backend)                                   │
-│     • Stages (dev/staging/prod)                                      │
-│     • CORS support                                                    │
-│                                                                       │
-│  5. BEST PRACTICES                                                    │
-│     • Start with HTTP API                                            │
-│     • Use Lambda Proxy integration                                   │
-│     • Enable caching for reads                                       │
-│     • Monitor with CloudWatch                                        │
-│     • Set proper throttling limits                                   │
+│                                                                     │
+│  4. KEY FEATURES                                                    │
+│     • Caching (REST API only)                                       │
+│     • Throttling (protect backend)                                  │
+│     • Stages (dev/staging/prod)                                     │
+│     • CORS support                                                  │
+│                                                                     │
+│  5. BEST PRACTICES                                                  │
+│     • Start with HTTP API                                           │
+│     • Use Lambda Proxy integration                                  │
+│     • Enable caching for reads                                      │
+│     • Monitor with CloudWatch                                       │
+│     • Set proper throttling limits                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```

@@ -18,32 +18,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         Amazon EMR Overview                                  │
+│                         Amazon EMR Overview                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   📊 BIG DATA PROCESSING PLATFORM                                           │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    Your Big Data                                     │   │
-│   │       Logs  │  Clickstreams  │  IoT  │  Transactions              │   │
+│   │                    Your Big Data                                    │   │
+│   │       Logs  │  Clickstreams  │  IoT  │  Transactions                │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                  │                                           │
-│                                  ▼                                           │
+│                                 │                                           │
+│                                  ▼                                          │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                      Amazon EMR                                      │   │
-│   │   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐              │   │
-│   │   │  Spark   │ │  Hadoop  │ │   Hive   │ │  Presto  │              │   │
-│   │   └──────────┘ └──────────┘ └──────────┘ └──────────┘              │   │
-│   │                                                                      │   │
+│   │                      Amazon EMR                                     │   │
+│   │   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐               │   │
+│   │   │  Spark   │ │  Hadoop  │ │   Hive   │ │  Presto  │               │   │
+│   │   └──────────┘ └──────────┘ └──────────┘ └──────────┘               │   │
+│   │                                                                     │   │
 │   │   Auto-scaling  │  Managed  │  Cost-effective  │  Fast              │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                  │                                           │
-│                                  ▼                                           │
+│                                 │                                           │
+│                                  ▼                                          │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                      Insights & Results                              │   │
-│   │   Reports  │  ML Models  │  Analytics  │  Data Warehouse           │   │
+│   │                      Insights & Results                             │   │
+│   │   Reports  │  ML Models  │  Analytics  │  Data Warehouse            │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -63,32 +63,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         EMR Cluster Architecture                             │
+│                         EMR Cluster Architecture                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    APPLICATIONS & PROGRAMS                           │   │
-│   │   Spark │ Hive │ Presto │ Flink │ HBase │ TensorFlow │ Hudi        │   │
+│   │                    APPLICATIONS & PROGRAMS                          │   │
+│   │   Spark │ Hive │ Presto │ Flink │ HBase │ TensorFlow │ Hudi         │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                         │
+│                                   │                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    DATA PROCESSING FRAMEWORK                         │   │
-│   │              Hadoop MapReduce  │  Apache Spark                       │   │
+│   │                    DATA PROCESSING FRAMEWORK                        │   │
+│   │              Hadoop MapReduce  │  Apache Spark                      │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                         │
+│                                   │                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    RESOURCE MANAGEMENT                               │   │
-│   │                         YARN                                         │   │
+│   │                    RESOURCE MANAGEMENT                              │   │
+│   │                         YARN                                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                         │
+│                                   │                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    STORAGE LAYER                                     │   │
-│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │   │
-│   │   │     HDFS     │  │    EMRFS     │  │   Local FS   │             │   │
-│   │   │  (ephemeral) │  │ (S3-backed)  │  │              │             │   │
-│   │   └──────────────┘  └──────────────┘  └──────────────┘             │   │
+│   │                    STORAGE LAYER                                    │   │
+│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
+│   │   │     HDFS     │  │    EMRFS     │  │   Local FS   │              │   │
+│   │   │  (ephemeral) │  │ (S3-backed)  │  │              │              │   │
+│   │   └──────────────┘  └──────────────┘  └──────────────┘              │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -118,23 +118,23 @@ EMR có **3 deployment options**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      EMR Deployment Options                                  │
+│                      EMR Deployment Options                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────┐  │
 │   │    EMR on EC2        │  │    EMR on EKS        │  │  EMR Serverless  │  │
 │   │                      │  │                      │  │                  │  │
-│   │  ┌────────────────┐  │  │  ┌────────────────┐  │  │  ┌────────────┐ │  │
-│   │  │  EC2 Instances │  │  │  │ EKS Pods       │  │  │  │ Auto-scale │ │  │
-│   │  │  ┌────┐┌────┐  │  │  │  │ ┌────┐┌────┐  │  │  │  │ resources  │ │  │
-│   │  │  │    ││    │  │  │  │  │ │    ││    │  │  │  │  └────────────┘ │  │
-│   │  │  └────┘└────┘  │  │  │  │ └────┘└────┘  │  │  │                  │  │
-│   │  └────────────────┘  │  │  └────────────────┘  │  │  No cluster     │  │
-│   │                      │  │                      │  │  management!    │  │
+│   │  ┌────────────────┐  │  │  ┌────────────────┐  │  │  ┌────────────┐  │  │
+│   │  │  EC2 Instances │  │  │  │ EKS Pods       │  │  │  │ Auto-scale │  │  │
+│   │  │  ┌────┐┌────┐  │  │  │  │ ┌────┐┌────┐  │  │  │  │ resources  │   │  │
+│   │  │  │    ││    │  │  │  │  │ │    ││    │  │  │  │  └────────────┘   │  │
+│   │  │  └────┘└────┘  │  │  │  │ └────┘└────┘  │  │  │                   │  │
+│   │  └────────────────┘  │  │  └────────────────┘  │  │  No cluster      │  │
+│   │                      │  │                      │  │  management!     │  │
 │   │  Full control        │  │  Kubernetes          │  │                  │  │
-│   │  Spot Instances      │  │  Container-based     │  │  Pay per use    │  │
+│   │  Spot Instances      │  │  Container-based     │  │  Pay per use     │  │
 │   └──────────────────────┘  └──────────────────────┘  └──────────────────┘  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -169,34 +169,34 @@ EMR có **3 deployment options**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         EMR Use Cases                                        │
+│                         EMR Use Cases                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   📊 BIG DATA ANALYTICS                                                      │
-│   • Analyze clickstream data                                                 │
-│   • Process log files                                                        │
-│   • Business intelligence                                                    │
-│                                                                              │
+│                                                                             │
+│   📊 BIG DATA ANALYTICS                                                     │
+│   • Analyze clickstream data                                                │
+│   • Process log files                                                       │
+│   • Business intelligence                                                   │
+│                                                                             │
 │   🔄 ETL (Extract, Transform, Load)                                         │
-│   • Clean và transform data                                                  │
-│   • Move data between systems                                                │
-│   • Data pipeline processing                                                 │
-│                                                                              │
-│   🤖 MACHINE LEARNING                                                        │
-│   • Train ML models on large datasets                                        │
-│   • Feature engineering                                                      │
-│   • Hyperparameter tuning                                                    │
-│                                                                              │
-│   📈 REAL-TIME STREAMING                                                     │
-│   • Process IoT data                                                         │
-│   • Real-time analytics                                                      │
-│   • Fraud detection                                                          │
-│                                                                              │
-│   🔍 INTERACTIVE ANALYTICS                                                   │
-│   • Ad-hoc SQL queries                                                       │
-│   • Data exploration                                                         │
-│   • BI tools integration                                                     │
-│                                                                              │
+│   • Clean và transform data                                                 │
+│   • Move data between systems                                               │
+│   • Data pipeline processing                                                │
+│                                                                             │
+│   🤖 MACHINE LEARNING                                                       │
+│   • Train ML models on large datasets                                       │
+│   • Feature engineering                                                     │
+│   • Hyperparameter tuning                                                   │
+│                                                                             │
+│   📈 REAL-TIME STREAMING                                                    │
+│   • Process IoT data                                                        │
+│   • Real-time analytics                                                     │
+│   • Fraud detection                                                         │
+│                                                                             │
+│   🔍 INTERACTIVE ANALYTICS                                                  │
+│   • Ad-hoc SQL queries                                                      │
+│   • Data exploration                                                        │
+│   • BI tools integration                                                    │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

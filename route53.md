@@ -41,15 +41,15 @@ Route 53 cung cấp **3 chức năng chính**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Amazon Route 53                               │
+│                        Amazon Route 53                              │
 │                                                                     │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
-│   │     Domain      │  │       DNS       │  │     Health      │    │
-│   │  Registration   │  │     Routing     │  │     Checks      │    │
-│   │                 │  │                 │  │                 │    │
-│   │  Đăng ký tên    │  │  Phân giải DNS  │  │  Kiểm tra sức   │    │
-│   │  miền mới       │  │  & routing      │  │  khỏe resources │    │
-│   └─────────────────┘  └─────────────────┘  └─────────────────┘    │
+│   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │
+│   │     Domain      │  │       DNS       │  │     Health      │     │
+│   │  Registration   │  │     Routing     │  │     Checks      │     │
+│   │                 │  │                 │  │                 │     │
+│   │  Đăng ký tên    │  │  Phân giải DNS  │  │  Kiểm tra sức   │     │
+│   │  miền mới       │  │  & routing      │  │  khỏe resources │     │
+│   └─────────────────┘  └─────────────────┘  └─────────────────┘     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -79,46 +79,46 @@ Route 53 cung cấp **3 chức năng chính**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        DNS Resolution Flow                                    │
+│                        DNS Resolution Flow                                   │
 │                                                                              │
 │   Bạn gõ: www.example.com                                                    │
 │                                                                              │
-│   ┌──────────┐      ①       ┌──────────────┐                                │
-│   │ Browser  │ ───────────▶ │ DNS Resolver │  (ISP hoặc 8.8.8.8)            │
-│   └──────────┘              └──────┬───────┘                                │
+│   ┌──────────┐      ①       ┌──────────────┐                                 │
+│   │ Browser  │ ───────────▶ │ DNS Resolver │  (ISP hoặc 8.8.8.8)             │
+│   └──────────┘              └──────┬───────┘                                 │
 │                                    │                                         │
-│                         ②  Không có cache? Hỏi Root                         │
+│                         ②  Không có cache? Hỏi Root                          │
 │                                    ▼                                         │
 │                             ┌────────────┐                                   │
-│                             │ Root DNS   │  "Tôi không biết, hỏi .com đi"   │
-│                             │    (.)     │  → Trả về địa chỉ TLD servers    │
+│                             │ Root DNS   │  "Tôi không biết, hỏi .com đi"    │
+│                             │    (.)     │  → Trả về địa chỉ TLD servers     │
 │                             └──────┬─────┘                                   │
 │                                    │                                         │
-│                         ③  Hỏi TLD server                                   │
+│                         ③  Hỏi TLD server                                    │
 │                                    ▼                                         │
 │                             ┌────────────┐                                   │
-│                             │ TLD DNS    │  "example.com? Hỏi Route 53"     │
-│                             │  (.com)    │  → Trả về NS của example.com     │
+│                             │ TLD DNS    │  "example.com? Hỏi Route 53"      │
+│                             │  (.com)    │  → Trả về NS của example.com      │
 │                             └──────┬─────┘                                   │
 │                                    │                                         │
-│                         ④  Hỏi Authoritative DNS (Route 53)                 │
+│                         ④  Hỏi Authoritative DNS (Route 53)                  │
 │                                    ▼                                         │
 │                             ┌────────────┐                                   │
-│                             │ Route 53   │  "www.example.com = 54.231.12.45"│
-│                             │(AWS)       │  → Trả về IP address             │
+│                             │ Route 53   │  "www.example.com = 54.231.12.45" │
+│                             │(AWS)       │  → Trả về IP address              │
 │                             └──────┬─────┘                                   │
 │                                    │                                         │
-│                         ⑤  Resolver cache + trả về cho browser              │
+│                         ⑤  Resolver cache + trả về cho browser               │
 │                                    ▼                                         │
-│   ┌──────────┐      ⑥       ┌──────────────┐                                │
-│   │ Browser  │ ◀─────────── │ DNS Resolver │  IP: 54.231.12.45              │
-│   └────┬─────┘              └──────────────┘                                │
+│   ┌──────────┐      ⑥       ┌──────────────┐                                 │
+│   │ Browser  │ ◀─────────── │ DNS Resolver │  IP: 54.231.12.45               │
+│   └────┬─────┘              └──────────────┘                                 │
 │        │                                                                     │
-│        │  ⑦  Kết nối trực tiếp đến server                                   │
+│        │  ⑦  Kết nối trực tiếp đến server                                    │
 │        ▼                                                                     │
-│   ┌──────────┐                                                              │
-│   │ Server   │  54.231.12.45                                                │
-│   └──────────┘                                                              │
+│   ┌──────────┐                                                               │
+│   │ Server   │  54.231.12.45                                                 │
+│   └──────────┘                                                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -142,7 +142,7 @@ DNS Cache được lưu ở **nhiều tầng khác nhau**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        DNS Cache Layers                                      │
+│                        DNS Cache Layers                                     │
 │                                                                             │
 │   ① Browser Cache                                                           │
 │   └── Chrome, Firefox... cache DNS records                                  │
@@ -220,11 +220,11 @@ Browser gõ example.com
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Domain:        example.com                                      │
-│                     │                                            │
-│                     ▼                                            │
+│  Domain:        example.com                                     │
+│                    │                                            │
+│                     ▼                                           │
 │  DNS Zone:      Chứa tất cả thông tin DNS của domain            │
-│                     │                                            │
+│                    │                                            │
 │                     ├── NS record (ai quản lý zone này)         │
 │                     ├── SOA record (metadata zone)              │
 │                     ├── A record (domain → IP)                  │
@@ -244,11 +244,11 @@ Browser gõ example.com
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    HOSTED ZONE: example.com                      │
-│                    (Tủ hồ sơ của domain)                         │
+│                    HOSTED ZONE: example.com                     │
+│                    (Tủ hồ sơ của domain)                        │
 │                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │  DNS RECORDS (Các hồ sơ trong tủ)                        │   │
+│   │  DNS RECORDS (Các hồ sơ trong tủ)                       │   │
 │   │                                                         │   │
 │   │  📄 example.com      → 54.231.12.45       (A record)    │   │
 │   │  📄 www.example.com  → example.com        (CNAME)       │   │
@@ -271,7 +271,7 @@ Khi bạn tạo một Hosted Zone, AWS **tự động tạo 2 loại records b�
 │  KHI TẠO HOSTED ZONE, AWS TỰ ĐỘNG TẠO:                          │
 │                                                                 │
 │  ① NS Record (Name Server)                                      │
-│     └── Chỉ ra 4 name servers quản lý zone này                 │
+│     └── Chỉ ra 4 name servers quản lý zone này                  │
 │                                                                 │
 │  ② SOA Record (Start of Authority)                              │
 │     └── Metadata quản trị của zone                              │
@@ -286,14 +286,14 @@ Khi bạn tạo một Hosted Zone, AWS **tự động tạo 2 loại records b�
 ┌─────────────────────────────────────────────────────────────────┐
 │  Route 53 assign 4 Name Servers cho Hosted Zone của bạn:        │
 │                                                                 │
-│   ns-123.awsdns-45.com        (TLD .com)                       │
-│   ns-456.awsdns-78.net        (TLD .net)                       │
-│   ns-789.awsdns-12.org        (TLD .org)                       │
-│   ns-012.awsdns-34.co.uk      (TLD .co.uk)                     │
+│   ns-123.awsdns-45.com        (TLD .com)                        │
+│   ns-456.awsdns-78.net        (TLD .net)                        │
+│   ns-789.awsdns-12.org        (TLD .org)                        │
+│   ns-012.awsdns-34.co.uk      (TLD .co.uk)                      │
 │                                                                 │
-│   → 4 TLDs khác nhau = High Availability!                      │
-│   → Nếu .com TLD bị sự cố, vẫn còn .net, .org, .co.uk hoạt động│
-│   → Phân tán trên 100+ AWS Edge Locations toàn cầu             │
+│   → 4 TLDs khác nhau = High Availability!                       │
+│   → Nếu .com TLD bị sự cố, vẫn còn .net, .org, .co.uk hoạt động │
+│   → Phân tán trên 100+ AWS Edge Locations toàn cầu              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -308,19 +308,19 @@ Khi bạn tạo một Hosted Zone, AWS **tự động tạo 2 loại records b�
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  SOA RECORD - MỤC ĐÍCH:                                          │
+│  SOA RECORD - MỤC ĐÍCH:                                         │
 │                                                                 │
 │  ① Xác định ai là "chủ" của zone                                │
 │     └── Primary name server, admin email                        │
 │                                                                 │
-│  ② Đồng bộ giữa Primary và Secondary DNS servers               │
-│     └── Serial number: tăng mỗi khi có thay đổi                │
-│     └── Refresh: Secondary check Primary sau bao lâu           │
-│     └── Retry: Nếu fail, thử lại sau bao lâu                   │
-│     └── Expire: Ngừng phục vụ nếu mất liên lạc quá lâu         │
+│  ② Đồng bộ giữa Primary và Secondary DNS servers                │
+│     └── Serial number: tăng mỗi khi có thay đổi                 │
+│     └── Refresh: Secondary check Primary sau bao lâu            │
+│     └── Retry: Nếu fail, thử lại sau bao lâu                    │
+│     └── Expire: Ngừng phục vụ nếu mất liên lạc quá lâu          │
 │                                                                 │
 │  ③ Negative Caching (TTL cho "không tìm thấy")                  │
-│     └── Cache "record không tồn tại" trong bao lâu             │
+│     └── Cache "record không tồn tại" trong bao lâu              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -489,7 +489,7 @@ example.com ──▶ "v=spf1 include:_spf.google.com ~all"
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Hosted Zone: mycompany.com                                      │
+│  Hosted Zone: mycompany.com                                     │
 │                                                                 │
 │  Record Type │ Name              │ Value                        │
 │  ────────────┼───────────────────┼──────────────────────────────│
@@ -603,26 +603,26 @@ _(Ví dụ danh bạ điện thoại)_
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│            Tại sao CNAME bị "cấm" ở Zone Apex?                   │
+│            Tại sao CNAME bị "cấm" ở Zone Apex?                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Zone Apex (example.com) BẮT BUỘC phải có:                      │
 │  ├── NS Record  (ai quản lý domain này)                         │
 │  ├── SOA Record (metadata zone)                                 │
 │  └── Thường có MX Record (nhận email @example.com)              │
-│                                                                  │
+│                                                                 │
 │  Nếu đặt CNAME cho example.com:                                 │
 │  ├── CNAME sẽ "đá bay" tất cả NS, SOA, MX records               │
 │  └── → Domain KHÔNG hoạt động được!                             │
-│                                                                  │
-│  ❌ KHÔNG THỂ:                                                   │
+│                                                                 │
+│  ❌ KHÔNG THỂ:                                                  │
 │     example.com  CNAME  myapp.elb.amazonaws.com                 │
 │     example.com  NS     ns-123.awsdns.com   ← BỊ XÓA!           │
 │     example.com  MX     mail.google.com     ← BỊ XÓA!           │
-│                                                                  │
-│  ✅ CÓ THỂ (subdomain không có NS/SOA bắt buộc):                 │
+│                                                                 │
+│  ✅ CÓ THỂ (subdomain không có NS/SOA bắt buộc):                │
 │     www.example.com  CNAME  myapp.elb.amazonaws.com             │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -640,15 +640,15 @@ _(Ví dụ danh bạ điện thoại)_
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     ALIAS = Hybrid!                              │
+│                     ALIAS = Hybrid!                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   Bên trong (cách cấu hình):     Giống CNAME                    │
 │   └── Trỏ đến domain: myapp.elb.amazonaws.com                   │
-│                                                                  │
+│                                                                 │
 │   Bên ngoài (trả về cho client): Giống A RECORD                 │
 │   └── Trả về IP: 54.231.12.45                                   │
-│                                                                  │
+│                                                                 │
 │   → Alias = "CNAME trá hình thành A record"                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -657,40 +657,40 @@ _(Ví dụ danh bạ điện thoại)_
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         CNAME Flow                               │
+│                         CNAME Flow                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Client query: example.com                                       │
-│       │                                                          │
-│       ▼                                                          │
+│                                                                 │
+│  Client query: example.com                                      │
+│      │                                                          │
+│       ▼                                                         │
 │  Route 53 trả về: "example.com CNAME myapp.elb.amazonaws.com"   │
-│       │                    ↑                                     │
+│       │                    ↑                                    │
 │       │         Client thấy "CNAME" → XÓA NS/SOA!               │
-│       ▼                                                          │
+│       ▼                                                         │
 │  Client query tiếp: myapp.elb.amazonaws.com → 54.231.12.45      │
-│                                                                  │
+│                                                                 │
 │  → 2 LOOKUPS + DNS thấy "CNAME" → ❌ XUNG ĐỘT với NS/SOA        │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                        ALIAS Flow                                │
+│                        ALIAS Flow                               │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Client query: example.com (type A)                              │
-│       │                                                          │
-│       ▼                                                          │
+│                                                                 │
+│  Client query: example.com (type A)                             │
+│      │                                                          │
+│       ▼                                                         │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Route 53 NỘI BỘ (client KHÔNG thấy):                     │   │
+│  │  Route 53 NỘI BỘ (client KHÔNG thấy):                    │   │
 │  │  1. Biết example.com ALIAS → myapp.elb.amazonaws.com     │   │
 │  │  2. Tự động query IP của ELB: 54.231.12.45               │   │
 │  │  3. Trả về cho client như là A RECORD!                   │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│       │                                                          │
-│       ▼                                                          │
-│  Client nhận: "example.com A 54.231.12.45"                       │
-│                            ↑                                     │
+│      │                                                          │
+│       ▼                                                         │
+│  Client nhận: "example.com A 54.231.12.45"                      │
+│                            ↑                                    │
 │            Client thấy "A record" → KHÔNG xung đột NS/SOA!      │
-│                                                                  │
+│                                                                 │
 │  → 1 LOOKUP + DNS thấy "A record" → ✅ HỢP LỆ                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -731,7 +731,7 @@ _(Ví dụ danh bạ điện thoại)_
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│                      AI CACHE?                                      │
+│                      AI CACHE?                                     │
 │                                                                    │
 │   ① Browser (Chrome, Firefox...)              ✅ CACHE             │
 │      └── Lưu DNS trong vài phút đến vài giờ                        │
@@ -886,29 +886,29 @@ User ở Tokyo                         User ở Paris
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              Cách AWS xác định latency                           │
+│              Cách AWS xác định latency                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1️⃣ AWS đã đo sẵn (cập nhật định kỳ):                            │
+│                                                                 │
+│  1️⃣ AWS đã đo sẵn (cập nhật định kỳ):                           │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │  Latency Table (pre-computed)                           │    │
 │  │                                                         │    │
-│  │  Vietnam → ap-southeast-1 (Singapore): ~30ms           │    │
-│  │  Vietnam → us-east-1 (N. Virginia): ~200ms             │    │
-│  │  Vietnam → eu-west-1 (Ireland): ~250ms                 │    │
+│  │  Vietnam → ap-southeast-1 (Singapore): ~30ms            │    │
+│  │  Vietnam → us-east-1 (N. Virginia): ~200ms              │    │
+│  │  Vietnam → eu-west-1 (Ireland): ~250ms                  │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  2️⃣ Khi user query DNS:                                          │
+│                                                                 │
+│  2️⃣ Khi user query DNS:                                         │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  User query → Route 53 xem IP nguồn (DNS Resolver)     │    │
+│  │  User query → Route 53 xem IP nguồn (DNS Resolver)      │    │
 │  │       │                                                 │    │
 │  │       ▼                                                 │    │
-│  │  Xác định user ở đâu → Tra bảng latency                │    │
+│  │  Xác định user ở đâu → Tra bảng latency                 │    │
 │  │       │                                                 │    │
 │  │       ▼                                                 │    │
-│  │  Trả về IP của server có latency thấp nhất            │    │
+│  │  Trả về IP của server có latency thấp nhất              │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -971,7 +971,7 @@ example.com ───▶ Primary (Active)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Route 53 Geolocation                         │
+│                     Route 53 Geolocation                        │
 │                                                                 │
 │   User từ Vietnam    ──────▶  Server Singapore                  │
 │   User từ Japan      ──────▶  Server Tokyo                      │
@@ -1034,9 +1034,9 @@ Server A: Bias = +50          Server B: Bias = -25
 ┌─────────────────────────────────────────────────────────────────┐
 │   Client IP               │           Target                    │
 ├───────────────────────────┼─────────────────────────────────────┤
-│   24.232.0.0/16          │   Server A (Comcast users)          │
-│   203.0.113.0/24         │   Server B (Enterprise network)     │
-│   10.0.0.0/8             │   Server C (Internal VPN)           │
+│   24.232.0.0/16          │   Server A (Comcast users)           │
+│   203.0.113.0/24         │   Server B (Enterprise network)      │
+│   10.0.0.0/8             │   Server C (Internal VPN)            │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1115,45 +1115,45 @@ Route 53 Health Checks giám sát sức khỏe của resources và **tích hợp
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│          Health Check + Weighted Routing                         │
+│          Health Check + Weighted Routing                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Cấu hình:                                                       │
-│  ├── Server A: Weight 50, Health Check ✅                        │
-│  ├── Server B: Weight 30, Health Check ✅                        │
-│  └── Server C: Weight 20, Health Check ✅                        │
-│                                                                  │
-│  Khi Server B unhealthy:                                         │
+│                                                                 │
+│  Cấu hình:                                                      │
+│  ├── Server A: Weight 50, Health Check ✅                       │
+│  ├── Server B: Weight 30, Health Check ✅                       │
+│  └── Server C: Weight 20, Health Check ✅                       │
+│                                                                 │
+│  Khi Server B unhealthy:                                        │
 │  ├── Route 53 loại Server B khỏi pool                           │
 │  ├── Traffic phân bổ lại: A=71%, C=29%                          │
 │  └── (Công thức: 50/(50+20)=71%, 20/(50+20)=29%)                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│          Health Check + Failover Routing                         │
+│          Health Check + Failover Routing                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌──────────┐  Healthy?   ┌──────────────┐                      │
 │  │  Route53 │ ──────────► │   Primary    │ → Trả về Primary IP  │
 │  └──────────┘      │      └──────────────┘                      │
-│                    │                                             │
-│               Unhealthy?                                         │
+│                   │                                             │
+│               Unhealthy?                                        │
 │                    │      ┌──────────────┐                      │
 │                    └────► │  Secondary   │ → Trả về Secondary IP│
 │                           └──────────────┘                      │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│          Health Check + Latency Routing                          │
+│          Health Check + Latency Routing                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  User ở Vietnam, latency: Singapore 30ms, Tokyo 50ms, Sydney 100ms│
-│                                                                  │
+│                                                                 │
 │  Bình thường:     Singapore (30ms) ← Lowest latency             │
 │  Singapore down:  Tokyo (50ms) ← Next lowest còn healthy        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1161,7 +1161,7 @@ Route 53 Health Checks giám sát sức khỏe của resources và **tích hợp
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Route 53 Health Checks                        │
+│                    Route 53 Health Checks                       │
 │                                                                 │
 │   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │   │    Endpoint     │  │   Calculated    │  │   CloudWatch    │ │
@@ -1269,8 +1269,8 @@ Private Resource (không thể access từ Internet)
                            │ Alias record
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    example.com                                   │
-│                         │                                        │
+│                    example.com                                  │
+│                        │                                        │
 │           Alias → myapp-lb.us-east-1.elb.amazonaws.com          │
 └─────────────────────────────────────────────────────────────────┘
                            │
@@ -1302,7 +1302,7 @@ Route 53 có thể đăng ký và quản lý domain names.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Domain Registration Flow                      │
+│                    Domain Registration Flow                     │
 │                                                                 │
 │   1. Search domain        ───▶  Check availability              │
 │                                                                 │

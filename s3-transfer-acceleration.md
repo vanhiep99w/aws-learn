@@ -62,7 +62,7 @@ WITH Transfer Acceleration:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        TRANSFER ACCELERATION FLOW                       │
+│                        TRANSFER ACCELERATION FLOW                      │
 └────────────────────────────────────────────────────────────────────────┘
 
   Client (Vietnam)                Edge Location              S3 Bucket
@@ -299,7 +299,7 @@ Scenario: Download 100 GB từ S3 us-east-1 → Vietnam
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DECISION FLOWCHART                            │
+│                    DECISION FLOWCHART                           │
 └─────────────────────────────────────────────────────────────────┘
 
                     ┌─────────────────┐
@@ -334,7 +334,7 @@ Scenario: Download 100 GB từ S3 us-east-1 → Vietnam
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    HYBRID ARCHITECTURE                           │
+│                    HYBRID ARCHITECTURE                          │
 └─────────────────────────────────────────────────────────────────┘
 
      UPLOAD PATH                           DOWNLOAD PATH
@@ -528,7 +528,7 @@ Tool này sẽ:
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│           SPEED TEST RESULTS (from Vietnam)                     │
+│           SPEED TEST RESULTS (from Vietnam)                    │
 ├───────────────┬──────────┬─────────────┬───────────────────────┤
 │ Region        │ Direct   │ Accelerated │ Improvement           │
 ├───────────────┼──────────┼─────────────┼───────────────────────┤
@@ -608,7 +608,7 @@ REQUIREMENTS:
 
 SOLUTION:
 ┌────────────────────────────────────────────────────────────────┐
-│                      VIDEO UPLOAD FLOW                          │
+│                      VIDEO UPLOAD FLOW                         │
 └────────────────────────────────────────────────────────────────┘
 
   Mobile/Web App

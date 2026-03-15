@@ -25,24 +25,24 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Amazon ElastiCache                            │
-│        "Managed In-Memory Caching for Microsecond Latency"       │
+│                    Amazon ElastiCache                           │
+│        "Managed In-Memory Caching for Microsecond Latency"      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   Application ────► ElastiCache ────► Database                  │
-│       │                  │                 │                     │
-│       │                  │                 │                     │
-│       │     Cache Hit    │                 │                     │
-│       │◄─────────────────│                 │                     │
-│       │   (microseconds) │                 │                     │
-│       │                  │   Cache Miss    │                     │
+│       │                  │                │                     │
+│       │                  │                │                     │
+│       │     Cache Hit    │                │                     │
+│       │◄─────────────────│                │                     │
+│       │   (microseconds) │                │                     │
+│       │                  │   Cache Miss   │                     │
 │       │                  │────────────────►│                     │
-│       │                  │  Query DB       │                     │
+│       │                  │  Query DB      │                     │
 │       │                  │◄────────────────│                     │
-│       │                  │  Store in cache │                     │
-│                                                                  │
+│       │                  │  Store in cache│                     │
+│                                                                 │
 │   Latency: Database ~ms → ElastiCache ~µs (1000x faster)        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -52,19 +52,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Vấn đề & Giải pháp                           │
+│                     Vấn đề & Giải pháp                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  VẤN ĐỀ:                                                        │
-│  ├── Database bị overload (quá nhiều queries)                  │
-│  ├── Response time chậm (đọc từ disk mất thời gian)            │
-│  └── Cost cao (RDS scale up = tốn tiền)                        │
-│                                                                  │
+│  ├── Database bị overload (quá nhiều queries)                   │
+│  ├── Response time chậm (đọc từ disk mất thời gian)             │
+│  └── Cost cao (RDS scale up = tốn tiền)                         │
+│                                                                 │
 │  GIẢI PHÁP - CACHING:                                           │
-│  ├── Lưu data hay đọc vào RAM (ElastiCache)                    │
-│  ├── Đọc từ cache thay vì DB → nhanh 1000x                     │
-│  └── Giảm load cho DB → tiết kiệm chi phí                      │
-│                                                                  │
+│  ├── Lưu data hay đọc vào RAM (ElastiCache)                     │
+│  ├── Đọc từ cache thay vì DB → nhanh 1000x                      │
+│  └── Giảm load cho DB → tiết kiệm chi phí                       │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -92,22 +92,22 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 Redis vs Memcached - Chọn gì?                    │
+│                 Redis vs Memcached - Chọn gì?                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Chọn REDIS (95% cases) khi:                                    │
-│  ├── Cần High Availability (Multi-AZ Failover)                 │
-│  ├── Cần backup/persistence (data quan trọng)                  │
-│  ├── Cần complex data types (lists, sets, sorted sets)         │
-│  ├── Cần Pub/Sub (real-time messaging)                         │
-│  └── Cần Read Replicas (scale reads)                           │
-│                                                                  │
-│  Chọn MEMCACHED khi:                                             │
-│  ├── Chỉ cần simple key-value caching                          │
-│  ├── Data có thể mất (sẽ query lại từ DB)                      │
-│  ├── Multi-threaded (large objects, high concurrency)          │
+│  ├── Cần High Availability (Multi-AZ Failover)                  │
+│  ├── Cần backup/persistence (data quan trọng)                   │
+│  ├── Cần complex data types (lists, sets, sorted sets)          │
+│  ├── Cần Pub/Sub (real-time messaging)                          │
+│  └── Cần Read Replicas (scale reads)                            │
+│                                                                 │
+│  Chọn MEMCACHED khi:                                            │
+│  ├── Chỉ cần simple key-value caching                           │
+│  ├── Data có thể mất (sẽ query lại từ DB)                       │
+│  ├── Multi-threaded (large objects, high concurrency)           │
 │  └── Legacy application đã dùng Memcached                       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -150,23 +150,23 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              Cluster Mode Disabled - Endpoints                   │
+│              Cluster Mode Disabled - Endpoints                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────┐         ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │ Primary │────────►│Replica 1│  │Replica 2│  │Replica 3│     │
-│  │  (R/W)  │  Sync   │  (Read) │  │  (Read) │  │  (Read) │     │
-│  └────┬────┘         └────┬────┘  └────┬────┘  └────┬────┘     │
+│                                                                 │
+│  ┌─────────┐         ┌─────────┐  ┌─────────┐  ┌─────────┐      │
+│  │ Primary │────────►│Replica 1│  │Replica 2│  │Replica 3│      │
+│  │  (R/W)  │  Sync   │  (Read) │  │  (Read) │  │  (Read) │      │
+│  └────┬────┘         └────┬────┘  └────┬────┘  └────┬────┘      │
 │       │                   │            │            │           │
 │       ▼                   └────────────┴────────────┘           │
 │  Primary Endpoint                      │                        │
 │  (writes + reads)              Reader Endpoint                  │
 │                            (load-balanced reads)                │
-│                                                                  │
-│  Endpoints:                                                      │
+│                                                                 │
+│  Endpoints:                                                     │
 │  ├── Primary: mycluster.xxx.cache.amazonaws.com                 │
 │  └── Reader:  mycluster-ro.xxx.cache.amazonaws.com              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -179,26 +179,26 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              Cluster Mode Enabled - Sharding                     │
+│              Cluster Mode Enabled - Sharding                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
-│  │    Shard 1     │  │    Shard 2     │  │    Shard 3     │    │
-│  │   (keys A-G)   │  │   (keys H-N)   │  │   (keys O-Z)   │    │
-│  │  ┌──────────┐  │  │  ┌──────────┐  │  │  ┌──────────┐  │    │
-│  │  │Primary(RW)│  │  │  │Primary(RW)│  │  │  │Primary(RW)│  │    │
-│  │  └────┬─────┘  │  │  └────┬─────┘  │  │  └────┬─────┘  │    │
-│  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │    │
-│  │  │Replica(R)│  │  │  │Replica(R)│  │  │  │Replica(R)│  │    │
-│  │  └──────────┘  │  │  └──────────┘  │  │  └──────────┘  │    │
-│  └────────────────┘  └────────────────┘  └────────────────┘    │
+│                                                                 │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐     │
+│  │    Shard 1     │  │    Shard 2     │  │    Shard 3     │     │
+│  │   (keys A-G)   │  │   (keys H-N)   │  │   (keys O-Z)   │     │
+│  │  ┌──────────┐  │  │  ┌──────────┐  │  │  ┌──────────┐   │    │
+│  │  │Primary(RW)│  │  │  │Primary(RW)│  │  │  │Primary(RW)││    │
+│  │  └────┬─────┘  │  │  └────┬─────┘  │  │  └────┬─────┘   │    │
+│  │  ┌────▼─────┐  │  │  ┌────▼─────┐  │  │  ┌────▼─────┐   │    │
+│  │  │Replica(R)│  │  │  │Replica(R)│  │  │  │Replica(R)│   │    │
+│  │  └──────────┘  │  │  └──────────┘  │  │  └──────────┘   │    │
+│  └────────────────┘  └────────────────┘  └────────────────┘     │
 │           ▲                  ▲                  ▲               │
 │           └──────────────────┼──────────────────┘               │
 │                              │                                  │
 │                Configuration Endpoint (1)                       │
 │              mycluster.xxx.clustercfg.cache.amazonaws.com       │
 │                  (auto-route to correct shard)                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -223,17 +223,17 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Redis Data Types                              │
+│                    Redis Data Types                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  String:    "user:123" → "John Doe"                             │
 │  List:      "queue:tasks" → [task1, task2, task3]               │
 │  Set:       "tags:post:1" → {aws, cloud, devops}                │
 │  Hash:      "user:123" → {name: "John", email: "john@email.com"}│
 │  Sorted Set: "leaderboard" → {(user1, 1000), (user2, 950)}      │
 │  Stream:    Real-time event streaming                           │
-│  Geospatial: Location-based queries (find nearby)              │
-│                                                                  │
+│  Geospatial: Location-based queries (find nearby)               │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -275,18 +275,18 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              Database Query Caching                              │
+│              Database Query Caching                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  User request → Check cache → Cache HIT? → Return immediately   │
-│                      │                                           │
+│                     │                                           │
 │                      └── Cache MISS? → Query DB → Store in cache│
-│                                                                  │
-│  Example:                                                        │
-│  key: "user:123"                                                 │
+│                                                                 │
+│  Example:                                                       │
+│  key: "user:123"                                                │
 │  value: {"name": "John", "email": "john@email.com"}             │
-│  TTL: 3600 seconds (1 hour)                                      │
-│                                                                  │
+│  TTL: 3600 seconds (1 hour)                                     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -294,21 +294,21 @@ ElastiCache hỗ trợ **2 engines**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Session Management                            │
+│                    Session Management                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Vấn đề: Nhiều EC2 instances, làm sao share session?            │
-│                                                                  │
-│      EC2-1 ──┐                                                   │
-│              │                                                   │
+│                                                                 │
+│      EC2-1 ──┐                                                  │
+│             │                                                   │
 │      EC2-2 ──┼──► ElastiCache (Redis) ←── Lưu sessions          │
-│              │         │                                         │
-│      EC2-3 ──┘         │                                         │
-│                        ▼                                         │
+│              │        │                                         │
+│      EC2-3 ──┘        │                                         │
+│                        ▼                                        │
 │           session:abc123 → {user_id: 123, cart: [...]}          │
-│                                                                  │
+│                                                                 │
 │  Benefits: Stateless EC2s, sessions persist qua failover        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -351,16 +351,16 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               ElastiCache Serverless                             │
+│               ElastiCache Serverless                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Auto-scaling (không cần chọn node type)                     │
 │  ✅ Pay per use (GB-hours + ECPUs)                              │
-│  ✅ Multi-AZ by default                                          │
-│  ✅ Không cần quản lý capacity                                   │
-│                                                                  │
+│  ✅ Multi-AZ by default                                         │
+│  ✅ Không cần quản lý capacity                                  │
+│                                                                 │
 │  Best for: Variable workloads, không muốn manage cluster        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -379,21 +379,21 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Security Configuration                          │
+│                  Security Configuration                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. VPC & Security Groups                                        │
+│                                                                 │
+│  1. VPC & Security Groups                                       │
 │     └── ElastiCache trong VPC, private subnets                  │
 │     └── Security Group cho phép port 6379 (Redis)               │
-│                                                                  │
-│  2. Authentication                                               │
+│                                                                 │
+│  2. Authentication                                              │
 │     └── Redis AUTH (password)                                   │
 │     └── Redis ACL (user-level permissions)                      │
 │     └── IAM Authentication (Redis 7.0+)                         │
-│                                                                  │
-│  3. Subnet Groups                                                │
-│     └── Define which subnets ElastiCache can use               │
-│                                                                  │
+│                                                                 │
+│  3. Subnet Groups                                               │
+│     └── Define which subnets ElastiCache can use                │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -405,24 +405,24 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Lazy Loading Flow                             │
+│                    Lazy Loading Flow                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  CACHE HIT (Fast path):                                          │
+│                                                                 │
+│  CACHE HIT (Fast path):                                         │
 │  ┌─────┐    1.GET     ┌───────┐    2.Return     ┌─────┐         │
-│  │ App │ ───────────► │ Cache │ ───────────────► │ App │         │
-│  └─────┘              └───────┘                  └─────┘         │
-│                                                                  │
-│  CACHE MISS (Slow path):                                         │
-│  ┌─────┐    1.GET     ┌───────┐                                  │
-│  │ App │ ───────────► │ Cache │ ── MISS ──┐                      │
-│  └──┬──┘              └───────┘           │                      │
-│     │                     ▲               ▼                      │
-│     │   4.Return          │ 3.SET    ┌────────┐                  │
-│     │◄────────────────────┴──────────│   DB   │                  │
-│     │                     data       └────────┘                  │
-│                                        2.Query                   │
-│                                                                  │
+│  │ App │ ───────────► │ Cache │ ───────────────►│ App │         │
+│  └─────┘              └───────┘                 └─────┘         │
+│                                                                 │
+│  CACHE MISS (Slow path):                                        │
+│  ┌─────┐    1.GET     ┌───────┐                                 │
+│  │ App │ ───────────► │ Cache │ ── MISS ──┐                     │
+│  └──┬──┘              └───────┘          │                      │
+│     │                     ▲               ▼                     │
+│     │   4.Return          │ 3.SET    ┌────────┐                 │
+│     │◄────────────────────┴──────────│   DB  │                  │
+│     │                     data       └────────┘                 │
+│                                        2.Query                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -438,22 +438,22 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Write-Through Flow                             │
+│                   Write-Through Flow                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  WRITE:                                                          │
+│                                                                 │
+│  WRITE:                                                         │
 │  ┌─────┐    1.Write    ┌───────┐    2.Write    ┌────────┐       │
 │  │ App │ ────────────► │ Cache │ ────────────► │   DB   │       │
 │  └─────┘               └───────┘               └────────┘       │
-│                            │                        │            │
-│                            └────────────────────────┘            │
-│                              Both updated together               │
-│                                                                  │
-│  READ (always hit):                                              │
+│                            │                       │            │
+│                            └────────────────────────┘           │
+│                              Both updated together              │
+│                                                                 │
+│  READ (always hit):                                             │
 │  ┌─────┐    1.GET     ┌───────┐    2.Return                     │
 │  │ App │ ───────────► │ Cache │ ───────────► Data (always fresh)│
-│  └─────┘              └───────┘                                  │
-│                                                                  │
+│  └─────┘              └───────┘                                 │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -469,24 +469,24 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      TTL Flow                                    │
+│                      TTL Flow                                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  SET with TTL:                                                   │
+│                                                                 │
+│  SET with TTL:                                                  │
 │  ┌─────┐    SET key "value" EX 3600    ┌───────┐                │
-│  │ App │ ─────────────────────────────► │ Cache │                │
+│  │ App │ ─────────────────────────────►│ Cache │                │
 │  └─────┘      (expire in 1 hour)       └───────┘                │
-│                                             │                    │
-│                                             ▼                    │
-│  Timeline:                                                       │
+│                                            │                    │
+│                                             ▼                   │
+│  Timeline:                                                      │
 │  ──────────────────────────────────────────────────────────►    │
-│  │         │                               │                     │
-│  t=0       t=30min                         t=60min               │
-│  SET       GET (HIT)                       EXPIRED → MISS        │
-│            returns "value"                 │                     │
-│                                            ▼                     │
-│                                    Auto-deleted from cache       │
-│                                                                  │
+│  │         │                              │                     │
+│  t=0       t=30min                         t=60min              │
+│  SET       GET (HIT)                       EXPIRED → MISS       │
+│            returns "value"                │                     │
+│                                            ▼                    │
+│                                    Auto-deleted from cache      │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -502,29 +502,29 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Write-Around / Cache Invalidation               │
+│                  Write-Around / Cache Invalidation              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  WRITE (invalidate cache):                                       │
+│                                                                 │
+│  WRITE (invalidate cache):                                      │
 │  ┌─────┐                  ┌───────┐                             │
 │  │ App │ ── 1.DELETE ───► │ Cache │  (invalidate/xóa cache)     │
 │  └──┬──┘                  └───────┘                             │
-│     │                                                            │
+│    │                                                            │
 │     └── 2.Write ──────────────────────► ┌────────┐              │
 │                                         │   DB   │              │
 │                                         └────────┘              │
-│                                                                  │
-│  READ (sau đó - Lazy Loading):                                   │
+│                                                                 │
+│  READ (sau đó - Lazy Loading):                                  │
 │  ┌─────┐   1.GET    ┌───────┐                                   │
 │  │ App │ ─────────► │ Cache │ ── MISS (vì đã bị DELETE)         │
 │  └──┬──┘            └───┬───┘                                   │
 │     │    4.Return       │ 3.SET (data mới từ DB)                │
 │     │◄──────────────────┤                                       │
-│     │                   │                                        │
-│     └── 2.Query DB ─────┴───────────► ┌────────┐                │
+│     │                  │                                        │
+│     └── 2.Query DB ─────┴───────────►   ┌────────┐              │
 │                                       │   DB   │                │
 │                                       └────────┘                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -540,27 +540,27 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Write-Behind Flow                            │
+│                     Write-Behind Flow                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  WRITE (async to DB):                                            │
+│                                                                 │
+│  WRITE (async to DB):                                           │
 │  ┌─────┐   1.Write (sync)   ┌───────┐                           │
-│  │ App │ ──────────────────► │ Cache │                           │
+│  │ App │ ──────────────────►│ Cache │                           │
 │  └─────┘    Return fast!    └───┬───┘                           │
-│                                 │                                │
-│                                 │ 2.Async write (background)     │
-│                                 ▼                                │
-│                            ┌────────┐                            │
-│                            │   DB   │                            │
-│                            └────────┘                            │
-│                                                                  │
-│  Timeline:                                                       │
+│                                │                                │
+│                                 │ 2.Async write (background)    │
+│                                 ▼                               │
+│                            ┌────────┐                           │
+│                            │   DB   │                           │
+│                            └────────┘                           │
+│                                                                 │
+│  Timeline:                                                      │
 │  ──────────────────────────────────────────────────────────►    │
-│  │              │                      │                         │
-│  t=0            t=50ms                 t=100ms                   │
+│  │              │                     │                         │
+│  t=0            t=50ms                 t=100ms                  │
 │  Write to       Return to App          Background write to DB   │
-│  Cache (sync)   (fast!)                (async, batched)          │
-│                                                                  │
+│  Cache (sync)   (fast!)                (async, batched)         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -641,7 +641,7 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────┬─────────────────────────────────────┐
-│         Redis           │           Memcached                  │
+│         Redis           │           Memcached                 │
 ├─────────────────────────┼─────────────────────────────────────┤
 │ Complex data types      │ Only strings                        │
 │ Persistence (backup)    │ No persistence                      │
@@ -659,24 +659,24 @@ AWS giờ có **Serverless option** cho cả Redis và Memcached:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 Amazon ElastiCache Summary                       │
+│                 Amazon ElastiCache Summary                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Managed in-memory caching (Redis / Memcached)               │
 │  ✅ Microsecond latency (1000x faster than database)            │
-│  ✅ Reduce database load                                         │
+│  ✅ Reduce database load                                        │
 │  ✅ Session store, leaderboards, real-time apps                 │
-│                                                                  │
-│  Redis (95% cases):                                              │
+│                                                                 │
+│  Redis (95% cases):                                             │
 │  ├── HA with Multi-AZ Failover                                  │
 │  ├── Persistence (snapshots, AOF)                               │
-│  ├── Complex data types                                          │
-│  └── Pub/Sub, Read Replicas                                      │
-│                                                                  │
-│  Memcached (5% cases):                                           │
-│  ├── Simple key-value                                            │
-│  ├── Multi-threaded                                              │
-│  └── No persistence, no HA                                       │
-│                                                                  │
+│  ├── Complex data types                                         │
+│  └── Pub/Sub, Read Replicas                                     │
+│                                                                 │
+│  Memcached (5% cases):                                          │
+│  ├── Simple key-value                                           │
+│  ├── Multi-threaded                                             │
+│  └── No persistence, no HA                                      │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

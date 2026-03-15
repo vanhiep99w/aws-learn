@@ -203,10 +203,10 @@ ACM tích hợp native với nhiều AWS services:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  ⚠️  QUAN TRỌNG: Certificate Region                            │
+│  ⚠️  QUAN TRỌNG: Certificate Region                              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  CloudFront        →  Certificate phải ở US-EAST-1 (N.Virginia)│
+│  CloudFront        →  Certificate phải ở US-EAST-1 (N.Virginia) │
 │                                                                 │
 │  ALB, API Gateway  →  Certificate phải ở CÙNG REGION với service│
 │                                                                 │

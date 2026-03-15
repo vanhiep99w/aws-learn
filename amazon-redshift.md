@@ -26,14 +26,14 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Data Warehouse Concept                            │
-│                                                                      │
+│                    Data Warehouse Concept                           │
+│                                                                     │
 │   OLTP (Transactional)              OLAP (Analytical)               │
 │   ─────────────────────              ──────────────────             │
 │   - INSERT, UPDATE, DELETE           - SELECT, aggregate            │
 │   - Nhiều transaction nhỏ            - Ít query nhưng phức tạp      │
 │   - RDS, Aurora, DynamoDB            - Redshift, Athena             │
-│                                                                      │
+│                                                                     │
 │   ┌──────────────────┐              ┌──────────────────┐            │
 │   │  App Database    │   ──ETL──►   │  Data Warehouse  │            │
 │   │  (OLTP)          │              │  (OLAP)          │            │
@@ -42,7 +42,7 @@
 │   │  Customers       │              │  Reports         │            │
 │   │  Products        │              │  BI Dashboard    │            │
 │   └──────────────────┘              └──────────────────┘            │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -90,40 +90,40 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Redshift Cluster                              │
-│                                                                      │
+│                        Redshift Cluster                             │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      LEADER NODE                             │   │
-│   │                                                              │   │
-│   │  - Nhận query từ client                                      │   │
-│   │  - Parse và optimize query                                   │   │
-│   │  - Tạo execution plan                                        │   │
-│   │  - Phân phối task đến compute nodes                          │   │
-│   │  - Aggregate kết quả                                         │   │
-│   │  - Trả về kết quả cho client                                 │   │
+│   │                      LEADER NODE                            │   │
+│   │                                                             │   │
+│   │  - Nhận query từ client                                     │   │
+│   │  - Parse và optimize query                                  │   │
+│   │  - Tạo execution plan                                       │   │
+│   │  - Phân phối task đến compute nodes                         │   │
+│   │  - Aggregate kết quả                                        │   │
+│   │  - Trả về kết quả cho client                                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                              │                                       │
+│                             │                                       │
 │              ┌───────────────┼───────────────┐                      │
 │              │               │               │                      │
 │              ▼               ▼               ▼                      │
-│   ┌───────────────┐ ┌───────────────┐ ┌───────────────┐            │
-│   │ COMPUTE NODE 1│ │ COMPUTE NODE 2│ │ COMPUTE NODE 3│            │
-│   │               │ │               │ │               │            │
-│   │ ┌───────────┐ │ │ ┌───────────┐ │ │ ┌───────────┐ │            │
-│   │ │  Slice 1  │ │ │ │  Slice 1  │ │ │ │  Slice 1  │ │            │
-│   │ │  Slice 2  │ │ │ │  Slice 2  │ │ │ │  Slice 2  │ │            │
-│   │ └───────────┘ │ │ └───────────┘ │ │ └───────────┘ │            │
-│   │               │ │               │ │               │            │
-│   │  Store data   │ │  Store data   │ │  Store data   │            │
-│   │  Execute      │ │  Execute      │ │  Execute      │            │
-│   │  queries      │ │  queries      │ │  queries      │            │
-│   └───────────────┘ └───────────────┘ └───────────────┘            │
-│                                                                      │
+│   ┌───────────────┐ ┌───────────────┐ ┌───────────────┐             │
+│   │ COMPUTE NODE 1│ │ COMPUTE NODE 2│ │ COMPUTE NODE 3 │            │
+│   │               │ │               │ │                │            │
+│   │ ┌───────────┐ │ │ ┌───────────┐ │ │ ┌───────────┐  │            │
+│   │ │  Slice 1  │ │ │ │  Slice 1  │ │ │ │  Slice 1  │  │            │
+│   │ │  Slice 2  │ │ │ │  Slice 2  │ │ │ │  Slice 2  │  │            │
+│   │ └───────────┘ │ │ └───────────┘ │ │ └───────────┘  │            │
+│   │               │ │               │ │                │            │
+│   │  Store data   │ │  Store data   │ │  Store data    │            │
+│   │  Execute      │ │  Execute      │ │  Execute       │            │
+│   │  queries      │ │  queries      │ │  queries       │            │
+│   └───────────────┘ └───────────────┘ └───────────────┘             │
+│                                                                     │
 │                    Redshift Managed Storage (RMS)                   │
-│   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                         Amazon S3                            │   │
-│   │              (Durable storage cho RA3 nodes)                 │   │
-│   └─────────────────────────────────────────────────────────────┘   │
+│              ┌───────────────────────────────┐                      │
+│              │                         Amazon S3                           │                      │
+│              │              (Durable storage cho RA3 nodes)                │                      │
+│              └───────────────────────────────┘                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -155,19 +155,19 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     PROVISIONED CLUSTER                          │
-│                                                                  │
+│                     PROVISIONED CLUSTER                         │
+│                                                                 │
 │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
 │   │ ra3.xlplus  │  │ ra3.xlplus  │  │ ra3.xlplus  │             │
 │   │    Node 1   │  │    Node 2   │  │    Node 3   │             │
 │   └─────────────┘  └─────────────┘  └─────────────┘             │
-│                                                                  │
+│                                                                 │
 │   Chi phí: $1.086/hour × 3 nodes = $3.258/hour                  │
 │   Luôn chạy 24/7 dù không query                                 │
-│                                                                  │
-│   ✅ Predictable cost                                            │
-│   ✅ Reserved Instances discount (up to 75%)                     │
-│   ❌ Trả tiền khi idle                                           │
+│                                                                 │
+│   ✅ Predictable cost                                           │
+│   ✅ Reserved Instances discount (up to 75%)                    │
+│   ❌ Trả tiền khi idle                                          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -175,22 +175,22 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     REDSHIFT SERVERLESS                          │
-│                                                                  │
+│                     REDSHIFT SERVERLESS                         │
+│                                                                 │
 │   Workload ─────► ┌───────────────────────────────┐             │
 │                   │  AWS tự động provision        │             │
 │                   │  8 RPU ──► 128 RPU ──► 8 RPU  │             │
-│                   │           (scale)              │             │
+│                   │           (scale)             │             │
 │                   └───────────────────────────────┘             │
-│                                                                  │
+│                                                                 │
 │   RPU = Redshift Processing Unit                                │
 │   Chi phí: $0.375/RPU-hour (us-east-1)                          │
 │   Base 8 RPU = $3.00/hour khi active                            │
-│                                                                  │
-│   ✅ Chỉ trả khi query                                           │
-│   ✅ Auto scaling                                                 │
-│   ✅ Không cần quản lý infrastructure                            │
-│   ❌ Có thể đắt hơn với workload ổn định 24/7                    │
+│                                                                 │
+│   ✅ Chỉ trả khi query                                          │
+│   ✅ Auto scaling                                               │
+│   ✅ Không cần quản lý infrastructure                           │
+│   ❌ Có thể đắt hơn với workload ổn định 24/7                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -212,19 +212,19 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          RA3 NODES                               │
-│                    (Managed Storage - RMS)                       │
-│                                                                  │
+│                          RA3 NODES                              │
+│                    (Managed Storage - RMS)                      │
+│                                                                 │
 │   ┌─────────────┐                     ┌─────────────────────┐   │
-│   │ RA3 Node    │◄── Hot data ──────►│ Local SSD Cache     │   │
+│   │ RA3 Node    │◄── Hot data ──────► │ Local SSD Cache     │   │
 │   │             │                     │ (Fast access)       │   │
-│   │             │◄── Warm/Cold ─────►│ Amazon S3 (RMS)     │   │
+│   │             │◄── Warm/Cold ─────► │ Amazon S3 (RMS)     │   │
 │   │             │     data            │ (Unlimited storage) │   │
 │   └─────────────┘                     └─────────────────────┘   │
-│                                                                  │
-│   ✅ Compute và Storage scale độc lập                            │
-│   ✅ Chỉ trả storage theo GB thực tế dùng                        │
-│   ✅ Automatic data tiering                                      │
+│                                                                 │
+│   ✅ Compute và Storage scale độc lập                           │
+│   ✅ Chỉ trả storage theo GB thực tế dùng                       │
+│   ✅ Automatic data tiering                                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -238,21 +238,21 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          DC2 NODES                               │
-│                     (Local SSD Storage)                          │
-│                                                                  │
+│                          DC2 NODES                              │
+│                     (Local SSD Storage)                         │
+│                                                                 │
 │   ┌─────────────────────────────────────────────┐               │
-│   │ DC2 Node                                     │               │
-│   │                                              │               │
+│   │ DC2 Node                                    │               │
+│   │                                             │               │
 │   │  ┌─────────────────────────────────────┐    │               │
-│   │  │        Local NVMe SSD                │    │               │
-│   │  │        (Fixed storage per node)      │    │               │
+│   │  │        Local NVMe SSD                │   │               │
+│   │  │        (Fixed storage per node)      │   │               │
 │   │  └─────────────────────────────────────┘    │               │
 │   └─────────────────────────────────────────────┘               │
-│                                                                  │
-│   ✅ Fastest performance (all data local)                        │
-│   ✅ Tốt cho datasets < 1TB uncompressed                         │
-│   ❌ Storage fixed, scale bằng cách thêm nodes                   │
+│                                                                 │
+│   ✅ Fastest performance (all data local)                       │
+│   ✅ Tốt cho datasets < 1TB uncompressed                        │
+│   ❌ Storage fixed, scale bằng cách thêm nodes                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -280,40 +280,40 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DISTRIBUTION STYLES                           │
-│                                                                  │
-│  1. KEY Distribution                                             │
+│                    DISTRIBUTION STYLES                          │
+│                                                                 │
+│  1. KEY Distribution                                            │
 │  ─────────────────────                                          │
 │     Rows với cùng key value → cùng node                         │
 │     Tốt cho: JOIN trên cùng key                                 │
-│                                                                  │
+│                                                                 │
 │     ┌─────────┐    ┌─────────┐    ┌─────────┐                   │
 │     │ Node 1  │    │ Node 2  │    │ Node 3  │                   │
 │     │ key=A   │    │ key=B   │    │ key=C   │                   │
 │     │ key=A   │    │ key=B   │    │ key=C   │                   │
 │     └─────────┘    └─────────┘    └─────────┘                   │
-│                                                                  │
-│  2. ALL Distribution                                             │
+│                                                                 │
+│  2. ALL Distribution                                            │
 │  ─────────────────────                                          │
 │     Copy toàn bộ table đến mọi node                             │
 │     Tốt cho: Dimension tables nhỏ                               │
-│                                                                  │
+│                                                                 │
 │     ┌─────────┐    ┌─────────┐    ┌─────────┐                   │
 │     │ Full    │    │ Full    │    │ Full    │                   │
 │     │ table   │    │ table   │    │ table   │                   │
 │     │ copy    │    │ copy    │    │ copy    │                   │
 │     └─────────┘    └─────────┘    └─────────┘                   │
-│                                                                  │
-│  3. EVEN Distribution (default)                                  │
+│                                                                 │
+│  3. EVEN Distribution (default)                                 │
 │  ─────────────────────                                          │
 │     Round-robin phân đều rows                                   │
 │     Tốt cho: Tables không JOIN thường xuyên                     │
-│                                                                  │
-│  4. AUTO Distribution                                            │
+│                                                                 │
+│  4. AUTO Distribution                                           │
 │  ─────────────────────                                          │
 │     Redshift tự chọn EVEN hoặc ALL                              │
 │     Recommended: Để Redshift quyết định                         │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -321,24 +321,24 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        SORT KEYS                                 │
-│                                                                  │
-│  Compound Sort Key:                                              │
+│                        SORT KEYS                                │
+│                                                                 │
+│  Compound Sort Key:                                             │
 │  ─────────────────────                                          │
 │  SORTKEY (date, region, product_id)                             │
-│                                                                  │
+│                                                                 │
 │  Data sorted: date → region → product_id                        │
 │  ✅ Tốt khi filter theo thứ tự: date, hoặc date+region          │
-│  ❌ Không hiệu quả nếu chỉ filter region                         │
-│                                                                  │
-│  Interleaved Sort Key:                                           │
+│  ❌ Không hiệu quả nếu chỉ filter region                        │
+│                                                                 │
+│  Interleaved Sort Key:                                          │
 │  ─────────────────────                                          │
 │  INTERLEAVED SORTKEY (date, region, product_id)                 │
-│                                                                  │
+│                                                                 │
 │  ✅ Filter theo bất kỳ column nào đều hiệu quả                  │
-│  ❌ Chậm hơn khi load data                                       │
-│  ❌ Cần VACUUM thường xuyên                                      │
-│                                                                  │
+│  ❌ Chậm hơn khi load data                                      │
+│  ❌ Cần VACUUM thường xuyên                                     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -360,41 +360,41 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      REDSHIFT SPECTRUM                           │
-│                                                                  │
+│                      REDSHIFT SPECTRUM                          │
+│                                                                 │
 │   ┌───────────────┐                                             │
 │   │ Redshift      │                                             │
 │   │ Cluster       │                                             │
-│   │               │   SELECT * FROM                              │
-│   │               │   spectrum_schema.s3_table                   │
-│   │               │   WHERE date > '2024-01-01'                  │
+│   │               │   SELECT * FROM                             │
+│   │               │   spectrum_schema.s3_table                  │
+│   │               │   WHERE date > '2024-01-01'                 │
 │   └───────┬───────┘                                             │
-│           │                                                      │
-│           ▼                                                      │
+│          │                                                      │
+│           ▼                                                     │
 │   ┌───────────────────────────────────────────────┐             │
-│   │            Spectrum Layer                      │             │
+│   │            Spectrum Layer                     │             │
 │   │  (Thousands of nodes for parallel processing) │             │
 │   └───────────────────────────────────────────────┘             │
-│           │                                                      │
-│           ▼                                                      │
+│          │                                                      │
+│           ▼                                                     │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                      Amazon S3                           │   │
-│   │                                                          │   │
-│   │  s3://my-bucket/data/                                    │   │
-│   │  ├── sales/                                              │   │
+│   │                      Amazon S3                          │   │
+│   │                                                         │   │
+│   │  s3://my-bucket/data/                                   │   │
+│   │  ├── sales/                                             │   │
 │   │  │   ├── year=2024/month=01/ (Parquet, ORC, JSON, CSV)  │   │
 │   │  │   ├── year=2024/month=02/                            │   │
-│   │  │   └── ...                                             │   │
-│   │  └── customers/                                          │   │
+│   │  │   └── ...                                            │   │
+│   │  └── customers/                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │   Chi phí: $5.00 / TB data scanned                              │
-│                                                                  │
-│   ✅ Query data trực tiếp trên S3                                │
-│   ✅ Không cần load data vào Redshift                            │
-│   ✅ Tiết kiệm storage cost                                      │
+│                                                                 │
+│   ✅ Query data trực tiếp trên S3                               │
+│   ✅ Không cần load data vào Redshift                           │
+│   ✅ Tiết kiệm storage cost                                     │
 │   ✅ Partition pruning (chỉ scan partitions cần thiết)          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -415,31 +415,31 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       ZERO-ETL INTEGRATION                       │
-│                                                                  │
+│                       ZERO-ETL INTEGRATION                      │
+│                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
-│   │               │         Replication        │               │ │
-│   │    Aurora     │ ══════════════════════════►│   Redshift    │ │
-│   │   MySQL       │                            │               │ │
-│   │   PostgreSQL  │   - No ETL code needed     │   Analytics   │ │
-│   │               │   - Near real-time         │   & BI        │ │
-│   └───────────────┘   - Incremental sync       └───────────────┘ │
-│                                                                  │
+│   │               │         Replication       │               │ │
+│   │    Aurora     │ ══════════════════════════►│   Redshift   │ │
+│   │   MySQL       │                           │               │ │
+│   │   PostgreSQL  │   - No ETL code needed    │   Analytics   │ │
+│   │               │   - Near real-time        │   & BI        │ │
+│   └───────────────┘   - Incremental sync      └───────────────┘ │
+│                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
-│   │    RDS for    │ ══════════════════════════►│   Redshift    │ │
-│   │    MySQL      │                            │               │ │
-│   └───────────────┘                            └───────────────┘ │
-│                                                                  │
+│   │    RDS for    │ ══════════════════════════►│   Redshift   │ │
+│   │    MySQL      │                           │               │ │
+│   └───────────────┘                           └───────────────┘ │
+│                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
-│   │   DynamoDB    │ ══════════════════════════►│   Redshift    │ │
-│   │               │                            │               │ │
-│   └───────────────┘                            └───────────────┘ │
-│                                                                  │
-│   ✅ Không cần viết ETL code                                     │
-│   ✅ Near real-time analytics                                    │
-│   ✅ Automatic schema sync                                       │
+│   │   DynamoDB    │ ══════════════════════════►│   Redshift   │ │
+│   │               │                           │               │ │
+│   └───────────────┘                           └───────────────┘ │
+│                                                                 │
+│   ✅ Không cần viết ETL code                                    │
+│   ✅ Near real-time analytics                                   │
+│   ✅ Automatic schema sync                                      │
 │   ✅ Không có phí riêng (chỉ trả Redshift + source DB)          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -460,25 +460,25 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    CONCURRENCY SCALING                           │
-│                                                                  │
-│   Normal Load:                                                   │
+│                    CONCURRENCY SCALING                          │
+│                                                                 │
+│   Normal Load:                                                  │
 │   ┌─────────────┐                                               │
 │   │ Main Cluster│◄── 10 queries ──► OK                          │
 │   └─────────────┘                                               │
-│                                                                  │
-│   Peak Load (queue building up):                                 │
+│                                                                 │
+│   Peak Load (queue building up):                                │
 │   ┌─────────────┐         ┌─────────────────────────────┐       │
 │   │ Main Cluster│         │ Concurrency Scaling Cluster │       │
 │   │             │◄── 50 queries ───►                    │       │
 │   │             │    Auto offload   │ Temporary cluster │       │
-│   └─────────────┘                   │ (scale out)       │       │
-│                                     └─────────────────────┘       │
-│                                                                  │
-│   ✅ Tự động, không cần cấu hình                                 │
-│   ✅ 1 giờ miễn phí/ngày cho hầu hết clusters                    │
-│   💰 Sau đó tính theo on-demand rate                             │
-│                                                                  │
+│   └─────────────┘         │ (scale out)                 │       │
+│                                     └─────────────────────┘     │
+│                                                                 │
+│   ✅ Tự động, không cần cấu hình                                │
+│   ✅ 1 giờ miễn phí/ngày cho hầu hết clusters                   │
+│   💰 Sau đó tính theo on-demand rate                            │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -490,26 +490,26 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        DATA SHARING                              │
-│                                                                  │
-│   Producer Cluster                    Consumer Clusters          │
-│   (Account A)                         (Account A, B, C)          │
-│                                                                  │
+│                        DATA SHARING                             │
+│                                                                 │
+│   Producer Cluster                    Consumer Clusters         │
+│   (Account A)                         (Account A, B, C)         │
+│                                                                 │
 │   ┌─────────────────┐                ┌─────────────────┐        │
 │   │                 │   Datashare    │  BI Cluster     │        │
 │   │   Production    │ ──────────────►│  (Read-only)    │        │
 │   │   Warehouse     │                └─────────────────┘        │
-│   │                 │                                            │
+│   │                │                                            │
 │   │   "Main data"   │                ┌─────────────────┐        │
 │   │                 │   Datashare    │  Data Science   │        │
 │   │                 │ ──────────────►│  Cluster        │        │
 │   └─────────────────┘                └─────────────────┘        │
-│                                                                  │
-│   ✅ Live data (không copy)                                      │
-│   ✅ Cross-account, cross-region                                 │
-│   ✅ Consumer trả compute, Producer giữ data                     │
-│   ✅ Granular access control                                     │
-│                                                                  │
+│                                                                 │
+│   ✅ Live data (không copy)                                     │
+│   ✅ Cross-account, cross-region                                │
+│   ✅ Consumer trả compute, Producer giữ data                    │
+│   ✅ Granular access control                                    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -557,37 +557,37 @@ WHERE predict_churn(...) = 1;
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      REDSHIFT SECURITY                           │
-│                                                                  │
-│   Network Security:                                              │
+│                      REDSHIFT SECURITY                          │
+│                                                                 │
+│   Network Security:                                             │
 │   ─────────────────                                             │
 │   ┌─────────────────────────────────────────────┐               │
-│   │                    VPC                       │               │
+│   │                    VPC                      │               │
 │   │  ┌─────────────────────────────────────┐    │               │
-│   │  │          Private Subnet              │    │               │
+│   │  │          Private Subnet              │   │               │
 │   │  │  ┌─────────────────────────────┐    │    │               │
-│   │  │  │    Redshift Cluster          │    │    │               │
-│   │  │  │    (No public access)        │    │    │               │
+│   │  │  │    Redshift Cluster          │    │   │               │
+│   │  │  │    (No public access)        │    │   │               │
 │   │  │  └─────────────────────────────┘    │    │               │
-│   │  │              │                       │    │               │
-│   │  │              ▼                       │    │               │
-│   │  │       Security Group                 │    │               │
-│   │  │    (Port 5439 from app)              │    │               │
+│   │  │              │                       │   │               │
+│   │  │              ▼                       │   │               │
+│   │  │       Security Group                 │   │               │
+│   │  │    (Port 5439 from app)              │   │               │
 │   │  └─────────────────────────────────────┘    │               │
 │   └─────────────────────────────────────────────┘               │
-│                                                                  │
-│   Encryption:                                                    │
+│                                                                 │
+│   Encryption:                                                   │
 │   ─────────────────                                             │
 │   - At rest: AES-256 (KMS or HSM)                               │
 │   - In transit: SSL/TLS                                         │
-│                                                                  │
-│   Access Control:                                                │
+│                                                                 │
+│   Access Control:                                               │
 │   ─────────────────                                             │
 │   - IAM for cluster management                                  │
 │   - Database users/groups for data access                       │
 │   - Row-level security (RLS)                                    │
 │   - Column-level security (Dynamic Data Masking)                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

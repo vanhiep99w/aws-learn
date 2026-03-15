@@ -159,7 +159,7 @@ graph TB
 │  • DynamoDB: KMS encryption            • API calls (SDK tự động TLS)        │
 │  • EFS: KMS encryption                                                      │
 │                                                                             │
-│  ⚡ Hầu hết services hỗ trợ           ⚡ Hầu hết services ENFORCE             │
+│  ⚡ Hầu hết services hỗ trợ           ⚡ Hầu hết services ENFORCE           │
 │     KMS encryption at rest                TLS in transit by default         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -336,7 +336,7 @@ graph TB
 │                       SHIELD + WAF                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  🛡️ SHIELD                             🔥 WAF                               │
+│  🛡️ SHIELD                             🔥 WAF                                │
 │  ═══════════                           ═════                                │
 │                                                                             │
 │  Chống DDoS attacks:                   Chặn web attacks:                    │

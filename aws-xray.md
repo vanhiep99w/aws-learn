@@ -29,22 +29,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          AWS X-RAY OVERVIEW                                  │
+│                          AWS X-RAY OVERVIEW                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   User Request                                                               │
-│       │                                                                      │
-│       ▼                                                                      │
-│   ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐                 │
-│   │   API   │───►│ Lambda  │───►│   SQS   │───►│ Lambda  │                 │
-│   │ Gateway │    │  Fn A   │    │  Queue  │    │  Fn B   │                 │
-│   └────┬────┘    └────┬────┘    └────┬────┘    └────┬────┘                 │
+│                                                                             │
+│   User Request                                                              │
+│      │                                                                      │
+│       ▼                                                                     │
+│   ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐                  │
+│   │   API   │───►│ Lambda  │───►│   SQS   │───►│ Lambda  │                  │
+│   │ Gateway │    │  Fn A   │    │  Queue  │    │  Fn B   │                  │
+│   └────┬────┘    └────┬────┘    └────┬────┘    └────┬────┘                  │
 │        │              │              │              │                       │
 │        │    X-Ray     │    X-Ray     │    X-Ray     │                       │
 │        │   Segment    │   Segment    │   Segment    │   Segment             │
 │        └──────────────┴──────────────┴──────────────┘                       │
-│                              │                                               │
-│                              ▼                                               │
+│                             │                                               │
+│                              ▼                                              │
 │                    ┌──────────────────┐                                     │
 │                    │    AWS X-Ray     │                                     │
 │                    │  ┌────────────┐  │                                     │
@@ -58,7 +58,7 @@
 │                    │  │ Analytics  │  │                                     │
 │                    │  └────────────┘  │                                     │
 │                    └──────────────────┘                                     │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -70,33 +70,33 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CHALLENGES IN MICROSERVICES                               │
+│                    CHALLENGES IN MICROSERVICES                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ❌ TRƯỚC KHI CÓ X-RAY:                                                     │
-│                                                                              │
+│                                                                             │
 │     User: "Trang checkout load chậm quá!"                                   │
-│                                                                              │
+│                                                                             │
 │     DevOps: "Request đi qua 20 services... chậm ở đâu???"                   │
-│                                                                              │
-│     ┌─────┐    ┌─────┐    ┌─────┐           ┌─────┐                        │
-│     │ ??? │───►│ ??? │───►│ ??? │───► ??? ──►│ ??? │                        │
-│     └─────┘    └─────┘    └─────┘           └─────┘                        │
+│                                                                             │
+│     ┌─────┐    ┌─────┐    ┌─────┐           ┌─────┐                         │
+│     │ ??? │───►│ ??? │───►│ ??? │───► ??? ──►│ ???│                         │
+│     └─────┘    └─────┘    └─────┘           └─────┘                         │
 │        │          │          │                 │                            │
 │        ▼          ▼          ▼                 ▼                            │
 │     Logs       Logs       Logs              Logs                            │
-│     (Riêng    (Riêng     (Riêng            (Riêng                          │
-│      lẻ)       lẻ)        lẻ)               lẻ)                            │
-│                                                                              │
+│     (Riêng    (Riêng     (Riêng            (Riêng                           │
+│      lẻ)       lẻ)        lẻ)               lẻ)                             │
+│                                                                             │
 │  ✅ SAU KHI CÓ X-RAY:                                                       │
-│                                                                              │
-│     ┌─────┐    ┌─────┐    ┌─────┐           ┌─────┐                        │
-│     │ API │───►│Order│───►│ SQS │───► ───►  │ DB  │                        │
-│     │ GW  │50ms│ Svc │80ms│     │10ms       │     │500ms ← BOTTLENECK!     │
-│     └─────┘    └─────┘    └─────┘           └─────┘                        │
-│                                                                              │
+│                                                                             │
+│     ┌─────┐    ┌─────┐    ┌─────┐           ┌─────┐                         │
+│     │ API │───►│Order│───►│ SQS │───► ───►  │ DB  │                         │
+│     │ GW  │50ms│ Svc │80ms│     │10ms       │     │500ms ← BOTTLENECK!      │
+│     └─────┘    └─────┘    └─────┘           └─────┘                         │
+│                                                                             │
 │     X-Ray cho thấy: Database query mất 500ms = Root Cause!                  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -118,43 +118,43 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       X-RAY DATA MODEL                                       │
+│                       X-RAY DATA MODEL                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   TRACE (End-to-end request journey, unique ID)                             │
 │   ════════════════════════════════════════════════════════════════════════  │
-│   │                                                                          │
-│   │  SEGMENT 1: API Gateway                                                  │
+│  │                                                                          │
+│   │  SEGMENT 1: API Gateway                                                 │
 │   │  ┌─────────────────────────────────────────────────┐                    │
-│   │  │ id: abc123                                       │                    │
-│   │  │ name: api-gateway                                │                    │
-│   │  │ start_time: 1234567890.123                       │                    │
-│   │  │ end_time: 1234567890.145                         │                    │
-│   │  │ http: { request: {...}, response: {...} }        │                    │
+│   │  │ id: abc123                                      │                    │
+│   │  │ name: api-gateway                               │                    │
+│   │  │ start_time: 1234567890.123                      │                    │
+│   │  │ end_time: 1234567890.145                        │                    │
+│   │  │ http: { request: {...}, response: {...} }       │                    │
 │   │  └─────────────────────────────────────────────────┘                    │
-│   │                     │                                                    │
-│   │  SEGMENT 2: Lambda Function (Order Service)                              │
+│   │                    │                                                    │
+│   │  SEGMENT 2: Lambda Function (Order Service)                             │
 │   │  ┌─────────────────────────────────────────────────┐                    │
-│   │  │ id: def456                                       │                    │
-│   │  │ name: order-service                              │                    │
-│   │  │                                                  │                    │
-│   │  │   SUBSEGMENT: DynamoDB Call                      │                    │
-│   │  │   ┌───────────────────────────────────┐          │                    │
-│   │  │   │ name: DynamoDB                     │          │                    │
-│   │  │   │ namespace: aws                     │          │                    │
-│   │  │   │ aws: { operation: "PutItem" }      │          │                    │
-│   │  │   └───────────────────────────────────┘          │                    │
-│   │  │                                                  │                    │
-│   │  │   SUBSEGMENT: External HTTP Call                 │                    │
-│   │  │   ┌───────────────────────────────────┐          │                    │
-│   │  │   │ name: payment-api.com              │          │                    │
-│   │  │   │ namespace: remote                  │          │                    │
-│   │  │   │ http: { url: "..." }               │          │                    │
-│   │  │   └───────────────────────────────────┘          │                    │
+│   │  │ id: def456                                      │                    │
+│   │  │ name: order-service                             │                    │
+│   │  │                                                 │                    │
+│   │  │   SUBSEGMENT: DynamoDB Call                     │                    │
+│   │  │   ┌───────────────────────────────────┐         │                    │
+│   │  │   │ name: DynamoDB                     │        │                    │
+│   │  │   │ namespace: aws                     │        │                    │
+│   │  │   │ aws: { operation: "PutItem" }      │        │                    │
+│   │  │   └───────────────────────────────────┘         │                    │
+│   │  │                                                 │                    │
+│   │  │   SUBSEGMENT: External HTTP Call                │                    │
+│   │  │   ┌───────────────────────────────────┐         │                    │
+│   │  │   │ name: payment-api.com              │        │                    │
+│   │  │   │ namespace: remote                  │        │                    │
+│   │  │   │ http: { url: "..." }               │        │                    │
+│   │  │   └───────────────────────────────────┘         │                    │
 │   │  └─────────────────────────────────────────────────┘                    │
-│   │                                                                          │
+│  │                                                                          │
 │   ════════════════════════════════════════════════════════════════════════  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -174,32 +174,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY SAMPLING RULES                                │
+│                          X-RAY SAMPLING RULES                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Incoming Requests: 1000 requests/second                                    │
-│           │                                                                  │
-│           ▼                                                                  │
+│                                                                             │
+│   Incoming Requests: 1000 requests/second                                   │
+│          │                                                                  │
+│           ▼                                                                 │
 │   ┌─────────────────────────────────────────────────────┐                   │
-│   │              SAMPLING RULE ENGINE                    │                   │
-│   │                                                      │                   │
-│   │  Default Rule:                                       │                   │
+│   │              SAMPLING RULE ENGINE                   │                   │
+│   │                                                     │                   │
+│   │  Default Rule:                                      │                   │
 │   │  ┌────────────────────────────────────────────────┐ │                   │
 │   │  │ Reservoir: 1 request/second (first request)    │ │                   │
 │   │  │ Fixed Rate: 5% of remaining requests           │ │                   │
 │   │  └────────────────────────────────────────────────┘ │                   │
-│   │                                                      │                   │
-│   │  Custom Rule: /api/orders/*                          │                   │
+│   │                                                     │                   │
+│   │  Custom Rule: /api/orders/*                         │                   │
 │   │  ┌────────────────────────────────────────────────┐ │                   │
-│   │  │ Reservoir: 10 requests/second                   │ │                   │
+│   │  │ Reservoir: 10 requests/second                   ││                   │
 │   │  │ Fixed Rate: 20% (important endpoint)           │ │                   │
 │   │  └────────────────────────────────────────────────┘ │                   │
-│   │                                                      │                   │
+│   │                                                     │                   │
 │   └─────────────────────────────────────────────────────┘                   │
-│           │                                                                  │
-│           ▼                                                                  │
-│   Traced Requests: ~60 requests/second (cost optimized)                      │
-│                                                                              │
+│          │                                                                  │
+│           ▼                                                                 │
+│   Traced Requests: ~60 requests/second (cost optimized)                     │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -236,56 +236,56 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY SERVICE MAP                                   │
+│                          X-RAY SERVICE MAP                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │                              ┌──────────────┐                               │
 │                              │   Client     │                               │
 │                              │    👤        │                               │
 │                              └──────┬───────┘                               │
-│                                     │                                        │
-│                                     ▼                                        │
+│                                    │                                        │
+│                                     ▼                                       │
 │                              ┌──────────────┐                               │
 │                              │ API Gateway  │                               │
 │                              │   🌐         │                               │
 │                              │ Latency: 5ms │                               │
 │                              └──────┬───────┘                               │
-│                                     │                                        │
+│                                    │                                        │
 │               ┌─────────────────────┼─────────────────────┐                 │
 │               │                     │                     │                 │
 │               ▼                     ▼                     ▼                 │
-│        ┌──────────────┐     ┌──────────────┐     ┌──────────────┐          │
-│        │ User Service │     │Order Service │     │Product Svc   │          │
-│        │  λ           │     │  λ           │     │  λ           │          │
-│        │ ✅ Healthy   │     │ ⚠️ 2% errors │     │ ✅ Healthy   │          │
-│        │ Latency: 45ms│     │ Latency: 120ms│    │ Latency: 30ms│          │
-│        └──────┬───────┘     └──────┬───────┘     └──────┬───────┘          │
+│        ┌──────────────┐     ┌──────────────┐     ┌──────────────┐           │
+│        │ User Service │     │Order Service │     │Product Svc    │          │
+│        │  λ           │     │  λ           │     │  λ            │          │
+│        │ ✅ Healthy   │     │ ⚠️ 2% errors │     │ ✅ Healthy     │          │
+│        │ Latency: 45ms│     │ Latency: 120ms│    │ Latency: 30ms │          │
+│        └──────┬───────┘     └──────┬───────┘     └──────┬───────┘           │
 │               │                     │                     │                 │
 │               ▼                     ▼                     ▼                 │
-│        ┌──────────────┐     ┌──────────────┐     ┌──────────────┐          │
-│        │  DynamoDB    │     │    SQS       │     │  DynamoDB    │          │
-│        │  (Users)     │     │   Queue      │     │  (Products)  │          │
-│        │ 🗄️           │     │   📫        │     │ 🗄️           │          │
-│        │ Latency: 15ms│     │ Latency: 8ms │     │ Latency: 12ms│          │
-│        └──────────────┘     └──────┬───────┘     └──────────────┘          │
-│                                     │                                        │
-│                                     ▼                                        │
-│                              ┌──────────────┐                               │
-│                              │Payment Lambda│                               │
-│                              │  λ           │                               │
-│                              │ ❌ 5% errors │                               │
-│                              │ Latency: 500ms│ ← BOTTLENECK!                │
-│                              └──────┬───────┘                               │
-│                                     │                                        │
-│                                     ▼                                        │
+│        ┌──────────────┐     ┌──────────────┐     ┌──────────────┐           │
+│        │  DynamoDB    │     │    SQS       │     │  DynamoDB     │          │
+│        │  (Users)     │     │   Queue      │     │  (Products)   │          │
+│        │ 🗄️           │     │   📫        │     │ 🗄️               │          │
+│        │ Latency: 15ms│     │ Latency: 8ms │     │ Latency: 12ms │          │
+│        └──────────────┘     └──────┬───────┘     └──────────────┘           │
+│                                    │                                        │
+│                                     ▼                                       │
+│               ┌───────────────────────────────────────────┐                 │
+│               │Payment Lambda                             │                 │
+│               │  λ                                        │                 │
+│               │ ❌ 5% errors                              │                 │
+│               │ Latency: 500ms                            │ ← BOTTLENECK!   │
+│               └──────┬────────────────────────────────────┘                 │
+│                                    │                                        │
+│                                     ▼                                       │
 │                              ┌──────────────┐                               │
 │                              │ Stripe API   │                               │
 │                              │ 💳 (Remote)  │                               │
 │                              └──────────────┘                               │
-│                                                                              │
-│   Legend:                                                                    │
-│   ✅ = Healthy (< 1% error)  ⚠️ = Degraded (1-5% error)  ❌ = Unhealthy    │
-│                                                                              │
+│                                                                             │
+│   Legend:                                                                   │
+│   ✅ = Healthy (< 1% error)  ⚠️ = Degraded (1-5% error)  ❌ = Unhealthy      │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -307,40 +307,40 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    X-RAY NATIVE AWS INTEGRATIONS                             │
+│                    X-RAY NATIVE AWS INTEGRATIONS                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  AUTOMATIC INTEGRATION (Just Enable)                                   ║ │
+│   ║  AUTOMATIC INTEGRATION (Just Enable)                                   ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║                                                                        ║ │
-│   ║  • AWS Lambda          → Enable "Active Tracing" in config             ║ │
-│   ║  • API Gateway         → Enable X-Ray in Stage settings                ║ │
-│   ║  • Elastic Beanstalk   → Enable in configuration                       ║ │
-│   ║  • App Runner          → Enable tracing option                         ║ │
-│   ║  • SNS/SQS             → Auto-instrumented with SDK                    ║ │
-│   ║                                                                        ║ │
+│   ║                                                                        ║│
+│   ║  • AWS Lambda          → Enable "Active Tracing" in config             ║│
+│   ║  • API Gateway         → Enable X-Ray in Stage settings                ║│
+│   ║  • Elastic Beanstalk   → Enable in configuration                       ║│
+│   ║  • App Runner          → Enable tracing option                         ║│
+│   ║  • SNS/SQS             → Auto-instrumented with SDK                    ║│
+│   ║                                                                        ║│
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  SDK INSTRUMENTATION (Cần code)                                        ║ │
+│   ║  SDK INSTRUMENTATION (Cần code)                                        ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║                                                                        ║ │
-│   ║  • EC2 Instances       → X-Ray Daemon + SDK                            ║ │
-│   ║  • ECS/EKS             → X-Ray Daemon sidecar + SDK                    ║ │
-│   ║  • On-Premises         → X-Ray Daemon + SDK                            ║ │
-│   ║                                                                        ║ │
+│   ║                                                                        ║│
+│   ║  • EC2 Instances       → X-Ray Daemon + SDK                            ║│
+│   ║  • ECS/EKS             → X-Ray Daemon sidecar + SDK                    ║│
+│   ║  • On-Premises         → X-Ray Daemon + SDK                            ║│
+│   ║                                                                        ║│
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  AUTO-CAPTURED AWS CALLS (khi dùng SDK)                                ║ │
+│   ║  AUTO-CAPTURED AWS CALLS (khi dùng SDK)                                ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║                                                                        ║ │
-│   ║  DynamoDB │ S3 │ SQS │ SNS │ Lambda │ Step Functions │                 ║ │
-│   ║  RDS │ Aurora │ ElastiCache │ Secrets Manager │ SSM                    ║ │
-│   ║                                                                        ║ │
+│   ║                                                                        ║│
+│   ║  DynamoDB │ S3 │ SQS │ SNS │ Lambda │ Step Functions │                 ║│
+│   ║  RDS │ Aurora │ ElastiCache │ Secrets Manager │ SSM                    ║│
+│   ║                                                                        ║│
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -594,12 +594,12 @@ public class OrderService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY DAEMON ARCHITECTURE                           │
+│                          X-RAY DAEMON ARCHITECTURE                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   EC2 Instance / Container                                                   │
+│                                                                             │
+│   EC2 Instance / Container                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────┐  │
-│   │                                                                       │  │
+│   │                                                                      │  │
 │   │   ┌─────────────────┐         ┌─────────────────┐                    │  │
 │   │   │  Your App       │         │  X-Ray Daemon   │                    │  │
 │   │   │  (with X-Ray    │  UDP    │                 │  HTTPS             │  │
@@ -607,22 +607,22 @@ public class OrderService {
 │   │   │                 │         │  (Listens for   │            │       │  │
 │   │   │                 │         │   segments)     │            │       │  │
 │   │   └─────────────────┘         └─────────────────┘            │       │  │
-│   │                                                               │       │  │
-│   └───────────────────────────────────────────────────────────────│───────┘  │
-│                                                                   │          │
-│                                                                   ▼          │
-│                                                        ┌──────────────────┐  │
-│                                                        │   AWS X-Ray      │  │
-│                                                        │   Service API    │  │
-│                                                        │   (BatchWrite)   │  │
-│                                                        └──────────────────┘  │
-│                                                                              │
-│   Why Daemon?                                                                │
-│   • Buffers segments before sending (reduces API calls)                      │
-│   • Handles IAM credentials                                                  │
-│   • Batches multiple segments efficiently                                    │
+│   │                                                               │      │  │
+│   └───────────────────────────────────────────────────────────────│───────┘ │
+│                                                                  │          │
+│                                                                   ▼         │
+│   ┌──────────────────────────────────────────────────────────────────────┐  │
+│   │   AWS X-Ray                                                          │  │
+│   │   Service API                                                        │  │
+│   │   (BatchWrite)                                                       │  │
+│   └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│   Why Daemon?                                                               │
+│   • Buffers segments before sending (reduces API calls)                     │
+│   • Handles IAM credentials                                                 │
+│   • Batches multiple segments efficiently                                   │
 │   • Runs in background, doesn't block your app                              │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -700,28 +700,28 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY FILTER EXPRESSIONS                            │
+│                          X-RAY FILTER EXPRESSIONS                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   // Find all 5xx errors                                                     │
-│   responsetime > 5 AND http.status >= 500                                    │
-│                                                                              │
-│   // Find slow requests for specific user                                    │
-│   annotation.userId = "user-12345" AND responsetime > 3                      │
-│                                                                              │
-│   // Find errors in specific service                                         │
-│   service("order-service") { error = true }                                  │
-│                                                                              │
-│   // Complex query                                                           │
-│   service("payment-service") {                                               │
-│     annotation.payment_method = "credit_card" AND                            │
-│     responsetime > 2 AND                                                     │
-│     fault = true                                                             │
-│   }                                                                          │
-│                                                                              │
-│   // Find by HTTP method and path                                            │
-│   http.method = "POST" AND http.url CONTAINS "/api/orders"                   │
-│                                                                              │
+│                                                                             │
+│   // Find all 5xx errors                                                    │
+│   responsetime > 5 AND http.status >= 500                                   │
+│                                                                             │
+│   // Find slow requests for specific user                                   │
+│   annotation.userId = "user-12345" AND responsetime > 3                     │
+│                                                                             │
+│   // Find errors in specific service                                        │
+│   service("order-service") { error = true }                                 │
+│                                                                             │
+│   // Complex query                                                          │
+│   service("payment-service") {                                              │
+│     annotation.payment_method = "credit_card" AND                           │
+│     responsetime > 2 AND                                                    │
+│     fault = true                                                            │
+│   }                                                                         │
+│                                                                             │
+│   // Find by HTTP method and path                                           │
+│   http.method = "POST" AND http.url CONTAINS "/api/orders"                  │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -746,44 +746,44 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY INSIGHTS CONSOLE                              │
+│                          X-RAY INSIGHTS CONSOLE                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  📊 Response Time Distribution                                       │   │
+│   │  📊 Response Time Distribution                                      │   │
 │   │  ┌───────────────────────────────────────────────────────────────┐  │   │
-│   │  │ █                                                              │  │   │
-│   │  │ ██                                                             │  │   │
-│   │  │ ████                                                           │  │   │
-│   │  │ ██████                                                         │  │   │
-│   │  │ █████████                                                      │  │   │
-│   │  │ ████████████                                                   │  │   │
+│   │  │ █                                                              │ │   │
+│   │  │ ██                                                             │ │   │
+│   │  │ ████                                                           │ │   │
+│   │  │ ██████                                                         │ │   │
+│   │  │ █████████                                                      │ │   │
+│   │  │ ████████████                                                   │ │   │
 │   │  │ ███████████████                                               │  │   │
 │   │  │ │    │    │    │    │    │    │    │    │    │                │  │   │
 │   │  │ 0   50  100  200  500  1s   2s   5s  10s  >10s (ms)           │  │   │
 │   │  └───────────────────────────────────────────────────────────────┘  │   │
-│   │  p50: 120ms  |  p90: 450ms  |  p99: 2.1s                          │   │
+│   │  p50: 120ms  |  p90: 450ms  |  p99: 2.1s                            │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  ❌ Error Breakdown                                                  │   │
+│   │  ❌ Error Breakdown                                                 │   │
 │   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                                                              │    │   │
-│   │  │    ValidationError     ████████████████████  45%             │    │   │
-│   │  │    TimeoutError        ███████████  25%                      │    │   │
-│   │  │    ConnectionError     ████████  18%                         │    │   │
-│   │  │    Other               █████  12%                            │    │   │
-│   │  │                                                              │    │   │
+│   │  │                                                              │   │   │
+│   │  │    ValidationError     ████████████████████  45%             │   │   │
+│   │  │    TimeoutError        ███████████  25%                      │   │   │
+│   │  │    ConnectionError     ████████  18%                         │   │   │
+│   │  │    Other               █████  12%                            │   │   │
+│   │  │                                                              │   │   │
 │   │  └─────────────────────────────────────────────────────────────┘    │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  🔥 Top Root Causes (by Impact)                                      │   │
+│   │  🔥 Top Root Causes (by Impact)                                     │   │
 │   │  1. payment-service → Stripe API timeout (35% of errors)            │   │
 │   │  2. order-service → DynamoDB throttling (28% of errors)             │   │
 │   │  3. user-service → Invalid token (22% of errors)                    │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -791,38 +791,38 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY INSIGHTS ALERT                                │
+│                          X-RAY INSIGHTS ALERT                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  🚨 INCIDENT DETECTED: Elevated Error Rate                                  │
-│                                                                              │
+│                                                                             │
 │  ┌────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                         │ │
-│  │  Service:        payment-service                                        │ │
+│  │                                                                        │ │
+│  │  Service:        payment-service                                       │ │
 │  │  Start Time:     2024-01-15 14:23:00 UTC                               │ │
-│  │  Duration:       45 minutes (ongoing)                                   │ │
-│  │  Impact:         ~2,500 failed requests                                 │ │
-│  │                                                                         │ │
+│  │  Duration:       45 minutes (ongoing)                                  │ │
+│  │  Impact:         ~2,500 failed requests                                │ │
+│  │                                                                        │ │
 │  │  ────────────────────────────────────────────────────────────────────  │ │
-│  │                                                                         │ │
-│  │  Root Cause Analysis:                                                   │ │
+│  │                                                                        │ │
+│  │  Root Cause Analysis:                                                  │ │
 │  │  ┌────────────────────────────────────────────────────────────────┐    │ │
-│  │  │                                                                 │    │ │
-│  │  │  payment-service                                                │    │ │
-│  │  │       ↓                                                         │    │ │
+│  │  │                                                                 │   │ │
+│  │  │  payment-service                                                │   │ │
+│  │  │       ↓                                                         │   │ │
 │  │  │  Stripe API  ←── Connection Timeout (85% of errors)            │    │ │
-│  │  │       ↓                                                         │    │ │
+│  │  │       ↓                                                         │   │ │
 │  │  │  [External: api.stripe.com] ← Possible Third-Party Issue       │    │ │
-│  │  │                                                                 │    │ │
+│  │  │                                                                 │   │ │
 │  │  └────────────────────────────────────────────────────────────────┘    │ │
-│  │                                                                         │ │
-│  │  Recommended Actions:                                                   │ │
+│  │                                                                        │ │
+│  │  Recommended Actions:                                                  │ │
 │  │  • Check Stripe status page: status.stripe.com                         │ │
 │  │  • Increase connection timeout if appropriate                          │ │
 │  │  • Consider implementing circuit breaker pattern                       │ │
-│  │                                                                         │ │
+│  │                                                                        │ │
 │  └────────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -834,36 +834,36 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    X-RAY + CLOUDWATCH SERVICELENS                            │
+│                    X-RAY + CLOUDWATCH SERVICELENS                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │                    ┌────────────────────────────────────┐                   │
 │                    │       CloudWatch ServiceLens       │                   │
 │                    │       (Unified Observability)      │                   │
 │                    └─────────────────┬──────────────────┘                   │
-│                                      │                                       │
+│                                     │                                       │
 │               ┌──────────────────────┼──────────────────────┐               │
 │               │                      │                      │               │
 │               ▼                      ▼                      ▼               │
-│      ┌──────────────┐       ┌──────────────┐       ┌──────────────┐        │
-│      │  CloudWatch  │       │   AWS X-Ray  │       │  CloudWatch  │        │
-│      │   Metrics    │       │   Traces     │       │    Logs      │        │
-│      │              │       │              │       │              │        │
-│      │  • CPU       │       │  • Latency   │       │  • Errors    │        │
-│      │  • Memory    │       │  • Errors    │       │  • Debug     │        │
-│      │  • Network   │       │  • Map       │       │  • Events    │        │
-│      └──────────────┘       └──────────────┘       └──────────────┘        │
+│      ┌──────────────┐       ┌──────────────┐       ┌──────────────┐         │
+│      │  CloudWatch  │       │   AWS X-Ray  │       │  CloudWatch   │        │
+│      │   Metrics    │       │   Traces     │       │    Logs       │        │
+│      │              │       │              │       │               │        │
+│      │  • CPU       │       │  • Latency   │       │  • Errors     │        │
+│      │  • Memory    │       │  • Errors    │       │  • Debug      │        │
+│      │  • Network   │       │  • Map       │       │  • Events     │        │
+│      └──────────────┘       └──────────────┘       └──────────────┘         │
 │               │                      │                      │               │
 │               └──────────────────────┼──────────────────────┘               │
-│                                      │                                       │
-│                                      ▼                                       │
+│                                     │                                       │
+│                                      ▼                                      │
 │                         ┌────────────────────────┐                          │
 │                         │  Correlated View       │                          │
 │                         │  • Service Map         │                          │
 │                         │  • Trace → Logs        │                          │
 │                         │  • Metrics → Traces    │                          │
 │                         └────────────────────────┘                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -883,28 +883,28 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    X-RAY vs OPENTELEMETRY COMPARISON                         │
+│                    X-RAY vs OPENTELEMETRY COMPARISON                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   AWS X-RAY                           │   OPENTELEMETRY (OTel)              │
 │   ─────────────────────────────────── │ ─────────────────────────────────── │
-│                                       │                                      │
+│                                      │                                      │
 │   • AWS proprietary solution          │   • Open-source, vendor-neutral     │
 │   • Tightly integrated with AWS       │   • Works with ANY backend          │
 │   • Simpler setup on AWS              │   • More flexible, more complex     │
 │   • Limited to AWS ecosystem          │   • Multi-cloud, on-premises        │
-│                                       │                                      │
+│                                      │                                      │
 │   ┌─────────────┐                     │   ┌─────────────┐                   │
 │   │   X-Ray     │                     │   │    OTel     │                   │
 │   │    SDK      │─────► X-Ray         │   │    SDK      │─────► ANY Backend │
 │   └─────────────┘      Console        │   └─────────────┘                   │
-│                                       │          │                           │
+│                                       │         │                           │
 │                                       │          ├──► Jaeger                │
 │                                       │          ├──► Zipkin                │
 │                                       │          ├──► X-Ray (via ADOT)      │
 │                                       │          ├──► Datadog               │
 │                                       │          └──► Grafana Tempo         │
-│                                       │                                      │
+│                                      │                                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -928,30 +928,30 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    TERMINOLOGY MAPPING                                       │
+│                    TERMINOLOGY MAPPING                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   X-RAY Concept              ═══════════►    OpenTelemetry Equivalent        │
+│                                                                             │
+│   X-RAY Concept              ═══════════►    OpenTelemetry Equivalent       │
 │   ───────────────────────────────────────────────────────────────────────── │
-│                                                                              │
-│   Trace                      ═══════════►    Trace                           │
-│   Segment                    ═══════════►    Span                            │
-│   Subsegment                 ═══════════►    Child Span                      │
-│   Annotation                 ═══════════►    Span Attribute (indexed)        │
-│   Metadata                   ═══════════►    Span Attribute (non-indexed)    │
-│   X-Ray Daemon               ═══════════►    OTel Collector                  │
-│   Sampling Rules             ═══════════►    Sampler / Processors            │
-│   Service Map                ═══════════►    Trace visualization (backend)   │
-│                                                                              │
+│                                                                             │
+│   Trace                      ═══════════►    Trace                          │
+│   Segment                    ═══════════►    Span                           │
+│   Subsegment                 ═══════════►    Child Span                     │
+│   Annotation                 ═══════════►    Span Attribute (indexed)       │
+│   Metadata                   ═══════════►    Span Attribute (non-indexed)   │
+│   X-Ray Daemon               ═══════════►    OTel Collector                 │
+│   Sampling Rules             ═══════════►    Sampler / Processors           │
+│   Service Map                ═══════════►    Trace visualization (backend)  │
+│                                                                             │
 │   ───────────────────────────────────────────────────────────────────────── │
-│                                                                              │
-│   X-RAY ONLY Concepts:                OTel EXCLUSIVE Concepts:               │
-│   • X-Ray Insights                    • Baggage (cross-service context)      │
-│   • ServiceLens integration           • Metrics + Logs (unified)             │
-│   • Groups                            • Exporters (multiple backends)        │
-│                                       • Processors (transform data)          │
-│                                       • Resource detection                   │
-│                                                                              │
+│                                                                             │
+│   X-RAY ONLY Concepts:                OTel EXCLUSIVE Concepts:              │
+│   • X-Ray Insights                    • Baggage (cross-service context)     │
+│   • ServiceLens integration           • Metrics + Logs (unified)            │
+│   • Groups                            • Exporters (multiple backends)       │
+│                                       • Processors (transform data)         │
+│                                       • Resource detection                  │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -959,42 +959,42 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         X-RAY ARCHITECTURE                                   │
+│                         X-RAY ARCHITECTURE                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌──────────────┐         ┌──────────────┐         ┌──────────────────┐   │
-│   │  Your App    │  UDP    │  X-Ray       │  HTTPS  │  AWS X-Ray       │   │
-│   │  + X-Ray SDK │────────►│  Daemon      │────────►│  Service         │   │
-│   └──────────────┘         └──────────────┘         └────────┬─────────┘   │
+│                                                                             │
+│   ┌──────────────┐         ┌──────────────┐         ┌──────────────────┐    │
+│   │  Your App    │  UDP    │  X-Ray       │  HTTPS  │  AWS X-Ray       │    │
+│   │  + X-Ray SDK │────────►│  Daemon      │────────►│  Service         │    │
+│   └──────────────┘         └──────────────┘         └────────┬─────────┘    │
 │                                                               │             │
 │                                                               ▼             │
 │                                                      ┌──────────────────┐   │
 │                                                      │  X-Ray Console   │   │
 │                                                      │  (Only option)   │   │
 │                                                      └──────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      OPENTELEMETRY ARCHITECTURE                              │
+│                      OPENTELEMETRY ARCHITECTURE                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌──────────────┐         ┌──────────────────────────────────────────────┐ │
 │   │  Your App    │  OTLP   │              OTel Collector                  │ │
-│   │  + OTel SDK  │────────►│  ┌─────────┐ ┌──────────┐ ┌───────────────┐ │ │
-│   └──────────────┘         │  │Receivers│►│Processors│►│   Exporters   │ │ │
-│                            │  └─────────┘ └──────────┘ └───────┬───────┘ │ │
-│                            └───────────────────────────────────│─────────┘ │
+│   │  + OTel SDK  │────────►│  ┌─────────┐ ┌──────────┐ ┌───────────────┐  │ │
+│   └──────────────┘         │  │Receivers│►│Processors│►│   Exporters   │  │ │
+│                            │  └─────────┘ └──────────┘ └───────┬───────┘  │ │
+│                            └───────────────────────────────────│─────────┘  │
 │                                                                 │           │
 │                           ┌─────────────────────────────────────┼───────┐   │
 │                           │                 │                   │       │   │
 │                           ▼                 ▼                   ▼       ▼   │
-│                    ┌──────────┐      ┌──────────┐      ┌──────────┐ ┌─────┐│
-│                    │  Jaeger  │      │  Zipkin  │      │  X-Ray   │ │Tempo││
-│                    └──────────┘      └──────────┘      └──────────┘ └─────┘│
-│                                                                              │
+│                    ┌──────────┐      ┌──────────┐      ┌──────────┐ ┌──────┐│
+│                    │  Jaeger  │      │  Zipkin  │      │  X-Ray   │ │Tempo ││
+│                    └──────────┘      └──────────┘      └──────────┘ └──────┘│
+│                                                                             │
 │   💡 OTel can send to MULTIPLE backends simultaneously!                     │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1005,13 +1005,13 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS DISTRO FOR OPENTELEMETRY (ADOT)                       │
+│                    AWS DISTRO FOR OPENTELEMETRY (ADOT)                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ADOT = OpenTelemetry + AWS-specific enhancements                          │
-│                                                                              │
+│                                                                             │
 │   ┌──────────────────────────────────────────────────────────────────────┐  │
-│   │                                                                       │  │
+│   │                                                                      │  │
 │   │  ┌──────────────┐                      ┌────────────────────────────┐│  │
 │   │  │  Your App    │                      │      ADOT Collector        ││  │
 │   │  │  + OTel SDK  │────OTLP─────────────►│                            ││  │
@@ -1024,19 +1024,19 @@ spec:
 │   │                   ┌──────────────────────────────────┴───────────┐   │  │
 │   │                   │              │              │                │   │  │
 │   │                   ▼              ▼              ▼                ▼   │  │
-│   │           ┌──────────────┐ ┌───────────┐ ┌───────────┐ ┌──────────┐ │  │
-│   │           │   X-Ray      │ │CloudWatch │ │Prometheus │ │  Any     │ │  │
-│   │           │   Console    │ │  Metrics  │ │  /Grafana │ │  Backend │ │  │
-│   │           └──────────────┘ └───────────┘ └───────────┘ └──────────┘ │  │
-│   │                                                                       │  │
+│   │           ┌──────────────┐ ┌───────────┐ ┌───────────┐ ┌──────────┐  │  │
+│   │           │   X-Ray      │ │CloudWatch │ │Prometheus │ │  Any     │  │  │
+│   │           │   Console    │ │  Metrics  │ │  /Grafana │ │  Backend │  │  │
+│   │           └──────────────┘ └───────────┘ └───────────┘ └──────────┘  │  │
+│   │                                                                      │  │
 │   └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│   Benefits of ADOT:                                                          │
+│                                                                             │
+│   Benefits of ADOT:                                                         │
 │   ✅ AWS tested & supported                                                 │
 │   ✅ Pre-configured for AWS services                                        │
 │   ✅ Best of both worlds: OTel flexibility + AWS integration                │
 │   ✅ Future-proof (OTel is the standard)                                    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1106,33 +1106,33 @@ span.end();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       DECISION MATRIX                                        │
+│                       DECISION MATRIX                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ✅ CHỌN X-RAY SDK khi:                                                    │
-│   ──────────────────────                                                     │
-│   • 100% AWS infrastructure                                                  │
+│   ──────────────────────                                                    │
+│   • 100% AWS infrastructure                                                 │
 │   • Cần setup nhanh, ít config                                              │
-│   • Team mới làm quen với tracing                                            │
+│   • Team mới làm quen với tracing                                           │
 │   • Không có kế hoạch multi-cloud                                           │
 │   • Muốn tận dụng X-Ray Insights, Groups                                    │
-│                                                                              │
+│                                                                             │
 │   ✅ CHỌN OPENTELEMETRY khi:                                                │
-│   ───────────────────────────                                                │
+│   ───────────────────────────                                               │
 │   • Multi-cloud hoặc hybrid (AWS + GCP + Azure)                             │
 │   • Muốn tránh vendor lock-in                                               │
 │   • Cần gửi traces đến nhiều backends                                       │
 │   • Đã invest vào Jaeger/Zipkin/Grafana                                     │
 │   • Muốn unified observability (traces + metrics + logs)                    │
 │   • Team đã familiar với OTel                                               │
-│                                                                              │
+│                                                                             │
 │   ✅ CHỌN ADOT (AWS Distro for OTel) khi:                                   │
-│   ─────────────────────────────────────────                                  │
+│   ─────────────────────────────────────────                                 │
 │   • Chủ yếu AWS nhưng muốn flexibility                                      │
 │   • Muốn migrate từ X-Ray SDK dần dần                                       │
 │   • Cần AWS support cho OTel                                                │
 │   • Future-proofing: OTel đang trở thành standard                           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1140,33 +1140,33 @@ span.end();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    MIGRATION STRATEGY                                        │
+│                    MIGRATION STRATEGY                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Phase 1: Parallel Running                                                  │
-│   ──────────────────────────                                                 │
-│   ┌────────────┐                                                             │
+│                                                                             │
+│   Phase 1: Parallel Running                                                 │
+│   ──────────────────────────                                                │
+│   ┌────────────┐                                                            │
 │   │  Service A │──── X-Ray SDK ────► X-Ray                                  │
-│   │  (Legacy)  │                                                             │
-│   └────────────┘                                                             │
-│                                                                              │
+│   │  (Legacy)  │                                                            │
+│   └────────────┘                                                            │
+│                                                                             │
 │   ┌────────────┐                    ┌──────────┐                            │
-│   │  Service B │──── OTel SDK ─────►│   ADOT   │───► X-Ray (same console)  │
+│   │  Service B │──── OTel SDK ─────►│   ADOT   │───► X-Ray (same console)   │
 │   │  (New)     │                    │Collector │                            │
 │   └────────────┘                    └──────────┘                            │
-│                                                                              │
-│   Phase 2: Gradual Migration                                                 │
-│   ───────────────────────────                                                │
-│   • Migrate service by service                                               │
+│                                                                             │
+│   Phase 2: Gradual Migration                                                │
+│   ───────────────────────────                                               │
+│   • Migrate service by service                                              │
 │   • Both send to X-Ray, so no visibility loss                               │
-│                                                                              │
-│   Phase 3: Full OTel                                                         │
-│   ────────────────────                                                       │
+│                                                                             │
+│   Phase 3: Full OTel                                                        │
+│   ────────────────────                                                      │
 │   ┌────────────┐                    ┌──────────┐                            │
-│   │ All        │──── OTel SDK ─────►│   ADOT   │───► X-Ray + Other backends│
+│   │ All        │──── OTel SDK ─────►│   ADOT   │───► X-Ray + Other backends │
 │   │ Services   │                    │Collector │                            │
 │   └────────────┘                    └──────────┘                            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1190,36 +1190,36 @@ span.end();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY PRICING MODEL                                 │
+│                          X-RAY PRICING MODEL                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  Traces Recorded                                                     │   │
-│   │  ─────────────────                                                   │   │
-│   │  First 100,000 traces/month: FREE                                    │   │
-│   │  Beyond: $5.00 per 1 million traces                                  │   │
+│   │  Traces Recorded                                                    │   │
+│   │  ─────────────────                                                  │   │
+│   │  First 100,000 traces/month: FREE                                   │   │
+│   │  Beyond: $5.00 per 1 million traces                                 │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  Traces Retrieved & Scanned                                          │   │
-│   │  ───────────────────────────                                         │   │
-│   │  First 1,000,000 traces/month: FREE                                  │   │
-│   │  Beyond: $0.50 per 1 million traces retrieved                        │   │
+│   │  Traces Retrieved & Scanned                                         │   │
+│   │  ───────────────────────────                                        │   │
+│   │  First 1,000,000 traces/month: FREE                                 │   │
+│   │  Beyond: $0.50 per 1 million traces retrieved                       │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  X-Ray Insights                                                      │   │
-│   │  ───────────────                                                     │   │
-│   │  $0.0000002 per trace analyzed                                       │   │
-│   │  (Automatic anomaly detection)                                       │   │
+│   │  X-Ray Insights                                                     │   │
+│   │  ───────────────                                                    │   │
+│   │  $0.0000002 per trace analyzed                                      │   │
+│   │  (Automatic anomaly detection)                                      │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   💡 Cost Optimization Tips:                                                │
 │   • Use sampling effectively (reservoir + fixed rate)                       │
 │   • Sample more in production, less in dev/staging                          │
 │   • Use annotations wisely (they're indexed = cost)                         │
 │   • Set appropriate trace retention                                         │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1272,34 +1272,34 @@ span.end();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      X-RAY NAMING BEST PRACTICES                             │
+│                      X-RAY NAMING BEST PRACTICES                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ✅ GOOD Segment Names:                                                    │
-│   ─────────────────────                                                      │
-│   • order-service                                                            │
-│   • payment-processor                                                        │
-│   • user-authentication                                                      │
-│                                                                              │
+│   ─────────────────────                                                     │
+│   • order-service                                                           │
+│   • payment-processor                                                       │
+│   • user-authentication                                                     │
+│                                                                             │
 │   ❌ BAD Segment Names:                                                     │
-│   ────────────────────                                                       │
-│   • MyService123                                                             │
-│   • lambda_function                                                          │
-│   • app                                                                      │
-│                                                                              │
+│   ────────────────────                                                      │
+│   • MyService123                                                            │
+│   • lambda_function                                                         │
+│   • app                                                                     │
+│                                                                             │
 │   ✅ GOOD Annotations (indexed, searchable):                                │
-│   ────────────────────────────────────────────                               │
-│   • user_id: "user-123"                                                      │
-│   • order_type: "express"                                                    │
-│   • region: "us-east-1"                                                      │
-│   • customer_tier: "premium"                                                 │
-│                                                                              │
+│   ────────────────────────────────────────────                              │
+│   • user_id: "user-123"                                                     │
+│   • order_type: "express"                                                   │
+│   • region: "us-east-1"                                                     │
+│   • customer_tier: "premium"                                                │
+│                                                                             │
 │   ✅ GOOD Metadata (not indexed):                                           │
-│   ────────────────────────────────                                           │
-│   • request_body: { ... }                                                    │
-│   • response_payload: { ... }                                                │
-│   • debug_info: { ... }                                                      │
-│                                                                              │
+│   ────────────────────────────────                                          │
+│   • request_body: { ... }                                                   │
+│   • response_payload: { ... }                                               │
+│   • debug_info: { ... }                                                     │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1307,29 +1307,29 @@ span.end();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      SAMPLING STRATEGY BY ENVIRONMENT                        │
+│                      SAMPLING STRATEGY BY ENVIRONMENT                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   DEVELOPMENT                                                                │
-│   ──────────────                                                             │
-│   ReservoirSize: 10                                                          │
+│                                                                             │
+│   DEVELOPMENT                                                               │
+│   ──────────────                                                            │
+│   ReservoirSize: 10                                                         │
 │   FixedRate: 1.0 (100%)  ← Trace everything for debugging                   │
-│                                                                              │
-│   STAGING                                                                    │
-│   ──────────                                                                 │
-│   ReservoirSize: 5                                                           │
+│                                                                             │
+│   STAGING                                                                   │
+│   ──────────                                                                │
+│   ReservoirSize: 5                                                          │
 │   FixedRate: 0.5 (50%)   ← Good balance for testing                         │
-│                                                                              │
-│   PRODUCTION                                                                 │
-│   ────────────                                                               │
-│   ReservoirSize: 1                                                           │
+│                                                                             │
+│   PRODUCTION                                                                │
+│   ────────────                                                              │
+│   ReservoirSize: 1                                                          │
 │   FixedRate: 0.05 (5%)   ← Cost-effective, still statistically significant  │
-│                                                                              │
+│                                                                             │
 │   HIGH-VALUE ENDPOINTS (e.g., /checkout, /payment)                          │
-│   ──────────────────────────────────────────────────                         │
-│   ReservoirSize: 10                                                          │
+│   ──────────────────────────────────────────────────                        │
+│   ReservoirSize: 10                                                         │
 │   FixedRate: 0.25 (25%)  ← Higher sampling for critical paths               │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1383,31 +1383,31 @@ aws xray put-trace-segments --region us-east-1 --trace-segment-documents '{...}'
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          X-RAY QUICK REFERENCE                               │
+│                          X-RAY QUICK REFERENCE                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  🎯 PURPOSE: Distributed tracing for debugging microservices                │
-│                                                                              │
-│  📦 COMPONENTS:                                                              │
-│  • Traces → Full request journey                                             │
-│  • Segments → Per-service work                                               │
-│  • Subsegments → Detailed operations (DB calls, HTTP)                        │
-│  • Annotations → Indexed, searchable metadata                                │
-│  • Metadata → Non-indexed details                                            │
-│                                                                              │
-│  🔧 INTEGRATION:                                                             │
-│  • Lambda: Enable "Active Tracing"                                           │
-│  • API Gateway: Enable in stage settings                                     │
+│                                                                             │
+│  📦 COMPONENTS:                                                             │
+│  • Traces → Full request journey                                            │
+│  • Segments → Per-service work                                              │
+│  • Subsegments → Detailed operations (DB calls, HTTP)                       │
+│  • Annotations → Indexed, searchable metadata                               │
+│  • Metadata → Non-indexed details                                           │
+│                                                                             │
+│  🔧 INTEGRATION:                                                            │
+│  • Lambda: Enable "Active Tracing"                                          │
+│  • API Gateway: Enable in stage settings                                    │
 │  • EC2/ECS/EKS: X-Ray Daemon + SDK                                          │
-│                                                                              │
+│                                                                             │
 │  💡 SAMPLING: Control costs with reservoir + fixed rate                     │
-│                                                                              │
+│                                                                             │
 │  🔗 SERVICELENS: Combine X-Ray + CloudWatch for full observability          │
-│                                                                              │
+│                                                                             │
 │  📊 SERVICE MAP: Visual topology of your distributed system                 │
-│                                                                              │
+│                                                                             │
 │  🚨 INSIGHTS: Automatic anomaly detection and root cause analysis           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -28,37 +28,37 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TRADITIONAL (Manual)                              │
-│                                                                       │
-│   DevOps Engineer:                                                   │
-│   ├── Login AWS Console                                              │
-│   ├── Click tạo VPC                                                  │
-│   ├── Click tạo Subnet                                               │
-│   ├── Click tạo Security Group                                       │
-│   ├── Click tạo EC2...                                               │
+│                    TRADITIONAL (Manual)                             │
+│                                                                     │
+│   DevOps Engineer:                                                  │
+│   ├── Login AWS Console                                             │
+│   ├── Click tạo VPC                                                 │
+│   ├── Click tạo Subnet                                              │
+│   ├── Click tạo Security Group                                      │
+│   ├── Click tạo EC2...                                              │
 │   └── Repeat 100 lần cho Production!                                │
-│                                                                       │
-│   Problems:                                                          │
+│                                                                     │
+│   Problems:                                                         │
 │   ├── ❌ Human errors (quên config, typo)                           │
 │   ├── ❌ Không reproducible (dev ≠ prod)                            │
-│   ├── ❌ Không version control                                       │
-│   └── ❌ Tốn thời gian                                               │
+│   ├── ❌ Không version control                                      │
+│   └── ❌ Tốn thời gian                                              │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    INFRASTRUCTURE AS CODE                            │
-│                                                                       │
-│   DevOps Engineer:                                                   │
+│                    INFRASTRUCTURE AS CODE                           │
+│                                                                     │
+│   DevOps Engineer:                                                  │
 │   └── Viết 1 file YAML → Deploy → Done!                             │
-│                                                                       │
+│                                                                     │
 │   ┌────────────────────────┐         ┌────────────────────────┐     │
-│   │   template.yaml        │  ──▶   │   AWS Resources        │     │
-│   │   (Định nghĩa infra)   │ Deploy  │   (VPC, EC2, RDS...)  │     │
+│   │   template.yaml        │  ──▶    │   AWS Resources        │     │
+│   │   (Định nghĩa infra)   │ Deploy  │   (VPC, EC2, RDS...)   │     │
 │   └────────────────────────┘         └────────────────────────┘     │
-│                                                                       │
-│   Benefits:                                                          │
+│                                                                     │
+│   Benefits:                                                         │
 │   ├── ✅ Reproducible (chạy lại y hệt)                              │
-│   ├── ✅ Version control (Git)                                       │
+│   ├── ✅ Version control (Git)                                      │
 │   ├── ✅ Review changes trước khi apply                             │
 │   ├── ✅ Rollback khi có lỗi                                        │
 │   └── ✅ Tự động hóa hoàn toàn                                      │
@@ -84,27 +84,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUDFORMATION CONCEPTS                           │
-│                                                                       │
-│   ┌─────────────────┐                                                │
+│                    CLOUDFORMATION CONCEPTS                          │
+│                                                                     │
+│   ┌─────────────────┐                                               │
 │   │    TEMPLATE     │  ← File JSON/YAML định nghĩa resources        │
-│   │   (Blueprint)   │                                                │
-│   └────────┬────────┘                                                │
-│            │                                                         │
-│            │ Deploy (create-stack)                                   │
-│            ▼                                                         │
-│   ┌─────────────────┐                                                │
+│   │   (Blueprint)   │                                               │
+│   └────────┬────────┘                                               │
+│           │                                                         │
+│            │ Deploy (create-stack)                                  │
+│            ▼                                                        │
+│   ┌─────────────────┐                                               │
 │   │     STACK       │  ← Instance của template                      │
 │   │   (Instance)    │  ← Quản lý lifecycle của resources            │
-│   └────────┬────────┘                                                │
-│            │                                                         │
-│            │ Creates & manages                                       │
-│            ▼                                                         │
+│   └────────┬────────┘                                               │
+│           │                                                         │
+│            │ Creates & manages                                      │
+│            ▼                                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      RESOURCES                               │   │
-│   │   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────────┐   │   │
-│   │   │   VPC   │  │   EC2   │  │   RDS   │  │ Lambda...   │   │   │
-│   │   └─────────┘  └─────────┘  └─────────┘  └─────────────┘   │   │
+│   │                      RESOURCES                              │   │
+│   │   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────────┐    │   │
+│   │   │   VPC   │  │   EC2   │  │   RDS   │  │ Lambda...   │    │   │
+│   │   └─────────┘  └─────────┘  └─────────┘  └─────────────┘    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -113,42 +113,42 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 CLOUDFORMATION WORKFLOW                              │
-│                                                                       │
-│   1. WRITE TEMPLATE                                                  │
+│                 CLOUDFORMATION WORKFLOW                             │
+│                                                                     │
+│   1. WRITE TEMPLATE                                                 │
 │      ┌─────────────────────────────────────────────────────────┐    │
 │      │  AWSTemplateFormatVersion: '2010-09-09'                 │    │
-│      │  Resources:                                              │    │
-│      │    MyBucket:                                             │    │
-│      │      Type: AWS::S3::Bucket                               │    │
-│      │      Properties:                                         │    │
-│      │        BucketName: my-unique-bucket                       │    │
+│      │  Resources:                                             │    │
+│      │    MyBucket:                                            │    │
+│      │      Type: AWS::S3::Bucket                              │    │
+│      │      Properties:                                        │    │
+│      │        BucketName: my-unique-bucket                     │    │
 │      └─────────────────────────────────────────────────────────┘    │
-│                            │                                         │
-│                            ▼                                         │
-│   2. VALIDATE TEMPLATE                                               │
-│      aws cloudformation validate-template --template-body file://... │
-│                            │                                         │
-│                            ▼                                         │
-│   3. CREATE STACK                                                    │
-│      aws cloudformation create-stack --stack-name my-stack \         │
-│          --template-body file://template.yaml                        │
-│                            │                                         │
-│                            ▼                                         │
-│   4. MONITOR PROGRESS                                                │
+│                           │                                         │
+│                            ▼                                        │
+│   2. VALIDATE TEMPLATE                                              │
+│      aws cloudformation validate-template --template-body file://...│
+│                           │                                         │
+│                            ▼                                        │
+│   3. CREATE STACK                                                   │
+│      aws cloudformation create-stack --stack-name my-stack \        │
+│          --template-body file://template.yaml                       │
+│                           │                                         │
+│                            ▼                                        │
+│   4. MONITOR PROGRESS                                               │
 │      ┌──────────────────────────────────────────────────────────┐   │
 │      │  CREATE_IN_PROGRESS → CREATE_COMPLETE                    │   │
-│      │             or                                            │   │
+│      │             or                                           │   │
 │      │  CREATE_IN_PROGRESS → CREATE_FAILED → ROLLBACK_COMPLETE  │   │
 │      └──────────────────────────────────────────────────────────┘   │
-│                            │                                         │
-│                            ▼                                         │
+│                           │                                         │
+│                            ▼                                        │
 │   5. UPDATE STACK (khi cần thay đổi)                                │
-│      aws cloudformation update-stack ...                             │
-│                            │                                         │
-│                            ▼                                         │
-│   6. DELETE STACK (cleanup)                                          │
-│      aws cloudformation delete-stack --stack-name my-stack           │
+│      aws cloudformation update-stack ...                            │
+│                           │                                         │
+│                            ▼                                        │
+│   6. DELETE STACK (cleanup)                                         │
+│      aws cloudformation delete-stack --stack-name my-stack          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -210,41 +210,41 @@ Outputs:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TEMPLATE SECTIONS                                 │
-│                                                                       │
+│                    TEMPLATE SECTIONS                                │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  PARAMETERS (Optional)                                       │   │
+│   │  PARAMETERS (Optional)                                      │   │
 │   │  ├── Input từ user khi deploy                               │   │
 │   │  ├── Có thể set default values                              │   │
 │   │  ├── Validation: AllowedValues, AllowedPattern              │   │
-│   │  └── Ví dụ: Environment, InstanceType, DBPassword            │   │
+│   │  └── Ví dụ: Environment, InstanceType, DBPassword           │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  MAPPINGS (Optional)                                         │   │
-│   │  ├── Static lookup tables                                    │   │
+│   │  MAPPINGS (Optional)                                        │   │
+│   │  ├── Static lookup tables                                   │   │
 │   │  ├── Không thể dynamic (phải hardcode)                      │   │
 │   │  └── Ví dụ: AMI IDs per region, instance sizes per env      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  CONDITIONS (Optional)                                       │   │
+│   │  CONDITIONS (Optional)                                      │   │
 │   │  ├── Tạo resource có điều kiện                              │   │
-│   │  ├── Dựa trên parameter values                               │   │
-│   │  └── Ví dụ: Chỉ tạo RDS replica nếu env = prod             │   │
+│   │  ├── Dựa trên parameter values                              │   │
+│   │  └── Ví dụ: Chỉ tạo RDS replica nếu env = prod              │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  RESOURCES (Required - Phần quan trọng nhất!)               │   │
 │   │  ├── Định nghĩa AWS resources cần tạo                       │   │
 │   │  ├── Mỗi resource có Type và Properties                     │   │
 │   │  └── CloudFormation tự xác định dependency order            │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  OUTPUTS (Optional)                                          │   │
+│   │  OUTPUTS (Optional)                                         │   │
 │   │  ├── Return values sau khi stack tạo xong                   │   │
-│   │  ├── Export để stack khác reference                          │   │
+│   │  ├── Export để stack khác reference                         │   │
 │   │  └── Ví dụ: VPC ID, Load Balancer DNS, API endpoint         │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -615,30 +615,30 @@ Outputs:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    UPDATE BEHAVIORS                                  │
-│                                                                       │
+│                    UPDATE BEHAVIORS                                 │
+│                                                                     │
 │   Khi update stack, mỗi property có thể có behavior khác nhau:      │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. NO INTERRUPTION                                          │   │
+│   │  1. NO INTERRUPTION                                         │   │
 │   │     └── Update in-place, không downtime                     │   │
 │   │     └── Ví dụ: Thêm tag, update security group rules        │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. SOME INTERRUPTION                                        │   │
+│   │  2. SOME INTERRUPTION                                       │   │
 │   │     └── Resource bị restart/reboot                          │   │
 │   │     └── Ví dụ: Thay đổi instance type                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  3. REPLACEMENT ⚠️                                           │   │
-│   │     └── Resource bị DELETE và CREATE mới                     │   │
-│   │     └── DATA CÓ THỂ BỊ MẤT!                                  │   │
-│   │     └── Ví dụ: Thay đổi DBInstanceIdentifier, InstanceId     │   │
+│   │     └── Resource bị DELETE và CREATE mới                    │   │
+│   │     └── DATA CÓ THỂ BỊ MẤT!                                 │   │
+│   │     └── Ví dụ: Thay đổi DBInstanceIdentifier, InstanceId    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Luôn check documentation để biết update behavior!                  │
+│                                                                     │
+│   Luôn check documentation để biết update behavior!                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -646,46 +646,46 @@ Outputs:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CHANGE SETS                                       │
-│      Preview changes trước khi apply!                                │
-│                                                                       │
+│                    CHANGE SETS                                      │
+│      Preview changes trước khi apply!                               │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. Create Change Set                                        │   │
-│   │     aws cloudformation create-change-set \                   │   │
-│   │       --stack-name my-stack \                                │   │
-│   │       --change-set-name my-changes \                         │   │
-│   │       --template-body file://template.yaml                   │   │
+│   │  1. Create Change Set                                       │   │
+│   │     aws cloudformation create-change-set \                  │   │
+│   │       --stack-name my-stack \                               │   │
+│   │       --change-set-name my-changes \                        │   │
+│   │       --template-body file://template.yaml                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                            │                                         │
-│                            ▼                                         │
+│                           │                                         │
+│                            ▼                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  2. Review Changes                                           │   │
-│   │     aws cloudformation describe-change-set \                 │   │
-│   │       --change-set-name my-changes \                         │   │
-│   │       --stack-name my-stack                                  │   │
-│   │                                                               │   │
-│   │     Output:                                                   │   │
-│   │     ┌─────────────────────────────────────────────────────┐  │   │
-│   │     │ Resource: MyInstance                                 │  │   │
-│   │     │ Action: Modify                                       │  │   │
+│   │  2. Review Changes                                          │   │
+│   │     aws cloudformation describe-change-set \                │   │
+│   │       --change-set-name my-changes \                        │   │
+│   │       --stack-name my-stack                                 │   │
+│   │                                                             │   │
+│   │     Output:                                                 │   │
+│   │     ┌─────────────────────────────────────────────────────┐ │   │
+│   │     │ Resource: MyInstance                                 ││   │
+│   │     │ Action: Modify                                       ││   │
 │   │     │ Replacement: True  ⚠️ CAUTION!                      │  │   │
-│   │     │ Details:                                             │  │   │
-│   │     │   - InstanceType: t3.micro → t3.large               │  │   │
-│   │     └─────────────────────────────────────────────────────┘  │   │
+│   │     │ Details:                                             ││   │
+│   │     │   - InstanceType: t3.micro → t3.large               │ │   │
+│   │     └─────────────────────────────────────────────────────┘ │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                            │                                         │
-│                            ▼                                         │
+│                           │                                         │
+│                            ▼                                        │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  3. Execute or Delete                                        │   │
-│   │     # Apply changes:                                         │   │
-│   │     aws cloudformation execute-change-set \                  │   │
-│   │       --change-set-name my-changes \                         │   │
-│   │       --stack-name my-stack                                  │   │
-│   │                                                               │   │
-│   │     # Or cancel:                                             │   │
-│   │     aws cloudformation delete-change-set \                   │   │
-│   │       --change-set-name my-changes \                         │   │
-│   │       --stack-name my-stack                                  │   │
+│   │  3. Execute or Delete                                       │   │
+│   │     # Apply changes:                                        │   │
+│   │     aws cloudformation execute-change-set \                 │   │
+│   │       --change-set-name my-changes \                        │   │
+│   │       --stack-name my-stack                                 │   │
+│   │                                                             │   │
+│   │     # Or cancel:                                            │   │
+│   │     aws cloudformation delete-change-set \                  │   │
+│   │       --change-set-name my-changes \                        │   │
+│   │       --stack-name my-stack                                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -698,23 +698,23 @@ Outputs:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ROLLBACK BEHAVIORS                                │
-│                                                                       │
-│   CREATE STACK FAILURE:                                              │
+│                    ROLLBACK BEHAVIORS                               │
+│                                                                     │
+│   CREATE STACK FAILURE:                                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Default: Rollback on failure (delete all created resources) │   │
-│   │                                                               │   │
-│   │  Options:                                                     │   │
-│   │  ├── --on-failure ROLLBACK  (default)                        │   │
-│   │  ├── --on-failure DELETE                                     │   │
+│   │  Default: Rollback on failure (delete all created resources)│   │
+│   │                                                             │   │
+│   │  Options:                                                   │   │
+│   │  ├── --on-failure ROLLBACK  (default)                       │   │
+│   │  ├── --on-failure DELETE                                    │   │
 │   │  └── --on-failure DO_NOTHING (để debug)                     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   UPDATE STACK FAILURE:                                              │
+│                                                                     │
+│   UPDATE STACK FAILURE:                                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Default: Rollback về state trước đó                        │   │
-│   │                                                               │   │
-│   │  Stack status: UPDATE_ROLLBACK_COMPLETE                      │   │
+│   │                                                             │   │
+│   │  Stack status: UPDATE_ROLLBACK_COMPLETE                     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -782,27 +782,27 @@ Resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    NESTED STACKS                                     │
+│                    NESTED STACKS                                    │
 │      Chia template lớn thành nhiều templates nhỏ                    │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                     ROOT STACK                               │   │
-│   │                    (main.yaml)                               │   │
-│   │                         │                                    │   │
+│   │                     ROOT STACK                              │   │
+│   │                    (main.yaml)                              │   │
+│   │                         │                                   │   │
 │   │     ┌───────────────────┼───────────────────┐               │   │
 │   │     ▼                   ▼                   ▼               │   │
-│   │  ┌───────────┐    ┌───────────┐    ┌───────────┐           │   │
-│   │  │  Network  │    │  Compute  │    │  Database │           │   │
-│   │  │  Stack    │    │  Stack    │    │  Stack    │           │   │
-│   │  │(vpc.yaml) │    │(ec2.yaml) │    │(rds.yaml) │           │   │
-│   │  └───────────┘    └───────────┘    └───────────┘           │   │
+│   │  ┌───────────┐    ┌───────────┐    ┌───────────┐            │   │
+│   │  │  Network  │    │  Compute  │    │  Database │            │   │
+│   │  │  Stack    │    │  Stack    │    │  Stack    │            │   │
+│   │  │(vpc.yaml) │    │(ec2.yaml) │    │(rds.yaml) │            │   │
+│   │  └───────────┘    └───────────┘    └───────────┘            │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Benefits:                                                          │
-│   ├── Reusable components                                            │
-│   ├── Easier to maintain                                             │
-│   ├── Overcome 500 resource limit                                    │
-│   └── Parallel updates                                               │
+│                                                                     │
+│   Benefits:                                                         │
+│   ├── Reusable components                                           │
+│   ├── Easier to maintain                                            │
+│   ├── Overcome 500 resource limit                                   │
+│   └── Parallel updates                                              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -852,35 +852,35 @@ Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual change
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    DRIFT DETECTION                                   │
-│                                                                       │
+│                    DRIFT DETECTION                                  │
+│                                                                     │
 │   ┌───────────────────┐         ┌───────────────────┐               │
 │   │   CloudFormation  │  vs     │   Actual State    │               │
 │   │   Template State  │         │   (AWS Resources) │               │
 │   └─────────┬─────────┘         └─────────┬─────────┘               │
-│             │                             │                          │
-│             └──────────┬──────────────────┘                          │
-│                        ▼                                             │
-│              ┌─────────────────────┐                                 │
-│              │   DRIFT DETECTED!   │                                 │
-│              │                     │                                 │
-│              │   Security Group:   │                                 │
-│              │   Expected: port 80 │                                 │
-│              │   Actual: port 80,  │                                 │
-│              │           port 443  │← Someone added 443 manually!    │
-│              └─────────────────────┘                                 │
-│                                                                       │
-│   Commands:                                                          │
-│   # Start drift detection                                            │
-│   aws cloudformation detect-stack-drift --stack-name my-stack        │
-│                                                                       │
-│   # Check drift status                                               │
-│   aws cloudformation describe-stack-drift-detection-status \         │
-│     --stack-drift-detection-id <id>                                  │
-│                                                                       │
-│   # View drift details                                               │
-│   aws cloudformation describe-stack-resource-drifts \                │
-│     --stack-name my-stack                                            │
+│             │                            │                          │
+│             └──────────┬──────────────────┘                         │
+│                        ▼                                            │
+│              ┌─────────────────────┐                                │
+│              │   DRIFT DETECTED!   │                                │
+│              │                     │                                │
+│              │   Security Group:   │                                │
+│              │   Expected: port 80 │                                │
+│              │   Actual: port 80,  │                                │
+│              │           port 443  │← Someone added 443 manually!   │
+│              └─────────────────────┘                                │
+│                                                                     │
+│   Commands:                                                         │
+│   # Start drift detection                                           │
+│   aws cloudformation detect-stack-drift --stack-name my-stack       │
+│                                                                     │
+│   # Check drift status                                              │
+│   aws cloudformation describe-stack-drift-detection-status \        │
+│     --stack-drift-detection-id <id>                                 │
+│                                                                     │
+│   # View drift details                                              │
+│   aws cloudformation describe-stack-resource-drifts \               │
+│     --stack-name my-stack                                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -890,8 +890,8 @@ Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual change
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              CLOUDFORMATION vs TERRAFORM                             │
-│                                                                       │
+│              CLOUDFORMATION vs TERRAFORM                            │
+│                                                                     │
 │   ┌───────────────────────────┬───────────────────────────────────┐ │
 │   │      CloudFormation       │           Terraform               │ │
 │   ├───────────────────────────┼───────────────────────────────────┤ │
@@ -905,18 +905,18 @@ Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual change
 │   │ Rollback automatic        │ Manual rollback                   │ │
 │   │ AWS Support               │ Community + HashiCorp             │ │
 │   └───────────────────────────┴───────────────────────────────────┘ │
-│                                                                       │
-│   Choose CloudFormation if:                                          │
-│   ├── 100% AWS infrastructure                                        │
-│   ├── Want AWS-managed state                                         │
-│   ├── Need AWS Support                                               │
-│   └── Using AWS CDK                                                  │
-│                                                                       │
-│   Choose Terraform if:                                               │
+│                                                                     │
+│   Choose CloudFormation if:                                         │
+│   ├── 100% AWS infrastructure                                       │
+│   ├── Want AWS-managed state                                        │
+│   ├── Need AWS Support                                              │
+│   └── Using AWS CDK                                                 │
+│                                                                     │
+│   Choose Terraform if:                                              │
 │   ├── Multi-cloud (AWS + GCP + Azure)                               │
-│   ├── Want HCL syntax                                                │
-│   ├── Need non-AWS providers                                         │
-│   └── Team already knows Terraform                                   │
+│   ├── Want HCL syntax                                               │
+│   ├── Need non-AWS providers                                        │
+│   └── Team already knows Terraform                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1072,28 +1072,28 @@ output "instance_public_ip" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                TERRAFORM AWS PROVIDER                                │
-│                                                                       │
+│                TERRAFORM AWS PROVIDER                               │
+│                                                                     │
 │   Terraform AWS Provider hỗ trợ TẤT CẢ AWS services:                │
-│                                                                       │
+│                                                                     │
 │   ├── VPC, Subnet, Security Group, NAT Gateway                      │
 │   ├── EC2, EBS, AMI, Launch Template, ASG                           │
-│   ├── S3, CloudFront, Route53                                        │
+│   ├── S3, CloudFront, Route53                                       │
 │   ├── RDS, DynamoDB, ElastiCache, Redshift                          │
-│   ├── Lambda, API Gateway, Step Functions                            │
-│   ├── ECS, EKS, Fargate                                              │
-│   ├── IAM Roles, Policies, Users                                     │
+│   ├── Lambda, API Gateway, Step Functions                           │
+│   ├── ECS, EKS, Fargate                                             │
+│   ├── IAM Roles, Policies, Users                                    │
 │   ├── CloudWatch, SNS, SQS, EventBridge                             │
 │   ├── Cognito, Secrets Manager, SSM Parameter Store                 │
 │   └── ... và 1000+ resource types khác!                             │
-│                                                                       │
-│   Bonus: Terraform còn hỗ trợ:                                       │
-│   ├── Google Cloud (GCP)                                             │
-│   ├── Microsoft Azure                                                │
-│   ├── Kubernetes                                                      │
-│   ├── GitHub, GitLab                                                 │
-│   ├── Datadog, PagerDuty                                             │
-│   └── 3000+ providers khác!                                          │
+│                                                                     │
+│   Bonus: Terraform còn hỗ trợ:                                      │
+│   ├── Google Cloud (GCP)                                            │
+│   ├── Microsoft Azure                                               │
+│   ├── Kubernetes                                                    │
+│   ├── GitHub, GitLab                                                │
+│   ├── Datadog, PagerDuty                                            │
+│   └── 3000+ providers khác!                                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1103,20 +1103,20 @@ output "instance_public_ip" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUDFORMATION PRICING                            │
-│                                                                       │
+│                    CLOUDFORMATION PRICING                           │
+│                                                                     │
 │   CloudFormation Service = $0 (MIỄN PHÍ!)                           │
-│                                                                       │
+│                                                                     │
 │   Bạn chỉ trả tiền cho resources trong template:                    │
-│   ├── EC2 Instances                                                  │
-│   ├── RDS Databases                                                  │
-│   ├── S3 Buckets                                                     │
-│   ├── Load Balancers                                                 │
-│   ├── Lambda Functions                                               │
+│   ├── EC2 Instances                                                 │
+│   ├── RDS Databases                                                 │
+│   ├── S3 Buckets                                                    │
+│   ├── Load Balancers                                                │
+│   ├── Lambda Functions                                              │
 │   └── ... tất cả resources khác                                     │
-│                                                                       │
-│   ⚠️ PHÍ CHỈ PHÁT SINH khi dùng:                                    │
-│   └── 3rd-party resource types (từ AWS Public Registry)            │
+│                                                                     │
+│   ⚠️ PHÍ CHỈ PHÁT SINH khi dùng:                                     │
+│   └── 3rd-party resource types (từ AWS Public Registry)             │
 │       → Rất ít dùng, hầu hết không cần                              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1237,8 +1237,8 @@ Resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUDFORMATION SUMMARY                            │
-│                                                                       │
+│                    CLOUDFORMATION SUMMARY                           │
+│                                                                     │
 │   ✅ Infrastructure as Code cho AWS                                 │
 │   ✅ Reproducible, version-controlled infrastructure                │
 │   ✅ Tự động rollback khi có lỗi                                    │
@@ -1246,13 +1246,13 @@ Resources:
 │   ✅ Drift Detection phát hiện manual changes                       │
 │   ✅ Nested Stacks cho large infrastructures                        │
 │   ✅ Cross-stack references để share values                         │
-│                                                                       │
-│   📚 Recommended Learning Path:                                      │
+│                                                                     │
+│   📚 Recommended Learning Path:                                     │
 │   1. Viết template đơn giản (S3, EC2)                               │
-│   2. Hiểu intrinsic functions (!Ref, !Sub, !GetAtt)                │
-│   3. Sử dụng Parameters và Conditions                                │
-│   4. Practice với Change Sets                                        │
-│   5. Học Nested Stacks                                               │
+│   2. Hiểu intrinsic functions (!Ref, !Sub, !GetAtt)                 │
+│   3. Sử dụng Parameters và Conditions                               │
+│   4. Practice với Change Sets                                       │
+│   5. Học Nested Stacks                                              │
 │   6. Explore AWS CDK (nếu muốn dùng programming language)           │
 └─────────────────────────────────────────────────────────────────────┘
 ```

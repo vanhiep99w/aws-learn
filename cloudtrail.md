@@ -33,22 +33,22 @@
 │                                                                             │
 │   WHO did WHAT, WHEN, and from WHERE?                                       │
 │                                                                             │
-│   ┌─────────────┐                              ┌─────────────────────────┐ │
-│   │   Users     │──┐                           │    CloudTrail Event     │ │
-│   │ (Console)   │  │                           ├─────────────────────────┤ │
-│   └─────────────┘  │   ┌─────────────────┐     │ WHO: user/arn           │ │
-│                    ├──▶│   AWS API       │────▶│ WHAT: action performed  │ │
-│   ┌─────────────┐  │   │   Calls         │     │ WHEN: timestamp         │ │
-│   │Applications │──┤   └─────────────────┘     │ WHERE: source IP        │ │
-│   │ (SDK/CLI)   │  │                           │ WHICH: resource ARN     │ │
-│   └─────────────┘  │                           │ RESULT: success/failure │ │
-│                    │                           └─────────────────────────┘ │
-│   ┌─────────────┐  │                                      │               │
-│   │  Services   │──┘                                      ▼               │
-│   │ (Lambda,etc)│                           ┌─────────────────────────┐   │
-│   └─────────────┘                           │ S3 / CloudWatch Logs    │   │
-│                                             │ (Long-term storage)     │   │
-│                                             └─────────────────────────┘   │
+│   ┌─────────────┐                              ┌─────────────────────────┐  │
+│   │   Users     │──┐                           │    CloudTrail Event      │ │
+│   │ (Console)   │  │                           ├─────────────────────────┤  │
+│   └─────────────┘  │   ┌─────────────────┐     │ WHO: user/arn            │ │
+│                    ├──▶│   AWS API   │────▶                         │ WHAT: action performed  │  │
+│   ┌─────────────┐  │   │   Calls         │     │ WHEN: timestamp          │ │
+│   │Applications │──┤   └─────────────────┘     │ WHERE: source IP         │ │
+│   │ (SDK/CLI)   │  │                           │ WHICH: resource ARN      │ │
+│   └─────────────┘  │                           │ RESULT: success/failure  │ │
+│                    │                           └─────────────────────────┘  │
+│   ┌─────────────┐                              │                         │  │
+│   │  Services   │──┘                                      ▼                 │
+│   │ (Lambda,etc)│                              ┌─────────────────────────┐  │
+│   └─────────────┘                              │ S3 / CloudWatch Logs    │  │
+│                                             │ (Long-term storage)       │   │
+│                                             └─────────────────────────┘     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,26 +71,26 @@
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   CloudTrail (Audit)                     CloudWatch (Monitoring)            │
-│   ┌─────────────────────┐                ┌─────────────────────┐           │
-│   │                     │                │                     │           │
-│   │  📝 "WHO did WHAT"  │                │  📊 "HOW is it      │           │
-│   │                     │                │      PERFORMING"    │           │
-│   │  • User created EC2 │                │                     │           │
-│   │  • User deleted S3  │                │  • CPU = 75%        │           │
-│   │  • Role assumed     │                │  • Error count = 5  │           │
-│   │  • Policy changed   │                │  • Latency = 200ms  │           │
-│   │                     │                │                     │           │
-│   └─────────────────────┘                └─────────────────────┘           │
+│   ┌─────────────────────┐                ┌─────────────────────┐            │
+│   │                     │                │                     │            │
+│   │  📝 "WHO did WHAT"  │                │  📊 "HOW is it      │            │
+│   │                     │                │      PERFORMING"    │            │
+│   │  • User created EC2 │                │                     │            │
+│   │  • User deleted S3  │                │  • CPU = 75%        │            │
+│   │  • Role assumed     │                │  • Error count = 5  │            │
+│   │  • Policy changed   │                │  • Latency = 200ms  │            │
+│   │                     │                │                     │            │
+│   └─────────────────────┘                └─────────────────────┘            │
 │            │                                       │                        │
 │            │  CÓ THỂ TÍch hợp                      │                        │
 │            └───────────────┬───────────────────────┘                        │
 │                            │                                                │
 │                            ▼                                                │
-│               ┌─────────────────────────┐                                  │
-│               │ CloudTrail → CloudWatch │                                  │
-│               │ Logs → Alarms           │                                  │
-│               │ (Alert on API actions)  │                                  │
-│               └─────────────────────────┘                                  │
+│               ┌─────────────────────────┐                                   │
+│               │ CloudTrail → CloudWatch │                                   │
+│               │ Logs → Alarms           │                                   │
+│               │ (Alert on API actions)  │                                   │
+│               └─────────────────────────┘                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -114,45 +114,45 @@
 │                         CLOUDTRAIL EVENT TYPES                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │  MANAGEMENT EVENTS (Control Plane)                    [DEFAULT ON]  │  │
-│   │  ─────────────────────────────────                                   │  │
-│   │  Operations that modify or manage AWS resources                     │  │
-│   │                                                                      │  │
-│   │  Examples:                                                           │  │
-│   │  • CreateVPC, DeleteVPC                                              │  │
-│   │  • RunInstances, TerminateInstances                                  │  │
-│   │  • CreateUser, AttachRolePolicy                                      │  │
-│   │  • CreateBucket, DeleteBucket                                        │  │
-│   │                                                                      │  │
-│   │  📊 Volume: Low-Medium (hundreds to thousands per day)              │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  MANAGEMENT EVENTS (Control Plane)                    [DEFAULT ON]  │   │
+│   │  ─────────────────────────────────                                  │   │
+│   │  Operations that modify or manage AWS resources                     │   │
+│   │                                                                     │   │
+│   │  Examples:                                                          │   │
+│   │  • CreateVPC, DeleteVPC                                             │   │
+│   │  • RunInstances, TerminateInstances                                 │   │
+│   │  • CreateUser, AttachRolePolicy                                     │   │
+│   │  • CreateBucket, DeleteBucket                                       │   │
+│   │                                                                     │   │
+│   │  📊 Volume: Low-Medium (hundreds to thousands per day)              │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │  DATA EVENTS (Data Plane)                          [DEFAULT OFF]    │  │
-│   │  ──────────────────────────                                          │  │
-│   │  Operations performed ON resources (data access)                    │  │
-│   │                                                                      │  │
-│   │  Examples:                                                           │  │
-│   │  • S3: GetObject, PutObject, DeleteObject                           │  │
-│   │  • Lambda: Invoke                                                    │  │
-│   │  • DynamoDB: GetItem, PutItem, Query                                │  │
-│   │                                                                      │  │
-│   │  📊 Volume: Very High (millions per day) → 💰 Expensive if enabled  │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  DATA EVENTS (Data Plane)                          [DEFAULT OFF]    │   │
+│   │  ──────────────────────────                                         │   │
+│   │  Operations performed ON resources (data access)                    │   │
+│   │                                                                     │   │
+│   │  Examples:                                                          │   │
+│   │  • S3: GetObject, PutObject, DeleteObject                           │   │
+│   │  • Lambda: Invoke                                                   │   │
+│   │  • DynamoDB: GetItem, PutItem, Query                                │   │
+│   │                                                                     │   │
+│   │  📊 Volume: Very High (millions per day) → 💰 Expensive if enabled  │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │  INSIGHTS EVENTS                                   [DEFAULT OFF]    │  │
-│   │  ───────────────                                                     │  │
-│   │  Detects unusual API activity patterns automatically                │  │
-│   │                                                                      │  │
-│   │  Examples:                                                           │  │
-│   │  • Sudden spike in TerminateInstances calls                         │  │
-│   │  • Unusual burst of IAM CreateUser calls                            │  │
-│   │  • Abnormal pattern of S3 DeleteObject                              │  │
-│   │                                                                      │  │
-│   │  📊 Use case: Security anomaly detection                            │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  INSIGHTS EVENTS                                   [DEFAULT OFF]    │   │
+│   │  ───────────────                                                    │   │
+│   │  Detects unusual API activity patterns automatically                │   │
+│   │                                                                     │   │
+│   │  Examples:                                                          │   │
+│   │  • Sudden spike in TerminateInstances calls                         │   │
+│   │  • Unusual burst of IAM CreateUser calls                            │   │
+│   │  • Abnormal pattern of S3 DeleteObject                              │   │
+│   │                                                                     │   │
+│   │  📊 Use case: Security anomaly detection                            │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -164,19 +164,19 @@
 │                        READ vs WRITE EVENTS                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   WRITE Events (Default: ON)              READ Events (Default: ON)        │
-│   ┌─────────────────────────┐             ┌─────────────────────────┐      │
-│   │                         │             │                         │      │
-│   │  • CreateBucket         │             │  • DescribeBuckets      │      │
-│   │  • PutObject            │             │  • GetObject            │      │
-│   │  • DeleteObject         │             │  • ListInstances        │      │
-│   │  • RunInstances         │             │  • DescribeVPCs         │      │
-│   │  • TerminateInstances   │             │  • GetPolicy            │      │
-│   │                         │             │                         │      │
-│   │  → Modify state         │             │  → Read state only      │      │
-│   └─────────────────────────┘             └─────────────────────────┘      │
+│   WRITE Events (Default: ON)              READ Events (Default: ON)         │
+│   ┌─────────────────────────┐             ┌─────────────────────────┐       │
+│   │                         │             │                         │       │
+│   │  • CreateBucket         │             │  • DescribeBuckets      │       │
+│   │  • PutObject            │             │  • GetObject            │       │
+│   │  • DeleteObject         │             │  • ListInstances        │       │
+│   │  • RunInstances         │             │  • DescribeVPCs         │       │
+│   │  • TerminateInstances   │             │  • GetPolicy            │       │
+│   │                         │             │                         │       │
+│   │  → Modify state         │             │  → Read state only      │       │
+│   └─────────────────────────┘             └─────────────────────────┘       │
 │                                                                             │
-│   💡 Tip: Có thể chỉ enable Write events để giảm volume & cost             │
+│   💡 Tip: Có thể chỉ enable Write events để giảm volume & cost              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -192,51 +192,51 @@
 │                           CLOUDTRAIL TRAIL TYPES                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ╔═══════════════════════════════════════════════════════════════════════╗│
+│   ╔═══════════════════════════════════════════════════════════════════════╗ │
 │   ║  SINGLE-REGION TRAIL                                                   ║│
 │   ║  ────────────────────                                                  ║│
 │   ║                                                                        ║│
 │   ║  ┌─────────────────┐                                                   ║│
-│   ║  │   us-east-1     │ ──────▶ S3 Bucket                                ║│
-│   ║  │   (only)        │         (Events from this region only)           ║│
+│   ║  │   us-east-1     │ ──────▶ S3 Bucket                                ║ │
+│   ║  │   (only)        │         (Events from this region only)           ║ │
 │   ║  └─────────────────┘                                                   ║│
 │   ║                                                                        ║│
-│   ╚═══════════════════════════════════════════════════════════════════════╝│
+│   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
-│   ╔═══════════════════════════════════════════════════════════════════════╗│
+│   ╔═══════════════════════════════════════════════════════════════════════╗ │
 │   ║  MULTI-REGION TRAIL (Recommended)                                      ║│
 │   ║  ─────────────────────────────────                                     ║│
 │   ║                                                                        ║│
-│   ║  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                  ║│
-│   ║  │us-east-1 │ │us-west-2 │ │eu-west-1 │ │ap-south-1│  ...             ║│
-│   ║  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘                  ║│
-│   ║       │            │            │            │                        ║│
-│   ║       └────────────┴────────────┴────────────┘                        ║│
+│   ║  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                  ║ │
+│   ║  │us-east-1 │ │us-west-2 │ │eu-west-1 │ │ap-south-1│  ...             ║ │
+│   ║  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘                  ║ │
+│   ║       │            │            │            │                        ║ │
+│   ║       └────────────┴────────────┴────────────┘                        ║ │
 │   ║                          │                                             ║│
 │   ║                          ▼                                             ║│
 │   ║                   ┌─────────────┐                                      ║│
-│   ║                   │  S3 Bucket  │  (All regions consolidated)         ║│
+│   ║                   │  S3 Bucket  │  (All regions consolidated)         ║ │
 │   ║                   └─────────────┘                                      ║│
 │   ║                                                                        ║│
-│   ╚═══════════════════════════════════════════════════════════════════════╝│
+│   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
-│   ╔═══════════════════════════════════════════════════════════════════════╗│
+│   ╔═══════════════════════════════════════════════════════════════════════╗ │
 │   ║  ORGANIZATION TRAIL (AWS Organizations)                                ║│
 │   ║  ──────────────────────────────────────                                ║│
 │   ║                                                                        ║│
-│   ║  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                    ║│
-│   ║  │ Account A   │  │ Account B   │  │ Account C   │                    ║│
-│   ║  │ (all regions│  │ (all regions│  │ (all regions│                    ║│
-│   ║  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘                    ║│
-│   ║         │                │                │                           ║│
-│   ║         └────────────────┼────────────────┘                           ║│
+│   ║  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                    ║ │
+│   ║  │ Account A   │  │ Account B   │  │ Account C   │                    ║ │
+│   ║  │ (all regions│  │ (all regions│  │ (all regions│                    ║ │
+│   ║  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘                    ║ │
+│   ║         │                │                │                           ║ │
+│   ║         └────────────────┼────────────────┘                           ║ │
 │   ║                          ▼                                             ║│
 │   ║                ┌──────────────────┐                                    ║│
-│   ║                │ Central S3 Bucket│  (All accounts, all regions)      ║│
+│   ║                │ Central S3 Bucket│  (All accounts, all regions)      ║ │
 │   ║                │ (Management Acct)│                                    ║│
 │   ║                └──────────────────┘                                    ║│
 │   ║                                                                        ║│
-│   ╚═══════════════════════════════════════════════════════════════════════╝│
+│   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -258,20 +258,20 @@
 │            │                                                                │
 │            │  Events delivered within ~15 minutes                           │
 │            │                                                                │
-│    ┌───────┴───────┬──────────────────┬──────────────────┐                 │
-│    │               │                  │                  │                 │
-│    ▼               ▼                  ▼                  ▼                 │
-│ ┌──────┐    ┌────────────┐    ┌─────────────┐    ┌─────────────┐          │
-│ │  S3  │    │ CloudWatch │    │ EventBridge │    │    SNS      │          │
-│ │Bucket│    │   Logs     │    │  (Filter &  │    │(Notifications│          │
-│ │      │    │            │    │   Route)    │    │   )          │          │
-│ └──┬───┘    └─────┬──────┘    └──────┬──────┘    └──────────────┘          │
+│    ┌───────┴───────┬──────────────────┬──────────────────┐                  │
+│    │               │                  │                   │                 │
+│    ▼               ▼                  ▼                  ▼                  │
+│ ┌──────┐    ┌────────────┐    ┌─────────────┐    ┌─────────────┐            │
+│ │  S3  │    │ CloudWatch │    │ EventBridge │    │    SNS      │            │
+│ │Bucket│    │   Logs     │    │  (Filter &  │    │(Notifications │            │
+│ │      │    │            │    │   Route)    │    │   )         │            │
+│ └──┬───┘    └─────┬──────┘    └──────┬──────┘    └─────────────┘            │
 │    │              │                  │                                      │
 │    ▼              ▼                  ▼                                      │
-│ ┌──────┐    ┌────────────┐    ┌─────────────┐                              │
-│ │Athena│    │  Alarms    │    │   Lambda    │                              │
-│ │Query │    │  Metrics   │    │Step Function│                              │
-│ └──────┘    └────────────┘    └─────────────┘                              │
+│ ┌──────┐    ┌────────────┐    ┌─────────────┐                               │
+│ │Athena│    │  Alarms    │    │   Lambda    │                               │
+│ │Query │    │  Metrics   │    │Step Function│                               │
+│ └──────┘    └────────────┘    └─────────────┘                               │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -344,28 +344,28 @@
 │                    LOG FILE INTEGRITY VALIDATION                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌─────────────────┐         ┌─────────────────┐                          │
-│   │  CloudTrail     │────────▶│   S3 Bucket     │                          │
-│   │  Log Files      │         │                 │                          │
-│   └─────────────────┘         └────────┬────────┘                          │
+│   ┌─────────────────┐         ┌─────────────────┐                           │
+│   │  CloudTrail     │────────▶│   S3 Bucket     │                           │
+│   │  Log Files      │         │                 │                           │
+│   └─────────────────┘         └────────┬────────┘                           │
 │          │                             │                                    │
 │          │                             │                                    │
 │          ▼                             ▼                                    │
-│   ┌─────────────────┐         ┌─────────────────┐                          │
-│   │  Digest Files   │         │  Log Files      │                          │
-│   │  (Hourly hash)  │         │  (Every 5 min)  │                          │
-│   └─────────────────┘         └─────────────────┘                          │
+│   ┌─────────────────┐         ┌─────────────────┐                           │
+│   │  Digest Files   │         │  Log Files      │                           │
+│   │  (Hourly hash)  │         │  (Every 5 min)  │                           │
+│   └─────────────────┘         └─────────────────┘                           │
 │          │                                                                  │
 │          │  SHA-256 hash                                                    │
 │          │                                                                  │
 │          ▼                                                                  │
-│   ┌─────────────────────────────────────────────┐                          │
-│   │  aws cloudtrail validate-logs               │                          │
-│   │  --trail-arn arn:aws:cloudtrail:...         │                          │
-│   │  --start-time 2024-01-01T00:00:00Z          │                          │
-│   │                                             │                          │
-│   │  ✅ Logs have NOT been tampered with        │                          │
-│   └─────────────────────────────────────────────┘                          │
+│   ┌─────────────────────────────────────────────┐                           │
+│   │  aws cloudtrail validate-logs               │                           │
+│   │  --trail-arn arn:aws:cloudtrail:...         │                           │
+│   │  --start-time 2024-01-01T00:00:00Z          │                           │
+│   │                                             │                           │
+│   │  ✅ Logs have NOT been tampered with        │                           │
+│   └─────────────────────────────────────────────┘                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -377,27 +377,27 @@
 │                    CLOUDTRAIL SECURITY CHECKLIST                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ✅ Enable CloudTrail in ALL regions (Multi-region trail)                  │
+│  ✅ Enable CloudTrail in ALL regions (Multi-region trail)                   │
 │                                                                             │
-│  ✅ Enable Log File Validation (detect tampering)                          │
+│  ✅ Enable Log File Validation (detect tampering)                           │
 │                                                                             │
-│  ✅ Encrypt logs with KMS (SSE-KMS)                                        │
+│  ✅ Encrypt logs with KMS (SSE-KMS)                                         │
 │                                                                             │
-│  ✅ Enable S3 MFA Delete on log bucket                                     │
+│  ✅ Enable S3 MFA Delete on log bucket                                      │
 │                                                                             │
-│  ✅ Restrict access to CloudTrail logs bucket                              │
+│  ✅ Restrict access to CloudTrail logs bucket                               │
 │                                                                             │
-│  ✅ Enable CloudTrail Insights for anomaly detection                       │
+│  ✅ Enable CloudTrail Insights for anomaly detection                        │
 │                                                                             │
-│  ✅ Send logs to CloudWatch Logs for real-time monitoring                  │
+│  ✅ Send logs to CloudWatch Logs for real-time monitoring                   │
 │                                                                             │
-│  ✅ Create CloudWatch Alarms for critical events:                          │
+│  ✅ Create CloudWatch Alarms for critical events:                           │
 │      • Root account usage                                                   │
 │      • IAM policy changes                                                   │
 │      • Security group changes                                               │
 │      • Unauthorized API calls                                               │
 │                                                                             │
-│  ✅ For Organizations: Use Organization Trail                              │
+│  ✅ For Organizations: Use Organization Trail                               │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -413,24 +413,24 @@
 │              CLOUDTRAIL → CLOUDWATCH LOGS → ALERTS                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌─────────────┐      ┌─────────────────┐      ┌─────────────────┐        │
-│   │ CloudTrail  │─────▶│ CloudWatch Logs │─────▶│  Metric Filter  │        │
-│   │ Trail       │      │ Log Group       │      │                 │        │
-│   └─────────────┘      └─────────────────┘      └────────┬────────┘        │
+│   ┌─────────────┐      ┌─────────────────┐      ┌─────────────────┐         │
+│   │ CloudTrail  │─────▶│ CloudWatch Logs │─────▶│  Metric Filter  │         │
+│   │ Trail       │      │ Log Group       │      │                 │         │
+│   └─────────────┘      └─────────────────┘      └────────┬────────┘         │
 │                                                          │                  │
 │                                                          ▼                  │
-│                                                 ┌─────────────────┐        │
-│                                                 │ CloudWatch      │        │
-│                                                 │ Alarm           │        │
-│                                                 └────────┬────────┘        │
+│                                                 ┌─────────────────┐         │
+│                                                 │ CloudWatch      │         │
+│                                                 │ Alarm           │         │
+│                                                 └────────┬────────┘         │
 │                                                          │                  │
-│                              ┌────────────────┬──────────┴──────────┐      │
-│                              │                │                     │      │
-│                              ▼                ▼                     ▼      │
-│                        ┌──────────┐    ┌──────────┐          ┌──────────┐  │
-│                        │   SNS    │    │  Lambda  │          │ SSM Auto │  │
-│                        │  Email   │    │ Response │          │ Runbook  │  │
-│                        └──────────┘    └──────────┘          └──────────┘  │
+│                              ┌────────────────┬──────────┴──────────┐       │
+│                              │                │                      │      │
+│                              ▼                ▼                     ▼       │
+│                        ┌──────────┐    ┌──────────┐          ┌──────────┐   │
+│                        │   SNS    │    │  Lambda  │          │ SSM Auto │   │
+│                        │  Email   │    │ Response │          │ Runbook  │   │
+│                        └──────────┘    └──────────┘          └──────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -594,18 +594,18 @@ fields @timestamp, eventName, requestParameters.bucketName
 │                 CLOUDTRAIL → EVENTBRIDGE INTEGRATION                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌─────────────┐      ┌─────────────────┐      ┌─────────────────┐        │
-│   │ CloudTrail  │─────▶│   EventBridge   │─────▶│ Matching Rules  │        │
-│   │ API Events  │      │   (Default Bus) │      │                 │        │
-│   └─────────────┘      └─────────────────┘      └────────┬────────┘        │
+│   ┌─────────────┐      ┌─────────────────┐      ┌─────────────────┐         │
+│   │ CloudTrail  │─────▶│   EventBridge   │─────▶│ Matching Rules  │         │
+│   │ API Events  │      │   (Default Bus) │      │                 │         │
+│   └─────────────┘      └─────────────────┘      └────────┬────────┘         │
 │                                                          │                  │
-│                     ┌────────────────────────────────────┼──────┐          │
-│                     │                    │               │      │          │
-│                     ▼                    ▼               ▼      ▼          │
-│               ┌──────────┐        ┌──────────┐    ┌──────────┐ ┌────────┐  │
-│               │  Lambda  │        │   SNS    │    │   SQS    │ │Step Fn │  │
-│               │ Function │        │  Topic   │    │  Queue   │ │        │  │
-│               └──────────┘        └──────────┘    └──────────┘ └────────┘  │
+│                     ┌────────────────────────────────────┼──────┐           │
+│                     │                    │               │       │          │
+│                     ▼                    ▼               ▼      ▼           │
+│               ┌──────────┐        ┌──────────┐    ┌──────────┐ ┌────────┐   │
+│               │  Lambda  │        │   SNS    │    │   SQS    │ │Step Fn │   │
+│               │ Function │        │  Topic   │    │  Queue   │ │        │   │
+│               └──────────┘        └──────────┘    └──────────┘ └────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -653,29 +653,29 @@ fields @timestamp, eventName, requestParameters.bucketName
 │                         CLOUDTRAIL PRICING                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │  FREE TIER                                                           │  │
-│   │  ─────────                                                           │  │
-│   │  • One trail that delivers management events to S3 - FREE            │  │
-│   │  • Event history in console (90 days) - FREE                         │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  FREE TIER                                                          │   │
+│   │  ─────────                                                          │   │
+│   │  • One trail that delivers management events to S3 - FREE           │   │
+│   │  • Event history in console (90 days) - FREE                        │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │  PAID FEATURES                                                       │  │
-│   │  ─────────────                                                       │  │
-│   │  • Additional trails: $2.00 per 100,000 management events           │  │
-│   │  • Data events: $0.10 per 100,000 events                            │  │
-│   │  • Insights events: $0.35 per 100,000 events analyzed               │  │
-│   │  • CloudTrail Lake: Query pricing per data scanned                  │  │
-│   │                                                                      │  │
-│   │  + S3 storage costs for log files                                   │  │
-│   │  + CloudWatch Logs ingestion costs (if enabled)                     │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  PAID FEATURES                                                      │   │
+│   │  ─────────────                                                      │   │
+│   │  • Additional trails: $2.00 per 100,000 management events           │   │
+│   │  • Data events: $0.10 per 100,000 events                            │   │
+│   │  • Insights events: $0.35 per 100,000 events analyzed               │   │
+│   │  • CloudTrail Lake: Query pricing per data scanned                  │   │
+│   │                                                                     │   │
+│   │  + S3 storage costs for log files                                   │   │
+│   │  + CloudWatch Logs ingestion costs (if enabled)                     │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   💡 Cost Optimization:                                                     │
-│   • Use one multi-region trail (free) instead of multiple single-region    │
-│   • Enable data events only for critical buckets/functions                 │
-│   • Use S3 lifecycle policies to archive/delete old logs                   │
+│   • Use one multi-region trail (free) instead of multiple single-region     │
+│   • Enable data events only for critical buckets/functions                  │
+│   • Use S3 lifecycle policies to archive/delete old logs                    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -694,23 +694,23 @@ fields @timestamp, eventName, requestParameters.bucketName
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Traditional Trail                    CloudTrail Lake                      │
-│   ┌─────────────────┐                  ┌─────────────────┐                 │
-│   │                 │                  │                 │                 │
-│   │  CloudTrail     │                  │  CloudTrail     │                 │
-│   │       │         │                  │       │         │                 │
-│   │       ▼         │                  │       ▼         │                 │
-│   │      S3         │                  │  Event Data     │                 │
-│   │       │         │                  │  Store          │                 │
-│   │       ▼         │                  │  (Managed)      │                 │
-│   │    Athena       │                  │       │         │                 │
-│   │   (Manual       │                  │       ▼         │                 │
-│   │    Setup)       │                  │  Built-in SQL   │                 │
-│   │                 │                  │  Query Console  │                 │
-│   └─────────────────┘                  └─────────────────┘                 │
+│   ┌─────────────────┐                  ┌─────────────────┐                  │
+│   │                 │                  │                 │                  │
+│   │  CloudTrail     │                  │  CloudTrail     │                  │
+│   │       │         │                  │       │          │                 │
+│   │       ▼         │                  │       ▼         │                  │
+│   │      S3         │                  │  Event Data     │                  │
+│   │       │         │                  │  Store           │                 │
+│   │       ▼         │                  │  (Managed)      │                  │
+│   │    Athena       │                  │       │          │                 │
+│   │   (Manual       │                  │       ▼         │                  │
+│   │    Setup)       │                  │  Built-in SQL   │                  │
+│   │                 │                  │  Query Console  │                  │
+│   └─────────────────┘                  └─────────────────┘                  │
 │                                                                             │
-│   Pros: Cheaper storage                Pros: No S3/Athena setup            │
-│   Cons: Complex setup                  Cons: Higher query cost             │
-│         Manual table mgmt                    Retention up to 7 years       │
+│   Pros: Cheaper storage                Pros: No S3/Athena setup             │
+│   Cons: Complex setup                  Cons: Higher query cost              │
+│         Manual table mgmt                    Retention up to 7 years        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -783,31 +783,31 @@ ORDER BY eventTime DESC;
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│             CloudTrail vs AWS Config - Không phải Superset                    │
+│             CloudTrail vs AWS Config - Không phải Superset                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)              │
+│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)               │
 │                                                                              │
-│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng              │
+│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng               │
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config          │   │
-│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐           │   │
-│   │   │              │   │              │   │              │           │   │
-│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │           │   │
-│   │   │   calls      │   │  change      │   │   checks     │           │   │
-│   │   │ • Read ops   │   │  events      │   │ • Drift      │           │   │
-│   │   │   (Describe) │   │              │   │   detection  │           │   │
-│   │   │ • Login      │   │              │   │ • Compliance │           │   │
-│   │   │   events     │   │              │   │   rules      │           │   │
-│   │   │ • Calls ko   │   │              │   │ • Auto       │           │   │
-│   │   │   thay đổi   │   │              │   │   remediate  │           │   │
-│   │   │   state      │   │              │   │              │           │   │
-│   │   │              │   │              │   │              │           │   │
-│   │   └──────────────┘   └──────────────┘   └──────────────┘           │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config           │    │
+│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐             │   │
+│   │   │              │   │              │   │              │             │   │
+│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │             │   │
+│   │   │   calls      │   │  change      │   │   checks     │             │   │
+│   │   │ • Read ops   │   │  events      │   │ • Drift      │             │   │
+│   │   │   (Describe) │   │              │   │   detection  │             │   │
+│   │   │ • Login      │   │              │   │ • Compliance │             │   │
+│   │   │   events     │   │              │   │   rules      │             │   │
+│   │   │ • Calls ko   │   │              │   │ • Auto       │             │   │
+│   │   │   thay đổi   │   │              │   │   remediate  │             │   │
+│   │   │   state      │   │              │   │              │             │   │
+│   │   │              │   │              │   │              │             │   │
+│   │   └──────────────┘   └──────────────┘   └──────────────┘             │   │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -821,28 +821,28 @@ ORDER BY eventTime DESC;
 │                                                                              │
 │                              │                                               │
 │                              ▼                                               │
-│              ┌───────────────┴───────────────┐                              │
-│              │      API Call xảy ra           │                              │
-│              │  AuthorizeSecurityGroupIngress │                              │
-│              └───────────────┬───────────────┘                              │
+│              ┌───────────────┴───────────────┐                               │
+│              │      API Call xảy ra          │                               │
+│              │  AuthorizeSecurityGroupIngress│                               │
+│              └───────────────┬───────────────┘                               │
 │                              │                                               │
-│              ┌───────────────┴───────────────┐                              │
+│              ┌───────────────┴───────────────┐                               │
 │              ▼                               ▼                               │
-│   ┌─────────────────────┐       ┌─────────────────────┐                     │
-│   │     CLOUDTRAIL      │       │     AWS CONFIG      │                     │
-│   │                     │       │                     │                     │
-│   │  GHI LẠI:           │       │  GHI LẠI:           │                     │
-│   │  ─────────          │       │  ─────────          │                     │
-│   │  • Ai: john@co.com  │       │  • State MỚI của SG │                     │
-│   │  • Làm gì: Authorize│       │  • Port 22 open to  │                     │
-│   │  • Lúc nào: 10:30   │       │    0.0.0.0/0        │                     │
-│   │  • IP nguồn: 1.2.3.4│       │  • COMPLIANT hay    │                     │
-│   │  • Success/Failed   │       │    NON-COMPLIANT?   │                     │
-│   │                     │       │                     │                     │
-│   │  KHÔNG biết:        │       │  KHÔNG biết:        │                     │
-│   │  • SG có comply ko  │       │  • AI làm           │                     │
-│   │  • State hiện tại   │       │  • Từ IP nào        │                     │
-│   └─────────────────────┘       └─────────────────────┘                     │
+│   ┌─────────────────────┐       ┌─────────────────────┐                      │
+│   │     CLOUDTRAIL      │       │     AWS CONFIG      │                      │
+│   │                     │       │                     │                      │
+│   │  GHI LẠI:           │       │  GHI LẠI:           │                      │
+│   │  ─────────          │       │  ─────────          │                      │
+│   │  • Ai: john@co.com  │       │  • State MỚI của SG │                      │
+│   │  • Làm gì: Authorize│       │  • Port 22 open to  │                      │
+│   │  • Lúc nào: 10:30   │       │    0.0.0.0/0        │                      │
+│   │  • IP nguồn: 1.2.3.4│       │  • COMPLIANT hay    │                      │
+│   │  • Success/Failed   │       │    NON-COMPLIANT?   │                      │
+│   │                     │       │                     │                      │
+│   │  KHÔNG biết:        │       │  KHÔNG biết:        │                      │
+│   │  • SG có comply ko  │       │  • AI làm           │                      │
+│   │  • State hiện tại   │       │  • Từ IP nào        │                      │
+│   └─────────────────────┘       └─────────────────────┘                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -863,32 +863,32 @@ ORDER BY eventTime DESC;
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       3 Scenarios cụ thể                                      │
+│                       3 Scenarios cụ thể                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                            │
+│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                             │
 │   ─────────────────────────────────────────────────                          │
-│   Không có API call mới nào                                                 │
-│   CloudTrail: ❌ Không ghi gì (không có API call)                           │
-│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)      │
+│   Không có API call mới nào                                                  │
+│   CloudTrail: ❌ Không ghi gì (không có API call)                            │
+│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)       │
 │                                                                              │
-│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                       │
+│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                        │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)          │
+│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)           │
 │   ─────────────────────────────────────────────────────────────────          │
-│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"               │
-│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"                │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                              │
 │                                                                              │
-│   → CloudTrail ghi cả failed calls!                                         │
+│   → CloudTrail ghi cả failed calls!                                          │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                     │
+│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                      │
 │   ──────────────────────────────────────────────────                         │
-│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                      │
-│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                       │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                              │
 │                                                                              │
 │   → CloudTrail ghi read operations!                                          │
 │                                                                              │
@@ -911,20 +911,20 @@ ORDER BY eventTime DESC;
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                CloudTrail + AWS Config = Complete Picture                     │
+│                CloudTrail + AWS Config = Complete Picture                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Security Incident Investigation:                                           │
 │                                                                              │
-│   AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                │
-│                vì port 22 open to 0.0.0.0/0"                                │
+│   AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                 │
+│                vì port 22 open to 0.0.0.0/0"                                 │
 │                                                                              │
-│   → Đi check CloudTrail                                                     │
+│   → Đi check CloudTrail                                                      │
 │                                                                              │
-│   CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress      │
-│                lúc 10:30 AM từ IP 1.2.3.4"                                  │
+│   CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress       │
+│                lúc 10:30 AM từ IP 1.2.3.4"                                   │
 │                                                                              │
-│   → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm              │
+│   → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm                │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -945,27 +945,27 @@ ORDER BY eventTime DESC;
 │                       CLOUDTRAIL KEY TAKEAWAYS                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ✅ CloudTrail = Security Camera: WHO did WHAT, WHEN, WHERE                │
+│  ✅ CloudTrail = Security Camera: WHO did WHAT, WHEN, WHERE                 │
 │                                                                             │
-│  ✅ 3 Event Types: Management (default), Data, Insights                    │
+│  ✅ 3 Event Types: Management (default), Data, Insights                     │
 │                                                                             │
-│  ✅ Management Events FREE cho 1 trail                                     │
+│  ✅ Management Events FREE cho 1 trail                                      │
 │                                                                             │
-│  ✅ Data Events cho S3/Lambda - phải enable riêng (high volume, costs)     │
+│  ✅ Data Events cho S3/Lambda - phải enable riêng (high volume, costs)      │
 │                                                                             │
-│  ✅ Multi-region trail recommended (all regions → 1 bucket)                │
+│  ✅ Multi-region trail recommended (all regions → 1 bucket)                 │
 │                                                                             │
-│  ✅ Organization trail cho multi-account                                   │
+│  ✅ Organization trail cho multi-account                                    │
 │                                                                             │
-│  ✅ Enable Log File Validation để detect tampering                         │
+│  ✅ Enable Log File Validation để detect tampering                          │
 │                                                                             │
-│  ✅ Send to CloudWatch Logs cho real-time alerts                           │
+│  ✅ Send to CloudWatch Logs cho real-time alerts                            │
 │                                                                             │
-│  ✅ Use EventBridge cho event-driven automation                            │
+│  ✅ Use EventBridge cho event-driven automation                             │
 │                                                                             │
-│  ⚠️  Event History chỉ giữ 90 ngày - create trail để lưu lâu hơn          │
+│  ⚠️  Event History chỉ giữ 90 ngày - create trail để lưu lâu hơn             │
 │                                                                             │
-│  ⚠️  Delivery delay ~15 phút (không phải real-time)                       │
+│  ⚠️  Delivery delay ~15 phút (không phải real-time)                          │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

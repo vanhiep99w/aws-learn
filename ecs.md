@@ -31,7 +31,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│                    VIRTUAL MACHINE                          │
+│                    VIRTUAL MACHINE                         │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐                  │
 │  │   App A  │  │   App B  │  │   App C  │                  │
 │  ├──────────┤  ├──────────┤  ├──────────┤                  │
@@ -40,22 +40,22 @@
 │  │ Guest OS │  │ Guest OS │  │ Guest OS │  ← Mỗi VM có OS  │
 │  └──────────┘  └──────────┘  └──────────┘                  │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │              Hypervisor (VMware, KVM)                │   │
+│  │              Hypervisor (VMware, KVM)               │   │
 │  ├─────────────────────────────────────────────────────┤   │
-│  │                    Host OS                           │   │
+│  │                    Host OS                          │   │
 │  └─────────────────────────────────────────────────────┘   │
 └────────────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────────────┐
-│                      CONTAINERS                             │
+│                      CONTAINERS                            │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐                  │
 │  │   App A  │  │   App B  │  │   App C  │                  │
 │  │ + Libs A │  │ + Libs B │  │ + Libs C │                  │
 │  └──────────┘  └──────────┘  └──────────┘                  │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │           Container Runtime (Docker)                 │   │
+│  │           Container Runtime (Docker)                │   │
 │  ├─────────────────────────────────────────────────────┤   │
-│  │                Host OS (1 OS duy nhất!)              │   │
+│  │                Host OS (1 OS duy nhất!)             │   │
 │  └─────────────────────────────────────────────────────┘   │
 └────────────────────────────────────────────────────────────┘
 ```
@@ -88,35 +88,35 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TỰ QUẢN LÝ (Docker Swarm/K8s)                     │
-│                                                                       │
-│   Bạn phải:                                                          │
-│   ├── Cài đặt Docker trên từng server                                │
+│                    TỰ QUẢN LÝ (Docker Swarm/K8s)                    │
+│                                                                     │
+│   Bạn phải:                                                         │
+│   ├── Cài đặt Docker trên từng server                               │
 │   ├── Setup Swarm cluster hoặc K8s master/worker nodes              │
 │   ├── Cấu hình network overlay (Flannel, Calico, Weave)             │
 │   ├── Setup etcd cluster để lưu state                               │
 │   ├── Cấu hình TLS certificates                                     │
-│   ├── Monitor cluster health                                         │
-│   └── Upgrade/patch cluster components                               │
-│                                                                       │
-│   ⏰ Thời gian setup: 2-5 ngày                                       │
-│   👨‍💻 Yêu cầu: DevOps engineer có kinh nghiệm                         │
+│   ├── Monitor cluster health                                        │
+│   └── Upgrade/patch cluster components                              │
+│                                                                     │
+│   ⏰ Thời gian setup: 2-5 ngày                                      │
+│   👨‍💻 Yêu cầu: DevOps engineer có kinh nghiệm                        │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         AMAZON ECS                                   │
-│                                                                       │
-│   Bạn chỉ cần:                                                       │
-│   └── aws ecs create-cluster --cluster-name my-cluster               │
-│                                                                       │
-│   ⏰ Thời gian setup: 5 phút                                         │
-│   👨‍💻 Yêu cầu: Biết cơ bản về containers                              │
-│                                                                       │
-│   AWS lo phần còn lại:                                               │
-│   ├── Control plane                                                  │
-│   ├── State management                                               │
-│   ├── API server                                                     │
-│   └── Cluster coordination                                           │
+│                         AMAZON ECS                                  │
+│                                                                     │
+│   Bạn chỉ cần:                                                      │
+│   └── aws ecs create-cluster --cluster-name my-cluster              │
+│                                                                     │
+│   ⏰ Thời gian setup: 5 phút                                        │
+│   👨‍💻 Yêu cầu: Biết cơ bản về containers                             │
+│                                                                     │
+│   AWS lo phần còn lại:                                              │
+│   ├── Control plane                                                 │
+│   ├── State management                                              │
+│   ├── API server                                                    │
+│   └── Cluster coordination                                          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -128,35 +128,35 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         TỰ SCHEDULING                                │
-│                                                                       │
+│                         TỰ SCHEDULING                               │
+│                                                                     │
 │  Bạn có 3 servers, mỗi server có resources khác nhau:               │
-│                                                                       │
+│                                                                     │
 │  Server 1: 4 CPU, 8GB RAM (đang dùng 3 CPU, 6GB)                    │
 │  Server 2: 2 CPU, 4GB RAM (đang dùng 0.5 CPU, 1GB)                  │
 │  Server 3: 4 CPU, 16GB RAM (đang dùng 4 CPU, 14GB)                  │
-│                                                                       │
+│                                                                     │
 │  → Bạn muốn deploy container cần 1 CPU, 2GB RAM                     │
 │  → Bạn phải TỰ kiểm tra server nào có đủ resources                  │
 │  → Nếu Server 3 đầy, bạn phải đổi sang Server 1/2                   │
 │  → Phải viết logic để handle failures, retries                      │
-│                                                                       │
-│  ❌ Prone to human error                                             │
-│  ❌ Khó scale khi có 50+ servers                                     │
+│                                                                     │
+│  ❌ Prone to human error                                            │
+│  ❌ Khó scale khi có 50+ servers                                    │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       ECS SCHEDULER                                  │
-│                                                                       │
-│  ECS tự động:                                                        │
+│                       ECS SCHEDULER                                 │
+│                                                                     │
+│  ECS tự động:                                                       │
 │  ├── Track resources của tất cả instances                           │
 │  ├── Tìm instance phù hợp nhất (bin packing)                        │
 │  ├── Handle constraints (AZ, instance type, custom)                 │
 │  ├── Retry nếu placement fail                                       │
 │  └── Rebalance khi cần                                              │
-│                                                                       │
-│  Placement Strategies:                                               │
-│                                                                       │
+│                                                                     │
+│  Placement Strategies:                                              │
+│                                                                     │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
 │  │   BINPACK    │  │   SPREAD     │  │   RANDOM     │               │
 │  │              │  │              │  │              │               │
@@ -164,7 +164,7 @@
 │  │ Pack đầy 1   │  │ Spread đều   │  │ Chọn random  │               │
 │  │ server trước │  │ các AZs      │  │              │               │
 │  └──────────────┘  └──────────────┘  └──────────────┘               │
-│                                                                       │
+│                                                                     │
 │  ✅ Tự động, không cần can thiệp                                    │
 │  ✅ Scale tới hàng ngàn containers                                  │
 └─────────────────────────────────────────────────────────────────────┘
@@ -188,9 +188,9 @@ aws ecs create-service \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TỰ QUẢN LÝ CLUSTER                                │
-│                                                                       │
-│  Khi 1 server chết:                                                  │
+│                    TỰ QUẢN LÝ CLUSTER                               │
+│                                                                     │
+│  Khi 1 server chết:                                                 │
 │  ┌────────────────────────────────────────────────────────────┐     │
 │  │  1. Monitor alert (bạn phải setup monitoring trước)        │     │
 │  │  2. SSH vào server để debug (nếu còn access được)          │     │
@@ -203,27 +203,27 @@ aws ecs create-service \
 │  │  5. Remove server cũ khỏi cluster                          │     │
 │  │  6. Update DNS/LB nếu cần                                  │     │
 │  └────────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  ⏰ Thời gian: 30 phút - vài giờ                                     │
-│  🚨 Có thể xảy ra lúc 3 giờ sáng!                                    │
+│                                                                     │
+│  ⏰ Thời gian: 30 phút - vài giờ                                    │
+│  🚨 Có thể xảy ra lúc 3 giờ sáng!                                   │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     ECS MANAGED CLUSTER                              │
-│                                                                       │
-│  Với Fargate:                                                        │
+│                     ECS MANAGED CLUSTER                             │
+│                                                                     │
+│  Với Fargate:                                                       │
 │  └── Không có server để quản lý! AWS lo tất cả.                     │
-│                                                                       │
-│  Với EC2 + ECS:                                                      │
+│                                                                     │
+│  Với EC2 + ECS:                                                     │
 │  ┌────────────────────────────────────────────────────────────┐     │
 │  │  1. ECS detect container instance unhealthy                │     │
-│  │  2. Tasks được reschedule sang instance khác TỰ ĐỘNG      │     │
-│  │  3. Auto Scaling Group thay thế instance mới              │     │
-│  │  4. Instance mới tự động join cluster (ECS Agent)         │     │
+│  │  2. Tasks được reschedule sang instance khác TỰ ĐỘNG       │     │
+│  │  3. Auto Scaling Group thay thế instance mới               │     │
+│  │  4. Instance mới tự động join cluster (ECS Agent)          │     │
 │  └────────────────────────────────────────────────────────────┘     │
-│                                                                       │
-│  ⏰ Thời gian: 1-5 phút (tự động)                                    │
-│  😴 Bạn có thể tiếp tục ngủ!                                         │
+│                                                                     │
+│  ⏰ Thời gian: 1-5 phút (tự động)                                   │
+│  😴 Bạn có thể tiếp tục ngủ!                                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -233,50 +233,50 @@ aws ecs create-service \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TỰ SETUP LOAD BALANCING                           │
-│                                                                       │
-│  Bạn phải:                                                           │
+│                    TỰ SETUP LOAD BALANCING                          │
+│                                                                     │
+│  Bạn phải:                                                          │
 │  ├── Setup HAProxy/Nginx làm load balancer                          │
 │  ├── Cấu hình health checks                                         │
 │  ├── Update config mỗi khi container start/stop                     │
 │  ├── Handle SSL termination                                         │
 │  └── Setup HA cho chính load balancer                               │
-│                                                                       │
-│  Vấn đề với Dynamic Ports:                                           │
+│                                                                     │
+│  Vấn đề với Dynamic Ports:                                          │
 │  ┌──────────────────────────────────────────────────┐               │
-│  │  Container 1: host:32768 → container:80         │               │
-│  │  Container 2: host:32769 → container:80         │               │
-│  │  Container 3: host:32770 → container:80         │               │
+│  │  Container 1: host:32768 → container:80          │               │
+│  │  Container 2: host:32769 → container:80          │               │
+│  │  Container 3: host:32770 → container:80          │               │
 │  │                                                  │               │
-│  │  → Port thay đổi mỗi lần deploy!                │               │
-│  │  → Phải update LB config liên tục               │               │
-│  │  → Thường dùng Service Discovery (Consul, etc)  │               │
+│  │  → Port thay đổi mỗi lần deploy!                 │               │
+│  │  → Phải update LB config liên tục                │               │
+│  │  → Thường dùng Service Discovery (Consul, etc)   │               │
 │  └──────────────────────────────────────────────────┘               │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ECS + ALB INTEGRATION                             │
-│                                                                       │
-│         ┌─────────────────────────────────────┐                      │
-│         │     Application Load Balancer       │                      │
-│         │     (AWS managed, HA by default)    │                      │
-│         └───────────────┬─────────────────────┘                      │
-│                         │                                            │
+│                    ECS + ALB INTEGRATION                            │
+│                                                                     │
+│         ┌─────────────────────────────────────┐                     │
+│         │     Application Load Balancer       │                     │
+│         │     (AWS managed, HA by default)    │                     │
+│         └───────────────┬─────────────────────┘                     │
+│                        │                                            │
 │         ┌───────────────┼───────────────┐                           │
 │         ▼               ▼               ▼                           │
 │    ┌─────────┐    ┌─────────┐    ┌─────────┐                        │
 │    │ Task 1  │    │ Task 2  │    │ Task 3  │                        │
 │    │ :32768  │    │ :32769  │    │ :32770  │                        │
 │    └─────────┘    └─────────┘    └─────────┘                        │
-│                                                                       │
-│  ECS tự động:                                                        │
+│                                                                     │
+│  ECS tự động:                                                       │
 │  ├── Register task vào Target Group khi start                       │
 │  ├── Deregister khi task stop                                       │
 │  ├── Handle dynamic ports (ECS biết port mapping)                   │
 │  ├── Connection draining trước khi remove                           │
-│  └── Health check integration                                        │
-│                                                                       │
-│  ✅ Zero manual intervention!                                        │
+│  └── Health check integration                                       │
+│                                                                     │
+│  ✅ Zero manual intervention!                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -303,10 +303,10 @@ aws ecs create-service \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TỰ SETUP AUTO SCALING                             │
-│                                                                       │
-│  Bạn phải viết custom solution:                                      │
-│                                                                       │
+│                    TỰ SETUP AUTO SCALING                            │
+│                                                                     │
+│  Bạn phải viết custom solution:                                     │
+│                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐   │
 │  │  1. Collect metrics (Prometheus, custom scripts)             │   │
 │  │  2. Viết scaling logic:                                      │   │
@@ -315,57 +315,57 @@ aws ecs create-service \
 │  │     if cpu < 30%:                                            │   │
 │  │         terminate_containers()                               │   │
 │  │  3. Handle cooldown periods                                  │   │
-│  │  4. Prevent thrashing (scale up/down liên tục)              │   │
+│  │  4. Prevent thrashing (scale up/down liên tục)               │   │
 │  │  5. Implement min/max limits                                 │   │
-│  │  6. Scale servers (nếu hết capacity)                        │   │
+│  │  6. Scale servers (nếu hết capacity)                         │   │
 │  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  ❌ Phức tạp, dễ bugs                                                │
-│  ❌ Không scale đủ nhanh                                             │
+│                                                                     │
+│  ❌ Phức tạp, dễ bugs                                               │
+│  ❌ Không scale đủ nhanh                                            │
 │  ❌ Có thể scale sai (over/under provision)                         │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 ECS + APPLICATION AUTO SCALING                       │
-│                                                                       │
+│                 ECS + APPLICATION AUTO SCALING                      │
+│                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                    CloudWatch                                 │   │
+│  │                    CloudWatch                                │   │
 │  │        ┌─────────────────────────────────────┐               │   │
 │  │        │  ECSServiceAverageCPUUtilization    │               │   │
 │  │        │         Current: 75%                │               │   │
 │  │        │         Target: 70%                 │               │   │
 │  │        └─────────────────┬───────────────────┘               │   │
-│  │                          │                                    │   │
-│  │                          ▼                                    │   │
+│  │                          │                                   │   │
+│  │                          ▼                                   │   │
 │  │        ┌─────────────────────────────────────┐               │   │
-│  │        │    Application Auto Scaling          │               │   │
-│  │        │    Action: Scale Out                 │               │   │
+│  │        │    Application Auto Scaling          │              │   │
+│  │        │    Action: Scale Out                 │              │   │
 │  │        └─────────────────┬───────────────────┘               │   │
-│  │                          │                                    │   │
-│  │                          ▼                                    │   │
+│  │                          │                                   │   │
+│  │                          ▼                                   │   │
 │  │        ┌─────────────────────────────────────┐               │   │
-│  │        │    ECS Service                       │               │   │
+│  │        │    ECS Service                       │              │   │
 │  │        │    Desired: 3 → 4 tasks             │               │   │
 │  │        └─────────────────────────────────────┘               │   │
 │  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  Các loại scaling policies:                                          │
-│                                                                       │
-│  1. Target Tracking (set-and-forget):                                │
-│     "Giữ CPU ở mức 70%"                                              │
-│                                                                       │
-│  2. Step Scaling (chi tiết hơn):                                     │
-│     CPU 70-80%: +1 task                                              │
-│     CPU 80-90%: +2 tasks                                             │
-│     CPU > 90%: +4 tasks                                              │
-│                                                                       │
-│  3. Scheduled Scaling:                                               │
+│                                                                     │
+│  Các loại scaling policies:                                         │
+│                                                                     │
+│  1. Target Tracking (set-and-forget):                               │
+│     "Giữ CPU ở mức 70%"                                             │
+│                                                                     │
+│  2. Step Scaling (chi tiết hơn):                                    │
+│     CPU 70-80%: +1 task                                             │
+│     CPU 80-90%: +2 tasks                                            │
+│     CPU > 90%: +4 tasks                                             │
+│                                                                     │
+│  3. Scheduled Scaling:                                              │
 │     9 AM: Scale to 10 tasks (giờ cao điểm)                          │
 │     6 PM: Scale to 3 tasks (giờ thấp điểm)                          │
-│                                                                       │
-│  ✅ AWS đã test và tối ưu                                            │
-│  ✅ Integrate seamlessly với ECS                                     │
-│  ✅ Predictive scaling (ML-based)                                    │
+│                                                                     │
+│  ✅ AWS đã test và tối ưu                                           │
+│  ✅ Integrate seamlessly với ECS                                    │
+│  ✅ Predictive scaling (ML-based)                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -420,19 +420,19 @@ aws application-autoscaling put-scaling-policy \
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        ECS CLUSTER                           │
-│                                                              │
+│                        ECS CLUSTER                          │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │                    ECS SERVICE                       │    │
-│  │                                                      │    │
+│  │                    ECS SERVICE                      │    │
+│  │                                                     │    │
 │  │  ┌──────────┐  ┌──────────┐  ┌──────────┐           │    │
 │  │  │  TASK    │  │  TASK    │  │  TASK    │           │    │
 │  │  │┌────────┐│  │┌────────┐│  │┌────────┐│           │    │
-│  │  ││Container││  ││Container││  ││Container││           │    │
+│  │  ││Container││  ││Container││  ││Container││        │    │
 │  │  │└────────┘│  │└────────┘│  │└────────┘│           │    │
 │  │  └──────────┘  └──────────┘  └──────────┘           │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
+│                                                             │
 │  ┌───────────────────────┐  ┌───────────────────────┐       │
 │  │ Container Instance 1  │  │ Container Instance 2  │       │
 │  │ (EC2 hoặc Fargate)    │  │ (EC2 hoặc Fargate)    │       │
@@ -446,20 +446,20 @@ aws application-autoscaling put-scaling-policy \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           ECS CLUSTER                                │
-│                                                                       │
-│   = Một "nhóm logic" để quản lý tất cả resources ECS                 │
-│                                                                       │
+│                           ECS CLUSTER                               │
+│                                                                     │
+│   = Một "nhóm logic" để quản lý tất cả resources ECS                │
+│                                                                     │
 │   Ví von: Cluster giống như 1 CÔNG TY                               │
 │   - Công ty có nhiều phòng ban (Services)                           │
 │   - Mỗi phòng ban có nhiều nhân viên (Tasks)                        │
 │   - Công ty thuê văn phòng (EC2) hoặc coworking space (Fargate)     │
-│                                                                       │
-│   Trong 1 cluster có:                                                │
-│   ├── Nhiều Services                                                 │
-│   ├── Nhiều Tasks                                                    │
+│                                                                     │
+│   Trong 1 cluster có:                                               │
+│   ├── Nhiều Services                                                │
+│   ├── Nhiều Tasks                                                   │
 │   ├── Compute resources (EC2 hoặc Fargate)                          │
-│   └── Configs, settings chung                                        │
+│   └── Configs, settings chung                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -474,24 +474,24 @@ aws application-autoscaling put-scaling-policy \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        TASK DEFINITION                               │
-│                                                                       │
+│                        TASK DEFINITION                              │
+│                                                                     │
 │   = BẢN THIẾT KẾ / BLUEPRINT để tạo container                       │
-│   = Giống như "công thức nấu ăn"                                     │
-│                                                                       │
-│   Task Definition KHÔNG PHẢI là container đang chạy!                 │
-│   Nó chỉ MÔ TẢ cách tạo container.                                   │
-│                                                                       │
-│   Một Task Definition bao gồm:                                       │
+│   = Giống như "công thức nấu ăn"                                    │
+│                                                                     │
+│   Task Definition KHÔNG PHẢI là container đang chạy!                │
+│   Nó chỉ MÔ TẢ cách tạo container.                                  │
+│                                                                     │
+│   Một Task Definition bao gồm:                                      │
 │   ├── Image nào? (nginx:latest, my-app:v1.2.3)                      │
-│   ├── Cần bao nhiêu CPU, Memory?                                     │
+│   ├── Cần bao nhiêu CPU, Memory?                                    │
 │   ├── Port mapping? (host:80 → container:80)                        │
-│   ├── Environment variables?                                         │
+│   ├── Environment variables?                                        │
 │   ├── Secrets? (password từ Secrets Manager)                        │
-│   ├── Logging config? (CloudWatch)                                   │
-│   ├── Volume mounts?                                                 │
-│   └── IAM roles?                                                      │
-│                                                                       │
+│   ├── Logging config? (CloudWatch)                                  │
+│   ├── Volume mounts?                                                │
+│   └── IAM roles?                                                    │
+│                                                                     │
 │   Versioned: my-app:1, my-app:2, my-app:3 (revisions)               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -533,13 +533,13 @@ aws application-autoscaling put-scaling-policy \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                             TASK                                     │
-│                                                                       │
-│   = INSTANCE của Task Definition đang chạy                           │
-│   = Container(s) thực sự đang chạy                                   │
-│                                                                       │
-│   Ví von:                                                            │
-│   - Task Definition = Công thức pizza                                │
+│                             TASK                                    │
+│                                                                     │
+│   = INSTANCE của Task Definition đang chạy                          │
+│   = Container(s) thực sự đang chạy                                  │
+│                                                                     │
+│   Ví von:                                                           │
+│   - Task Definition = Công thức pizza                               │
 │   - Task = Chiếc pizza thật đang được làm/ăn                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -549,25 +549,25 @@ aws application-autoscaling put-scaling-policy \
 ```
 TRƯỜNG HỢP 1: 1 Task = 1 Container (phổ biến nhất - 90%)
 ┌─────────────────────────────────────────────┐
-│                  TASK                        │
+│                  TASK                       │
 │   ┌─────────────────────────────────────┐   │
-│   │         Container: user-api          │   │
-│   │         (Node.js app)                │   │
+│   │         Container: user-api         │   │
+│   │         (Node.js app)               │   │
 │   └─────────────────────────────────────┘   │
 └─────────────────────────────────────────────┘
 
 TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 ┌─────────────────────────────────────────────┐
-│                  TASK                        │
+│                  TASK                       │
 │   ┌─────────────────┐  ┌─────────────────┐  │
 │   │  Container 1:   │  │  Container 2:   │  │
 │   │  nginx          │  │  app            │  │
 │   │  (reverse proxy)│  │  (Python Flask) │  │
 │   └─────────────────┘  └─────────────────┘  │
-│                                              │
+│                                             │
 │   Cả 2 chia sẻ:                             │
 │   - Network (gọi nhau qua localhost)        │
-│   - Storage volumes                          │
+│   - Storage volumes                         │
 │   - Lifecycle (sống chết cùng nhau)         │
 └─────────────────────────────────────────────┘
 ```
@@ -587,30 +587,30 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           SERVICE                                    │
-│                                                                       │
-│   = Đảm bảo số lượng Tasks mong muốn LUÔN CHẠY                       │
-│   = "Supervisor" giám sát Tasks                                      │
-│                                                                       │
+│                           SERVICE                                   │
+│                                                                     │
+│   = Đảm bảo số lượng Tasks mong muốn LUÔN CHẠY                      │
+│   = "Supervisor" giám sát Tasks                                     │
+│                                                                     │
 │   Service nói: "Tôi muốn luôn có 3 tasks chạy"                      │
 │   ┌──────────┐  ┌──────────┐  ┌──────────┐                          │
 │   │  Task 1  │  │  Task 2  │  │  Task 3  │                          │
 │   │ RUNNING  │  │ RUNNING  │  │ RUNNING  │                          │
 │   └──────────┘  └──────────┘  └──────────┘                          │
-│                                                                       │
-│   Nếu Task 2 chết:                                                   │
+│                                                                     │
+│   Nếu Task 2 chết:                                                  │
 │   ┌──────────┐  ┌──────────┐  ┌──────────┐                          │
-│   │  Task 1  │  │  Task 2  │  │  Task 4  │ ← Service tự tạo mới!   │
+│   │  Task 1  │  │  Task 2  │  │  Task 4  │ ← Service tự tạo mới!    │
 │   │ RUNNING  │  │  DEAD ❌ │  │ RUNNING  │                          │
 │   └──────────┘  └──────────┘  └──────────┘                          │
-│                                                                       │
-│   Service làm gì?                                                    │
+│                                                                     │
+│   Service làm gì?                                                   │
 │   ├── Duy trì số lượng tasks (desired count)                        │
 │   ├── Tự động restart tasks bị crash                                │
 │   ├── Kết nối với Load Balancer                                     │
 │   ├── Rolling deployments (cập nhật từ từ)                          │
-│   ├── Health checks                                                  │
-│   └── Auto scaling                                                   │
+│   ├── Health checks                                                 │
+│   └── Auto scaling                                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -627,28 +627,28 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      CONTAINER INSTANCE                              │
-│                                                                       │
-│   = EC2 instance đã đăng ký với ECS cluster                          │
-│   = Máy chủ thật chạy containers                                     │
-│                                                                       │
+│                      CONTAINER INSTANCE                             │
+│                                                                     │
+│   = EC2 instance đã đăng ký với ECS cluster                         │
+│   = Máy chủ thật chạy containers                                    │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                   EC2 Instance                               │   │
+│   │                   EC2 Instance                              │   │
 │   │  ┌──────────────────────────────────────────────────────┐   │   │
 │   │  │  ECS Agent (chạy sẵn trong ECS-optimized AMI)        │   │   │
 │   │  │  - Giao tiếp với ECS control plane                   │   │   │
 │   │  │  - Nhận lệnh start/stop containers                   │   │   │
 │   │  │  - Báo cáo resource usage                            │   │   │
 │   │  └──────────────────────────────────────────────────────┘   │   │
-│   │                                                              │   │
-│   │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │   │
-│   │  │ Container 1 │ │ Container 2 │ │ Container 3 │           │   │
-│   │  └─────────────┘ └─────────────┘ └─────────────┘           │   │
-│   │                                                              │   │
+│   │                                                             │   │
+│   │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │   │
+│   │  │ Container 1 │ │ Container 2 │ │ Container 3 │            │   │
+│   │  └─────────────┘ └─────────────┘ └─────────────┘            │   │
+│   │                                                             │   │
 │   │  Docker daemon, OS, etc.                                    │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ⚠️ Fargate KHÔNG có Container Instance - AWS quản lý hết!         │
+│                                                                     │
+│   ⚠️ Fargate KHÔNG có Container Instance - AWS quản lý hết!          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -658,25 +658,25 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           CLUSTER                                    │
+│                           CLUSTER                                   │
 │    = Công ty / Tổ chức                                              │
-│                                                                       │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
 │  │                        SERVICE A                              │  │
-│  │    = Phòng ban (luôn duy trì X nhân viên)                    │  │
+│  │    = Phòng ban (luôn duy trì X nhân viên)                     │  │
 │  │                                                               │  │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐                       │  │
-│  │  │ Task 1  │  │ Task 2  │  │ Task 3  │   = Nhân viên         │  │
-│  │  └─────────┘  └─────────┘  └─────────┘                       │  │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐                        │  │
+│  │  │ Task 1  │  │ Task 2  │  │ Task 3  │   = Nhân viên          │  │
+│  │  └─────────┘  └─────────┘  └─────────┘                        │  │
 │  └───────────────────────────────────────────────────────────────┘  │
-│                                                                       │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────────┐  │
 │  │                        SERVICE B                              │  │
-│  │  ┌─────────┐  ┌─────────┐                                    │  │
-│  │  │ Task 1  │  │ Task 2  │                                    │  │
-│  │  └─────────┘  └─────────┘                                    │  │
+│  │  ┌─────────┐  ┌─────────┐                                     │  │
+│  │  │ Task 1  │  │ Task 2  │                                     │  │
+│  │  └─────────┘  └─────────┘                                     │  │
 │  └───────────────────────────────────────────────────────────────┘  │
-│                                                                       │
+│                                                                     │
 │  TASK DEFINITION = Hướng dẫn tạo Task (blueprint)                   │
 │  CONTAINER INSTANCE = Văn phòng (EC2) - nơi làm việc                │
 └─────────────────────────────────────────────────────────────────────┘
@@ -704,18 +704,18 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          ECS (Orchestrator)                          │
-│                       🧠 "BỘ NÃO ĐIỀU KHIỂN"                         │
-│                                                                       │
-│   ECS LÀM:                                                           │
+│                          ECS (Orchestrator)                         │
+│                       🧠 "BỘ NÃO ĐIỀU KHIỂN"                        │
+│                                                                     │
+│   ECS LÀM:                                                          │
 │   ├── Quyết định container chạy ở đâu (scheduling)                  │
 │   ├── Ra lệnh khởi động/dừng containers                             │
 │   ├── Theo dõi health của containers                                │
 │   ├── Tự động restart container nếu chết                            │
 │   ├── Scale số lượng containers lên/xuống                           │
 │   └── Kết nối containers với Load Balancer                          │
-│                                                                       │
-│   ECS KHÔNG LÀM:                                                     │
+│                                                                     │
+│   ECS KHÔNG LÀM:                                                    │
 │   ├── ❌ Cung cấp CPU/RAM để chạy containers                        │
 │   └── ❌ Thực sự "chạy" container processes                         │
 └─────────────────────────────────────────────────────────────────────┘
@@ -723,16 +723,16 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
                                 │ ECS ra lệnh: "Chạy container này!"
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     EC2 (Compute Resources)                          │
-│                        💪 "CƠ BẮP THỰC THI"                          │
-│                                                                       │
-│   EC2 LÀM:                                                           │
+│                     EC2 (Compute Resources)                         │
+│                        💪 "CƠ BẮP THỰC THI"                         │
+│                                                                     │
+│   EC2 LÀM:                                                          │
 │   ├── Cung cấp CPU, RAM, Disk vật lý                                │
 │   ├── Chạy Docker daemon (container runtime)                        │
 │   ├── Thực sự execute container processes                           │
 │   └── Cung cấp network interface cho containers                     │
-│                                                                       │
-│   EC2 KHÔNG LÀM:                                                     │
+│                                                                     │
+│   EC2 KHÔNG LÀM:                                                    │
 │   ├── ❌ Biết nên chạy container nào (chờ lệnh từ ECS)              │
 │   ├── ❌ Tự động scale containers                                   │
 │   └── ❌ Quyết định logic deployment                                │
@@ -769,10 +769,10 @@ Thợ: "Ai order? Bao nhiêu cái? Loại gì?"
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         ECS CLUSTER                                  │
-│                     (Manager/Orchestrator)                           │
-│                                                                       │
-│                              │                                       │
+│                         ECS CLUSTER                                 │
+│                     (Manager/Orchestrator)                          │
+│                                                                     │
+│                             │                                       │
 │          ┌───────────────────┴───────────────────┐                  │
 │          ▼                                       ▼                  │
 │  ┌───────────────────┐                ┌───────────────────┐         │
@@ -891,60 +891,60 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    1. awsvpc MODE                            │
-│         (Recommended cho Fargate và EC2)                     │
-│                                                              │
+│                    1. awsvpc MODE                           │
+│         (Recommended cho Fargate và EC2)                    │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │                    VPC                               │    │
+│  │                    VPC                              │    │
 │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐     │    │
 │  │  │   Task 1   │  │   Task 2   │  │   Task 3   │     │    │
-│  │  │ ENI: 10.0.1.5│ │ ENI: 10.0.1.6│ │ ENI: 10.0.1.7│  │    │
+│  │  │ ENI: 10.0.1.5│ │ ENI: 10.0.1.6│ │ ENI: 10.0.1.7│ │    │
 │  │  └────────────┘  └────────────┘  └────────────┘     │    │
-│  │       ▲              ▲              ▲                │    │
-│  │       └──────────────┴──────────────┘                │    │
-│  │              Mỗi task có ENI riêng                   │    │
+│  │       ▲              ▲              ▲               │    │
+│  │       └──────────────┴──────────────┘               │    │
+│  │              Mỗi task có ENI riêng                  │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
+│                                                             │
 │  ✅ Mỗi task có Private IP riêng                            │
 │  ✅ Security Groups ở task level                            │
 │  ✅ REQUIRED cho Fargate                                    │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│                    2. bridge MODE                            │
-│              (Default cho EC2 Linux)                         │
-│                                                              │
+│                    2. bridge MODE                           │
+│              (Default cho EC2 Linux)                        │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │              EC2 Instance (docker0 bridge)           │    │
+│  │              EC2 Instance (docker0 bridge)          │    │
 │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐     │    │
 │  │  │ Container 1│  │ Container 2│  │ Container 3│     │    │
 │  │  │  Port 8080 │  │  Port 8081 │  │  Port 8082 │     │    │
 │  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘     │    │
-│  │        └───────────────┼───────────────┘             │    │
-│  │                   Docker Bridge                       │    │
-│  │                        │                              │    │
-│  │              EC2 ENI: 10.0.1.5                       │    │
+│  │        └───────────────┼───────────────┘            │    │
+│  │                   Docker Bridge                     │    │
+│  │                        │                            │    │
+│  │              EC2 ENI: 10.0.1.5                      │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
-│  ⚠️ Containers chia sẻ ENI của EC2                          │
-│  ⚠️ Dynamic port mapping                                    │
+│                                                             │
+│  ⚠️ Containers chia sẻ ENI của EC2                           │
+│  ⚠️ Dynamic port mapping                                     │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│                    3. host MODE                              │
-│                 (EC2 Linux only)                             │
-│                                                              │
+│                    3. host MODE                             │
+│                 (EC2 Linux only)                            │
+│                                                             │
 │  Container dùng trực tiếp network stack của EC2             │
 │  Không có port mapping, container port = host port          │
-│                                                              │
-│  ⚠️ Chỉ 1 task/port/instance                                │
-│  ⚠️ Không có network isolation                              │
+│                                                             │
+│  ⚠️ Chỉ 1 task/port/instance                                 │
+│  ⚠️ Không có network isolation                               │
 │  ✅ Performance tốt nhất                                    │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│                    4. none MODE                              │
-│                                                              │
+│                    4. none MODE                             │
+│                                                             │
 │  Container không có external network connectivity           │
 │  Chỉ có loopback interface                                  │
 └─────────────────────────────────────────────────────────────┘
@@ -963,13 +963,13 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                                                                       │
+│                                                                     │
 │   NETWORK MODE = LÀM SAO để container CÓ ĐƯỢC địa chỉ mạng?         │
-│   (Giống như: Máy tính được cắm dây mạng kiểu gì?)                   │
-│                                                                       │
-│   SECURITY GROUP = AI ĐƯỢC PHÉP gửi/nhận request?                    │
-│   (Giống như: Bảo vệ cho ai vào, ai không cho vào)                   │
-│                                                                       │
+│   (Giống như: Máy tính được cắm dây mạng kiểu gì?)                  │
+│                                                                     │
+│   SECURITY GROUP = AI ĐƯỢC PHÉP gửi/nhận request?                   │
+│   (Giống như: Bảo vệ cho ai vào, ai không cho vào)                  │
+│                                                                     │
 │   → Cả 2 làm việc CÙNG NHAU, không thay thế nhau!                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -978,22 +978,22 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         EC2 INSTANCE                                 │
-│                                                                       │
+│                         EC2 INSTANCE                                │
+│                                                                     │
 │   EC2 có IP chính: 10.0.1.100 (Primary ENI - eth0)                  │
-│                                                                       │
+│                                                                     │
 │   Với awsvpc, mỗi Task được gắn thêm ENI riêng!                     │
-│                                                                       │
+│                                                                     │
 │   ┌───────────────────────────────────────────────────────────┐     │
 │   │  Primary ENI (eth0)     │  10.0.1.100  │ EC2 management   │     │
 │   ├───────────────────────────────────────────────────────────┤     │
-│   │  Task 1 ENI (eth1)      │  10.0.1.5    │ ← Task 1 dùng   │     │
+│   │  Task 1 ENI (eth1)      │  10.0.1.5    │ ← Task 1 dùng    │     │
 │   ├───────────────────────────────────────────────────────────┤     │
-│   │  Task 2 ENI (eth2)      │  10.0.1.8    │ ← Task 2 dùng   │     │
+│   │  Task 2 ENI (eth2)      │  10.0.1.8    │ ← Task 2 dùng    │     │
 │   ├───────────────────────────────────────────────────────────┤     │
-│   │  Task 3 ENI (eth3)      │  10.0.1.12   │ ← Task 3 dùng   │     │
+│   │  Task 3 ENI (eth3)      │  10.0.1.12   │ ← Task 3 dùng    │     │
 │   └───────────────────────────────────────────────────────────┘     │
-│                                                                       │
+│                                                                     │
 │   → Mỗi Task có "card mạng" riêng, IP riêng!                        │
 │   → Traffic ĐI THẲNG đến Task, KHÔNG qua IP chính của EC2!          │
 └─────────────────────────────────────────────────────────────────────┘
@@ -1009,17 +1009,17 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
       ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │   EC2 Instance (10.0.1.100) ← KHÔNG đi qua IP này!                  │
-│                                                                       │
-│   ┌──────────────────┐                                               │
+│                                                                     │
+│   ┌──────────────────┐                                              │
 │   │ Task 1           │ ← Traffic đi THẲNG vào ENI của Task 1        │
-│   │ ENI: 10.0.1.5    │                                               │
-│   │ Port: 3000       │                                               │
-│   └──────────────────┘                                               │
-│                                                                       │
-│   ┌──────────────────┐                                               │
-│   │ Task 2           │                                               │
-│   │ ENI: 10.0.1.8    │                                               │
-│   └──────────────────┘                                               │
+│   │ ENI: 10.0.1.5    │                                              │
+│   │ Port: 3000       │                                              │
+│   └──────────────────┘                                              │
+│                                                                     │
+│   ┌──────────────────┐                                              │
+│   │ Task 2           │                                              │
+│   │ ENI: 10.0.1.8    │                                              │
+│   └──────────────────┘                                              │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1029,10 +1029,10 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 Task 1 (10.0.1.5) gọi Task 2 (10.0.1.8) trên CÙNG EC2:
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│   EC2 Instance                                                       │
-│                                                                       │
+│   EC2 Instance                                                      │
+│                                                                     │
 │   Task 1 (10.0.1.5)  ────────────────────►  Task 2 (10.0.1.8)       │
-│                                                                       │
+│                                                                     │
 │   → Traffic đi qua VPC network layer                                │
 │   → KHÔNG cần đi qua EC2's primary IP (10.0.1.100)                  │
 │   → Giống như 2 máy tính riêng biệt trong cùng mạng LAN             │
@@ -1044,7 +1044,7 @@ Task 1 (10.0.1.5) gọi Task 2 (10.0.1.8) trên CÙNG EC2:
 ```
 VỚI BRIDGE MODE:
 ┌─────────────────────────────────────────────────────────────────────┐
-│   EC2 có 1 Security Group chung cho TẤT CẢ containers              │
+│   EC2 có 1 Security Group chung cho TẤT CẢ containers               │
 │   ├── Container A (web) - cần port 80                               │
 │   ├── Container B (admin) - chỉ internal                            │
 │   └── → Không thể kiểm soát riêng từng container ❌                 │
@@ -1052,7 +1052,7 @@ VỚI BRIDGE MODE:
 
 VỚI AWSVPC MODE:
 ┌─────────────────────────────────────────────────────────────────────┐
-│   Mỗi Task có ENI riêng → có Security Group riêng!                   │
+│   Mỗi Task có ENI riêng → có Security Group riêng!                  │
 │   ├── Task A (web): SG cho phép port 80 từ ALB                      │
 │   ├── Task B (admin): SG chỉ cho phép từ VPN                        │
 │   └── → Kiểm soát riêng từng task ✅                                │
@@ -1081,17 +1081,17 @@ Service đảm bảo số lượng tasks mong muốn luôn chạy:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      ECS SERVICE                             │
-│                                                              │
-│  Desired Count: 3                                            │
-│  Running Count: 3 ✅                                         │
-│                                                              │
+│                      ECS SERVICE                            │
+│                                                             │
+│  Desired Count: 3                                           │
+│  Running Count: 3 ✅                                        │
+│                                                             │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
 │  │  Task 1  │  │  Task 2  │  │  Task 3  │                   │
 │  │ RUNNING  │  │ RUNNING  │  │ RUNNING  │                   │
 │  └──────────┘  └──────────┘  └──────────┘                   │
-│                                                              │
-│  Nếu Task 2 chết:                                            │
+│                                                             │
+│  Nếu Task 2 chết:                                           │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
 │  │  Task 1  │  │  Task 2  │  │  Task 4  │ ← Service tự tạo  │
 │  │ RUNNING  │  │  DEAD ❌ │  │ RUNNING  │   task mới!       │
@@ -1110,16 +1110,16 @@ Service đảm bảo số lượng tasks mong muốn luôn chạy:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                                                              │
-│                   Application Load Balancer                  │
-│                          │                                   │
+│                                                             │
+│                   Application Load Balancer                 │
+│                         │                                   │
 │              ┌───────────┼───────────┐                      │
 │              ▼           ▼           ▼                      │
 │        ┌──────────┐┌──────────┐┌──────────┐                 │
 │        │  Task 1  ││  Task 2  ││  Task 3  │                 │
 │        │ Port 80  ││ Port 80  ││ Port 80  │                 │
 │        └──────────┘└──────────┘└──────────┘                 │
-│                                                              │
+│                                                             │
 │  ✅ Health checks tự động                                   │
 │  ✅ Deregister unhealthy tasks                              │
 │  ✅ Session stickiness (nếu cần)                            │
@@ -1130,24 +1130,24 @@ Service đảm bảo số lượng tasks mong muốn luôn chạy:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ALB + ECS INTEGRATION                             │
-│                                                                       │
-│   ALB                    Target Group: user-service-tg               │
+│                    ALB + ECS INTEGRATION                            │
+│                                                                     │
+│   ALB                    Target Group: user-service-tg              │
 │   ┌─────────────┐       ┌─────────────────────────────────────────┐ │
 │   │             │       │  Targets (ECS tự động cập nhật):        │ │
 │   │  Listener   │──────►│  ├── 10.0.1.5:3000 (Task 1) ✅ healthy  │ │
 │   │  :80        │       │  ├── 10.0.2.8:3000 (Task 2) ✅ healthy  │ │
 │   │             │       │  └── 10.0.1.12:3000 (Task 3) ✅ healthy │ │
 │   └─────────────┘       └─────────────────────────────────────────┘ │
-│                                                                       │
-│   🔄 Khi scale up (thêm Task 4):                                     │
+│                                                                     │
+│   🔄 Khi scale up (thêm Task 4):                                    │
 │   - ECS tự động đăng ký Task 4 vào Target Group                     │
 │   - ALB bắt đầu gửi traffic đến Task 4                              │
-│                                                                       │
-│   🔄 Khi Task 2 chết:                                                │
+│                                                                     │
+│   🔄 Khi Task 2 chết:                                               │
 │   - Health check fail → ALB ngừng gửi traffic                       │
 │   - ECS hủy đăng ký Task 2 khỏi Target Group                        │
-│   - ECS tạo Task mới thay thế                                        │
+│   - ECS tạo Task mới thay thế                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1200,34 +1200,34 @@ ECS hỗ trợ **High Availability** bằng cách spread tasks qua nhiều AZs v
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              VPC                                     │
-│                                                                       │
+│                              VPC                                    │
+│                                                                     │
 │  ┌─────────────────────────────┐   ┌─────────────────────────────┐  │
 │  │     Availability Zone A     │   │     Availability Zone B     │  │
-│  │                              │   │                              │  │
+│  │                             │   │                             │  │
 │  │   ┌──────────────────────┐  │   │   ┌──────────────────────┐  │  │
 │  │   │   EC2 Instance #1    │  │   │   │   EC2 Instance #2    │  │  │
 │  │   │                      │  │   │   │                      │  │  │
-│  │   │   ┌──────┐ ┌──────┐ │  │   │   │   ┌──────┐ ┌──────┐ │  │  │
-│  │   │   │Task 1│ │Task 2│ │  │   │   │   │Task 3│ │Task 4│ │  │  │
-│  │   │   └──────┘ └──────┘ │  │   │   │   └──────┘ └──────┘ │  │  │
+│  │   │   ┌──────┐ ┌──────┐ │  │   │   │   ┌──────┐ ┌──────┐ │    │  │
+│  │   │   │Task 1│ │Task 2│ │  │   │   │   │Task 3│ │Task 4│ │    │  │
+│  │   │   └──────┘ └──────┘ │  │   │   │   └──────┘ └──────┘ │    │  │
 │  │   └──────────────────────┘  │   │   └──────────────────────┘  │  │
-│  │                              │   │                              │  │
+│  │                             │   │                             │  │
 │  │   ┌──────────────────────┐  │   │   ┌──────────────────────┐  │  │
 │  │   │   EC2 Instance #3    │  │   │   │   EC2 Instance #4    │  │  │
-│  │   │   ┌──────┐           │  │   │   │   ┌──────┐ ┌──────┐ │  │  │
-│  │   │   │Task 5│           │  │   │   │   │Task 6│ │Task 7│ │  │  │
-│  │   │   └──────┘           │  │   │   │   └──────┘ └──────┘ │  │  │
+│  │   │   ┌──────┐           │  │   │   │   ┌──────┐ ┌──────┐ │   │  │
+│  │   │   │Task 5│           │  │   │   │   │Task 6│ │Task 7│ │   │  │
+│  │   │   └──────┘           │  │   │   │   └──────┘ └──────┘ │   │  │
 │  │   └──────────────────────┘  │   │   └──────────────────────┘  │  │
 │  └─────────────────────────────┘   └─────────────────────────────┘  │
-│                                                                       │
-│   SERVICE: user-service (desired count: 7)                           │
+│                                                                     │
+│   SERVICE: user-service (desired count: 7)                          │
 │   → ECS tự động SPREAD tasks across AZs và EC2 instances            │
-│                                                                       │
-│   Nếu AZ-A chết toàn bộ:                                             │
-│   → Tasks 1, 2, 5 bị mất                                             │
-│   → Tasks 3, 4, 6, 7 vẫn chạy ✅ (HA)                                │
-│   → ECS tự động tạo tasks mới ở AZ-B                                 │
+│                                                                     │
+│   Nếu AZ-A chết toàn bộ:                                            │
+│   → Tasks 1, 2, 5 bị mất                                            │
+│   → Tasks 3, 4, 6, 7 vẫn chạy ✅ (HA)                               │
+│   → ECS tự động tạo tasks mới ở AZ-B                                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1286,19 +1286,19 @@ ECS có các strategies để quyết định đặt task ở đâu:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Amazon ECR                                │
-│                                                              │
+│                    Amazon ECR                               │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │  Repository: my-app                                  │    │
-│  │                                                      │    │
-│  │  Images:                                             │    │
+│  │  Repository: my-app                                 │    │
+│  │                                                     │    │
+│  │  Images:                                            │    │
 │  │  ├── my-app:latest     (123 MB)                     │    │
 │  │  ├── my-app:v1.2.3     (123 MB)                     │    │
 │  │  ├── my-app:v1.2.2     (120 MB)                     │    │
 │  │  └── my-app:dev        (125 MB)                     │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
-│  Features:                                                   │
+│                                                             │
+│  Features:                                                  │
 │  ✅ Private registry                                        │
 │  ✅ Image scanning (vulnerabilities)                        │
 │  ✅ Image lifecycle policies                                │
@@ -1334,29 +1334,29 @@ docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    ECS IAM ROLES                             │
-│                                                              │
+│                    ECS IAM ROLES                            │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │ 1. Task Execution Role                               │    │
-│  │    (ecsTaskExecutionRole)                            │    │
-│  │                                                      │    │
-│  │    ECS Agent dùng để:                                │    │
-│  │    - Pull images từ ECR                              │    │
-│  │    - Push logs to CloudWatch                         │    │
-│  │    - Get secrets từ Secrets Manager                  │    │
-│  │                                                      │    │
-│  │    Policy: AmazonECSTaskExecutionRolePolicy          │    │
+│  │ 1. Task Execution Role                              │    │
+│  │    (ecsTaskExecutionRole)                           │    │
+│  │                                                     │    │
+│  │    ECS Agent dùng để:                               │    │
+│  │    - Pull images từ ECR                             │    │
+│  │    - Push logs to CloudWatch                        │    │
+│  │    - Get secrets từ Secrets Manager                 │    │
+│  │                                                     │    │
+│  │    Policy: AmazonECSTaskExecutionRolePolicy         │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │ 2. Task Role                                         │    │
-│  │    (Application permissions)                         │    │
-│  │                                                      │    │
-│  │    Container app dùng để:                            │    │
-│  │    - Access S3 buckets                               │    │
-│  │    - Query DynamoDB                                  │    │
-│  │    - Send messages to SQS                            │    │
-│  │    - Bất kỳ AWS service nào app cần                  │    │
+│  │ 2. Task Role                                        │    │
+│  │    (Application permissions)                        │    │
+│  │                                                     │    │
+│  │    Container app dùng để:                           │    │
+│  │    - Access S3 buckets                              │    │
+│  │    - Query DynamoDB                                 │    │
+│  │    - Send messages to SQS                           │    │
+│  │    - Bất kỳ AWS service nào app cần                 │    │
 │  └─────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -1395,19 +1395,19 @@ docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  ECS SERVICE AUTO SCALING                    │
-│                                                              │
+│                  ECS SERVICE AUTO SCALING                   │
+│                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │         CloudWatch Alarm: CPU > 70%                  │    │
-│  │                    │                                 │    │
-│  │                    ▼                                 │    │
-│  │         Application Auto Scaling                     │    │
-│  │                    │                                 │    │
-│  │                    ▼                                 │    │
+│  │         CloudWatch Alarm: CPU > 70%                 │    │
+│  │                    │                                │    │
+│  │                    ▼                                │    │
+│  │         Application Auto Scaling                    │    │
+│  │                    │                                │    │
+│  │                    ▼                                │    │
 │  │         Scale Out: 3 tasks → 6 tasks                │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
-│  Scaling Policies:                                           │
+│                                                             │
+│  Scaling Policies:                                          │
 │  ├── Target Tracking: Maintain CPU at 70%                   │
 │  ├── Step Scaling: Add 2 tasks if CPU > 80%                 │
 │  └── Scheduled Scaling: Scale up at 9 AM                    │
@@ -1443,22 +1443,22 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    SECRETS MANAGEMENT                        │
-│                                                              │
-│  ┌─────────────────┐     ┌─────────────────────────────┐   │
-│  │ AWS Secrets     │     │ AWS Systems Manager         │   │
-│  │ Manager         │     │ Parameter Store             │   │
-│  │                 │     │                             │   │
-│  │ DB passwords    │     │ API_ENDPOINT                │   │
-│  │ API keys        │     │ FEATURE_FLAG                │   │
-│  │ Certificates    │     │ CONFIG_VALUES               │   │
-│  └────────┬────────┘     └───────────┬─────────────────┘   │
+│                    SECRETS MANAGEMENT                       │
+│                                                             │
+│  ┌─────────────────┐     ┌─────────────────────────────┐    │
+│  │ AWS Secrets     │     │ AWS Systems Manager         │    │
+│  │ Manager         │     │ Parameter Store             │    │
+│  │                 │     │                             │    │
+│  │ DB passwords    │     │ API_ENDPOINT                │    │
+│  │ API keys        │     │ FEATURE_FLAG                │    │
+│  │ Certificates    │     │ CONFIG_VALUES               │    │
+│  └────────┬────────┘     └───────────┬─────────────────┘    │
 │           │                          │                      │
 │           └────────────┬─────────────┘                      │
 │                        ▼                                    │
 │           ┌─────────────────────────────┐                   │
-│           │     ECS Task Definition      │                   │
-│           │    (secrets reference)       │                   │
+│           │     ECS Task Definition     │                   │
+│           │    (secrets reference)      │                   │
 │           └─────────────────────────────┘                   │
 │                        │                                    │
 │                        ▼                                    │
@@ -1506,27 +1506,27 @@ ECS Cluster Capacity Providers giúp tự động hoá!
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    ECS LOGGING                               │
-│                                                              │
+│                    ECS LOGGING                              │
+│                                                             │
 │  ┌────────────────┐          ┌────────────────────────┐     │
 │  │   Container    │  stdout  │   CloudWatch Logs      │     │
 │  │   (app logs)   │─────────▶│   /ecs/my-service      │     │
 │  │                │  stderr  │   └── task-id/...      │     │
 │  └────────────────┘          └────────────────────────┘     │
-│                                                              │
-│  Log Driver: awslogs                                         │
-│                                                              │
-│  Task Definition:                                            │
-│  {                                                           │
-│    "logConfiguration": {                                     │
-│      "logDriver": "awslogs",                                 │
-│      "options": {                                            │
-│        "awslogs-group": "/ecs/my-service",                   │
-│        "awslogs-region": "us-east-1",                        │
-│        "awslogs-stream-prefix": "ecs"                        │
-│      }                                                       │
-│    }                                                         │
-│  }                                                           │
+│                                                             │
+│  Log Driver: awslogs                                        │
+│                                                             │
+│  Task Definition:                                           │
+│  {                                                          │
+│    "logConfiguration": {                                    │
+│      "logDriver": "awslogs",                                │
+│      "options": {                                           │
+│        "awslogs-group": "/ecs/my-service",                  │
+│        "awslogs-region": "us-east-1",                       │
+│        "awslogs-stream-prefix": "ecs"                       │
+│      }                                                      │
+│    }                                                        │
+│  }                                                          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1564,7 +1564,7 @@ Chi phí cố định: $0.0832/giờ × 24 × 30 = ~$60/tháng
 │  │ [TRỐNG]        │        │ [TRỐNG]        │                 │
 │  └────────────────┘        └────────────────┘                 │
 │                                                               │
-│  Dù chỉ chạy 1 container hay 0 container → vẫn ~$60/tháng   │
+│  Dù chỉ chạy 1 container hay 0 container → vẫn ~$60/tháng     │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -1601,27 +1601,27 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
-│                    ĐIỂM HÒA VỐN (~65% utilization)                 │
-│                                                                     │
-│   Cost │                                                           │
-│    ▲   │          Fargate                                          │
-│        │         /                                                  │
-│        │        /        EC2 (On-Demand)                           │
-│        │       /        ─────────────────────                      │
-│        │      /                                                     │
-│        │     /     EC2 (Reserved)                                  │
-│        │    /     ────────────────                                 │
-│        │   /                                                        │
-│        │  /                                                         │
-│        │ /                                                          │
-│        └───────────────────────────────────────────► Utilization   │
-│          0%        50%       65%       80%      100%               │
-│                              ▲                                      │
-│                    Điểm hòa vốn                                    │
-│                                                                     │
-│   Utilization < 65%: Fargate rẻ hơn                                │
-│   Utilization > 65%: EC2 rẻ hơn                                    │
-│   Có Reserved/Spot: EC2 rẻ hơn sớm hơn                             │
+│                    ĐIỂM HÒA VỐN (~65% utilization)                │
+│                                                                   │
+│   Cost│                                                           │
+│    ▲   │          Fargate                                         │
+│        │         /                                                │
+│        │        /        EC2 (On-Demand)                          │
+│        │       /        ─────────────────────                     │
+│        │      /                                                   │
+│        │     /     EC2 (Reserved)                                 │
+│        │    /     ────────────────                                │
+│        │   /                                                      │
+│        │  /                                                       │
+│        │ /                                                        │
+│        └───────────────────────────────────────────► Utilization  │
+│          0%        50%       65%       80%      100%              │
+│                              ▲                                    │
+│                    Điểm hòa vốn                                   │
+│                                                                   │
+│   Utilization < 65%: Fargate rẻ hơn                               │
+│   Utilization > 65%: EC2 rẻ hơn                                   │
+│   Có Reserved/Spot: EC2 rẻ hơn sớm hơn                            │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1638,22 +1638,22 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    RESERVED INSTANCES                                │
-│                                                                       │
+│                    RESERVED INSTANCES                               │
+│                                                                     │
 │   Bạn: "Tôi cam kết dùng t3.medium 1 năm"                           │
 │   AWS: "OK! Giảm 40% giá!"                                          │
-│                                                                       │
-│   Ví dụ:                                                             │
+│                                                                     │
+│   Ví dụ:                                                            │
 │   On-Demand: $0.0416/giờ × 8760 giờ = $364/năm                      │
-│   Reserved:  $0.025/giờ  × 8760 giờ = $219/năm ← TIẾT KIỆM $145!   │
-│                                                                       │
-│   Các option:                                                        │
+│   Reserved:  $0.025/giờ  × 8760 giờ = $219/năm ← TIẾT KIỆM $145!    │
+│                                                                     │
+│   Các option:                                                       │
 │   ├── 1 năm: Giảm ~30-40%                                           │
 │   ├── 3 năm: Giảm ~50-60%                                           │
 │   ├── Trả trước toàn bộ: Giảm thêm                                  │
 │   └── Trả hàng tháng: Ít giảm hơn                                   │
-│                                                                       │
-│   ⚠️ Rủi ro: Cam kết rồi không dùng → vẫn phải trả!                 │
+│                                                                     │
+│   ⚠️ Rủi ro: Cam kết rồi không dùng → vẫn phải trả!                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1666,16 +1666,16 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      SPOT INSTANCES                                  │
-│                                                                       │
+│                      SPOT INSTANCES                                 │
+│                                                                     │
 │   AWS có 1000 máy EC2, đang dùng 700 máy                            │
 │   → 300 máy đang rảnh (idle)                                        │
 │   → AWS bán rẻ những máy này! (giảm 50-90%)                         │
-│                                                                       │
-│   On-Demand: $0.10/giờ                                               │
+│                                                                     │
+│   On-Demand: $0.10/giờ                                              │
 │   Spot:      $0.03/giờ  ← GIẢM 70%!                                 │
-│                                                                       │
-│   ⚠️ NHƯNG: Khi AWS cần máy, bạn bị "đuổi" với 2 phút cảnh báo!     │
+│                                                                     │
+│   ⚠️ NHƯNG: Khi AWS cần máy, bạn bị "đuổi" với 2 phút cảnh báo!      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1687,26 +1687,26 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SPOT INTERRUPTION FLOW                            │
-│                                                                       │
-│   AWS: "Tôi cần lấy lại máy này trong 2 phút!"                       │
-│          │                                                           │
-│          ▼ (2 phút warning)                                          │
+│                    SPOT INTERRUPTION FLOW                           │
+│                                                                     │
+│   AWS: "Tôi cần lấy lại máy này trong 2 phút!"                      │
+│         │                                                           │
+│          ▼ (2 phút warning)                                         │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  1. ECS nhận được thông báo                                  │   │
+│   │  1. ECS nhận được thông báo                                 │   │
 │   │  2. ECS đánh dấu instance DRAINING (không nhận task mới)    │   │
 │   │  3. ALB ngừng gửi traffic đến tasks trên instance này       │   │
 │   │  4. Tasks được graceful shutdown (SIGTERM)                  │   │
-│   │  5. Instance bị terminate                                    │   │
+│   │  5. Instance bị terminate                                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│          │                                                           │
-│          ▼                                                           │
+│         │                                                           │
+│          ▼                                                          │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  6. ECS thấy: "Desired = 3, Running = 2" → thiếu 1 task!    │   │
 │   │  7. ECS tự động khởi động Task mới ở instance khác!         │   │
-│   │  8. Running = 3 lại như cũ ✅                                │   │
+│   │  8. Running = 3 lại như cũ ✅                               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   → User KHÔNG BỊ ẢNH HƯỞNG (nếu setup đúng)                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1746,17 +1746,17 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                   AWS CONTAINER SERVICES                        │
-│                                                                  │
+│                   AWS CONTAINER SERVICES                       │
+│                                                                │
 │  ┌────────────┐  ┌────────────┐  ┌────────────────────────┐    │
 │  │    ECS     │  │    EKS     │  │       FARGATE          │    │
-│  │            │  │            │  │   (Serverless Compute)  │    │
-│  │  AWS-native │  │ Kubernetes │  │                        │    │
-│  │ orchestrator│  │  managed   │  │  Works with ECS or EKS │    │
+│  │            │  │            │  │   (Serverless Compute) │    │
+│  │  AWS-native│  │ Kubernetes │  │                        │    │
+│  │ orchestrator│  │  managed   │  │  Works with ECS or EKS│    │
 │  └────────────┘  └────────────┘  └────────────────────────┘    │
-│                                                                  │
-│  Fargate = Launch Type, không phải orchestrator                 │
-│  Có thể dùng Fargate với cả ECS và EKS                          │
+│                                                                │
+│  Fargate = Launch Type, không phải orchestrator                │
+│  Có thể dùng Fargate với cả ECS và EKS                         │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1969,21 +1969,21 @@ aws ecs describe-services \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     E-COMMERCE PLATFORM                              │
-│                                                                       │
+│                     E-COMMERCE PLATFORM                             │
+│                                                                     │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
 │  │   Frontend   │  │   User API   │  │  Product API │               │
 │  │   (React)    │  │   (Node.js)  │  │   (Python)   │               │
 │  └──────────────┘  └──────────────┘  └──────────────┘               │
-│                                                                       │
+│                                                                     │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
 │  │   Cart API   │  │  Order API   │  │ Payment API  │               │
 │  │   (Node.js)  │  │    (Java)    │  │    (Go)      │               │
 │  └──────────────┘  └──────────────┘  └──────────────┘               │
-│                                                                       │
+│                                                                     │
 │  ┌──────────────┐  ┌──────────────┐                                 │
 │  │ Notification │  │   Search     │                                 │
-│  │   (Python)   │  │(Elasticsearch)│                                │
+│  │   (Python)   │  │(Elasticsearch)│                                 │
 │  └──────────────┘  └──────────────┘                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1992,35 +1992,35 @@ aws ecs describe-services \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        ECS CLUSTER: prod-cluster                     │
-│                                                                       │
+│                        ECS CLUSTER: prod-cluster                    │
+│                                                                     │
 │  ┌────────────────────────────────────────────────────────────────┐ │
 │  │                     ALB (Application Load Balancer)            │ │
-│  │    api.myshop.com                                               │ │
+│  │    api.myshop.com                                              │ │
 │  │    /users/*  → User Service                                    │ │
 │  │    /products/* → Product Service                               │ │
 │  │    /orders/* → Order Service                                   │ │
 │  └────────────────────────────────────────────────────────────────┘ │
-│                              │                                       │
+│                             │                                       │
 │          ┌───────────────────┼───────────────────┐                  │
 │          ▼                   ▼                   ▼                  │
-│  ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐    │
-│  │ SERVICE: user    │ │SERVICE: product  │ │ SERVICE: order   │    │
-│  │ Desired: 2 tasks │ │ Desired: 3 tasks │ │ Desired: 2 tasks │    │
-│  │                  │ │                  │ │                  │    │
-│  │ ┌────┐ ┌────┐   │ │ ┌────┐┌────┐┌────┐│ │ ┌────┐ ┌────┐   │    │
-│  │ │Task│ │Task│   │ │ │Task││Task││Task││ │ │Task│ │Task│   │    │
-│  │ └────┘ └────┘   │ │ └────┘└────┘└────┘│ │ └────┘ └────┘   │    │
-│  └──────────────────┘ └──────────────────┘ └──────────────────┘    │
-│                                                                       │
-│            ↓                    ↓                 ↓                  │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                    DATABASES                                  │   │
+│  ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐     │
+│  │ SERVICE: user    │ │SERVICE: product  │ │ SERVICE: order    │    │
+│  │ Desired: 2 tasks │ │ Desired: 3 tasks │ │ Desired: 2 tasks  │    │
+│  │                  │ │                  │ │                   │    │
+│  │ ┌────┐ ┌────┐   │ │ ┌────┐┌────┐┌────┐│ │ ┌────┐ ┌────┐     │    │
+│  │ │Task│ │Task│   │ │ │Task││Task││Task││ │ │Task│ │Task│     │    │
+│  │ └────┘ └────┘   │ │ └────┘└────┘└────┘│ │ └────┘ └────┘     │    │
+│  └──────────────────┘ └──────────────────┘ └──────────────────┘     │
+│                                                                     │
+│            ↓                    ↓                 ↓                 │
+│          ┌───────────────────────────────────────┐                  │
+│          │                    DATABASES          │                  │
 │  │  ┌─────────┐    ┌─────────┐    ┌─────────┐                   │   │
 │  │  │ RDS     │    │ RDS     │    │ RDS     │                   │   │
 │  │  │ (users) │    │(products)│   │ (orders)│                   │   │
 │  │  └─────────┘    └─────────┘    └─────────┘                   │   │
-│  └──────────────────────────────────────────────────────────────┘   │
+│          └───────────────────────────────────────┘                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -2040,25 +2040,25 @@ aws ecs describe-services \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              VPC                                     │
+│                              VPC                                    │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    PUBLIC SUBNETS                            │    │
+│  │                    PUBLIC SUBNETS                           │    │
 │  │   ┌─────────────┐                                           │    │
 │  │   │     ALB     │  ← Internet facing                        │    │
 │  │   └─────────────┘                                           │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│                              ▼                                       │
+│                              ▼                                      │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                   PRIVATE SUBNETS                            │    │
-│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │    │
-│  │  │ User    │ │ Product │ │ Order   │ │ Payment │           │    │
-│  │  │ Tasks   │ │ Tasks   │ │ Tasks   │ │ Tasks   │           │    │
-│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │    │
+│  │                   PRIVATE SUBNETS                           │    │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐            │    │
+│  │  │ User    │ │ Product │ │ Order   │ │ Payment │            │    │
+│  │  │ Tasks   │ │ Tasks   │ │ Tasks   │ │ Tasks   │            │    │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘            │    │
 │  │  (Each task has its own ENI - awsvpc mode)                  │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│                              ▼                                       │
+│                              ▼                                      │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                   DATABASE SUBNETS                           │    │
+│  │                   DATABASE SUBNETS                          │    │
 │  │   ┌─────────┐ ┌─────────┐ ┌───────────┐                     │    │
 │  │   │   RDS   │ │   RDS   │ │ElastiCache│                     │    │
 │  │   └─────────┘ └─────────┘ └───────────┘                     │    │

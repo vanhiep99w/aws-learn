@@ -28,7 +28,7 @@ FSx cung cấp **4 loại file system** khác nhau, mỗi loại tối ưu cho c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Amazon FSx                                │
+│                        Amazon FSx                               │
 ├────────────────┬────────────────┬────────────────┬──────────────┤
 │  FSx for       │  FSx for       │  FSx for       │  FSx for     │
 │  Lustre        │  NetApp ONTAP  │  OpenZFS       │  Windows     │
@@ -188,12 +188,12 @@ FSx cung cấp **4 loại file system** khác nhau, mỗi loại tối ưu cho c
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  Active Directory                    │
+│                  Active Directory                   │
 └─────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────┐
-│              FSx for Windows File Server             │
+│              FSx for Windows File Server            │
 │  ┌─────────────────┐    ┌─────────────────┐         │
 │  │  Primary (AZ1)  │◄──►│ Standby (AZ2)   │ Multi-AZ│
 │  └─────────────────┘    └─────────────────┘         │

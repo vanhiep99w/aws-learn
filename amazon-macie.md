@@ -26,17 +26,17 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Amazon Macie                              │
+│                        Amazon Macie                             │
 │  "Discover and protect your sensitive data at scale"            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   ┌─────────────┐    ┌─────────────┐    ┌─────────────────────┐ │
 │   │  Machine    │    │   Pattern   │    │  Sensitive Data     │ │
 │   │  Learning   │ +  │  Matching   │ =  │  Discovery          │ │
 │   └─────────────┘    └─────────────┘    └─────────────────────┘ │
-│                                                                  │
-│   Target: Amazon S3 buckets only                                 │
-│                                                                  │
+│                                                                 │
+│   Target: Amazon S3 buckets only                                │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -60,16 +60,16 @@
 
 ```
 ┌────────────────────────────────────────────────────┐
-│           Personal Identifiable Information         │
+│           Personal Identifiable Information        │
 ├────────────────────────────────────────────────────┤
-│  • Họ tên đầy đủ (Full names)                       │
-│  • Địa chỉ email                                    │
-│  • Số điện thoại                                    │
-│  • Địa chỉ nhà/công ty                              │
-│  • Ngày sinh                                        │
-│  • Số CMND/CCCD/Hộ chiếu                            │
-│  • Số an sinh xã hội (SSN - Social Security Number) │
-│  • Số bằng lái xe                                   │
+│  • Họ tên đầy đủ (Full names)                      │
+│  • Địa chỉ email                                   │
+│  • Số điện thoại                                   │
+│  • Địa chỉ nhà/công ty                             │
+│  • Ngày sinh                                       │
+│  • Số CMND/CCCD/Hộ chiếu                           │
+│  • Số an sinh xã hội (SSN - Social Security Number)│
+│  • Số bằng lái xe                                  │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -86,14 +86,14 @@
 
 ```
 ┌──────────────────────────────────────┐
-│        Credentials & Secrets          │
+│        Credentials & Secrets         │
 ├──────────────────────────────────────┤
-│  • AWS Access Keys                    │
-│  • AWS Secret Keys                    │
-│  • API Keys / Tokens                  │
-│  • Private Keys (SSH, SSL)            │
-│  • Database Credentials               │
-│  • Passwords trong config files       │
+│  • AWS Access Keys                   │
+│  • AWS Secret Keys                   │
+│  • API Keys / Tokens                 │
+│  • Private Keys (SSH, SSL)           │
+│  • Database Credentials              │
+│  • Passwords trong config files      │
 └──────────────────────────────────────┘
 ```
 
@@ -169,24 +169,24 @@ Phát hiện các vấn đề về cấu hình bảo mật S3.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Discovery Job Setup                       │
+│                    Discovery Job Setup                      │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  1. Chọn S3 Buckets để quét                                 │
 │     └── Specific buckets hoặc All buckets                   │
-│                                                              │
+│                                                             │
 │  2. Chọn Managed Data Identifiers                           │
 │     └── AWS cung cấp sẵn (PII, Financial, Credentials...)   │
-│                                                              │
+│                                                             │
 │  3. Thêm Custom Data Identifiers (tùy chọn)                 │
 │     └── Regex patterns do bạn định nghĩa                    │
-│                                                              │
+│                                                             │
 │  4. Đặt lịch chạy                                           │
 │     └── One-time hoặc Scheduled (daily, weekly, monthly)    │
-│                                                              │
+│                                                             │
 │  5. Cấu hình Sampling                                       │
 │     └── Quét toàn bộ hoặc sample theo %                     │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -207,25 +207,25 @@ Cho phép bạn tạo regex patterns riêng để phát hiện dữ liệu đặ
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 Custom Data Identifier Examples              │
+│                 Custom Data Identifier Examples             │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Employee ID:                                                │
+│                                                             │
+│  Employee ID:                                               │
 │  ├── Pattern: EMP-[0-9]{6}                                  │
-│  └── Match: EMP-123456                                       │
-│                                                              │
-│  Project Code:                                               │
+│  └── Match: EMP-123456                                      │
+│                                                             │
+│  Project Code:                                              │
 │  ├── Pattern: PROJ-[A-Z]{3}-[0-9]{4}                        │
-│  └── Match: PROJ-AWS-2024                                    │
-│                                                              │
-│  Internal Account Number:                                    │
+│  └── Match: PROJ-AWS-2024                                   │
+│                                                             │
+│  Internal Account Number:                                   │
 │  ├── Pattern: ACC[0-9]{10}                                  │
-│  └── Match: ACC1234567890                                    │
-│                                                              │
-│  Vietnam Phone Number:                                       │
+│  └── Match: ACC1234567890                                   │
+│                                                             │
+│  Vietnam Phone Number:                                      │
 │  ├── Pattern: (0|\\+84)[0-9]{9,10}                          │
-│  └── Match: 0901234567, +84901234567                         │
-│                                                              │
+│  └── Match: 0901234567, +84901234567                        │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -264,22 +264,22 @@ Macie Finding → EventBridge Rule → Target Action
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    AWS Security Hub                       │
-│              (Centralized Security View)                  │
+│                    AWS Security Hub                      │
+│              (Centralized Security View)                 │
 ├──────────────────────────────────────────────────────────┤
-│                                                           │
-│   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │
-│   │  Macie  │  │GuardDuty│  │Inspector│  │ Config  │    │
-│   │Findings │  │Findings │  │Findings │  │Findings │    │
-│   └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘    │
+│                                                          │
+│   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│   │  Macie  │  │GuardDuty│  │Inspector│  │ Config  │     │
+│   │Findings │  │Findings │  │Findings │  │Findings │     │
+│   └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘     │
 │        │            │            │            │          │
 │        └────────────┴─────┬──────┴────────────┘          │
-│                           ▼                               │
+│                           ▼                              │
 │              ┌─────────────────────────┐                 │
 │              │   Unified Dashboard     │                 │
 │              │   Compliance Reports    │                 │
 │              └─────────────────────────┘                 │
-│                                                           │
+│                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -303,19 +303,19 @@ Macie Finding → EventBridge Rule → Target Action
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│                    AWS Security Services Comparison                 │
+│                    AWS Security Services Comparison                │
 ├────────────────────────────────────────────────────────────────────┤
-│                                                                     │
+│                                                                    │
 │  "Dữ liệu nhạy cảm trong S3 ở đâu?"      → Amazon Macie            │
-│                                                                     │
+│                                                                    │
 │  "Có ai đang tấn công AWS account?"      → Amazon GuardDuty        │
-│                                                                     │
+│                                                                    │
 │  "EC2/Container có lỗ hổng bảo mật?"     → Amazon Inspector        │
-│                                                                     │
+│                                                                    │
 │  "Tổng hợp tất cả findings ở đâu?"       → AWS Security Hub        │
-│                                                                     │
+│                                                                    │
 │  "Resource có đúng cấu hình không?"      → AWS Config              │
-│                                                                     │
+│                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -354,17 +354,17 @@ Scenario: Quét 100 GB data trong S3
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│              Macie Implementation Checklist              │
+│              Macie Implementation Checklist             │
 ├─────────────────────────────────────────────────────────┤
-│                                                          │
+│                                                         │
 │  □ Enable Macie trong tất cả regions cần thiết          │
 │  □ Chạy initial discovery job cho tất cả S3 buckets     │
-│  □ Review và address các policy findings                 │
+│  □ Review và address các policy findings                │
 │  □ Tạo custom data identifiers cho dữ liệu đặc thù      │
-│  □ Setup EventBridge rules cho automated response        │
-│  □ Integrate với Security Hub                            │
-│  □ Configure alerts trong CloudWatch                     │
-│                                                          │
+│  □ Setup EventBridge rules cho automated response       │
+│  □ Integrate với Security Hub                           │
+│  □ Configure alerts trong CloudWatch                    │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -446,7 +446,7 @@ Solution:
 
 ```
 ┌─────────────────────────┬─────────────────────────┐
-│       Amazon Macie       │    Amazon GuardDuty     │
+│       Amazon Macie       │    Amazon GuardDuty    │
 ├─────────────────────────┼─────────────────────────┤
 │ Tìm SENSITIVE DATA      │ Tìm THREATS/ATTACKS     │
 │ Chỉ scan S3             │ Scan nhiều data sources │
@@ -461,17 +461,17 @@ Solution:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Amazon Macie Summary                         │
+│                     Amazon Macie Summary                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Phát hiện sensitive data trong S3 bằng ML                   │
 │  ✅ Phát hiện policy violations (public buckets...)             │
 │  ✅ Hỗ trợ custom data identifiers                              │
-│  ✅ Integration với EventBridge, Security Hub                    │
+│  ✅ Integration với EventBridge, Security Hub                   │
 │  ✅ Compliance: GDPR, HIPAA, PCI-DSS                            │
-│                                                                  │
+│                                                                 │
 │  ❌ KHÔNG scan các services khác (chỉ S3)                       │
 │  ❌ KHÔNG phát hiện threats/attacks (đó là GuardDuty)           │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

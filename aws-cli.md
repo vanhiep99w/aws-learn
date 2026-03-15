@@ -28,10 +28,10 @@
 │                    Cách truy cập AWS                    │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  1. AWS Console (Web UI)     - Dùng browser            │
-│  2. AWS CLI (Command Line)   - Dùng terminal    ← này  │
-│  3. AWS SDK (Code)           - Dùng trong app          │
-│  4. AWS CloudShell           - CLI trong browser       │
+│  1. AWS Console (Web UI)     - Dùng browser             │
+│  2. AWS CLI (Command Line)   - Dùng terminal    ← này   │
+│  3. AWS SDK (Code)           - Dùng trong app           │
+│  4. AWS CloudShell           - CLI trong browser        │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -402,17 +402,17 @@ CLI chạy ngay trong browser, không cần cài đặt:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  AWS Console → Click icon CloudShell (góc trên phải)   │
+│  AWS Console → Click icon CloudShell (góc trên phải)    │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  ✅ Đã cài sẵn AWS CLI                                 │
-│  ✅ Đã authenticate với user đang login Console        │
-│  ✅ Có 1GB storage persistent                          │
-│  ✅ Miễn phí                                           │
+│  ✅ Đã cài sẵn AWS CLI                                  │
+│  ✅ Đã authenticate với user đang login Console         │
+│  ✅ Có 1GB storage persistent                           │
+│  ✅ Miễn phí                                            │
 │                                                         │
-│  Hạn chế:                                              │
-│  - Timeout sau 20 phút idle                            │
-│  - Không có ở tất cả regions                           │
+│  Hạn chế:                                               │
+│  - Timeout sau 20 phút idle                             │
+│  - Không có ở tất cả regions                            │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```

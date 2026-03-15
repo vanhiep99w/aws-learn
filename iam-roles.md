@@ -436,19 +436,19 @@ aws s3 ls s3://prod-logs
 ┌─────────────────────────────────────────────────────────────┐
 │                     Datadog (SaaS)                          │
 │                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │                 Datadog Web UI                       │   │
-│  │                                                      │   │
-│  │   Khách hàng đăng nhập → Chọn AWS Account → Xem data│   │
-│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                 Datadog Web UI                      │    │
+│  │                                                     │    │
+│  │   Khách hàng đăng nhập → Chọn AWS Account → Xem data│    │
+│  └─────────────────────────────────────────────────────┘    │
 │                          │                                  │
 │                          ▼                                  │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │            Datadog Backend (AWS Account)             │   │
-│  │            Account ID: 464622532012                  │   │
-│  │                                                      │   │
-│  │   Nhận request → Assume role → Lấy metrics → Trả về │   │
-│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │            Datadog Backend (AWS Account)            │    │
+│  │            Account ID: 464622532012                 │    │
+│  │                                                     │    │
+│  │   Nhận request → Assume role → Lấy metrics → Trả về │    │
+│  └─────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -488,17 +488,17 @@ HACKER đăng nhập Datadog
 ┌─────────────────────────────────────────────────────────────┐
 │                   Datadog Backend                           │
 │                                                             │
-│  Nhận request: "Lấy metrics từ 111111111111"               │
+│  Nhận request: "Lấy metrics từ 111111111111"                │
 │       │                                                     │
-│       │  Nếu Datadog KHÔNG validate request này từ ai      │
+│       │  Nếu Datadog KHÔNG validate request này từ ai       │
 │       ▼                                                     │
-│  Assume role vào account 111111111111 (của BẠN)            │
-│       │                                                     │
-│       ▼                                                     │
-│  Lấy CloudWatch metrics của BẠN                            │
+│  Assume role vào account 111111111111 (của BẠN)             │
 │       │                                                     │
 │       ▼                                                     │
-│  Trả data về cho... HACKER! 😱                             │
+│  Lấy CloudWatch metrics của BẠN                             │
+│       │                                                     │
+│       ▼                                                     │
+│  Trả data về cho... HACKER! 😱                              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -696,12 +696,12 @@ Server có certificate → Dùng certificate xin temporary credentials → Truy 
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Datacenter công ty                           │
 │                                                                 │
-│  ┌─────────────────┐    ┌─────────────────────────────────────┐│
-│  │  Server ứng dụng│    │  Certificate (do công ty cấp)       ││
-│  │                 │◀──▶│  - Subject: app-server-01           ││
-│  │                 │    │  - Issuer: Company CA               ││
-│  │                 │    │  - Expiry: 2026-01-01               ││
-│  └────────┬────────┘    └─────────────────────────────────────┘│
+│  ┌─────────────────┐    ┌──────────────────────────────────────┐│
+│  │  Server ứng dụng│    │  Certificate (do công ty cấp)        ││
+│  │                 │◀──▶│  - Subject: app-server-01            ││
+│  │                 │    │  - Issuer: Company CA                ││
+│  │                 │    │  - Expiry: 2026-01-01                ││
+│  └────────┬────────┘    └──────────────────────────────────────┘│
 │           │                                                     │
 └───────────┼─────────────────────────────────────────────────────┘
             │
@@ -709,30 +709,30 @@ Server có certificate → Dùng certificate xin temporary credentials → Truy 
             │    "Cho tôi credentials để truy cập S3"
             ▼
 ┌───────────────────────────────────────────────────────────────┐
-│                           AWS                                  │
-│                                                                │
+│                           AWS                                 │
+│                                                               │
 │  ┌─────────────────┐      ┌─────────────────────────────────┐ │
 │  │  Trust Anchor   │      │  IAM Roles Anywhere             │ │
 │  │  (CA của công ty│◀────▶│                                 │ │
 │  │   đăng ký với   │      │  2. Kiểm tra certificate hợp lệ │ │
 │  │   AWS)          │      │     - Đúng CA đã đăng ký? ✅    │ │
 │  └─────────────────┘      │     - Còn hạn? ✅               │ │
-│                           │     - Bị revoke chưa? ❌         │ │
+│                           │     - Bị revoke chưa? ❌        │ │
 │                           └──────────────┬──────────────────┘ │
-│                                          │                     │
-│                           3. OK! Cấp temporary credentials     │
-│                                          │                     │
-│                                          ▼                     │
+│                                         │                     │
+│                           3. OK! Cấp temporary credentials    │
+│                                         │                     │
+│                                          ▼                    │
 │                           ┌─────────────────────────────────┐ │
 │                           │  Temporary Credentials          │ │
 │                           │  - AccessKeyId: ASIA...         │ │
 │                           │  - SecretAccessKey: ...         │ │
 │                           │  - Expiration: 1 giờ sau        │ │
 │                           └──────────────┬──────────────────┘ │
-│                                          │                     │
+│                                         │                     │
 │                           4. Dùng credentials truy cập S3     │
-│                                          │                     │
-│                                          ▼                     │
+│                                         │                     │
+│                                          ▼                    │
 │                           ┌─────────────────────────────────┐ │
 │                           │         S3 Bucket               │ │
 │                           └─────────────────────────────────┘ │
@@ -897,7 +897,7 @@ Nhưng task hôm nay chỉ cần đọc S3 thôi!
 │   │ dynamodb:*  │          │             │       │             ││
 │   └─────────────┘          └─────────────┘       └─────────────┘│
 │                                                                 │
-│   (Rất nhiều quyền)        (Chỉ cho S3 read)     (Chỉ S3 read) │
+│   (Rất nhiều quyền)        (Chỉ cho S3 read)     (Chỉ S3 read)  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 

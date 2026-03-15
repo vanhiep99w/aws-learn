@@ -22,7 +22,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Amazon MSK là gì?                                     │
+│                         Amazon MSK là gì?                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Apache Kafka = Open-source streaming platform                              │
@@ -64,33 +64,33 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                           MSK Cluster Architecture                            │
+│                           MSK Cluster Architecture                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │         PRODUCERS                           CONSUMERS                        │
-│    ┌──────────────────┐                ┌──────────────────┐                 │
-│    │  Application 1   │                │  Application A   │                 │
-│    │  Application 2   │                │  Lambda          │                 │
-│    │  IoT Devices     │                │  Kinesis Firehose│                 │
-│    └────────┬─────────┘                └────────▲─────────┘                 │
+│    ┌──────────────────┐                ┌──────────────────┐                  │
+│    │  Application 1   │                │  Application A   │                  │
+│    │  Application 2   │                │  Lambda          │                  │
+│    │  IoT Devices     │                │  Kinesis Firehose│                  │
+│    └────────┬─────────┘                └────────▲─────────┘                  │
 │             │                                   │                            │
 │             ▼                                   │                            │
-│    ┌────────────────────────────────────────────┴──────────────────────┐    │
-│    │                        MSK CLUSTER                                 │    │
-│    │                                                                    │    │
-│    │   AZ-a              AZ-b              AZ-c                        │    │
-│    │  ┌────────┐        ┌────────┐        ┌────────┐                   │    │
-│    │  │Broker 1│        │Broker 2│        │Broker 3│                   │    │
-│    │  │        │◄──────►│        │◄──────►│        │                   │    │
-│    │  │ Topic  │        │ Topic  │        │ Topic  │                   │    │
-│    │  │Replica │        │Replica │        │Replica │                   │    │
-│    │  └────────┘        └────────┘        └────────┘                   │    │
+│    ┌────────────────────────────────────────────┴──────────────────────┐     │
+│    │                        MSK CLUSTER                                │     │
+│    │                                                                   │     │
+│    │   AZ-a              AZ-b              AZ-c                        │     │
+│    │  ┌────────┐        ┌────────┐        ┌────────┐                    │    │
+│    │  │Broker 1│        │Broker 2│        │Broker 3│                    │    │
+│    │  │        │◄──────►│        │◄──────►│        │                    │    │
+│    │  │ Topic  │        │ Topic  │        │ Topic  │                    │    │
+│    │  │Replica │        │Replica │        │Replica │                    │    │
+│    │  └────────┘        └────────┘        └────────┘                    │    │
 │    │       │                 │                 │                        │    │
-│    │  ┌────────┐        ┌────────┐        ┌────────┐                   │    │
-│    │  │ZooKeeper│       │ZooKeeper│       │ZooKeeper│  (hoặc KRaft)    │    │
-│    │  └────────┘        └────────┘        └────────┘                   │    │
-│    │                                                                    │    │
-│    └────────────────────────────────────────────────────────────────────┘    │
+│    │  ┌────────┐        ┌────────┐        ┌────────┐                    │    │
+│    │  │ZooKeeper│       │ZooKeeper│       │ZooKeeper│  (hoặc KRaft)     │    │
+│    │  └────────┘        └────────┘        └────────┘                    │    │
+│    │                                                                   │     │
+│    └───────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -102,14 +102,14 @@ Producer ──publish──► Topic ──subscribe──► Consumer
 
 Topic được chia thành PARTITIONS:
 ┌─────────────────────────────────────────────────────────────────┐
-│  Topic: "orders"                                                 │
+│  Topic: "orders"                                                │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
 │  │ Partition 0  │ │ Partition 1  │ │ Partition 2  │             │
 │  │ [1][2][3][4] │ │ [1][2][3]    │ │ [1][2][3][4] │             │
 │  │ Broker 1     │ │ Broker 2     │ │ Broker 3     │             │
 │  └──────────────┘ └──────────────┘ └──────────────┘             │
-│                                                                  │
-│  • Messages ordered WITHIN partition                             │
+│                                                                 │
+│  • Messages ordered WITHIN partition                            │
 │  • Consumer groups đọc song song từ partitions                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -152,15 +152,15 @@ Topic được chia thành PARTITIONS:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    MSK Serverless vs MSK Provisioned                          │
+│                    MSK Serverless vs MSK Provisioned                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   MSK SERVERLESS                           MSK PROVISIONED                   │
 │   ─────────────                            ───────────────                   │
 │   ✅ Auto-scales                           ✅ Full control                   │
 │   ✅ No capacity planning                  ✅ Custom broker configs          │
-│   ✅ Pay per use                           ✅ Predictable pricing             │
-│   ❌ Limited configs                       ❌ Manual scaling                  │
+│   ✅ Pay per use                           ✅ Predictable pricing            │
+│   ❌ Limited configs                       ❌ Manual scaling                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -181,11 +181,11 @@ Topic được chia thành PARTITIONS:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                           MSK Connect                                         │
+│                           MSK Connect                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   SOURCE CONNECTORS              MSK              SINK CONNECTORS            │
-│   (Đưa data VÀO Kafka)          CLUSTER          (Lấy data RA từ Kafka)     │
+│   (Đưa data VÀO Kafka)          CLUSTER          (Lấy data RA từ Kafka)      │
 │                                                                              │
 │   ┌─────────────┐                                 ┌─────────────┐            │
 │   │   S3        │──────►                   ──────►│   S3        │            │
@@ -195,7 +195,7 @@ Topic được chia thành PARTITIONS:
 │   │   PostgreSQL│──────►  └─────────────┘  ──────►│ Snowflake   │            │
 │   └─────────────┘                                 └─────────────┘            │
 │                                                                              │
-│   Dùng Kafka Connect plugins (open-source hoặc commercial)                  │
+│   Dùng Kafka Connect plugins (open-source hoặc commercial)                   │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -235,7 +235,7 @@ Topic được chia thành PARTITIONS:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          MSK vs Kinesis Data Streams                          │
+│                          MSK vs Kinesis Data Streams                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   AMAZON MSK                               KINESIS DATA STREAMS              │
@@ -243,13 +243,13 @@ Topic được chia thành PARTITIONS:
 │   Apache Kafka                             AWS Proprietary                   │
 │   Open-source compatible                   AWS SDK only                      │
 │                                                                              │
-│   ┌─────────────────────────────┐         ┌─────────────────────────────┐   │
-│   │  Kafka Ecosystem            │         │  AWS Ecosystem              │   │
-│   │  • Kafka clients (any lang) │         │  • AWS SDK                  │   │
-│   │  • Kafka Connect            │         │  • Kinesis Firehose         │   │
-│   │  • Kafka Streams            │         │  • Kinesis Analytics        │   │
-│   │  • Schema Registry          │         │  • Lambda integration       │   │
-│   └─────────────────────────────┘         └─────────────────────────────┘   │
+│   ┌─────────────────────────────┐         ┌─────────────────────────────┐    │
+│   │  Kafka Ecosystem            │         │  AWS Ecosystem              │    │
+│   │  • Kafka clients (any lang) │         │  • AWS SDK                  │    │
+│   │  • Kafka Connect            │         │  • Kinesis Firehose         │    │
+│   │  • Kafka Streams            │         │  • Kinesis Analytics        │    │
+│   │  • Schema Registry          │         │  • Lambda integration       │    │
+│   └─────────────────────────────┘         └─────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```

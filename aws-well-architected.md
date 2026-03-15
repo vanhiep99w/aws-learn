@@ -35,26 +35,26 @@ Framework này được xây dựng từ kinh nghiệm của AWS Solutions Archi
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Well-Architected Framework                            │
+│                    AWS Well-Architected Framework                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                         6 PILLARS                                      │ │
-│  ├───────────────────────────────────────────────────────────────────────┤ │
-│  │                                                                        │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                    │ │
-│  │  │ OPERATIONAL │  │  SECURITY   │  │ RELIABILITY │                    │ │
-│  │  │ EXCELLENCE  │  │             │  │             │                    │ │
-│  │  │      🔧     │  │      🔒     │  │      🛡️     │                    │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                    │ │
-│  │                                                                        │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                    │ │
-│  │  │ PERFORMANCE │  │    COST     │  │SUSTAINABILITY│                   │ │
-│  │  │ EFFICIENCY  │  │OPTIMIZATION │  │             │                    │ │
-│  │  │      ⚡     │  │      💰     │  │      🌱     │                    │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                    │ │
-│  │                                                                        │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                         6 PILLARS                                     │  │
+│  ├───────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                       │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                    │  │
+│  │  │ OPERATIONAL │  │  SECURITY   │  │ RELIABILITY │                    │  │
+│  │  │ EXCELLENCE  │  │             │  │             │                    │  │
+│  │  │      🔧     │  │      🔒     │  │      🛡️     │                    │  │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘                    │  │
+│  │                                                                       │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐                   │  │
+│  │  │ PERFORMANCE │  │    COST     │  │SUSTAINABILITY│                   │  │
+│  │  │ EFFICIENCY  │  │OPTIMIZATION │  │              │                   │  │
+│  │  │      ⚡      │  │      💰     │  │      🌱      │                   │  │
+│  │  └─────────────┘  └─────────────┘  └──────────────┘                   │  │
+│  │                                                                       │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -97,17 +97,17 @@ Khả năng build software đúng cách và consistently deliver trải nghiệm
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Operational Excellence Areas                              │
+│                    Operational Excellence Areas                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                   │
-│  │   ORGANIZE  │     │   PREPARE   │     │   OPERATE   │                   │
-│  │             │     │             │     │             │                   │
-│  │ • Team      │ ──► │ • Design    │ ──► │ • Monitor   │                   │
-│  │   structure │     │   telemetry │     │ • Respond   │                   │
-│  │ • Culture   │     │ • Runbooks  │     │ • Events    │                   │
-│  │ • KPIs      │     │ • Test      │     │ • Incidents │                   │
-│  └─────────────┘     └─────────────┘     └─────────────┘                   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                    │
+│  │   ORGANIZE  │     │   PREPARE   │     │   OPERATE   │                    │
+│  │             │     │             │     │             │                    │
+│  │ • Team      │ ──► │ • Design    │ ──► │ • Monitor   │                    │
+│  │   structure │     │   telemetry │     │ • Respond   │                    │
+│  │ • Culture   │     │ • Runbooks  │     │ • Events    │                    │
+│  │ • KPIs      │     │ • Test      │     │ • Incidents │                    │
+│  └─────────────┘     └─────────────┘     └─────────────┘                    │
 │                                                 │                           │
 │                                                 ▼                           │
 │                                    ┌─────────────┐                          │
@@ -145,29 +145,29 @@ Khả năng bảo vệ data, systems, và assets để tận dụng cloud techno
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       Security Areas                                         │
+│                       Security Areas                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                     Identity & Access Management                     │   │
-│  │  IAM Users/Roles → Organizations → SSO → MFA                        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                     Identity & Access Management                    │    │
+│  │  IAM Users/Roles → Organizations → SSO → MFA                        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │                                    ▼                                        │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                   │
-│  │  Detection  │     │Infrastructure│     │    Data     │                   │
-│  │             │     │  Protection  │     │ Protection  │                   │
-│  │ • GuardDuty │     │ • VPC       │     │ • KMS       │                   │
-│  │ • CloudTrail│     │ • WAF       │     │ • Macie     │                   │
-│  │ • Config    │     │ • Shield    │     │ • Secrets   │                   │
-│  │ • Detective │     │ • Firewall  │     │   Manager   │                   │
-│  └─────────────┘     └─────────────┘     └─────────────┘                   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐                    │
+│  │  Detection  │     │Infrastructure│     │    Data    │                    │
+│  │             │     │  Protection │     │ Protection  │                    │
+│  │ • GuardDuty │     │ • VPC       │     │ • KMS       │                    │
+│  │ • CloudTrail│     │ • WAF       │     │ • Macie     │                    │
+│  │ • Config    │     │ • Shield    │     │ • Secrets   │                    │
+│  │ • Detective │     │ • Firewall  │     │   Manager   │                    │
+│  └─────────────┘     └─────────────┘     └─────────────┘                    │
 │                                    │                                        │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    Incident Response                                 │   │
-│  │  Detection → Investigation → Containment → Recovery → Lessons       │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                    Incident Response                                │    │
+│  │  Detection → Investigation → Containment → Recovery → Lessons       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -194,25 +194,25 @@ Khả năng của workload thực hiện đúng chức năng một cách correct
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       Reliability Areas                                      │
+│                       Reliability Areas                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                         Foundations                                  │   │
-│  │  Service Quotas → Network Topology → Service Limits                 │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                         Foundations                                 │    │
+│  │  Service Quotas → Network Topology → Service Limits                 │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │          ┌─────────────────────────┼─────────────────────────┐              │
 │          ▼                         ▼                         ▼              │
-│  ┌─────────────┐          ┌─────────────┐           ┌─────────────┐        │
-│  │  Workload   │          │   Change    │           │   Failure   │        │
-│  │ Architecture│          │ Management  │           │ Management  │        │
-│  │             │          │             │           │             │        │
-│  │ • Design for│          │ • IaC       │           │ • Backup    │        │
-│  │   failures  │          │ • CI/CD     │           │ • DR        │        │
-│  │ • Loose     │          │ • Testing   │           │ • Self-heal │        │
-│  │   coupling  │          │ • Rollback  │           │ • Chaos     │        │
-│  └─────────────┘          └─────────────┘           └─────────────┘        │
+│  ┌─────────────┐          ┌─────────────┐           ┌─────────────┐         │
+│  │  Workload   │          │   Change    │           │   Failure   │         │
+│  │ Architecture│          │ Management  │           │ Management  │         │
+│  │             │          │             │           │             │         │
+│  │ • Design for│          │ • IaC       │           │ • Backup    │         │
+│  │   failures  │          │ • CI/CD     │           │ • DR        │         │
+│  │ • Loose     │          │ • Testing   │           │ • Self-heal │         │
+│  │   coupling  │          │ • Rollback  │           │ • Chaos     │         │
+│  └─────────────┘          └─────────────┘           └─────────────┘         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -249,22 +249,22 @@ Khả năng sử dụng tài nguyên cloud hiệu quả để đáp ứng perfor
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Performance Efficiency Areas                              │
+│                    Performance Efficiency Areas                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐           │
-│  │  Compute    │     │   Storage   │     │      Database       │           │
-│  │             │     │             │     │                     │           │
-│  │ • EC2 types │     │ • S3 classes│     │ • RDS vs DynamoDB  │           │
-│  │ • Lambda    │     │ • EBS types │     │ • Read replicas    │           │
-│  │ • Container │     │ • FSx       │     │ • Caching          │           │
-│  │ • Graviton  │     │ • S3 Express│     │ • DAX, ElastiCache │           │
-│  └─────────────┘     └─────────────┘     └─────────────────────┘           │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐            │
+│  │  Compute    │     │   Storage   │     │      Database       │            │
+│  │             │     │             │     │                     │            │
+│  │ • EC2 types │     │ • S3 classes│     │ • RDS vs DynamoDB   │            │
+│  │ • Lambda    │     │ • EBS types │     │ • Read replicas     │            │
+│  │ • Container │     │ • FSx       │     │ • Caching           │            │
+│  │ • Graviton  │     │ • S3 Express│     │ • DAX, ElastiCache  │            │
+│  └─────────────┘     └─────────────┘     └─────────────────────┘            │
 │                                                                             │
-│  ┌────────────────────────────────────────────────────────────────────┐    │
-│  │                   Networking & Content Delivery                    │    │
-│  │  VPC → ELB → CloudFront → Global Accelerator → Route 53           │    │
-│  └────────────────────────────────────────────────────────────────────┘    │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │                   Networking & Content Delivery                    │     │
+│  │  VPC → ELB → CloudFront → Global Accelerator → Route 53            │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -302,26 +302,26 @@ Khả năng run systems để deliver business value với chi phí thấp nhấ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Cost Optimization Areas                                   │
+│                    Cost Optimization Areas                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    Cloud Financial Management                        │   │
-│  │  Budgeting → Forecasting → Cost Allocation → Optimization           │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                    Cloud Financial Management                       │    │
+│  │  Budgeting → Forecasting → Cost Allocation → Optimization           │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │          ┌─────────────────────────┼─────────────────────────┐              │
 │          ▼                         ▼                         ▼              │
-│  ┌─────────────┐          ┌─────────────┐           ┌─────────────┐        │
-│  │ Expenditure │          │ Cost-effective│          │ Resource    │        │
-│  │ Awareness   │          │ Resources    │          │ Right-sizing│        │
+│  ┌─────────────┐          ┌──────────────┐           ┌─────────────┐        │
+│  │ Expenditure │          │Cost-effective│           │ Resource    │        │
+│  │ Awareness   │          │ Resources    │           │ Right-sizing│        │
 │  │             │          │              │           │             │        │
 │  │ • Tagging   │          │ • Reserved   │           │ • Compute   │        │
 │  │ • Budgets   │          │   Instances  │           │   Optimizer │        │
 │  │ • Reports   │          │ • Spot       │           │ • Trusted   │        │
 │  │ • Alerts    │          │ • Savings    │           │   Advisor   │        │
 │  │             │          │   Plans      │           │             │        │
-│  └─────────────┘          └─────────────┘           └─────────────┘        │
+│  └─────────────┘          └──────────────┘           └─────────────┘        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -359,25 +359,25 @@ Tập trung vào environmental impacts, đặc biệt là energy consumption và
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Sustainability Areas                                      │
+│                    Sustainability Areas                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐           │
-│  │   Region    │     │   Compute   │     │     Storage         │           │
-│  │  Selection  │     │             │     │                     │           │
-│  │             │     │ • Graviton  │     │ • S3 Lifecycle     │           │
-│  │ • Low carbon│     │ • Right-size│     │ • Intelligent-     │           │
-│  │   regions   │     │ • Serverless│     │   Tiering          │           │
-│  │ • Proximity │     │ • Spot      │     │ • Data lifecycle   │           │
-│  └─────────────┘     └─────────────┘     └─────────────────────┘           │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐            │
+│  │   Region    │     │   Compute   │     │     Storage         │            │
+│  │  Selection  │     │             │     │                     │            │
+│  │             │     │ • Graviton  │     │ • S3 Lifecycle      │            │
+│  │ • Low carbon│     │ • Right-size│     │ • Intelligent-      │            │
+│  │   regions   │     │ • Serverless│     │   Tiering           │            │
+│  │ • Proximity │     │ • Spot      │     │ • Data lifecycle    │            │
+│  └─────────────┘     └─────────────┘     └─────────────────────┘            │
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐           │
-│  │    Data     │     │   Network   │     │   Development       │           │
-│  │ Management  │     │             │     │                     │           │
-│  │             │     │ • Compression│    │ • Efficient code   │           │
-│  │ • Minimize  │     │ • Caching   │     │ • Remove unused    │           │
-│  │   data move │     │ • Edge      │     │   resources        │           │
-│  └─────────────┘     └─────────────┘     └─────────────────────┘           │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐            │
+│  │    Data     │     │   Network   │     │   Development       │            │
+│  │ Management  │     │             │     │                     │            │
+│  │             │     │ • Compression│     │ • Efficient code   │            │
+│  │ • Minimize  │     │ • Caching   │     │ • Remove unused     │            │
+│  │   data move │     │ • Edge      │     │   resources         │            │
+│  └─────────────┘     └─────────────┘     └─────────────────────┘            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -401,33 +401,33 @@ AWS cung cấp **AWS Well-Architected Tool** (miễn phí) để review workload
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Well-Architected Tool                                 │
+│                    AWS Well-Architected Tool                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  1. Define Workload                                                  │   │
-│  │     Name, description, industry, environment                         │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  1. Define Workload                                                 │    │
+│  │     Name, description, industry, environment                        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  2. Answer Questions                                                 │   │
-│  │     Questions cho mỗi pillar                                         │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  2. Answer Questions                                                │    │
+│  │     Questions cho mỗi pillar                                        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  3. Review Report                                                    │   │
-│  │     • High Risk Issues (HRI)                                         │   │
-│  │     • Medium Risk Issues (MRI)                                       │   │
-│  │     • Improvement Plan                                               │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  3. Review Report                                                   │    │
+│  │     • High Risk Issues (HRI)                                        │    │
+│  │     • Medium Risk Issues (MRI)                                      │    │
+│  │     • Improvement Plan                                              │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                    │                                        │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  4. Implement Improvements                                           │   │
-│  │     Track milestones, update review                                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  4. Implement Improvements                                          │    │
+│  │     Track milestones, update review                                 │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -453,7 +453,7 @@ Ngoài Framework chính, AWS cung cấp **Lenses** cho specific use cases:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Common Trade-offs                                         │
+│                    Common Trade-offs                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Performance vs Cost                                                        │
@@ -490,55 +490,55 @@ Ngoài Framework chính, AWS cung cấp **Lenses** cho specific use cases:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    E-commerce Well-Architected Review                        │
+│                    E-commerce Well-Architected Review                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Pillar: Operational Excellence                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ✅ Infrastructure as Code (CloudFormation)                          │   │
-│  │  ✅ CI/CD Pipeline (CodePipeline)                                    │   │
-│  │  ✅ Centralized logging (CloudWatch Logs)                            │   │
-│  │  ⚠️ Missing runbooks for common failures                             │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ✅ Infrastructure as Code (CloudFormation)                         │    │
+│  │  ✅ CI/CD Pipeline (CodePipeline)                                   │    │
+│  │  ✅ Centralized logging (CloudWatch Logs)                           │    │
+│  │  ⚠️ Missing runbooks for common failures                             │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Pillar: Security                                                           │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ✅ IAM Roles (no access keys in code)                               │   │
-│  │  ✅ Encryption at rest (KMS)                                         │   │
-│  │  ✅ WAF enabled on CloudFront                                        │   │
-│  │  ⚠️ No secrets rotation configured                                   │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ✅ IAM Roles (no access keys in code)                              │    │
+│  │  ✅ Encryption at rest (KMS)                                        │    │
+│  │  ✅ WAF enabled on CloudFront                                       │    │
+│  │  ⚠️ No secrets rotation configured                                   │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Pillar: Reliability                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ✅ Multi-AZ deployment                                              │   │
-│  │  ✅ Auto Scaling configured                                          │   │
-│  │  ✅ RDS Multi-AZ                                                     │   │
-│  │  ⚠️ No cross-region DR plan                                          │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ✅ Multi-AZ deployment                                             │    │
+│  │  ✅ Auto Scaling configured                                         │    │
+│  │  ✅ RDS Multi-AZ                                                    │    │
+│  │  ⚠️ No cross-region DR plan                                          │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Pillar: Performance Efficiency                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ✅ CloudFront for static content                                    │   │
-│  │  ✅ ElastiCache for session caching                                  │   │
-│  │  ⚠️ Database queries not optimized                                   │   │
-│  │  ⚠️ No performance testing in CI/CD                                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ✅ CloudFront for static content                                   │    │
+│  │  ✅ ElastiCache for session caching                                 │    │
+│  │  ⚠️ Database queries not optimized                                   │    │
+│  │  ⚠️ No performance testing in CI/CD                                  │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Pillar: Cost Optimization                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ⚠️ No Reserved Instances for production                             │   │
-│  │  ✅ S3 Lifecycle policies configured                                 │   │
-│  │  ⚠️ Dev environment runs 24/7                                        │   │
-│  │  ⚠️ No cost allocation tags                                          │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ⚠️ No Reserved Instances for production                             │    │
+│  │  ✅ S3 Lifecycle policies configured                                │    │
+│  │  ⚠️ Dev environment runs 24/7                                        │    │
+│  │  ⚠️ No cost allocation tags                                          │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  Pillar: Sustainability                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  ⚠️ Not using Graviton instances                                     │   │
-│  │  ⚠️ Dev resources not scheduled                                      │   │
-│  │  ✅ S3 Intelligent-Tiering enabled                                   │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  ⚠️ Not using Graviton instances                                     │    │
+│  │  ⚠️ Dev resources not scheduled                                      │    │
+│  │  ✅ S3 Intelligent-Tiering enabled                                  │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

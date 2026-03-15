@@ -229,18 +229,18 @@ EC2 instance có thể có root volume là **EBS** hoặc **Instance Store**, t�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    EC2 ROOT VOLUME TYPES                                     │
+│                    EC2 ROOT VOLUME TYPES                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  EBS-BACKED (Phổ biến - 99%)        INSTANCE STORE-BACKED (Hiếm)           │
+│                                                                             │
+│  EBS-BACKED (Phổ biến - 99%)        INSTANCE STORE-BACKED (Hiếm)            │
 │  ───────────────────────────        ────────────────────────────            │
-│                                                                              │
+│                                                                             │
 │  ✅ Stop/Start được                 ❌ KHÔNG Stop được (chỉ Terminate)      │
 │  ✅ Data tồn tại sau Stop           ❌ Data MẤT khi Stop/Terminate          │
 │  ✅ Có thể resize                   ❌ Không resize được                    │
 │  ✅ Snapshot được                   ❌ Không snapshot được                  │
 │  ✅ Hibernate được                  ❌ Không hibernate được                 │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -259,17 +259,17 @@ EC2 instance có thể có root volume là **EBS** hoặc **Instance Store**, t�
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DELETE ON TERMINATION                         │
+│                    DELETE ON TERMINATION                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ROOT VOLUME (EBS):                                             │
-│  ├── Delete on Termination = TRUE (MẶC ĐỊNH)                   │
-│  └── → Terminate EC2 → Root EBS bị XÓA                         │
-│                                                                  │
+│  ├── Delete on Termination = TRUE (MẶC ĐỊNH)                    │
+│  └── → Terminate EC2 → Root EBS bị XÓA                          │
+│                                                                 │
 │  ADDITIONAL VOLUMES (EBS thêm):                                 │
-│  ├── Delete on Termination = FALSE (MẶC ĐỊNH)                  │
-│  └── → Terminate EC2 → Additional EBS vẫn CÒN                  │
-│                                                                  │
+│  ├── Delete on Termination = FALSE (MẶC ĐỊNH)                   │
+│  └── → Terminate EC2 → Additional EBS vẫn CÒN                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -479,10 +479,10 @@ aws ec2 delete-snapshot --snapshot-id snap-0xyz789
                            ▼
 ┌─────────────────────────────────────────────┐
 │              Snapshot (S3)                  │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │ Snap A  │──│ Snap B  │──│ Snap C  │     │
-│  │ (full)  │  │(increm.)│  │(increm.)│     │
-│  └─────────┘  └─────────┘  └─────────┘     │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐      │
+│  │ Snap A  │──│ Snap B  │──│ Snap C  │      │
+│  │ (full)  │  │(increm.)│  │(increm.)│      │
+│  └─────────┘  └─────────┘  └─────────┘      │
 └─────────────────────────────────────────────┘
         │                           │
         │ create-volume             │ copy-snapshot
@@ -825,20 +825,20 @@ aws ec2 modify-volume --volume-id vol-xxx --size 200
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DEVICE NAME vs MOUNT POINT                    │
+│                    DEVICE NAME vs MOUNT POINT                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  DEVICE NAME              MOUNT POINT (FOLDER)                  │
 │  ─────────────            ────────────────────                  │
 │  /dev/xvdb                /home/user/data                       │
-│       │                         │                                │
-│       ▼                         ▼                                │
-│  Đại diện cho ổ đĩa       Folder để TRUY CẬP data              │
+│       │                        │                                │
+│       ▼                         ▼                               │
+│  Đại diện cho ổ đĩa       Folder để TRUY CẬP data               │
 │  (như USB, ổ cứng)        (bạn tự tạo)                          │
-│                                                                  │
+│                                                                 │
 │  Phải MOUNT để nối 2 thứ lại:                                   │
 │  mount /dev/xvdb /home/user/data                                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -854,20 +854,20 @@ aws ec2 modify-volume --volume-id vol-xxx --size 200
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    KHI NÀO CẦN MOUNT?                            │
+│                    KHI NÀO CẦN MOUNT?                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1️⃣ ROOT VOLUME (/dev/xvda)                                    │
+│                                                                 │
+│  1️⃣ ROOT VOLUME (/dev/xvda)                                     │
 │     → AWS TỰ ĐỘNG mount vào /                                   │
 │     → Bạn KHÔNG cần làm gì                                      │
-│                                                                  │
-│  2️⃣ DATA VOLUME MỚI (lần đầu attach)                           │
+│                                                                 │
+│  2️⃣ DATA VOLUME MỚI (lần đầu attach)                            │
 │     → Phải FORMAT + MOUNT tay (1 lần)                           │
-│                                                                  │
-│  3️⃣ DATA VOLUME ĐÃ CÓ DATA (attach lại)                        │
+│                                                                 │
+│  3️⃣ DATA VOLUME ĐÃ CÓ DATA (attach lại)                         │
 │     → Chỉ cần MOUNT (không format lại)                          │
-│     → Hoặc config /etc/fstab để TỰ ĐỘNG mount                  │
-│                                                                  │
+│     → Hoặc config /etc/fstab để TỰ ĐỘNG mount                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

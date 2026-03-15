@@ -23,36 +23,36 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         WHAT IS AWS APPSYNC?                         │
-│                                                                       │
-│   AppSync = Serverless GraphQL Service                                │
-│                                                                       │
+│                         WHAT IS AWS APPSYNC?                        │
+│                                                                     │
+│   AppSync = Serverless GraphQL Service                              │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
-│   │    Clients              AppSync              Data Sources     │   │
-│   │                                                               │   │
+│   │                                                             │   │
+│   │    Clients              AppSync              Data Sources   │   │
+│   │                                                             │   │
 │   │   ┌─────────┐       ┌───────────────┐      ┌───────────┐    │   │
 │   │   │   Web   │       │               │      │  DynamoDB │    │   │
 │   │   │   App   │──────▶│ • GraphQL API │─────▶│           │    │   │
 │   │   └─────────┘       │ • Resolvers   │      └───────────┘    │   │
-│   │                     │ • Subscriptions│                     │   │
+│   │                     │ • Subscriptions│                      │   │
 │   │   ┌─────────┐       │ • Caching     │      ┌───────────┐    │   │
 │   │   │ Mobile  │──────▶│ • Offline Sync│─────▶│  Lambda   │    │   │
 │   │   │   App   │       │ • Security    │      └───────────┘    │   │
-│   │   └─────────┘       │               │                        │   │
+│   │   └─────────┘       │               │                       │   │
 │   │                     │               │      ┌───────────┐    │   │
 │   │   ┌─────────┐       │               │─────▶│    RDS    │    │   │
 │   │   │   IoT   │──────▶│               │      │ (Aurora)  │    │   │
 │   │   │ Device  │       └───────────────┘      └───────────┘    │   │
-│   │   └─────────┘                                                │   │
-│   │                                                               │   │
-│   │   KEY BENEFITS:                                               │
-│   ├── ✅ Fully managed - không cần quản lý servers              │
-│   ├── ✅ Real-time subscriptions - WebSocket                    │
-│   ├── ✅ Offline data sync - client cache                        │
-│   ├── ✅ Flexible data sources - SQL/NoSQL/Lambda               │
-│   ├── ✅ Fine-grained access control - Cognito, IAM, API Keys   │
-│   └── ✅ Enterprise caching - improved performance              │
+│   │   └─────────┘                                               │   │
+│   │                                                             │   │
+│   │   KEY BENEFITS:                                                 │
+│   ├── ✅ Fully managed - không cần quản lý servers                  │
+│   ├── ✅ Real-time subscriptions - WebSocket                        │
+│   ├── ✅ Offline data sync - client cache                           │
+│   ├── ✅ Flexible data sources - SQL/NoSQL/Lambda                   │
+│   ├── ✅ Fine-grained access control - Cognito, IAM, API Keys       │
+│   └── ✅ Enterprise caching - improved performance                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -207,49 +207,49 @@ schema {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        APPSYNC ARCHITECTURE                          │
-│                                                                       │
+│                        APPSYNC ARCHITECTURE                         │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                        Clients                               │   │
-│   │   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   │   │
-│   │   │   Web   │   │ Mobile  │   │   IoT   │   │   SPA   │   │   │
-│   │   └────┬────┘   └────┬────┘   └────┬────┘   └────┬────┘   │   │
-│   └────────┼─────────────┼─────────────┼─────────────┼────────┘   │
-│            │             │             │             │            │
-│            └─────────────┴──────────┬──┴─────────────┘            │
-│                                    │                               │
-│                           ┌────────▼────────┐                     │
-│                           │   AppSync API   │                     │
-│                           │  (GraphQL Edge) │                     │
-│                           └────────┬────────┘                     │
-│                                    │                               │
-│                    ┌───────────────┼───────────────┐              │
-│                    │               │               │              │
-│           ┌────────▼────┐ ┌───────▼───────┐ ┌──────▼────────┐    │
-│           │   Queries    │ │  Mutations    │ │ Subscriptions │    │
-│           │  & Reads     │ │  & Writes     │ │ (WebSocket)   │    │
-│           └──────┬───────┘ └───────┬───────┘ └───────┬────────┘    │
-│                    │               │               │              │
-│           ┌────────▼───────┐ ┌─────▼────────┐ ┌─────▼────────┐    │
-│           │  Unit Resolver │ │ Pipeline     │ │ Subscription │    │
-│           │  or Pipeline   │ │ Resolver     │ │ Handler      │    │
-│           └────────┬───────┘ └──────┬───────┘ └──────────┬────┘    │
-│                    │                │                     │         │
-│                    └────────────────┼─────────────────────┘         │
+│   │                        Clients                              │   │
+│   │   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐     │   │
+│   │   │   Web   │   │ Mobile  │   │   IoT   │   │   SPA   │     │   │
+│   │   └────┬────┘   └────┬────┘   └────┬────┘   └────┬────┘     │   │
+│   └────────┼─────────────┼─────────────┼─────────────┼──────────┘   │
+│            │             │             │               │            │
+│            └─────────────┴──────────┬──┴─────────────┘              │
 │                                     │                               │
-│    ┌────────────────────────────────┼────────────────────────┐     │
-│    │                         DATA SOURCES                    │     │
-│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │     │
-│    │  │  DynamoDB   │  │    Lambda    │  │     RDS     │    │     │
-│    │  │  (NoSQL)    │  │  (Any DB)    │  │ (PostgreSQL │    │     │
-│    │  │             │  │              │  │  MySQL)     │    │     │
-│    │  └─────────────┘  └─────────────┘  └─────────────┘    │     │
-│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │     │
-│    │  │    HTTP     │  │   Amazon     │  │    Open     │    │     │
-│    │  │  Endpoints  │  │  Elasticsearch│  │  Search    │    │     │
-│    │  │ (REST/SOAP)│  │              │  │             │    │     │
-│    │  └─────────────┘  └─────────────┘  └─────────────┘    │     │
-│    └────────────────────────────────────────────────────────┘     │
+│                           ┌────────▼────────┐                       │
+│                           │   AppSync API   │                       │
+│                           │  (GraphQL Edge) │                       │
+│                           └────────┬────────┘                       │
+│                                     │                               │
+│                    ┌───────────────┼───────────────┐                │
+│                    │               │                 │              │
+│           ┌────────▼────┐ ┌───────▼───────┐ ┌──────▼────────┐       │
+│           │   Queries    │ │  Mutations    │ │ Subscriptions   │    │
+│           │  & Reads     │ │  & Writes     │ │ (WebSocket)     │    │
+│           └──────┬───────┘ └───────┬───────┘ └───────┬────────┘     │
+│                    │               │                 │              │
+│           ┌────────▼───────┐ ┌─────▼────────┐ ┌─────▼────────┐      │
+│           │  Unit Resolver │ │ Pipeline     │ │ Subscription   │    │
+│           │  or Pipeline   │ │ Resolver     │ │ Handler        │    │
+│           └────────┬───────┘ └──────┬───────┘ └──────────┬────┘     │
+│                    │                │                     │         │
+│                    └────────────────┼──────────────┘                │
+│                                     │                               │
+│    ┌────────────────────────────────┼────────────────────────┐      │
+│    │                         DATA SOURCES                    │      │
+│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │     │
+│    │  │  DynamoDB   │  │    Lambda    │  │     RDS     │      │     │
+│    │  │  (NoSQL)    │  │  (Any DB)    │  │ (PostgreSQL │      │     │
+│    │  │             │  │              │  │  MySQL)     │      │     │
+│    │  └─────────────┘  └─────────────┘  └─────────────┘       │     │
+│    │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │     │
+│    │  │    HTTP     │  │   Amazon     │  │    Open     │      │     │
+│    │  │  Endpoints  │  │  Elasticsearch│  │  Search    │      │     │
+│    │  │ (REST/SOAP)│  │              │  │             │       │     │
+│    │  └─────────────┘  └─────────────┘  └─────────────┘       │     │
+│    └─────────────────────────────────────────────────────────┘      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -258,43 +258,43 @@ schema {
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     APPSYNC REQUEST FLOW                            │
-│                                                                       │
-│   1. Client sends GraphQL Request                                    │
+│                                                                     │
+│   1. Client sends GraphQL Request                                   │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  query GetPost { getPost(id: "123") { title } }            │   │
+│   │  query GetPost { getPost(id: "123") { title } }             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   2. AppSync validates against Schema                               │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  • Parse GraphQL query                                      │   │
-│   │  • Validate operation type & arguments                     │   │
-│   │  • Check authorization                                       │   │
+│   │  • Validate operation type & arguments                      │   │
+│   │  • Check authorization                                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   3. Find Resolver for the field                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  getPost(id: ID!): Post  ──────▶  Resolver: DynamoDB        │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   4. Execute Resolver (VTL or Pipeline)                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  {                                                            │   │
-│   │    "version": "2017-02-28",                                  │   │
-│   │    "operation": "GetItem",                                    │   │
+│   │  {                                                          │   │
+│   │    "version": "2017-02-28",                                 │   │
+│   │    "operation": "GetItem",                                  │   │
 │   │    "key": { "id": $util.toJson($ctx.args.id) }              │   │
-│   │  }                                                            │   │
+│   │  }                                                          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
-│   5. Query Data Source                                             │
+│                                   │                                 │
+│                                    ▼                                │
+│   5. Query Data Source                                              │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  DynamoDB.GetItem({ TableName: "Posts", Key: { id: "123" }})│   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   6. Return Response to Client                                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  { "data": { "getPost": { "title": "Hello World" } } }      │   │
@@ -393,38 +393,38 @@ exports.handler = async (event) => {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     PIPELINE RESOLVER                                │
-│                                                                       │
-│   Request Mapping Template                                           │
+│                     PIPELINE RESOLVER                               │
+│                                                                     │
+│   Request Mapping Template                                          │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  { "version": "2017-02-28" }                              │   │
+│   │  { "version": "2017-02-28" }                                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Function 1: Validate Input                                │   │
-│   │  - Check required fields                                  │   │
-│   │  - Sanitize data                                          │   │
+│   │  Function 1: Validate Input                                 │   │
+│   │  - Check required fields                                    │   │
+│   │  - Sanitize data                                            │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Function 2: Transform Data                               │   │
-│   │  - Format dates                                           │   │
-│   │  - Add computed fields                                    │   │
+│   │  Function 2: Transform Data                                 │   │
+│   │  - Format dates                                             │   │
+│   │  - Add computed fields                                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
+│                                   │                                 │
+│                                    ▼                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Function 3: Business Logic (Lambda)                      │   │
-│   │  - Process data                                           │   │
-│   │  - Call external services                                  │   │
+│   │  Function 3: Business Logic (Lambda)                        │   │
+│   │  - Process data                                             │   │
+│   │  - Call external services                                   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                    │                                 │
-│                                    ▼                                 │
-│   Response Mapping Template                                          │
+│                                   │                                 │
+│                                    ▼                                │
+│   Response Mapping Template                                         │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  $util.toJson($ctx.result)                                │   │
+│   │  $util.toJson($ctx.result)                                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -671,22 +671,22 @@ query GetPopularPosts {
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     PRICING EXAMPLES                                │
-│                                                                       │
+│                                                                     │
 │   Scenario 1: Basic API (100K requests/month)                       │
-│   ├── Queries: 100K × $4.00/M = $0.40                              │
-│   └── Total: ~$0.40/month                                          │
-│                                                                       │
+│   ├── Queries: 100K × $4.00/M = $0.40                               │
+│   └── Total: ~$0.40/month                                           │
+│                                                                     │
 │   Scenario 2: Medium API (10M requests/month)                       │
-│   ├── Queries: 10M × $4.00/M = $40.00                              │
-│   ├── Real-time: 5M msgs × $2.00/M = $10.00                       │
+│   ├── Queries: 10M × $4.00/M = $40.00                               │
+│   ├── Real-time: 5M msgs × $2.00/M = $10.00                         │
 │   └── Total: ~$50.00/month                                          │
-│                                                                       │
+│                                                                     │
 │   Scenario 3: High Traffic (100M requests/month)                    │
-│   ├── Queries: 100M × $4.00/M = $400.00                            │
-│   ├── Real-time: 50M msgs × $2.00/M = $100.00                      │
+│   ├── Queries: 100M × $4.00/M = $400.00                             │
+│   ├── Real-time: 50M msgs × $2.00/M = $100.00                       │
 │   └── Total: ~$500.00/month                                         │
-│                                                                       │
-│   Note: Lambda & Data Source costs separate!                         │
+│                                                                     │
+│   Note: Lambda & Data Source costs separate!                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -705,28 +705,28 @@ query GetPopularPosts {
 ┌────────────────────┬─────────────────────┬──────────────────────────┐
 │      Feature       │    API Gateway      │       AppSync            │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Protocol           │ REST, HTTP, WebSocket│ GraphQL                  │
+│ Protocol           │ REST, HTTP, WebSocket│ GraphQL                 │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Data Fetching      │ Fixed endpoints      │ Flexible queries         │
+│ Data Fetching      │ Fixed endpoints      │ Flexible queries        │
 │                    │ over-fetch/under    │ exact data needed        │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
 │ Real-time          │ WebSocket (manual)  │ Subscriptions (built-in) │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
 │ Offline Support    │ Không có            │ ✅ Client SDK            │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Data Sources       │ Lambda, HTTP,       │ DynamoDB, Lambda, RDS,  │
+│ Data Sources       │ Lambda, HTTP,       │ DynamoDB, Lambda, RDS,   │
 │                    │ Lambda, Mock        │ HTTP, OpenSearch, Event  │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
 │ Caching            │ API Gateway Cache   │ AppSync Cache            │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Schema            │ Không có            │ Strongly typed           │
+│ Schema            │ Không có            │ Strongly typed            │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Pricing           │ $3.50/M requests    │ $4.00/M requests        │
-│                    │ + cache costs       │ + real-time costs       │
+│ Pricing           │ $3.50/M requests    │ $4.00/M requests          │
+│                    │ + cache costs       │ + real-time costs        │
 ├────────────────────┼─────────────────────┼──────────────────────────┤
-│ Best For          │ REST APIs           │ Complex data models     │
-│                    │ Legacy integration  │ Real-time apps          │
-│                    │ Simple CRUD         │ Mobile apps             │
+│ Best For          │ REST APIs           │ Complex data models       │
+│                    │ Legacy integration  │ Real-time apps           │
+│                    │ Simple CRUD         │ Mobile apps              │
 └────────────────────┴─────────────────────┴──────────────────────────┘
 ```
 

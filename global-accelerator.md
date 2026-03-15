@@ -22,27 +22,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              KHÔNG CÓ GLOBAL ACCELERATOR                          │
+│              KHÔNG CÓ GLOBAL ACCELERATOR                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  User (Vietnam) ──► Public Internet ──► ALB/EC2 (US)           │
+│                                                                 │
+│  User (Vietnam) ──► Public Internet ──► ALB/EC2 (US)            │
 │                      │                                          │
-│                      └─► Nhiều hops, unpredictable latency       │
-│                      └─► Congestion, packet loss                 │
-│                      └─► ~200-300ms latency                      │
-│                                                                  │
+│                      └─► Nhiều hops, unpredictable latency      │
+│                      └─► Congestion, packet loss                │
+│                      └─► ~200-300ms latency                     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│              CÓ GLOBAL ACCELERATOR                                │
+│              CÓ GLOBAL ACCELERATOR                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  User (Vietnam) ─► Edge Location ─► AWS Global Network ─► ALB  │
+│                                                                 │
+│  User (Vietnam) ─► Edge Location ─► AWS Global Network ─► ALB   │
 │                      │                                          │
 │                      └─► Vào AWS network ngay gần user          │
 │                      └─► Đi qua AWS backbone (optimized)        │
 │                      └─► ~60-100ms latency (60% faster!)        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -52,22 +52,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              GLOBAL ACCELERATOR ARCHITECTURE                     │
+│              GLOBAL ACCELERATOR ARCHITECTURE                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. AWS cấp 2 Static Anycast IPs                                │
 │     75.2.x.x và 99.83.x.x                                       │
-│                          │                                       │
-│                          ▼                                       │
+│                         │                                       │
+│                          ▼                                      │
 │  2. User request đến IP → route tới Edge gần nhất               │
-│                          │                                       │
-│                          ▼                                       │
+│                         │                                       │
+│                          ▼                                      │
 │  3. Traffic đi qua AWS Private Global Network                   │
 │     (optimized, low latency)                                    │
-│                          │                                       │
-│                          ▼                                       │
+│                         │                                       │
+│                          ▼                                      │
 │  4. Đến Endpoints: ALB / NLB / EC2 / Elastic IP                 │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -81,25 +81,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    UNICAST vs ANYCAST                            │
+│                    UNICAST vs ANYCAST                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  UNICAST (thông thường):                                         │
-│  1 IP = 1 server cố định                                         │
-│                                                                  │
+│                                                                 │
+│  UNICAST (thông thường):                                        │
+│  1 IP = 1 server cố định                                        │
+│                                                                 │
 │  User (Vietnam) ──► 1.2.3.4 ──► Server (US)  (xa!)              │
 │  User (Japan)   ──► 1.2.3.4 ──► Server (US)  (xa!)              │
-│                                                                  │
+│                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
-│                                                                  │
-│  ANYCAST:                                                        │
-│  1 IP = nhiều servers khắp nơi                                   │
-│                                                                  │
+│                                                                 │
+│  ANYCAST:                                                       │
+│  1 IP = nhiều servers khắp nơi                                  │
+│                                                                 │
 │  User (Vietnam) ──► 1.2.3.4 ──► Edge (Singapore)  (gần!)        │
 │  User (Japan)   ──► 1.2.3.4 ──► Edge (Tokyo)      (gần!)        │
-│                                                                  │
+│                                                                 │
 │  → Cùng IP, nhưng route đến nơi gần nhất                        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -166,23 +166,23 @@ CNAME myapp.example.com → abc123.awsglobalaccelerator.com
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              CLOUDFRONT vs GLOBAL ACCELERATOR                    │
+│              CLOUDFRONT vs GLOBAL ACCELERATOR                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  CloudFront (CDN - Layer 7):                                     │
+│                                                                 │
+│  CloudFront (CDN - Layer 7):                                    │
 │  • Cache content ở edge                                         │
-│  • HTTP/HTTPS only                                               │
-│  • Tốt cho static content, websites                              │
+│  • HTTP/HTTPS only                                              │
+│  • Tốt cho static content, websites                             │
 │  • Có thể modify request/response                               │
-│                                                                  │
+│                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
-│                                                                  │
-│  Global Accelerator (Network - Layer 4):                         │
-│  • KHÔNG cache, proxy traffic                                    │
-│  • TCP/UDP (gaming, IoT, VoIP)                                   │
+│                                                                 │
+│  Global Accelerator (Network - Layer 4):                        │
+│  • KHÔNG cache, proxy traffic                                   │
+│  • TCP/UDP (gaming, IoT, VoIP)                                  │
 │  • Tốt cho dynamic content, non-HTTP                            │
 │  • Static IP addresses (whitelist friendly)                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -224,16 +224,16 @@ CNAME myapp.example.com → abc123.awsglobalaccelerator.com
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              INSTANT FAILOVER                                    │
+│              INSTANT FAILOVER                                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Bình thường:                                                     │
+│                                                                 │
+│  Bình thường:                                                   │
 │  User ─► Global Accelerator ─► us-east-1 (healthy) ✅           │
-│                                                                  │
+│                                                                 │
 │  Khi us-east-1 fail:                                            │
 │  User ─► Global Accelerator ─► eu-west-1 (healthy) ✅           │
-│                              (tự động trong < 1 giây)            │
-│                                                                  │
+│                              (tự động trong < 1 giây)           │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

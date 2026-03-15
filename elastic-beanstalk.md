@@ -28,34 +28,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    TRADITIONAL DEPLOYMENT                            │
-│                                                                       │
-│   Developer phải tự:                                                 │
+│                    TRADITIONAL DEPLOYMENT                           │
+│                                                                     │
+│   Developer phải tự:                                                │
 │   ├── Tạo VPC, Subnets                                              │
-│   ├── Tạo EC2 instances                                              │
+│   ├── Tạo EC2 instances                                             │
 │   ├── Cài đặt runtime (Java, Node.js, Python...)                    │
-│   ├── Configure Load Balancer                                        │
-│   ├── Setup Auto Scaling                                             │
-│   ├── Configure Security Groups                                      │
-│   └── Deploy application code                                        │
-│                                                                       │
-│   😓 Tốn rất nhiều thời gian!                                        │
+│   ├── Configure Load Balancer                                       │
+│   ├── Setup Auto Scaling                                            │
+│   ├── Configure Security Groups                                     │
+│   └── Deploy application code                                       │
+│                                                                     │
+│   😓 Tốn rất nhiều thời gian!                                       │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    WITH ELASTIC BEANSTALK                            │
-│                                                                       │
-│   Developer chỉ cần:                                                 │
-│   └── Upload code → Done!                                            │
-│                                                                       │
-│   Beanstalk tự động:                                                 │
+│                    WITH ELASTIC BEANSTALK                           │
+│                                                                     │
+│   Developer chỉ cần:                                                │
+│   └── Upload code → Done!                                           │
+│                                                                     │
+│   Beanstalk tự động:                                                │
 │   ├── Provision EC2, Load Balancer, Auto Scaling                    │
 │   ├── Cài đặt runtime phù hợp                                       │
-│   ├── Deploy application                                             │
-│   ├── Monitor health                                                 │
-│   └── Handle scaling                                                 │
-│                                                                       │
-│   😊 Focus vào code, không lo infrastructure!                        │
+│   ├── Deploy application                                            │
+│   ├── Monitor health                                                │
+│   └── Handle scaling                                                │
+│                                                                     │
+│   😊 Focus vào code, không lo infrastructure!                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -75,27 +75,27 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Beanstalk: Managed nhưng vẫn có access                     │
+│                    Beanstalk: Managed nhưng vẫn có access                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   Bạn thấy:                          Bên dưới (AWS tự tạo):                  │
 │   ──────────                         ─────────────────────                   │
 │                                                                              │
 │   ┌─────────────────┐                ┌─────────────────────────────────────┐ │
-│   │  Elastic        │   TỰ ĐỘNG     │  • EC2 instances  ← BẠN CÓ THỂ SSH! │ │
-│   │  Beanstalk      │ ────────────► │  • Auto Scaling Group               │ │
+│   │  Elastic        │   TỰ ĐỘNG      │  • EC2 instances  ← BẠN CÓ THỂ SSH! │ │
+│   │  Beanstalk      │ ────────────►  │  • Auto Scaling Group               │ │
 │   │  Environment    │   PROVISION    │  • Load Balancer (ALB/NLB)          │ │
 │   │                 │                │  • Security Groups                  │ │
 │   │  (Upload code)  │                │  • CloudWatch monitoring            │ │
 │   └─────────────────┘                └─────────────────────────────────────┘ │
 │                                                                              │
 │   📍 AWS quản lý: Provisioning, scaling, patching, deployment                │
-│   📍 Bạn vẫn có thể:                                                        │
-│      • SSH vào EC2 instances (eb ssh)                                       │
-│      • Xem EC2 trong console                                                │
-│      • Install thêm packages                                                │
-│      • Modify configurations                                                │
-│      • Access logs trực tiếp trên instance                                  │
+│   📍 Bạn vẫn có thể:                                                         │
+│      • SSH vào EC2 instances (eb ssh)                                        │
+│      • Xem EC2 trong console                                                 │
+│      • Install thêm packages                                                 │
+│      • Modify configurations                                                 │
+│      • Access logs trực tiếp trên instance                                   │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -119,12 +119,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    BEANSTALK COMPONENTS                              │
-│                                                                       │
+│                    BEANSTALK COMPONENTS                             │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      APPLICATION                             │   │
+│   │                      APPLICATION                            │   │
 │   │   (Container logic cho app - ví dụ: "my-web-app")           │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   ┌─────────────────────┐   ┌─────────────────────┐         │   │
 │   │   │    ENVIRONMENT 1    │   │    ENVIRONMENT 2    │         │   │
 │   │   │       (Dev)         │   │       (Prod)        │         │   │
@@ -134,7 +134,7 @@
 │   │   │  │  (deployed)   │  │   │  │  (deployed)   │  │         │   │
 │   │   │  └───────────────┘  │   │  └───────────────┘  │         │   │
 │   │   └─────────────────────┘   └─────────────────────┘         │   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   Application Versions: v1, v2, v3, v4 (stored in S3)       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -151,26 +151,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ENVIRONMENT TYPES                                 │
-│                                                                       │
-│   1. WEB SERVER ENVIRONMENT                                          │
+│                    ENVIRONMENT TYPES                                │
+│                                                                     │
+│   1. WEB SERVER ENVIRONMENT                                         │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   Internet ──→ ELB ──→ Auto Scaling Group ──→ EC2 Instances │   │
-│   │                              │                                │   │
-│   │                         CloudWatch                            │   │
-│   │                                                               │   │
-│   │   Use case: Web apps, REST APIs                              │   │
+│   │                              │                              │   │
+│   │                         CloudWatch                          │   │
+│   │                                                             │   │
+│   │   Use case: Web apps, REST APIs                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   2. WORKER ENVIRONMENT                                              │
+│                                                                     │
+│   2. WORKER ENVIRONMENT                                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                                                               │   │
+│   │                                                             │   │
 │   │   SQS Queue ──→ Auto Scaling Group ──→ EC2 Instances        │   │
-│   │                         │                                     │   │
-│   │                    CloudWatch                                 │   │
-│   │                                                               │   │
-│   │   Use case: Background jobs, async processing                │   │
+│   │                         │                                   │   │
+│   │                    CloudWatch                               │   │
+│   │                                                             │   │
+│   │   Use case: Background jobs, async processing               │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -201,61 +201,61 @@ Beanstalk hỗ trợ nhiều ngôn ngữ và platforms:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    DEPLOYMENT POLICIES                               │
-│                                                                       │
+│                    DEPLOYMENT POLICIES                              │
+│                                                                     │
 │   1. ALL AT ONCE (Fastest, có downtime)                             │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │   [v1] [v1] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │   │
-│   │        ↓ Deploy v2 to all                                    │   │
+│   │        ↓ Deploy v2 to all                                   │   │
 │   │   ⚠️ Downtime trong lúc deploy                               │   │
-│   │   ✅ Fastest deployment                                       │   │
+│   │   ✅ Fastest deployment                                     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   2. ROLLING (Batches, giảm capacity tạm thời)                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   [v1] [v1] [v1] [v1]                                        │   │
-│   │     ↓    ↓                                                   │   │
+│   │   [v1] [v1] [v1] [v1]                                       │   │
+│   │     ↓    ↓                                                  │   │
 │   │   [v2] [v2] [v1] [v1]  →  [v2] [v2] [v2] [v2]               │   │
-│   │                                                               │   │
-│   │   ✅ No downtime                                              │   │
+│   │                                                             │   │
+│   │   ✅ No downtime                                            │   │
 │   │   ⚠️ Capacity giảm trong lúc deploy                          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   3. ROLLING WITH ADDITIONAL BATCH (No reduced capacity)           │
+│                                                                     │
+│   3. ROLLING WITH ADDITIONAL BATCH (No reduced capacity)            │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │   [v1] [v1] [v1] [v1] + [v2] (new batch)                    │   │
-│   │                          ↓                                   │   │
+│   │                          ↓                                  │   │
 │   │   [v2] [v1] [v1] [v1] + [v2]                                │   │
-│   │     ↓    ↓                                                   │   │
-│   │   [v2] [v2] [v2] [v2] (terminate extra)                      │   │
-│   │                                                               │   │
-│   │   ✅ Full capacity during deployment                         │   │
+│   │     ↓    ↓                                                  │   │
+│   │   [v2] [v2] [v2] [v2] (terminate extra)                     │   │
+│   │                                                             │   │
+│   │   ✅ Full capacity during deployment                        │   │
 │   │   ⚠️ Tốn thêm cost cho extra instances                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   4. IMMUTABLE (New ASG, safest)                                    │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │   ASG 1: [v1] [v1] [v1] [v1] (existing)                     │   │
-│   │                  +                                           │   │
+│   │                  +                                          │   │
 │   │   ASG 2: [v2] [v2] [v2] [v2] (new, temporary)               │   │
-│   │                  ↓                                           │   │
-│   │   Merge ASG 2 into ASG 1, terminate old instances            │   │
-│   │                                                               │   │
-│   │   ✅ Fastest rollback (terminate new ASG)                    │   │
-│   │   ✅ Full capacity                                            │   │
+│   │                  ↓                                          │   │
+│   │   Merge ASG 2 into ASG 1, terminate old instances           │   │
+│   │                                                             │   │
+│   │   ✅ Fastest rollback (terminate new ASG)                   │   │
+│   │   ✅ Full capacity                                          │   │
 │   │   ⚠️ Double capacity cost during deployment                  │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   5. BLUE/GREEN (Separate environment)                              │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │   Blue (Prod):  [v1] [v1] [v1] [v1] ←── DNS                 │   │
-│   │                                          │                   │   │
-│   │   Green (New):  [v2] [v2] [v2] [v2]      │                   │   │
-│   │                        ↓                  │                   │   │
-│   │   Swap DNS ─────────────────────────────→│                   │   │
-│   │                                                               │   │
-│   │   ✅ Zero downtime                                            │   │
-│   │   ✅ Easy rollback (swap back)                                │   │
+│   │                                          │                  │   │
+│   │   Green (New):  [v2] [v2] [v2] [v2]      │                  │   │
+│   │                        ↓                  │                 │   │
+│   │   Swap DNS ─────────────────────────────→│                  │   │
+│   │                                                             │   │
+│   │   ✅ Zero downtime                                          │   │
+│   │   ✅ Easy rollback (swap back)                              │   │
 │   │   ⚠️ Cần 2 environments (gấp đôi cost)                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -399,13 +399,13 @@ eb config --cfg my-config
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│   ⚠️ WARNING: RDS lifecycle tied to environment!                   │
-│                                                                       │
-│   Environment                                                         │
-│   ├── EC2 Instances                                                  │
+│   ⚠️ WARNING: RDS lifecycle tied to environment!                     │
+│                                                                     │
+│   Environment                                                       │
+│   ├── EC2 Instances                                                 │
 │   └── RDS Instance ← Bị XÓA khi terminate environment!              │
-│                                                                       │
-│   Use case: Dev/Test only                                            │
+│                                                                     │
+│   Use case: Dev/Test only                                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -414,14 +414,14 @@ eb config --cfg my-config
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │   ✅ RDS independent, can be shared across environments             │
-│                                                                       │
-│   Beanstalk Environment          External RDS                        │
+│                                                                     │
+│   Beanstalk Environment          External RDS                       │
 │   ├── EC2 Instances ────────────→ RDS Instance                      │
 │   └── (no RDS here)              (created separately)               │
-│                                                                       │
-│   - RDS survives environment termination                             │
-│   - Can be shared between dev/prod                                   │
-│   - Separate backup/maintenance                                      │
+│                                                                     │
+│   - RDS survives environment termination                            │
+│   - Can be shared between dev/prod                                  │
+│   - Separate backup/maintenance                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -441,15 +441,15 @@ option_settings:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    HEALTH STATUS                                     │
-│                                                                       │
-│   🟢 OK         - All instances healthy                              │
-│   🟡 Warning    - Some instances degraded                            │
-│   🟠 Degraded   - Significant issues                                 │
-│   🔴 Severe     - Critical issues                                    │
-│   ⚪ Grey       - Insufficient data                                   │
-│                                                                       │
-│   Enhanced Health Reporting:                                         │
+│                    HEALTH STATUS                                    │
+│                                                                     │
+│   🟢 OK         - All instances healthy                             │
+│   🟡 Warning    - Some instances degraded                           │
+│   🟠 Degraded   - Significant issues                                │
+│   🔴 Severe     - Critical issues                                   │
+│   ⚪ Grey       - Insufficient data                                 │
+│                                                                     │
+│   Enhanced Health Reporting:                                        │
 │   ├── Instance health (CPU, memory, disk)                           │
 │   ├── Application health (request latency, 5xx errors)              │
 │   └── Environment health (deployment status)                        │
@@ -484,18 +484,18 @@ eb logs --stream
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    BEANSTALK PRICING                                 │
-│                                                                       │
-│   Elastic Beanstalk = FREE!                                          │
-│                                                                       │
+│                    BEANSTALK PRICING                                │
+│                                                                     │
+│   Elastic Beanstalk = FREE!                                         │
+│                                                                     │
 │   Bạn chỉ trả tiền cho resources được tạo ra:                       │
-│   ├── EC2 Instances                                                  │
-│   ├── Elastic Load Balancer                                          │
+│   ├── EC2 Instances                                                 │
+│   ├── Elastic Load Balancer                                         │
 │   ├── RDS (nếu dùng)                                                │
 │   ├── S3 (lưu application versions)                                 │
 │   └── CloudWatch (logs, metrics)                                    │
-│                                                                       │
-│   💡 Tip: Dùng Single Instance mode cho dev để tiết kiệm           │
+│                                                                     │
+│   💡 Tip: Dùng Single Instance mode cho dev để tiết kiệm            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -505,25 +505,25 @@ eb logs --stream
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│               WHEN TO USE WHAT?                                      │
-│                                                                       │
-│   ELASTIC BEANSTALK                                                  │
+│               WHEN TO USE WHAT?                                     │
+│                                                                     │
+│   ELASTIC BEANSTALK                                                 │
 │   ├── Traditional web apps (Java, Node, Python...)                  │
 │   ├── Team không quen containers                                    │
-│   ├── Muốn deploy nhanh, không lo infrastructure                   │
-│   └── Cần managed platform                                           │
-│                                                                       │
-│   ECS/EKS                                                            │
-│   ├── Microservices architecture                                     │
-│   ├── Container-based applications                                   │
+│   ├── Muốn deploy nhanh, không lo infrastructure                    │
+│   └── Cần managed platform                                          │
+│                                                                     │
+│   ECS/EKS                                                           │
+│   ├── Microservices architecture                                    │
+│   ├── Container-based applications                                  │
 │   ├── Cần fine-grained control                                      │
 │   └── Team có kinh nghiệm Docker/K8s                                │
-│                                                                       │
-│   LAMBDA                                                             │
+│                                                                     │
+│   LAMBDA                                                            │
 │   ├── Event-driven, short-running tasks                             │
 │   ├── APIs với traffic không đều                                    │
 │   ├── Không muốn quản lý servers                                    │
-│   └── Pay per execution                                              │
+│   └── Pay per execution                                             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -536,16 +536,16 @@ eb logs --stream
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │   ❌ BEANSTALK LIMITATION - KHÔNG THỂ:                              │
-│                                                                       │
+│                                                                     │
 │   1 Environment chứa nhiều services với scaling khác nhau:          │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   Environment                                                │   │
+│   │   Environment                                               │   │
 │   │   ├── User Service (scale: 2-10)                            │   │
 │   │   ├── Order Service (scale: 5-20)    ← KHÔNG ĐƯỢC!          │   │
 │   │   └── Payment Service (scale: 1-3)                          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Tất cả instances trong 1 environment scale CÙNG NHAU!            │
+│                                                                     │
+│   Tất cả instances trong 1 environment scale CÙNG NHAU!             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -553,15 +553,15 @@ eb logs --stream
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│   ✅ ECS/EKS cho Microservices - Mỗi service scale RIÊNG BIỆT:     │
-│                                                                       │
+│   ✅ ECS/EKS cho Microservices - Mỗi service scale RIÊNG BIỆT:      │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │   ECS Cluster                                                │   │
-│   │                                                               │   │
+│   │   ECS Cluster                                               │   │
+│   │                                                             │   │
 │   │   User Service    ──→ 2-10 tasks (containers)               │   │
-│   │   Order Service   ──→ 5-20 tasks                             │   │
-│   │   Payment Service ──→ 1-3 tasks                              │   │
-│   │                                                               │   │
+│   │   Order Service   ──→ 5-20 tasks                            │   │
+│   │   Payment Service ──→ 1-3 tasks                             │   │
+│   │                                                             │   │
 │   │   Mỗi service có scaling rules riêng!                       │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -682,21 +682,21 @@ option_settings:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  ELASTIC BEANSTALK SUMMARY                           │
-│                                                                       │
+│                  ELASTIC BEANSTALK SUMMARY                          │
+│                                                                     │
 │   ✅ PaaS - Upload code, Beanstalk lo infrastructure                │
-│   ✅ Supports: Java, Python, Node.js, PHP, Ruby, Go, Docker        │
+│   ✅ Supports: Java, Python, Node.js, PHP, Ruby, Go, Docker         │
 │   ✅ Auto provisions: EC2, ELB, ASG, CloudWatch                     │
-│   ✅ Multiple deployment policies (Rolling, Immutable, Blue/Green) │
+│   ✅ Multiple deployment policies (Rolling, Immutable, Blue/Green)  │
 │   ✅ Free service - chỉ trả tiền cho resources                      │
-│   ✅ .ebextensions để customize                                      │
-│                                                                       │
-│   📚 Learning Path:                                                  │
+│   ✅ .ebextensions để customize                                     │
+│                                                                     │
+│   📚 Learning Path:                                                 │
 │   1. eb init → Tạo Beanstalk app                                    │
-│   2. eb create → Tạo environment                                     │
-│   3. eb deploy → Deploy code                                         │
+│   2. eb create → Tạo environment                                    │
+│   3. eb deploy → Deploy code                                        │
 │   4. .ebextensions → Customize configuration                        │
-│   5. Blue/Green deployment cho production                            │
+│   5. Blue/Green deployment cho production                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

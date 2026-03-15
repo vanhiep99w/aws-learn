@@ -25,24 +25,24 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                           AWS AppConfig                                       │
+│                           AWS AppConfig                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   "Deploy configuration changes SAFELY without code deployment"             │
+│   "Deploy configuration changes SAFELY without code deployment"              │
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │   TRƯỚC (không có AppConfig):                                       │   │
-│   │   ─────────────────────────────                                     │   │
-│   │   Config thay đổi → Phải redeploy app → Downtime risk              │   │
-│   │                                                                     │   │
-│   │   SAU (có AppConfig):                                               │   │
-│   │   ──────────────────                                                │   │
-│   │   Config thay đổi → AppConfig deploy → App pull config             │   │
-│   │                    → Gradual rollout → Validation                   │   │
-│   │                    → Rollback nếu lỗi                               │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │   TRƯỚC (không có AppConfig):                                       │    │
+│   │   ─────────────────────────────                                     │    │
+│   │   Config thay đổi → Phải redeploy app → Downtime risk               │    │
+│   │                                                                     │    │
+│   │   SAU (có AppConfig):                                               │    │
+│   │   ──────────────────                                                │    │
+│   │   Config thay đổi → AppConfig deploy → App pull config              │    │
+│   │                    → Gradual rollout → Validation                   │    │
+│   │                    → Rollback nếu lỗi                               │    │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -53,24 +53,24 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Problems Solved by AppConfig                               │
+│                    Problems Solved by AppConfig                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   ❌ VẤN ĐỀ TRUYỀN THỐNG:                                                    │
 │   ─────────────────────────                                                  │
-│   1. Config trong code → Phải rebuild + redeploy                            │
-│   2. Config trong env vars → Phải restart container/instance                │
-│   3. Config sai → App crash, không có rollback                              │
-│   4. Feature release → All-or-nothing, không gradual                        │
-│   5. Không validate → Config sai format gây lỗi runtime                     │
+│   1. Config trong code → Phải rebuild + redeploy                             │
+│   2. Config trong env vars → Phải restart container/instance                 │
+│   3. Config sai → App crash, không có rollback                               │
+│   4. Feature release → All-or-nothing, không gradual                         │
+│   5. Không validate → Config sai format gây lỗi runtime                      │
 │                                                                              │
 │   ✅ APPCONFIG GIẢI QUYẾT:                                                   │
 │   ─────────────────────────                                                  │
-│   1. ✅ Dynamic config update - không cần redeploy                          │
-│   2. ✅ Gradual deployment - 10% → 50% → 100%                               │
-│   3. ✅ Automatic rollback - nếu CloudWatch alarm triggered                 │
-│   4. ✅ Validation - JSON Schema, Lambda validator                          │
-│   5. ✅ Feature flags - enable/disable features dynamically                 │
+│   1. ✅ Dynamic config update - không cần redeploy                           │
+│   2. ✅ Gradual deployment - 10% → 50% → 100%                                │
+│   3. ✅ Automatic rollback - nếu CloudWatch alarm triggered                  │
+│   4. ✅ Validation - JSON Schema, Lambda validator                           │
+│   5. ✅ Feature flags - enable/disable features dynamically                  │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -81,43 +81,43 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        AppConfig Architecture                                 │
+│                        AppConfig Architecture                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                          APPLICATION                                │   │
-│   │   (logical grouping - e.g., "MyWebApp")                            │   │
-│   │                                                                     │   │
-│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │   │
-│   │   │ ENVIRONMENT  │  │ ENVIRONMENT  │  │ ENVIRONMENT  │            │   │
-│   │   │   "dev"      │  │   "staging"  │  │   "prod"     │            │   │
-│   │   └──────────────┘  └──────────────┘  └──────────────┘            │   │
-│   │                                                                     │   │
-│   │   ┌──────────────────────────────────────────────────────────────┐ │   │
-│   │   │               CONFIGURATION PROFILE                          │ │   │
-│   │   │   (what config to deploy)                                    │ │   │
-│   │   │                                                              │ │   │
-│   │   │   ┌────────────────────────────────────────────────────────┐│ │   │
-│   │   │   │  Configuration Source:                                 ││ │   │
-│   │   │   │  • SSM Parameter Store                                 ││ │   │
-│   │   │   │  • SSM Documents                                       ││ │   │
-│   │   │   │  • S3 bucket                                           ││ │   │
-│   │   │   │  • AppConfig Hosted Configuration                      ││ │   │
-│   │   │   └────────────────────────────────────────────────────────┘│ │   │
-│   │   │                                                              │ │   │
-│   │   │   ┌────────────────────────────────────────────────────────┐│ │   │
-│   │   │   │  Validators (optional):                                ││ │   │
-│   │   │   │  • JSON Schema                                         ││ │   │
-│   │   │   │  • Lambda function                                     ││ │   │
-│   │   │   └────────────────────────────────────────────────────────┘│ │   │
-│   │   └──────────────────────────────────────────────────────────────┘ │   │
-│   │                                                                     │   │
-│   │   ┌──────────────────────────────────────────────────────────────┐ │   │
-│   │   │               DEPLOYMENT STRATEGY                            │ │   │
-│   │   │   (how to deploy - gradual rollout)                          │ │   │
-│   │   └──────────────────────────────────────────────────────────────┘ │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                          APPLICATION                                │    │
+│   │   (logical grouping - e.g., "MyWebApp")                             │    │
+│   │                                                                     │    │
+│   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │   │
+│   │   │ ENVIRONMENT  │  │ ENVIRONMENT  │  │ ENVIRONMENT  │               │   │
+│   │   │   "dev"      │  │   "staging"  │  │   "prod"     │               │   │
+│   │   └──────────────┘  └──────────────┘  └──────────────┘               │   │
+│   │                                                                     │    │
+│   │   ┌──────────────────────────────────────────────────────────────┐   │   │
+│   │   │               CONFIGURATION PROFILE                          │   │   │
+│   │   │   (what config to deploy)                                    │   │   │
+│   │   │                                                              │   │   │
+│   │   │   ┌────────────────────────────────────────────────────────┐│    │   │
+│   │   │   │  Configuration Source:                                 ││    │   │
+│   │   │   │  • SSM Parameter Store                                 ││    │   │
+│   │   │   │  • SSM Documents                                       ││    │   │
+│   │   │   │  • S3 bucket                                           ││    │   │
+│   │   │   │  • AppConfig Hosted Configuration                      ││    │   │
+│   │   │   └────────────────────────────────────────────────────────┘│    │   │
+│   │   │                                                              │   │   │
+│   │   │   ┌────────────────────────────────────────────────────────┐│    │   │
+│   │   │   │  Validators (optional):                                ││    │   │
+│   │   │   │  • JSON Schema                                         ││    │   │
+│   │   │   │  • Lambda function                                     ││    │   │
+│   │   │   └────────────────────────────────────────────────────────┘│    │   │
+│   │   └──────────────────────────────────────────────────────────────┘   │   │
+│   │                                                                     │    │
+│   │   ┌──────────────────────────────────────────────────────────────┐   │   │
+│   │   │               DEPLOYMENT STRATEGY                            │   │   │
+│   │   │   (how to deploy - gradual rollout)                          │   │   │
+│   │   └──────────────────────────────────────────────────────────────┘   │   │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -137,12 +137,12 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       Configuration Sources                                   │
+│                       Configuration Sources                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   1. APPCONFIG HOSTED CONFIGURATION:                                         │
 │      ─────────────────────────────────                                       │
-│      • Lưu trực tiếp trong AppConfig                                        │
+│      • Lưu trực tiếp trong AppConfig                                         │
 │      • Max 1MB per config                                                    │
 │      • JSON, YAML, or text                                                   │
 │      • ✅ Recommended cho feature flags                                      │
@@ -150,7 +150,7 @@
 │   2. SSM PARAMETER STORE:                                                    │
 │      ────────────────────                                                    │
 │      • Dùng existing parameters                                              │
-│      • Tích hợp với SSM ecosystem                                           │
+│      • Tích hợp với SSM ecosystem                                            │
 │      • Standard (4KB) or Advanced (8KB)                                      │
 │                                                                              │
 │   3. SSM DOCUMENT:                                                           │
@@ -161,8 +161,8 @@
 │   4. S3:                                                                     │
 │      ────                                                                    │
 │      • Cho large configurations                                              │
-│      • Bất kỳ format nào                                                    │
-│      • Max object size của S3                                               │
+│      • Bất kỳ format nào                                                     │
+│      • Max object size của S3                                                │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -173,38 +173,38 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        Deployment Strategies                                  │
+│                        Deployment Strategies                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   1. ALL AT ONCE (Immediate):                                                │
 │      ─────────────────────────                                               │
-│      Deploy 100% ngay lập tức                                               │
-│      • Bake time: 0 minutes                                                 │
-│      • Use case: Dev/Test environments                                      │
+│      Deploy 100% ngay lập tức                                                │
+│      • Bake time: 0 minutes                                                  │
+│      • Use case: Dev/Test environments                                       │
 │                                                                              │
 │   2. LINEAR:                                                                 │
 │      ────────                                                                │
-│      Tăng dần đều theo %                                                    │
-│      • Linear50PercentEvery30Seconds                                        │
-│      • 0% → 50% → 100% (mỗi 30s)                                           │
+│      Tăng dần đều theo %                                                     │
+│      • Linear50PercentEvery30Seconds                                         │
+│      • 0% → 50% → 100% (mỗi 30s)                                             │
 │                                                                              │
 │   3. EXPONENTIAL:                                                            │
 │      ─────────────                                                           │
-│      Tăng theo hàm mũ                                                       │
-│      • Exponential10PercentEvery1Minute                                     │
-│      • 10% → 20% → 40% → 80% → 100%                                        │
-│      • ✅ Recommended cho Production                                        │
+│      Tăng theo hàm mũ                                                        │
+│      • Exponential10PercentEvery1Minute                                      │
+│      • 10% → 20% → 40% → 80% → 100%                                          │
+│      • ✅ Recommended cho Production                                         │
 │                                                                              │
 │   Timeline Example (Exponential):                                            │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  Time:    0m      1m      2m      3m      4m      5m               │   │
-│   │           │       │       │       │       │       │                │   │
-│   │  %:      10%     20%     40%     80%    100%    ──                 │   │
-│   │           │       │       │       │       │                        │   │
-│   │           └───────┴───────┴───────┴───────┘                        │   │
-│   │                                                                     │   │
-│   │  → Nếu CloudWatch alarm → Automatic ROLLBACK!                      │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  Time:    0m      1m      2m      3m      4m      5m                │    │
+│   │           │       │       │       │       │       │                  │   │
+│   │  %:      10%     20%     40%     80%    100%    ──                  │    │
+│   │           │       │       │       │       │                          │   │
+│   │           └───────┴───────┴───────┴───────┘                          │   │
+│   │                                                                     │    │
+│   │  → Nếu CloudWatch alarm → Automatic ROLLBACK!                       │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -225,29 +225,29 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│              % Deployment = Thời gian chờ để monitor                          │
+│              % Deployment = Thời gian chờ để monitor                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ❌ HIỂU SAI: 20% instances nhận config mới, 80% nhận config cũ            │
+│   ❌ HIỂU SAI: 20% instances nhận config mới, 80% nhận config cũ             │
 │                                                                              │
 │   ✅ HIỂU ĐÚNG:                                                              │
-│   • Sau 20% thời gian → Config MỚI đã available                             │
-│   • TẤT CẢ instances poll → Nhận config MỚI                                 │
-│   • AppConfig CHỜ thêm thời gian để MONITOR                                 │
-│   • % tiếp theo = checkpoint để kiểm tra alarms                             │
+│   • Sau 20% thời gian → Config MỚI đã available                              │
+│   • TẤT CẢ instances poll → Nhận config MỚI                                  │
+│   • AppConfig CHỜ thêm thời gian để MONITOR                                  │
+│   • % tiếp theo = checkpoint để kiểm tra alarms                              │
 │                                                                              │
-│   VÍ DỤ: 10 EC2 instances, deployment time = 20 phút                        │
+│   VÍ DỤ: 10 EC2 instances, deployment time = 20 phút                         │
 │   ─────────────────────────────────────────────────                          │
 │                                                                              │
-│   T=0:     AppConfig bắt đầu deployment                                     │
-│   T=0-30s: Tất cả 10 instances poll → Nhận config MỚI ngay                 │
-│   T=0-4m:  AppConfig monitor (20% time checkpoint)                          │
-│            → Có alarm? Rollback! Không alarm? Tiếp tục                      │
+│   T=0:     AppConfig bắt đầu deployment                                      │
+│   T=0-30s: Tất cả 10 instances poll → Nhận config MỚI ngay                   │
+│   T=0-4m:  AppConfig monitor (20% time checkpoint)                           │
+│            → Có alarm? Rollback! Không alarm? Tiếp tục                       │
 │   T=4-8m:  Monitor (40% checkpoint)                                          │
 │   ...                                                                        │
-│   T=20m:   100% complete, deployment finalized                              │
+│   T=20m:   100% complete, deployment finalized                               │
 │                                                                              │
-│   → % là THỜI GIAN chờ monitor, KHÔNG phải traffic split!                  │
+│   → % là THỜI GIAN chờ monitor, KHÔNG phải traffic split!                    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -256,33 +256,33 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│              3 cách App lấy config từ AppConfig                               │
+│              3 cách App lấy config từ AppConfig                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ⚠️ KHÔNG dùng SSM Agent! AppConfig có cách riêng:                         │
+│   ⚠️ KHÔNG dùng SSM Agent! AppConfig có cách riêng:                           │
 │                                                                              │
-│   1️⃣ APPCONFIG AGENT (Recommended cho EC2/ECS)                              │
+│   1️⃣ APPCONFIG AGENT (Recommended cho EC2/ECS)                               │
 │   ────────────────────────────────────────────                               │
-│   • Agent RIÊNG, KHÁC với SSM Agent                                         │
-│   • Caching + polling tự động                                               │
+│   • Agent RIÊNG, KHÁC với SSM Agent                                          │
+│   • Caching + polling tự động                                                │
 │                                                                              │
-│   ┌─────────────────┐    localhost:2772    ┌─────────────────┐              │
-│   │   Your App      │ ◄─────────────────── │ AppConfig Agent │              │
-│   └─────────────────┘                       └────────┬────────┘              │
+│   ┌─────────────────┐    localhost:2772    ┌─────────────────┐               │
+│   │   Your App      │ ◄─────────────────── │ AppConfig Agent │               │
+│   └─────────────────┘                      └────────┬────────┘               │
 │                                                      │ polling               │
 │                                             ┌────────▼────────┐              │
 │                                             │ AppConfig API   │              │
 │                                             └─────────────────┘              │
 │                                                                              │
-│   2️⃣ LAMBDA EXTENSION (Cho Lambda)                                          │
+│   2️⃣ LAMBDA EXTENSION (Cho Lambda)                                           │
 │   ──────────────────────────────────                                         │
-│   • Lambda layer, không cần agent                                           │
-│   • Tự động cache config                                                    │
+│   • Lambda layer, không cần agent                                            │
+│   • Tự động cache config                                                     │
 │                                                                              │
-│   3️⃣ DIRECT API CALL (Simple cases)                                         │
+│   3️⃣ DIRECT API CALL (Simple cases)                                          │
 │   ────────────────────────────────                                           │
-│   • App gọi thẳng GetConfiguration API                                      │
-│   • Phải tự handle caching                                                  │
+│   • App gọi thẳng GetConfiguration API                                       │
+│   • Phải tự handle caching                                                   │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -291,31 +291,31 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Auto Rollback                                         │
+│                         Auto Rollback                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   AppConfig KHÔNG "hiểu" logs!                                              │
-│   Chỉ watch CloudWatch ALARMS mà BẠN setup trước.                           │
+│   AppConfig KHÔNG "hiểu" logs!                                               │
+│   Chỉ watch CloudWatch ALARMS mà BẠN setup trước.                            │
 │                                                                              │
-│   Logic đơn giản:                                                           │
+│   Logic đơn giản:                                                            │
 │   ────────────────                                                           │
-│   Đang deploy + Alarm triggered = GIẢ ĐỊNH là do config mới → ROLLBACK     │
+│   Đang deploy + Alarm triggered = GIẢ ĐỊNH là do config mới → ROLLBACK       │
 │                                                                              │
-│   VÍ DỤ:                                                                    │
+│   VÍ DỤ:                                                                     │
 │   ───────                                                                    │
-│   BẠN setup alarm: "Error rate > 5% → trigger"                             │
-│   BẠN config AppConfig: "Monitor alarm này khi deploy"                      │
+│   BẠN setup alarm: "Error rate > 5% → trigger"                               │
+│   BẠN config AppConfig: "Monitor alarm này khi deploy"                       │
 │                                                                              │
-│   T=0:  Start deployment                                                    │
-│   T=3m: Error rate tăng 1% → 8%                                             │
+│   T=0:  Start deployment                                                     │
+│   T=3m: Error rate tăng 1% → 8%                                              │
 │         CloudWatch: ALARM!                                                   │
-│         AppConfig: "Có alarm trong khi deploy → ROLLBACK!"                  │
-│   T=3m: Tất cả instances poll → Nhận lại config CŨ                          │
+│         AppConfig: "Có alarm trong khi deploy → ROLLBACK!"                   │
+│   T=3m: Tất cả instances poll → Nhận lại config CŨ                           │
 │                                                                              │
-│   ⚠️ LƯU Ý:                                                                 │
-│   • AppConfig KHÔNG biết error có phải do config hay không                  │
-│   • Chỉ dựa vào correlation (trùng hợp thời gian)                          │
-│   • Philosophy: "Better safe than sorry" - rollback trước, điều tra sau    │
+│   ⚠️ LƯU Ý:                                                                   │
+│   • AppConfig KHÔNG biết error có phải do config hay không                   │
+│   • Chỉ dựa vào correlation (trùng hợp thời gian)                            │
+│   • Philosophy: "Better safe than sorry" - rollback trước, điều tra sau      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -324,40 +324,40 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│             Canary Deployment vs AppConfig Deployment                         │
+│             Canary Deployment vs AppConfig Deployment                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   GIỐNG NHAU:                                                               │
-│   • Gradual rollout                                                         │
-│   • Monitor metrics                                                         │
-│   • Auto rollback nếu lỗi                                                  │
+│   GIỐNG NHAU:                                                                │
+│   • Gradual rollout                                                          │
+│   • Monitor metrics                                                          │
+│   • Auto rollback nếu lỗi                                                    │
 │                                                                              │
-│   KHÁC NHAU:                                                                │
+│   KHÁC NHAU:                                                                 │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   CANARY (CodeDeploy/Lambda):                                               │
+│   CANARY (CodeDeploy/Lambda):                                                │
 │   ──────────────────────────                                                 │
-│   Deploy: CODE mới                                                          │
-│   Cơ chế: Route % TRAFFIC đến version mới                                  │
+│   Deploy: CODE mới                                                           │
+│   Cơ chế: Route % TRAFFIC đến version mới                                    │
 │                                                                              │
-│        10% traffic → v2.0 (new code)                                        │
-│        90% traffic → v1.0 (old code)                                        │
+│        10% traffic → v2.0 (new code)                                         │
+│        90% traffic → v1.0 (old code)                                         │
 │                                                                              │
-│   → Có 2 versions chạy song song                                           │
-│   → 10% users thấy app mới, 90% thấy app cũ                                │
+│   → Có 2 versions chạy song song                                             │
+│   → 10% users thấy app mới, 90% thấy app cũ                                  │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
 │   APPCONFIG:                                                                 │
 │   ──────────                                                                 │
-│   Deploy: CONFIG mới (không phải code)                                      │
-│   Cơ chế: Rollout theo THỜI GIAN                                           │
+│   Deploy: CONFIG mới (không phải code)                                       │
+│   Cơ chế: Rollout theo THỜI GIAN                                             │
 │                                                                              │
-│        Tất cả instances → Cùng code, CONFIG mới                            │
-│        % = thời gian chờ monitor                                            │
+│        Tất cả instances → Cùng code, CONFIG mới                              │
+│        % = thời gian chờ monitor                                             │
 │                                                                              │
-│   → 1 version code, config mới                                              │
-│   → Tất cả users thấy cùng app với config mới                              │
+│   → 1 version code, config mới                                               │
+│   → Tất cả users thấy cùng app với config mới                                │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -379,32 +379,32 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          Feature Flags                                        │
+│                          Feature Flags                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Feature flags = Bật/tắt features động mà KHÔNG cần redeploy code         │
+│   Feature flags = Bật/tắt features động mà KHÔNG cần redeploy code           │
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  Feature Flag Configuration Example:                                │   │
-│   │                                                                     │   │
-│   │  {                                                                  │   │
-│   │    "feature_dark_mode": {                                          │   │
-│   │      "enabled": true                                                │   │
-│   │    },                                                               │   │
-│   │    "feature_new_checkout": {                                       │   │
-│   │      "enabled": false,                                             │   │
-│   │      "rollout_percentage": 25                                      │   │
-│   │    },                                                               │   │
-│   │    "max_items_cart": 50                                            │   │
-│   │  }                                                                  │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │  Feature Flag Configuration Example:                                │    │
+│   │                                                                     │    │
+│   │  {                                                                  │    │
+│   │    "feature_dark_mode": {                                           │    │
+│   │      "enabled": true                                                │    │
+│   │    },                                                               │    │
+│   │    "feature_new_checkout": {                                        │    │
+│   │      "enabled": false,                                              │    │
+│   │      "rollout_percentage": 25                                       │    │
+│   │    },                                                               │    │
+│   │    "max_items_cart": 50                                             │    │
+│   │  }                                                                  │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 │   Use Cases:                                                                 │
 │   ──────────                                                                 │
-│   • Dark launch - deploy code nhưng feature TẮT                             │
-│   • A/B testing - bật feature cho % users                                   │
-│   • Kill switch - tắt feature ngay nếu có bug                               │
-│   • Gradual rollout - 10% → 50% → 100% users                               │
+│   • Dark launch - deploy code nhưng feature TẮT                              │
+│   • A/B testing - bật feature cho % users                                    │
+│   • Kill switch - tắt feature ngay nếu có bug                                │
+│   • Gradual rollout - 10% → 50% → 100% users                                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -415,28 +415,28 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    AppConfig vs Other Services                                │
+│                    AppConfig vs Other Services                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   APPCONFIG vs SSM PARAMETER STORE:                                          │
 │   ───────────────────────────────────                                        │
-│   Parameter Store: Chỉ LƯU config                                           │
-│   AppConfig:       Lưu + DEPLOY config với validation + rollback            │
+│   Parameter Store: Chỉ LƯU config                                            │
+│   AppConfig:       Lưu + DEPLOY config với validation + rollback             │
 │                                                                              │
 │   APPCONFIG vs SECRETS MANAGER:                                              │
 │   ───────────────────────────────                                            │
-│   Secrets Manager: Lưu SECRETS (passwords, API keys) + rotation             │
-│   AppConfig:       Lưu APP CONFIG (feature flags, settings)                 │
+│   Secrets Manager: Lưu SECRETS (passwords, API keys) + rotation              │
+│   AppConfig:       Lưu APP CONFIG (feature flags, settings)                  │
 │                                                                              │
 │   APPCONFIG vs LAMBDA ENVIRONMENT VARIABLES:                                 │
 │   ────────────────────────────────────────────                               │
-│   Env Vars:  Static, phải redeploy Lambda                                   │
-│   AppConfig: Dynamic, update runtime không cần redeploy                     │
+│   Env Vars:  Static, phải redeploy Lambda                                    │
+│   AppConfig: Dynamic, update runtime không cần redeploy                      │
 │                                                                              │
 │   APPCONFIG vs CODEDEPLOY:                                                   │
 │   ─────────────────────────                                                  │
-│   CodeDeploy: Deploy CODE                                                   │
-│   AppConfig:  Deploy CONFIG (không cần rebuild code)                        │
+│   CodeDeploy: Deploy CODE                                                    │
+│   AppConfig:  Deploy CONFIG (không cần rebuild code)                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -457,22 +457,22 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          Use Cases                                            │
+│                          Use Cases                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   ✅ DÙNG APPCONFIG KHI:                                                     │
 │   ────────────────────────                                                   │
-│   • Feature flags - bật/tắt features động                                   │
-│   • Operational configs - timeout, batch size, thresholds                   │
-│   • Gradual rollout với validation                                          │
-│   • Config changes cần rollback nếu lỗi                                     │
-│   • Multi-environment configs (dev/staging/prod)                            │
+│   • Feature flags - bật/tắt features động                                    │
+│   • Operational configs - timeout, batch size, thresholds                    │
+│   • Gradual rollout với validation                                           │
+│   • Config changes cần rollback nếu lỗi                                      │
+│   • Multi-environment configs (dev/staging/prod)                             │
 │                                                                              │
 │   ❌ KHÔNG DÙNG APPCONFIG KHI:                                               │
 │   ──────────────────────────                                                 │
-│   • Secrets (passwords, API keys) → dùng Secrets Manager                    │
-│   • Simple key-value không cần deployment → Parameter Store                 │
-│   • Code deployment → CodeDeploy                                            │
+│   • Secrets (passwords, API keys) → dùng Secrets Manager                     │
+│   • Simple key-value không cần deployment → Parameter Store                  │
+│   • Code deployment → CodeDeploy                                             │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```

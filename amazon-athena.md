@@ -35,26 +35,26 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    KHÔNG có Athena                                            │
+│                    KHÔNG có Athena                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   S3 Bucket (1TB logs)                                                       │
 │   ┌─────────────────┐                                                        │
-│   │ access.log      │     ❌ Phải download về local                         │
-│   │ error.log       │     ❌ Setup database server                          │
-│   │ app.log         │     ❌ Load data vào database                         │
-│   │ ...             │     ❌ Mất thời gian, tốn tiền                        │
+│   │ access.log      │     ❌ Phải download về local                          │
+│   │ error.log       │     ❌ Setup database server                           │
+│   │ app.log         │     ❌ Load data vào database                          │
+│   │ ...             │     ❌ Mất thời gian, tốn tiền                         │
 │   └─────────────────┘                                                        │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    CÓ Athena                                                  │
+│                    CÓ Athena                                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   S3 Bucket (1TB logs)                Athena                                 │
 │   ┌─────────────────┐                ┌─────────────────────────────────────┐ │
-│   │ access.log      │◄──── SQL ─────│ SELECT * FROM logs                  │ │
+│   │ access.log      │◄──── SQL ───── │ SELECT * FROM logs                  │ │
 │   │ error.log       │                │ WHERE status = 500                  │ │
 │   │ app.log         │                │ AND date > '2024-01-01'             │ │
 │   │ ...             │                └─────────────────────────────────────┘ │
@@ -73,7 +73,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Amazon Athena Architecture                            │
+│                         Amazon Athena Architecture                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   ┌─────────────┐                                                            │
@@ -81,26 +81,26 @@
 │   └──────┬──────┘                                                            │
 │          │ SQL Query                                                         │
 │          ▼                                                                   │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                         Amazon Athena                                │   │
-│   │                                                                      │   │
-│   │   ┌─────────────────┐     ┌─────────────────┐                      │   │
-│   │   │  Query Engine   │     │   AWS Glue      │                      │   │
-│   │   │  (Presto/Trino) │◄────│   Data Catalog  │                      │   │
-│   │   └────────┬────────┘     │   (Metadata)    │                      │   │
-│   │            │              └─────────────────┘                      │   │
-│   └────────────┼────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                         Amazon Athena                               │    │
+│   │                                                                     │    │
+│   │   ┌─────────────────┐     ┌─────────────────┐                        │   │
+│   │   │  Query Engine   │     │   AWS Glue      │                        │   │
+│   │   │  (Presto/Trino) │◄────│   Data Catalog  │                        │   │
+│   │   └────────┬────────┘     │   (Metadata)    │                        │   │
+│   │            │              └─────────────────┘                        │   │
+│   └────────────┼────────────────────────────────────────────────────────┘    │
 │                │                                                             │
 │                │ Scan Data                                                   │
 │                ▼                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                         Amazon S3                                    │   │
-│   │                                                                      │   │
-│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │   │
-│   │   │   Bucket A  │  │   Bucket B  │  │   Bucket C  │                │   │
-│   │   │  (CSV/JSON) │  │  (Parquet)  │  │   (ORC)     │                │   │
-│   │   └─────────────┘  └─────────────┘  └─────────────┘                │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                         Amazon S3                                   │    │
+│   │                                                                     │    │
+│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │   │
+│   │   │   Bucket A  │  │   Bucket B  │  │   Bucket C  │                  │   │
+│   │   │  (CSV/JSON) │  │  (Parquet)  │  │   (ORC)     │                  │   │
+│   │   └─────────────┘  └─────────────┘  └─────────────┘                  │   │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 │   Query Results → S3 Bucket (staging location)                               │
 │                                                                              │
@@ -124,11 +124,11 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         How Athena Works                                      │
+│                         How Athena Works                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   STEP 1: Tạo Database và Table (pointing to S3)                            │
-│   ──────────────────────────────────────────────                            │
+│   STEP 1: Tạo Database và Table (pointing to S3)                             │
+│   ──────────────────────────────────────────────                             │
 │                                                                              │
 │   CREATE EXTERNAL TABLE logs (                                               │
 │       timestamp STRING,                                                      │
@@ -136,26 +136,26 @@
 │       request STRING,                                                        │
 │       status INT                                                             │
 │   )                                                                          │
-│   ROW FORMAT DELIMITED FIELDS TERMINATED BY ','                             │
-│   LOCATION 's3://my-bucket/logs/';                                          │
+│   ROW FORMAT DELIMITED FIELDS TERMINATED BY ','                              │
+│   LOCATION 's3://my-bucket/logs/';                                           │
 │                                                                              │
-│   📍 Table là schema/definition - không copy data                           │
-│   📍 Data vẫn ở S3 bucket                                                   │
+│   📍 Table là schema/definition - không copy data                            │
+│   📍 Data vẫn ở S3 bucket                                                    │
 │                                                                              │
-│   STEP 2: Query trực tiếp                                                   │
-│   ───────────────────────                                                   │
+│   STEP 2: Query trực tiếp                                                    │
+│   ───────────────────────                                                    │
 │                                                                              │
-│   SELECT ip, COUNT(*) as requests                                           │
+│   SELECT ip, COUNT(*) as requests                                            │
 │   FROM logs                                                                  │
 │   WHERE status = 500                                                         │
 │   GROUP BY ip                                                                │
 │   ORDER BY requests DESC                                                     │
 │   LIMIT 10;                                                                  │
 │                                                                              │
-│   STEP 3: Athena scan S3, return results                                    │
-│   ──────────────────────────────────────                                    │
+│   STEP 3: Athena scan S3, return results                                     │
+│   ──────────────────────────────────────                                     │
 │                                                                              │
-│   • Athena đọc data từ S3 location                                          │
+│   • Athena đọc data từ S3 location                                           │
 │   • Apply filters, aggregations                                              │
 │   • Return results (also saved to S3)                                        │
 │                                                                              │
@@ -166,7 +166,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 EXTERNAL TABLE vs Regular Table                  │
+│                 EXTERNAL TABLE vs Regular Table                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Regular Table (MySQL, PostgreSQL):                            │
@@ -179,14 +179,14 @@
 │   ────────────────────────                                      │
 │   • Data VẪN Ở S3 - không copy                                  │
 │   • Athena chỉ có schema/definition                             │
-│   • DROP TABLE → Chỉ xóa definition, DATA VẪN CÒN trong S3     │
+│   • DROP TABLE → Chỉ xóa definition, DATA VẪN CÒN trong S3      │
 │                                                                 │
-│   ┌─────────────┐         ┌─────────────────────────┐          │
-│   │   Athena    │         │          S3             │          │
-│   │             │ POINTS  │                         │          │
-│   │  Table def  │────────►│  Actual data files     │          │
-│   │  (schema)   │   TO    │  (CSV, Parquet, JSON)  │          │
-│   └─────────────┘         └─────────────────────────┘          │
+│   ┌─────────────┐         ┌─────────────────────────┐           │
+│   │   Athena    │         │          S3             │           │
+│   │             │ POINTS  │                         │           │
+│   │  Table def  │────────►│  Actual data files      │           │
+│   │  (schema)   │   TO    │  (CSV, Parquet, JSON)   │           │
+│   └─────────────┘         └─────────────────────────┘           │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -209,17 +209,17 @@ Athena hỗ trợ nhiều data formats:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Row-based vs Columnar Formats                              │
+│                    Row-based vs Columnar Formats                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   ROW-BASED (CSV, JSON):                                                     │
 │   ──────────────────────                                                     │
-│   Row 1: [id=1, name="John", age=30, city="NYC"]                            │
-│   Row 2: [id=2, name="Jane", age=25, city="LA"]                             │
-│   Row 3: [id=3, name="Bob", age=35, city="SF"]                              │
+│   Row 1: [id=1, name="John", age=30, city="NYC"]                             │
+│   Row 2: [id=2, name="Jane", age=25, city="LA"]                              │
+│   Row 3: [id=3, name="Bob", age=35, city="SF"]                               │
 │                                                                              │
 │   Query: SELECT name FROM users                                              │
-│   → Phải đọc TẤT CẢ columns rồi mới lọc "name"                              │
+│   → Phải đọc TẤT CẢ columns rồi mới lọc "name"                               │
 │   → Scan nhiều data = TỐN TIỀN 💰                                            │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
@@ -236,7 +236,7 @@ Athena hỗ trợ nhiều data formats:
 │   → Skip các columns khác                                                    │
 │   → Scan ÍT data = TIẾT KIỆM 💰                                              │
 │                                                                              │
-│   ⭐ BEST PRACTICE: Convert CSV/JSON → Parquet để tiết kiệm 30-90%          │
+│   ⭐ BEST PRACTICE: Convert CSV/JSON → Parquet để tiết kiệm 30-90%           │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -251,7 +251,7 @@ Athena hỗ trợ nhiều data formats:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Partitioning Example                                  │
+│                         Partitioning Example                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   S3 Structure (Partitioned by year/month/day):                              │
@@ -261,9 +261,9 @@ Athena hỗ trợ nhiều data formats:
 │   ├── year=2024/                                                             │
 │   │   ├── month=01/                                                          │
 │   │   │   ├── day=01/                                                        │
-│   │   │   │   └── data.parquet  (10 GB)                                     │
+│   │   │   │   └── data.parquet  (10 GB)                                      │
 │   │   │   ├── day=02/                                                        │
-│   │   │   │   └── data.parquet  (10 GB)                                     │
+│   │   │   │   └── data.parquet  (10 GB)                                      │
 │   │   │   └── ...                                                            │
 │   │   ├── month=02/                                                          │
 │   │   │   └── ...                                                            │
@@ -271,7 +271,7 @@ Athena hỗ trợ nhiều data formats:
 │   └── year=2025/                                                             │
 │       └── ...                                                                │
 │                                                                              │
-│   Total: 3.6 TB (1 year of data)                                            │
+│   Total: 3.6 TB (1 year of data)                                             │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
@@ -282,7 +282,7 @@ Athena hỗ trợ nhiều data formats:
 │   Query WITH partition filter:                                               │
 │   SELECT * FROM logs                                                         │
 │   WHERE status = 500                                                         │
-│   AND year = '2024' AND month = '01' AND day = '15'                         │
+│   AND year = '2024' AND month = '01' AND day = '15'                          │
 │   → Scan: 10 GB → Cost: $0.05 💰                                             │
 │                                                                              │
 │   ⭐ Partition pruning: Athena chỉ đọc folder cần thiết!                     │
@@ -307,19 +307,19 @@ MSCK REPAIR TABLE logs;
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Athena Integrations                                   │
+│                         Athena Integrations                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│                              Amazon Athena                                    │
+│                              Amazon Athena                                   │
 │                                    │                                         │
-│     ┌──────────────────────────────┼──────────────────────────────┐         │
-│     │              │               │               │              │         │
-│     ▼              ▼               ▼               ▼              ▼         │
-│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐    │
-│  │  S3  │    │   Glue   │    │QuickSight│    │ Lambda  │    │   EMR   │    │
-│  │      │    │  Catalog │    │   (BI)   │    │(Trigger)│    │ (ETL)   │    │
-│  │ Data │    │ Metadata │    │Dashboard │    │         │    │         │    │
-│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘    │
+│     ┌──────────────────────────────┼──────────────────────────────┐          │
+│     │              │               │               │               │         │
+│     ▼              ▼               ▼               ▼              ▼          │
+│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐      │
+│  │  S3  │    │   Glue   │    │QuickSight│    │ Lambda  │    │   EMR   │      │
+│  │      │    │  Catalog │    │   (BI)   │    │(Trigger)│    │ (ETL)   │      │
+│  │ Data │    │ Metadata │    │Dashboard │    │         │    │         │      │
+│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘      │
 │                                                                              │
 │  S3: Data source                                                             │
 │  Glue Data Catalog: Table definitions, schema                                │
@@ -334,22 +334,22 @@ MSCK REPAIR TABLE logs;
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Analytics Pipeline                            │
+│                    Analytics Pipeline                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   Raw Data          Transform           Query      Visualize   │
+│   Raw Data          Transform           Query      Visualize    │
 │                                                                 │
-│   ┌───────┐      ┌───────────┐      ┌─────────┐   ┌──────────┐│
-│   │ Kinesis│─────►│   Glue    │─────►│ Athena  │──►│QuickSight││
-│   │Firehose│      │  (ETL to  │      │ (Query) │   │  (BI)    ││
-│   └───────┘      │  Parquet) │      └─────────┘   └──────────┘│
+│   ┌───────┐      ┌───────────┐      ┌─────────┐   ┌────────────┐│
+│   │ Kinesis│─────►│   Glue    │─────►│ Athena  │──►│QuickSight ││
+│   │Firehose│      │  (ETL to  │      │ (Query) │   │  (BI)     ││
+│   └───────┘      │  Parquet) │      └─────────┘   └────────────┘│
 │       │          └───────────┘                                  │
 │       ▼               │                                         │
-│   ┌───────┐          ▼                                         │
-│   │  S3   │      ┌───────┐                                     │
-│   │ (raw) │      │  S3   │                                     │
-│   └───────┘      │(clean)│                                     │
-│                  └───────┘                                     │
+│   ┌───────┐          ▼                                          │
+│   │  S3   │      ┌───────┐                                      │
+│   │ (raw) │      │  S3    │                                     │
+│   └───────┘      │(clean) │                                     │
+│   └───────┘                                                     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -362,20 +362,20 @@ MSCK REPAIR TABLE logs;
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         Federated Query                                       │
+│                         Federated Query                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│                              Amazon Athena                                    │
+│                              Amazon Athena                                   │
 │                                    │                                         │
 │                         Federated Query Engine                               │
 │                                    │                                         │
-│     ┌──────────┬──────────┬────────┼────────┬──────────┬──────────┐         │
-│     ▼          ▼          ▼        ▼        ▼          ▼          ▼         │
-│  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐      │
-│  │  S3  │  │ RDS  │  │MySQL │  │Redis │  │ Doc  │  │Cloud │  │ On-  │      │
-│  │      │  │      │  │Aurora│  │Elasti│  │ DB   │  │Watch │  │ Prem │      │
-│  │      │  │      │  │      │  │cache │  │      │  │ Logs │  │      │      │
-│  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘      │
+│     ┌──────────┬──────────┬────────┼────────┬──────────┬──────────┐          │
+│     ▼          ▼          ▼        ▼        ▼          ▼          ▼          │
+│  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐        │
+│  │  S3  │  │ RDS  │  │MySQL │  │Redis │  │ Doc  │  │Cloud │  │ On-  │        │
+│  │      │  │      │  │Aurora│  │Elasti│  │ DB   │  │Watch │  │ Prem │        │
+│  │      │  │      │  │      │  │cache │  │      │  │ Logs │  │      │        │
+│  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘  └──────┘        │
 │                                                                              │
 │   Data Source Connectors (Lambda-based):                                     │
 │   • Amazon-provided connectors                                               │
@@ -402,7 +402,7 @@ MSCK REPAIR TABLE logs;
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Workgroups                                  │
+│                      Workgroups                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Workgroup: "data-science"                                     │

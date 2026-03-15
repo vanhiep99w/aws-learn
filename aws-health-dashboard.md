@@ -24,27 +24,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS HEALTH DASHBOARD                                   │
+│                       AWS HEALTH DASHBOARD                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    🌐 SERVICE HEALTH                                 │   │
+│   │                    🌐 SERVICE HEALTH                                │   │
 │   │                    (Public - Tất cả AWS)                            │   │
-│   │                                                                      │   │
-│   │  "Toàn bộ EC2 ở us-east-1 đang gặp sự cố"                          │   │
+│   │                                                                     │   │
+│   │  "Toàn bộ EC2 ở us-east-1 đang gặp sự cố"                           │   │
 │   │  "S3 đang bị degraded performance"                                  │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                    👤 YOUR ACCOUNT HEALTH                            │   │
-│   │                    (Private - Chỉ Account của bạn)                   │   │
-│   │                                                                      │   │
-│   │  "EC2 instance i-1234567890abcdef0 của bạn sẽ bị retire"           │   │
+│   │                    👤 YOUR ACCOUNT HEALTH                           │   │
+│   │                    (Private - Chỉ Account của bạn)                  │   │
+│   │                                                                     │   │
+│   │  "EC2 instance i-1234567890abcdef0 của bạn sẽ bị retire"            │   │
 │   │  "RDS instance prod-db cần maintenance window"                      │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -56,32 +56,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SERVICE HEALTH DASHBOARD                                  │
-│                    https://health.aws.amazon.com/                            │
+│                    SERVICE HEALTH DASHBOARD                                 │
+│                    https://health.aws.amazon.com/                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   📋 WHAT IT SHOWS:                                                         │
 │   • Current status của TẤT CẢ AWS services                                  │
-│   • Historical incidents                                                     │
-│   • Planned maintenance windows                                              │
-│   • Service disruptions                                                      │
-│                                                                              │
+│   • Historical incidents                                                    │
+│   • Planned maintenance windows                                             │
+│   • Service disruptions                                                     │
+│                                                                             │
 │   🌍 SCOPE: Global view - Không cần login                                   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  Service         │ Region      │ Status                             │   │
 │   │  ─────────────────────────────────────────────────────────────────  │   │
 │   │  Amazon EC2      │ us-east-1   │ ✅ Operational                     │   │
-│   │  Amazon S3       │ us-west-2   │ ⚠️ Degraded Performance           │   │
+│   │  Amazon S3       │ us-west-2   │ ⚠️ Degraded Performance             │   │
 │   │  Amazon RDS      │ eu-west-1   │ ✅ Operational                     │   │
 │   │  AWS Lambda      │ ap-south-1  │ 🔴 Service Disruption              │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ❌ LIMITATIONS:                                                           │
-│   • Không cho biết TÀI NGUYÊN CỤ THỂ của bạn bị ảnh hưởng                  │
+│   • Không cho biết TÀI NGUYÊN CỤ THỂ của bạn bị ảnh hưởng                   │
 │   • Chỉ hiển thị service-level issues                                       │
 │   • Không có personalized alerts                                            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -89,42 +89,42 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    PERSONAL HEALTH DASHBOARD                                 │
-│                    (AWS Console → Health)                                    │
+│                    PERSONAL HEALTH DASHBOARD                                │
+│                    (AWS Console → Health)                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   📋 WHAT IT SHOWS:                                                         │
-│   • Events ảnh hưởng đến RESOURCES CỤ THỂ của bạn                          │
+│   • Events ảnh hưởng đến RESOURCES CỤ THỂ của bạn                           │
 │   • Scheduled changes cho tài nguyên của bạn                                │
-│   • Account notifications                                                    │
-│   • Proactive recommendations                                                │
-│                                                                              │
+│   • Account notifications                                                   │
+│   • Proactive recommendations                                               │
+│                                                                             │
 │   👤 SCOPE: Account-specific - Cần login AWS Console                        │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  ⚠️ OPEN ISSUES                                                      │   │
 │   │  ────────────────────────────────────────────────────────────────── │   │
-│   │  🔴 EC2 Instance Retirement                                          │   │
-│   │     Instance: i-1234567890abcdef0                                    │   │
-│   │     Region: us-east-1                                                │   │
-│   │     Retirement Date: 2024-02-15                                      │   │
-│   │     Action: Migrate to new instance                                  │   │
-│   │                                                                      │   │
+│   │  🔴 EC2 Instance Retirement                                         │   │
+│   │     Instance: i-1234567890abcdef0                                   │   │
+│   │     Region: us-east-1                                               │   │
+│   │     Retirement Date: 2024-02-15                                     │   │
+│   │     Action: Migrate to new instance                                 │   │
+│   │                                                                     │   │
 │   │  ⚠️ RDS Maintenance Window                                           │   │
-│   │     Instance: prod-database                                          │   │
+│   │     Instance: prod-database                                         │   │
 │   │     Window: 2024-01-20 03:00-04:00 UTC                              │   │
-│   │     Action: Plan for brief downtime                                  │   │
+│   │     Action: Plan for brief downtime                                 │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  📅 SCHEDULED CHANGES                                                │   │
+│   │  📅 SCHEDULED CHANGES                                               │   │
 │   │  ────────────────────────────────────────────────────────────────── │   │
-│   │  📋 Certificate Expiration                                           │   │
-│   │     ACM Certificate: *.example.com                                   │   │
-│   │     Expires: 2024-03-01                                              │   │
-│   │     Action: Renew certificate                                        │   │
+│   │  📋 Certificate Expiration                                          │   │
+│   │     ACM Certificate: *.example.com                                  │   │
+│   │     Expires: 2024-03-01                                             │   │
+│   │     Action: Renew certificate                                       │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -136,42 +136,42 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS HEALTH EVENT TYPES                                 │
+│                       AWS HEALTH EVENT TYPES                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  1. ACCOUNT NOTIFICATIONS                                              ║ │
+│   ║  1. ACCOUNT NOTIFICATIONS                                              ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Thông báo chung về account                                          ║ │
-│   ║  • Service announcements                                               ║ │
-│   ║  • Policy updates                                                      ║ │
-│   ║  • Billing alerts                                                      ║ │
-│   ║                                                                        ║ │
+│   ║  • Thông báo chung về account                                          ║│
+│   ║  • Service announcements                                               ║│
+│   ║  • Policy updates                                                      ║│
+│   ║  • Billing alerts                                                      ║│
+│   ║                                                                        ║│
 │   ║  Example: "AWS will deprecate Python 3.8 runtime in Lambda"           ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  2. SCHEDULED CHANGES                                                  ║ │
+│   ║  2. SCHEDULED CHANGES                                                  ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Planned maintenance                                                 ║ │
-│   ║  • Hardware retirement                                                 ║ │
-│   ║  • Software updates                                                    ║ │
-│   ║  • Certificate expirations                                             ║ │
-│   ║                                                                        ║ │
+│   ║  • Planned maintenance                                                 ║│
+│   ║  • Hardware retirement                                                 ║│
+│   ║  • Software updates                                                    ║│
+│   ║  • Certificate expirations                                             ║│
+│   ║                                                                        ║│
 │   ║  Example: "EC2 instance i-xxx scheduled for retirement on 2024-02-15" ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║  3. ISSUES (Ongoing Problems)                                          ║ │
+│   ║  3. ISSUES (Ongoing Problems)                                          ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Active service issues                                               ║ │
-│   ║  • Performance degradation                                             ║ │
-│   ║  • Outages                                                             ║ │
-│   ║  • Resource-specific problems                                          ║ │
-│   ║                                                                        ║ │
+│   ║  • Active service issues                                               ║│
+│   ║  • Performance degradation                                             ║│
+│   ║  • Outages                                                             ║│
+│   ║  • Resource-specific problems                                          ║│
+│   ║                                                                        ║│
 │   ║  Example: "Your EBS volume vol-xxx is impaired"                       ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -179,31 +179,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       EVENT LIFECYCLE                                        │
+│                       EVENT LIFECYCLE                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐                 │
-│   │  Open   │───►│Upcoming │───►│ Ongoing │───►│ Closed  │                 │
-│   │  📋     │    │  ⏰     │    │  🔄     │    │  ✅     │                 │
-│   └─────────┘    └─────────┘    └─────────┘    └─────────┘                 │
-│                                                                              │
-│   Open:                                                                      │
-│   • Event đã được tạo                                                        │
+│                                                                             │
+│   ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐                  │
+│   │  Open   │───►│Upcoming │───►│ Ongoing │───►│ Closed  │                  │
+│   │  📋     │    │  ⏰     │    │  🔄     │    │  ✅     │                  │
+│   └─────────┘    └─────────┘    └─────────┘    └─────────┘                  │
+│                                                                             │
+│   Open:                                                                     │
+│   • Event đã được tạo                                                       │
 │   • Chưa bắt đầu                                                            │
-│   • Cần action từ user                                                       │
-│                                                                              │
-│   Upcoming:                                                                  │
+│   • Cần action từ user                                                      │
+│                                                                             │
+│   Upcoming:                                                                 │
 │   • Scheduled nhưng chưa xảy ra                                             │
 │   • Thường là maintenance windows                                           │
-│                                                                              │
-│   Ongoing:                                                                   │
+│                                                                             │
+│   Ongoing:                                                                  │
 │   • Đang diễn ra                                                            │
 │   • AWS đang xử lý                                                          │
-│                                                                              │
-│   Closed:                                                                    │
-│   • Đã resolved                                                              │
-│   • Historical record                                                        │
-│                                                                              │
+│                                                                             │
+│   Closed:                                                                   │
+│   • Đã resolved                                                             │
+│   • Historical record                                                       │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -215,29 +215,29 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS HEALTH API                                         │
+│                       AWS HEALTH API                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ⚠️ IMPORTANT: Chỉ available với Business/Enterprise Support Plan!        │
-│                                                                              │
+│                                                                             │
+│   ⚠️ IMPORTANT: Chỉ available với Business/Enterprise Support Plan!          │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  AWS Health API                                                      │   │
-│   │  ─────────────────                                                   │   │
-│   │                                                                      │   │
-│   │  Programmatic access to:                                             │   │
-│   │  • Personal Health Dashboard events                                  │   │
-│   │  • Affected resources                                                │   │
-│   │  • Event details and descriptions                                    │   │
-│   │  • Historical events                                                 │   │
-│   │                                                                      │   │
-│   │  Use cases:                                                          │   │
-│   │  • Build custom dashboards                                           │   │
+│   │  AWS Health API                                                     │   │
+│   │  ─────────────────                                                  │   │
+│   │                                                                     │   │
+│   │  Programmatic access to:                                            │   │
+│   │  • Personal Health Dashboard events                                 │   │
+│   │  • Affected resources                                               │   │
+│   │  • Event details and descriptions                                   │   │
+│   │  • Historical events                                                │   │
+│   │                                                                     │   │
+│   │  Use cases:                                                         │   │
+│   │  • Build custom dashboards                                          │   │
 │   │  • Integrate với alerting systems                                   │   │
 │   │  • Automate responses to health events                              │   │
 │   │  • Feed into SIEM/monitoring tools                                  │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -320,28 +320,28 @@ aws health describe-affected-entities \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                  HEALTH + EVENTBRIDGE INTEGRATION                            │
+│                  HEALTH + EVENTBRIDGE INTEGRATION                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌───────────────┐         ┌───────────────┐         ┌───────────────────┐│
-│   │  AWS Health   │────────►│  EventBridge  │────────►│  Targets          ││
-│   │  Event        │ auto    │  Rule         │         │                   ││
-│   └───────────────┘         └───────────────┘         │  • Lambda         ││
+│                                                                             │
+│   ┌───────────────┐         ┌───────────────┐         ┌────────────────────┐│
+│   │  AWS Health   │────────►│  EventBridge  │────────►│  Targets           ││
+│   │  Event        │ auto    │  Rule         │         │                    ││
+│   └───────────────┘         └───────────────┘         │  • Lambda          ││
 │                                                        │  • SNS            ││
 │                                                        │  • SQS            ││
 │                                                        │  • Step Functions ││
 │                                                        │  • SSM Automation ││
 │                                                        └───────────────────┘│
-│                                                                              │
+│                                                                             │
 │   ═══════════════════════════════════════════════════════════════════════   │
-│                                                                              │
-│   Example Flow:                                                              │
-│                                                                              │
-│   EC2 Retirement  ──►  EventBridge  ──►  Lambda  ──►  Create New Instance  │
+│                                                                             │
+│   Example Flow:                                                             │
+│                                                                             │
+│   EC2 Retirement  ──►  EventBridge  ──►  Lambda  ──►  Create New Instance   │
 │   Notification         Rule              Function     + Migrate Data        │
-│                                                                              │
+│                                                                             │
 │                                    ──►  SNS  ──►  Email/Slack Notification  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -460,18 +460,18 @@ def notify_team_about_maintenance(db_instance, event_detail):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                  AWS ORGANIZATIONS + HEALTH                                  │
+│                  AWS ORGANIZATIONS + HEALTH                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                     Management Account                               │   │
-│   │                        (Org Master)                                  │   │
+│   │                     Management Account                              │   │
+│   │                        (Org Master)                                 │   │
 │   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │              Organization Health Dashboard                   │    │   │
-│   │  │                                                              │    │   │
+│   │  │              Organization Health Dashboard                   │   │   │
+│   │  │                                                              │   │   │
 │   │  │  📊 Aggregated Health Events from ALL member accounts       │    │   │
-│   │  │                                                              │    │   │
-│   │  │  ┌─────────────────────────────────────────────────────┐   │    │   │
+│   │  │                                                              │   │   │
+│   │  │  ┌─────────────────────────────────────────────────────┐   │     │   │
 │   │  │  │ Account: Production (123456789012)                   │   │    │   │
 │   │  │  │ └── 2 EC2 retirements scheduled                      │   │    │   │
 │   │  │  │ └── 1 RDS maintenance                                │   │    │   │
@@ -481,13 +481,13 @@ def notify_team_about_maintenance(db_instance, event_detail):
 │   │  │  │                                                      │   │    │   │
 │   │  │  │ Account: Staging (345678901234)                      │   │    │   │
 │   │  │  │ └── 1 certificate expiring                           │   │    │   │
-│   │  │  └─────────────────────────────────────────────────────┘   │    │   │
+│   │  │  └─────────────────────────────────────────────────────┘   │     │   │
 │   │  └─────────────────────────────────────────────────────────────┘    │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   API: DescribeEventsForOrganization                                        │
 │   (Requires enabling Organizational Health in AWS Organizations)            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -657,25 +657,25 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       BEST PRACTICES                                         │
+│                       BEST PRACTICES                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ✅ DO:                                                                    │
-│   ─────                                                                      │
+│   ─────                                                                     │
 │   • Set up EventBridge rules for critical event types                       │
 │   • Create SNS topics for different severity levels                         │
-│   • Automate responses where possible (EC2 retirement → create AMI)        │
+│   • Automate responses where possible (EC2 retirement → create AMI)         │
 │   • Use Organization Health for multi-account visibility                    │
 │   • Check Health Dashboard during outages before debugging                  │
-│   • Integrate with incident management (PagerDuty, OpsGenie)               │
-│                                                                              │
+│   • Integrate with incident management (PagerDuty, OpsGenie)                │
+│                                                                             │
 │   ❌ DON'T:                                                                 │
-│   ───────                                                                    │
+│   ───────                                                                   │
 │   • Ignore scheduled maintenance notifications                              │
 │   • Wait until retirement date to migrate resources                         │
 │   • Overlook certificate expiration warnings                                │
 │   • Skip Health Dashboard check during troubleshooting                      │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -692,30 +692,30 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AUTOMATION RECOMMENDATIONS                                │
+│                    AUTOMATION RECOMMENDATIONS                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   EC2 Retirement Events:                                                     │
+│                                                                             │
+│   EC2 Retirement Events:                                                    │
 │   ☐ Auto-create AMI backup                                                  │
 │   ☐ Notify team via Slack/Email                                             │
 │   ☐ Create Jira ticket for migration                                        │
 │   ☐ Update CMDB/inventory                                                   │
-│                                                                              │
-│   RDS Maintenance:                                                           │
+│                                                                             │
+│   RDS Maintenance:                                                          │
 │   ☐ Send calendar invite for maintenance window                             │
 │   ☐ Notify application owners                                               │
 │   ☐ Check if maintenance window is acceptable                               │
-│                                                                              │
-│   Certificate Expiration:                                                    │
+│                                                                             │
+│   Certificate Expiration:                                                   │
 │   ☐ Alert 30 days before expiry                                             │
-│   ☐ Auto-renew if using ACM managed certificates                           │
+│   ☐ Auto-renew if using ACM managed certificates                            │
 │   ☐ Create ticket for manual renewal if needed                              │
-│                                                                              │
-│   EBS Volume Issues:                                                         │
+│                                                                             │
+│   EBS Volume Issues:                                                        │
 │   ☐ Page on-call immediately                                                │
 │   ☐ Create snapshot automatically                                           │
 │   ☐ Prepare replacement volume                                              │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -725,29 +725,29 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    HEALTH DASHBOARD vs OTHER SERVICES                        │
+│                    HEALTH DASHBOARD vs OTHER SERVICES                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Service              │ Purpose                │ Scope                     │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │   Health Dashboard     │ AWS service issues      │ Infrastructure health    │
 │                        │ Affected resources      │                          │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │   CloudWatch           │ Metrics & alarms        │ Application monitoring   │
 │                        │ Logs analysis           │                          │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │   CloudTrail           │ API audit logs          │ Who did what             │
 │                        │ Security & compliance   │                          │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │   X-Ray                │ Distributed tracing     │ Request flow debugging   │
 │                        │ Performance analysis    │                          │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │   Systems Manager      │ Operations management   │ Resource management      │
 │                        │ Patch management        │                          │
-│   ─────────────────────────────────────────────────────────────────────────│
-│                                                                              │
-│   💡 TIP: Use ALL of them together for complete observability!             │
-│                                                                              │
+│   ───────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│   💡 TIP: Use ALL of them together for complete observability!              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -757,29 +757,29 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS HEALTH DASHBOARD SUMMARY                              │
+│                    AWS HEALTH DASHBOARD SUMMARY                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   🏥 TWO DASHBOARDS:                                                        │
-│   • Service Health (Public) - Status của tất cả AWS services               │
-│   • Personal Health (Private) - Issues affecting YOUR resources            │
-│                                                                              │
+│   • Service Health (Public) - Status của tất cả AWS services                │
+│   • Personal Health (Private) - Issues affecting YOUR resources             │
+│                                                                             │
 │   🔔 THREE EVENT TYPES:                                                     │
 │   • Account Notifications - General announcements                           │
 │   • Scheduled Changes - Maintenance, retirements                            │
 │   • Issues - Ongoing problems                                               │
-│                                                                              │
+│                                                                             │
 │   🔗 KEY INTEGRATIONS:                                                      │
 │   • EventBridge → Automated responses                                       │
-│   • SNS → Notifications (Email, Slack, PagerDuty)                          │
+│   • SNS → Notifications (Email, Slack, PagerDuty)                           │
 │   • Lambda → Custom automation                                              │
 │   • Organizations → Multi-account visibility                                │
-│                                                                              │
-│   ⚠️ IMPORTANT:                                                             │
+│                                                                             │
+│   ⚠️ IMPORTANT:                                                              │
 │   • Health API requires Business/Enterprise Support                         │
 │   • Always check Health Dashboard first during outages                      │
 │   • Automate responses to critical events                                   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

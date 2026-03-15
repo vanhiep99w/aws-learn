@@ -30,16 +30,16 @@
 │   Publisher (1)                                                 │
 │       │                                                         │
 │       ↓                                                         │
-│   ┌───────────────────────────────────────┐                    │
-│   │           SNS TOPIC                   │                    │
-│   │    "order-created-topic"              │                    │
-│   └───────────────────────────────────────┘                    │
+│   ┌───────────────────────────────────────┐                     │
+│   │           SNS TOPIC                   │                     │
+│   │    "order-created-topic"              │                     │
+│   └───────────────────────────────────────┘                     │
 │       │           │           │           │                     │
 │       ↓           ↓           ↓           ↓                     │
-│   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐                │
-│   │  SQS  │   │Lambda │   │ Email │   │ HTTP  │                │
-│   │ Queue │   │       │   │       │   │Endpoint│               │
-│   └───────┘   └───────┘   └───────┘   └───────┘                │
+│   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐                 │
+│   │  SQS  │   │Lambda │   │ Email │   │ HTTP  │                 │
+│   │ Queue │   │       │   │       │   │Endpoint │                 │
+│   └───────┘   └───────┘   └───────┘   └───────┘                 │
 │                                                                 │
 │   Subscribers (many) - TẤT CẢ đều nhận message                  │
 │                                                                 │
@@ -68,13 +68,13 @@
 │                                                                 │
 │   Topic = "Channel" để publishers gửi messages                  │
 │                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Topic ARN: arn:aws:sns:us-east-1:123456789:my-topic    │  │
-│   │                                                         │  │
-│   │  Limits:                                                │  │
-│   │  • Up to 12,500,000 subscriptions per topic             │  │
-│   │  • Up to 100,000 topics per account                     │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Topic ARN: arn:aws:sns:us-east-1:123456789:my-topic    │   │
+│   │                                                         │   │
+│   │  Limits:                                                │   │
+│   │  • Up to 12,500,000 subscriptions per topic             │   │
+│   │  • Up to 100,000 topics per account                     │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -86,19 +86,19 @@
 │                    SNS MESSAGE                                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  {                                                      │  │
-│   │    "Type": "Notification",                              │  │
-│   │    "MessageId": "uuid",                                 │  │
-│   │    "TopicArn": "arn:aws:sns:...",                       │  │
-│   │    "Subject": "Optional subject",                       │  │
-│   │    "Message": "Your actual message content",            │  │
-│   │    "Timestamp": "2024-01-01T00:00:00.000Z",             │  │
-│   │    "MessageAttributes": {                               │  │
-│   │      "OrderType": {"Type": "String", "Value": "online"} │  │
-│   │    }                                                    │  │
-│   │  }                                                      │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  {                                                      │   │
+│   │    "Type": "Notification",                              │   │
+│   │    "MessageId": "uuid",                                 │   │
+│   │    "TopicArn": "arn:aws:sns:...",                       │   │
+│   │    "Subject": "Optional subject",                       │   │
+│   │    "Message": "Your actual message content",            │   │
+│   │    "Timestamp": "2024-01-01T00:00:00.000Z",             │   │
+│   │    "MessageAttributes": {                               │   │
+│   │      "OrderType": {"Type": "String", "Value": "online"} │   │
+│   │    }                                                    │   │
+│   │  }                                                      │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   Max message size: 256 KB                                      │
 │                                                                 │
@@ -127,19 +127,19 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   APPLICATION INTEGRATION:                                      │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • SQS Queue     → Fan-out to queues                    │  │
-│   │  • Lambda        → Serverless processing                │  │
-│   │  • Kinesis       → Data Firehose (via Firehose)         │  │
-│   │  • HTTP/HTTPS    → Custom webhooks                      │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • SQS Queue     → Fan-out to queues                    │   │
+│   │  • Lambda        → Serverless processing                │   │
+│   │  • Kinesis       → Data Firehose (via Firehose)         │   │
+│   │  • HTTP/HTTPS    → Custom webhooks                      │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   DIRECT NOTIFICATIONS:                                         │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  • Email/Email-JSON  → User notifications               │  │
-│   │  • SMS               → Mobile text messages             │  │
-│   │  • Mobile Push       → iOS, Android, Fire OS            │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  • Email/Email-JSON  → User notifications               │   │
+│   │  • SMS               → Mobile text messages             │   │
+│   │  • Mobile Push       → iOS, Android, Fire OS            │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -174,7 +174,7 @@
 │                                 ↓                               │
 │   4. Status: "Confirmed" → Ready to receive messages            │
 │                                                                 │
-│   ⚠️  Unconfirmed subscriptions auto-delete after 3 days        │
+│   ⚠️  Unconfirmed subscriptions auto-delete after 3 days         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -193,29 +193,29 @@
 │   Without Filter: ALL subscribers receive ALL messages          │
 │                                                                 │
 │   With Filter Policy (JSON):                                    │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Publisher sends:                                       │  │
-│   │  Message: "Order placed"                                │  │
-│   │  MessageAttributes: {                                   │  │
-│   │    "eventType": "order",                                │  │
-│   │    "store": "online",                                   │  │
-│   │    "price": 150                                         │  │
-│   │  }                                                      │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Publisher sends:                                       │   │
+│   │  Message: "Order placed"                                │   │
+│   │  MessageAttributes: {                                   │   │
+│   │    "eventType": "order",                                │   │
+│   │    "store": "online",                                   │   │
+│   │    "price": 150                                         │   │
+│   │  }                                                      │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                        ↓                                        │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Subscriber 1 (Online Orders Only):                     │  │
-│   │  FilterPolicy: {"store": ["online"]}                    │  │
-│   │  → ✅ RECEIVES                                          │  │
-│   ├─────────────────────────────────────────────────────────┤  │
-│   │  Subscriber 2 (In-Store Orders Only):                   │  │
-│   │  FilterPolicy: {"store": ["in-store"]}                  │  │
-│   │  → ❌ FILTERED OUT                                      │  │
-│   ├─────────────────────────────────────────────────────────┤  │
-│   │  Subscriber 3 (High Value Orders):                      │  │
-│   │  FilterPolicy: {"price": [{"numeric": [">=", 100]}]}    │  │
-│   │  → ✅ RECEIVES (150 >= 100)                             │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Subscriber 1 (Online Orders Only):                     │   │
+│   │  FilterPolicy: {"store": ["online"]}                    │   │
+│   │  → ✅ RECEIVES                                          │   │
+│   ├─────────────────────────────────────────────────────────┤   │
+│   │  Subscriber 2 (In-Store Orders Only):                   │   │
+│   │  FilterPolicy: {"store": ["in-store"]}                  │   │
+│   │  → ❌ FILTERED OUT                                      │   │
+│   ├─────────────────────────────────────────────────────────┤   │
+│   │  Subscriber 3 (High Value Orders):                      │   │
+│   │  FilterPolicy: {"price": [{"numeric": [">=", 100]}]}    │   │
+│   │  → ✅ RECEIVES (150 >= 100)                             │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -308,32 +308,32 @@ Ví dụ: User upload ảnh → cần làm:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    MESSAGE FILTERING FLOW                                    │
+│                    MESSAGE FILTERING FLOW                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Publisher gửi: { "orderType": "online" }                                   │
-│                          │                                                   │
-│                          ↓                                                   │
-│                   ┌─────────────┐                                            │
-│                   │  SNS Topic  │                                            │
-│                   └──────┬──────┘                                            │
-│                          │                                                   │
-│        ┌─────────────────┼─────────────────┐                                 │
-│        ↓                 ↓                 ↓                                 │
+│                                                                             │
+│   Publisher gửi: { "orderType": "online" }                                  │
+│                         │                                                   │
+│                          ↓                                                  │
+│                   ┌─────────────┐                                           │
+│                   │  SNS Topic  │                                           │
+│                   └──────┬──────┘                                           │
+│                         │                                                   │
+│        ┌─────────────────┼─────────────────┐                                │
+│        ↓                 ↓                 ↓                                │
 │   ┌──────────┐     ┌──────────┐     ┌──────────┐                            │
 │   │Filter:   │     │Filter:   │     │Filter:   │  ← Filter Policy gắn       │
 │   │"online"  │     │"in-store"│     │ (none)   │    VÀO SUBSCRIPTION        │
 │   └────┬─────┘     └────┬─────┘     └────┬─────┘                            │
-│        │                │                │                                   │
-│    ✅ MATCH         ❌ SKIP          ✅ MATCH                                │
-│        │                ✖                │                                   │
-│        ↓                                 ↓                                   │
+│        │                │               │                                   │
+│    ✅ MATCH         ❌ SKIP          ✅ MATCH                               │
+│        │                ✖               │                                   │
+│        ↓                                 ↓                                  │
 │   ┌──────────┐                     ┌──────────┐                             │
 │   │SQS Online│                     │SQS All   │                             │
 │   └──────────┘                     └──────────┘                             │
-│                                                                              │
+│                                                                             │
 │   ⚡ SNS filter TRƯỚC → Không match = KHÔNG gửi → Tiết kiệm cost!           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -353,15 +353,15 @@ Ví dụ: User upload ảnh → cần làm:
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   US-EAST-1                           EU-WEST-1                 │
-│   ┌──────────────┐                   ┌──────────────┐          │
-│   │  SNS Topic   │ ───────Cross───→  │  SQS Queue   │          │
-│   │              │     Region        │              │          │
-│   └──────────────┘                   └──────────────┘          │
+│   ┌──────────────┐                   ┌──────────────┐           │
+│   │  SNS Topic   │ ───────Cross───→  │  SQS Queue   │           │
+│   │              │     Region        │              │           │
+│   └──────────────┘                   └──────────────┘           │
 │         │                                   │                   │
 │         ↓                                   ↓                   │
-│   ┌──────────────┐                   ┌──────────────┐          │
-│   │ Local SQS    │                   │ EU Consumer  │          │
-│   └──────────────┘                   └──────────────┘          │
+│   ┌──────────────┐                   ┌──────────────┐           │
+│   │ Local SQS    │                   │ EU Consumer  │           │
+│   └──────────────┘                   └──────────────┘           │
 │                                                                 │
 │   Use Cases:                                                    │
 │   • Data replication across regions                             │
@@ -385,23 +385,23 @@ Ví dụ: User upload ảnh → cần làm:
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   OPTION 1: SNS → HTTP Endpoint (Spring Boot expose API)        │
-│   ┌───────────────────────────────────────────────────────────┐│
-│   │  SNS Topic ──PUSH──→ https://your-app.com/sns-endpoint    ││
-│   │                           ↓                               ││
-│   │                    @PostMapping("/sns-endpoint")          ││
-│   │                    public void handle(@RequestBody...)    ││
-│   │                                                           ││
-│   │  ⚠️ Cần public URL, xử lý subscription confirmation       ││
-│   └───────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──PUSH──→ https://your-app.com/sns-endpoint     ││
+│   │                           ↓                                ││
+│   │                    @PostMapping("/sns-endpoint")           ││
+│   │                    public void handle(@RequestBody...)     ││
+│   │                                                            ││
+│   │  ⚠️ Cần public URL, xử lý subscription confirmation         ││
+│   └────────────────────────────────────────────────────────────┘│
 │                                                                 │
 │   OPTION 2: SNS → SQS → Spring Boot (RECOMMENDED!)              │
-│   ┌───────────────────────────────────────────────────────────┐│
-│   │  SNS Topic ──→ SQS Queue ←── Spring Boot @SqsListener     ││
-│   │                                                           ││
-│   │  ✅ Better: decoupled, retry, DLQ support                 ││
-│   │  ✅ No need for public URL                                ││
-│   │  ✅ Buffering when app is down                            ││
-│   └───────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────┐│
+│   │  SNS Topic ──→ SQS Queue ←── Spring Boot @SqsListener      ││
+│   │                                                            ││
+│   │  ✅ Better: decoupled, retry, DLQ support                  ││
+│   │  ✅ No need for public URL                                 ││
+│   │  ✅ Buffering when app is down                             ││
+│   └────────────────────────────────────────────────────────────┘│
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -482,10 +482,10 @@ public class OrderEventConsumer {
 │   • 300 msg/s (or 10 MB/s with batching)                        │
 │   • Name must end with ".fifo"                                  │
 │                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  SNS FIFO Topic ──────→ SQS FIFO Queue ONLY             │  │
-│   │  (Cannot subscribe to Standard SQS or Lambda)           │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  SNS FIFO Topic ──────→ SQS FIFO Queue ONLY             │   │
+│   │  (Cannot subscribe to Standard SQS or Lambda)           │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -534,7 +534,7 @@ public class OrderEventConsumer {
 │   • Key: AWS managed or Customer managed CMK                    │
 │   • Messages encrypted before stored (temporary)                │
 │                                                                 │
-│   ⚠️  Note: SNS doesn't store messages long-term               │
+│   ⚠️  Note: SNS doesn't store messages long-term                 │
 │       Encryption mostly for in-transit protection               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -548,17 +548,17 @@ public class OrderEventConsumer {
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   IAM POLICIES:                                                 │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Control WHO can Publish/Subscribe                      │  │
-│   │  Attached to IAM users/roles                            │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Control WHO can Publish/Subscribe                      │   │
+│   │  Attached to IAM users/roles                            │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │   SNS ACCESS POLICIES (Resource-based):                         │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │  Attached to SNS topic                                  │  │
-│   │  Allow cross-account publish/subscribe                  │  │
-│   │  Allow AWS services (S3, CloudWatch)                    │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  Attached to SNS topic                                  │   │
+│   │  Allow cross-account publish/subscribe                  │   │
+│   │  Allow AWS services (S3, CloudWatch)                    │   │
+│   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

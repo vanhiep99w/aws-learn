@@ -41,26 +41,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Problems AWS Config Solves                               │
+│                     Problems AWS Config Solves                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ❌ Không có AWS Config:                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  • Ai đã thay đổi Security Group?                                   │   │
-│  │  • S3 bucket public từ khi nào?                                     │   │
-│  │  • Có bao nhiêu EC2 instances không có encryption?                  │   │
-│  │  • Resources nào violate compliance policies?                        │   │
-│  │  • Cấu hình trước khi xảy ra incident là gì?                        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  • Ai đã thay đổi Security Group?                                   │    │
+│  │  • S3 bucket public từ khi nào?                                     │    │
+│  │  • Có bao nhiêu EC2 instances không có encryption?                  │    │
+│  │  • Resources nào violate compliance policies?                       │    │
+│  │  • Cấu hình trước khi xảy ra incident là gì?                        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  ✅ Với AWS Config:                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  • Configuration history của tất cả resources                        │   │
-│  │  • Continuous compliance monitoring                                  │   │
-│  │  • Resource relationships và dependencies                            │   │
-│  │  • Timeline view cho troubleshooting                                 │   │
-│  │  • Automatic remediation cho violations                              │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  • Configuration history của tất cả resources                       │    │
+│  │  • Continuous compliance monitoring                                 │    │
+│  │  • Resource relationships và dependencies                           │    │
+│  │  • Timeline view cho troubleshooting                                │    │
+│  │  • Automatic remediation cho violations                             │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,31 +71,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      AWS Config Architecture                                 │
+│                      AWS Config Architecture                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                        AWS Resources                                 │   │
-│  │  EC2 │ S3 │ RDS │ VPC │ IAM │ Lambda │ Security Groups │ ...       │   │
-│  └─────────────────────────────┬───────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                        AWS Resources                                │    │
+│  │  EC2 │ S3 │ RDS │ VPC │ IAM │ Lambda │ Security Groups │ ...         │   │
+│  └─────────────────────────────┬───────────────────────────────────────┘    │
 │                                │                                            │
 │                                │ Configuration Changes                      │
 │                                ▼                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                        AWS Config                                    │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │   │
-│  │  │ Recorder    │  │Configuration│  │ Config      │                  │   │
-│  │  │ (records    │  │ Items       │  │ Rules       │                  │   │
-│  │  │  changes)   │  │ (CI)        │  │ (evaluate)  │                  │   │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘                  │   │
-│  └───────────────────────────┬─────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                        AWS Config                                   │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                   │   │
+│  │  │ Recorder    │  │Configuration│  │ Config      │                   │   │
+│  │  │ (records    │  │ Items       │  │ Rules       │                   │   │
+│  │  │  changes)   │  │ (CI)        │  │ (evaluate)  │                   │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘                   │   │
+│  └───────────────────────────┬─────────────────────────────────────────┘    │
 │               │              │              │                               │
 │               ▼              ▼              ▼                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │    S3       │  │    SNS      │  │ EventBridge │  │ Systems     │        │
-│  │  (history)  │  │ (notify)    │  │  (events)   │  │ Manager     │        │
-│  │             │  │             │  │             │  │ (remediate) │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │    S3       │  │    SNS      │  │ EventBridge │  │ Systems     │         │
+│  │  (history)  │  │ (notify)    │  │  (events)   │  │ Manager     │         │
+│  │             │  │             │  │             │  │ (remediate) │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -119,12 +119,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Configuration Item Example                               │
+│                     Configuration Item Example                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  {                                                                          │
 │    "configurationItemVersion": "1.3",                                       │
-│    "configurationItemCaptureTime": "2024-01-15T10:30:00.000Z",             │
+│    "configurationItemCaptureTime": "2024-01-15T10:30:00.000Z",              │
 │    "configurationStateId": "1234567890123",                                 │
 │    "resourceType": "AWS::EC2::SecurityGroup",                               │
 │    "resourceId": "sg-0abc123def456789",                                     │
@@ -138,7 +138,7 @@
 │        {                                                                    │
 │          "fromPort": 443,                                                   │
 │          "toPort": 443,                                                     │
-│          "ipRanges": [{"cidrIp": "0.0.0.0/0"}]                             │
+│          "ipRanges": [{"cidrIp": "0.0.0.0/0"}]                              │
 │        }                                                                    │
 │      ]                                                                      │
 │    },                                                                       │
@@ -175,30 +175,30 @@ AWS Config hỗ trợ 300+ resource types, bao gồm:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS Config Rule Types                                 │
+│                        AWS Config Rule Types                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      Managed Rules                                   │   │
-│  │  • 300+ pre-built rules by AWS                                       │   │
-│  │  • Ready to use, no coding required                                  │   │
-│  │  • Examples: s3-bucket-public-read-prohibited,                       │   │
-│  │              ec2-instance-no-public-ip, rds-storage-encrypted        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                      Managed Rules                                  │    │
+│  │  • 300+ pre-built rules by AWS                                      │    │
+│  │  • Ready to use, no coding required                                 │    │
+│  │  • Examples: s3-bucket-public-read-prohibited,                      │    │
+│  │              ec2-instance-no-public-ip, rds-storage-encrypted       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      Custom Rules                                    │   │
-│  │  • Lambda-based: Run your own Lambda function                        │   │
-│  │  • Guard-based: Use AWS CloudFormation Guard DSL                     │   │
-│  │  • Full flexibility với custom logic                                 │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                      Custom Rules                                   │    │
+│  │  • Lambda-based: Run your own Lambda function                       │    │
+│  │  • Guard-based: Use AWS CloudFormation Guard DSL                    │    │
+│  │  • Full flexibility với custom logic                                │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                   Organizational Rules                               │   │
-│  │  • Deploy rules across all accounts in AWS Organizations             │   │
-│  │  • Centralized management                                            │   │
-│  │  • Consistent compliance across organization                         │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                   Organizational Rules                              │    │
+│  │  • Deploy rules across all accounts in AWS Organizations            │    │
+│  │  • Centralized management                                           │    │
+│  │  • Consistent compliance across organization                        │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -232,7 +232,7 @@ AWS Config hỗ trợ 300+ resource types, bao gồm:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Config Rule Evaluation Flow                              │
+│                     Config Rule Evaluation Flow                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Resource Change                                                            │
@@ -250,23 +250,23 @@ AWS Config hỗ trợ 300+ resource types, bao gồm:
 │  └────────┬────────┘                                                        │
 │           │                                                                 │
 │           ▼                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      Evaluation Result                               │   │
-│  │                                                                      │   │
-│  │  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐         │   │
-│  │  │  COMPLIANT   │     │NON_COMPLIANT │     │NOT_APPLICABLE│         │   │
-│  │  │      ✅      │     │      ❌      │     │      ➖      │         │   │
-│  │  │              │     │              │     │              │         │   │
-│  │  │ Resource     │     │ Resource     │     │ Rule doesn't │         │   │
-│  │  │ meets rule   │     │ violates     │     │ apply to     │         │   │
-│  │  │ conditions   │     │ rule         │     │ this resource│         │   │
-│  │  └──────────────┘     └──────────────┘     └──────────────┘         │   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                      Evaluation Result                              │    │
+│  │                                                                     │    │
+│  │  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐          │   │
+│  │  │  COMPLIANT   │     │NON_COMPLIANT │     │NOT_APPLICABLE│          │   │
+│  │  │      ✅      │     │      ❌      │     │      ➖      │          │   │
+│  │  │              │     │              │     │              │          │   │
+│  │  │ Resource     │     │ Resource     │     │ Rule doesn't │          │   │
+│  │  │ meets rule   │     │ violates     │     │ apply to     │          │   │
+│  │  │ conditions   │     │ rule         │     │ this resource│          │   │
+│  │  └──────────────┘     └──────────────┘     └──────────────┘          │   │
 │  │                              │                                       │   │
-│  │                              ▼                                       │   │
+│  │                              ▼                                      │    │
 │  │                    ┌──────────────┐                                  │   │
 │  │                    │ Remediation  │ (Optional - SSM Automation)      │   │
 │  │                    └──────────────┘                                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -431,14 +431,14 @@ Resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Automatic Remediation Flow                               │
+│                     Automatic Remediation Flow                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐   │
-│  │  Config     │     │  Detect     │     │   Systems Manager           │   │
-│  │  Rule       │────►│  NON_       │────►│   Automation                │   │
-│  │  Evaluates  │     │  COMPLIANT  │     │                             │   │
-│  └─────────────┘     └─────────────┘     │   ┌───────────────────────┐ │   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐    │
+│  │  Config     │     │  Detect     │     │   Systems Manager            │   │
+│  │  Rule       │────►│  NON_       │────►│   Automation                 │   │
+│  │  Evaluates  │     │  COMPLIANT  │     │                              │   │
+│  └─────────────┘     └─────────────┘     │   ┌───────────────────────┐  │   │
 │                                           │   │ Remediation Document  │ │   │
 │                                           │   │ (SSM Automation)      │ │   │
 │                                           │   │                       │ │   │
@@ -483,29 +483,29 @@ Resources:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Config Aggregator                                     │
+│                        Config Aggregator                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │                     Management Account                                 │ │
-│  │                        (Aggregator)                                    │ │
-│  │  ┌─────────────────────────────────────────────────────────────────┐  │ │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                     Management Account                                │  │
+│  │                        (Aggregator)                                   │  │
+│  │  ┌─────────────────────────────────────────────────────────────────┐   │ │
 │  │  │              Aggregated Dashboard                                │  │ │
 │  │  │  • Compliance summary across all accounts                        │  │ │
 │  │  │  • Resource inventory                                            │  │ │
 │  │  │  • Non-compliant resources                                       │  │ │
-│  │  └─────────────────────────────────────────────────────────────────┘  │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
+│  │  └─────────────────────────────────────────────────────────────────┘   │ │
+│  └───────────────────────────────────────────────────────────────────────┘  │
 │                        ▲           ▲           ▲                            │
 │                        │           │           │                            │
-│         ┌──────────────┴───┐  ┌────┴────┐  ┌───┴──────────────┐            │
-│         │                  │  │         │  │                  │            │
-│  ┌──────┴──────┐    ┌──────┴──────┐    ┌┴─────────────┐                    │
-│  │  Account A  │    │  Account B  │    │  Account C   │                    │
-│  │  Region 1+2 │    │  Region 1   │    │  Region 1+3  │                    │
-│  │             │    │             │    │              │                    │
-│  │ Config data │    │ Config data │    │ Config data  │                    │
-│  └─────────────┘    └─────────────┘    └──────────────┘                    │
+│         ┌──────────────┴───┐  ┌────┴────┐  ┌───┴──────────────┐             │
+│         │                  │  │         │  │                  │             │
+│         ┌──────┴───────────┐  ┌──────┴──┐  ┌┴─────────────────┐             │
+│         │  Account A       │  │  Account B  │  │  Account C   │             │
+│         │  Region 1+2      │  │  Region 1   │  │  Region 1+3  │             │
+│         │                  │  │         │  │                  │             │
+│         │ Config data      │  │ Config data │  │ Config data  │             │
+│         └──────────────────┘  └─────────┘  └──────────────────┘             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -601,7 +601,7 @@ aws configservice select-aggregate-resource-config \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     AWS Config Notifications                                 │
+│                     AWS Config Notifications                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  AWS Config                                                                 │
@@ -661,31 +661,31 @@ aws configservice select-aggregate-resource-config \
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│             CloudTrail vs AWS Config - Không phải Superset                    │
+│             CloudTrail vs AWS Config - Không phải Superset                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)              │
+│   ❌ KHÔNG PHẢI: CloudTrail ⊃ AWS Config (CloudTrail chứa hết)               │
 │                                                                              │
-│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng              │
+│   ✅ ĐÚNG: Chúng OVERLAP một phần, nhưng mỗi cái có vùng riêng               │
 │                                                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                                                                     │   │
-│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config          │   │
-│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐           │   │
-│   │   │              │   │              │   │              │           │   │
-│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │           │   │
-│   │   │   calls      │   │  change      │   │   checks     │           │   │
-│   │   │ • Read ops   │   │  events      │   │ • Drift      │           │   │
-│   │   │   (Describe) │   │              │   │   detection  │           │   │
-│   │   │ • Login      │   │              │   │ • Compliance │           │   │
-│   │   │   events     │   │              │   │   rules      │           │   │
-│   │   │ • Calls ko   │   │              │   │ • Auto       │           │   │
-│   │   │   thay đổi   │   │              │   │   remediate  │           │   │
-│   │   │   state      │   │              │   │              │           │   │
-│   │   │              │   │              │   │              │           │   │
-│   │   └──────────────┘   └──────────────┘   └──────────────┘           │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────────┐    │
+│   │                                                                     │    │
+│   │    CHỈ CloudTrail        OVERLAP           CHỈ AWS Config           │    │
+│   │   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐             │   │
+│   │   │              │   │              │   │              │             │   │
+│   │   │ • Failed API │   │  Resource    │   │ • Periodic   │             │   │
+│   │   │   calls      │   │  change      │   │   checks     │             │   │
+│   │   │ • Read ops   │   │  events      │   │ • Drift      │             │   │
+│   │   │   (Describe) │   │              │   │   detection  │             │   │
+│   │   │ • Login      │   │              │   │ • Compliance │             │   │
+│   │   │   events     │   │              │   │   rules      │             │   │
+│   │   │ • Calls ko   │   │              │   │ • Auto       │             │   │
+│   │   │   thay đổi   │   │              │   │   remediate  │             │   │
+│   │   │   state      │   │              │   │              │             │   │
+│   │   │              │   │              │   │              │             │   │
+│   │   └──────────────┘   └──────────────┘   └──────────────┘             │   │
+│   │                                                                     │    │
+│   └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -694,32 +694,32 @@ aws configservice select-aggregate-resource-config \
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       3 Scenarios cụ thể                                      │
+│                       3 Scenarios cụ thể                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                            │
+│   SCENARIO 1: S3 bucket TẠO TỪ TRƯỚC đang public                             │
 │   ─────────────────────────────────────────────────                          │
-│   Không có API call mới nào                                                 │
-│   CloudTrail: ❌ Không ghi gì (không có API call)                           │
-│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)      │
+│   Không có API call mới nào                                                  │
+│   CloudTrail: ❌ Không ghi gì (không có API call)                            │
+│   AWS Config: ✅ PHÁT HIỆN "bucket này NON-COMPLIANT" (periodic check)       │
 │                                                                              │
-│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                       │
+│   → AWS Config check ĐỊNH KỲ, không cần đợi API call!                        │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)          │
+│   SCENARIO 2: User cố DELETE bucket nhưng THẤT BẠI (Access Denied)           │
 │   ─────────────────────────────────────────────────────────────────          │
-│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"               │
-│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│   CloudTrail: ✅ GHI LẠI "DeleteBucket FAILED - AccessDenied"                │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                              │
 │                                                                              │
-│   → CloudTrail ghi cả failed calls!                                         │
+│   → CloudTrail ghi cả failed calls!                                          │
 │                                                                              │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                     │
+│   SCENARIO 3: User chỉ XEM list EC2 (DescribeInstances)                      │
 │   ──────────────────────────────────────────────────                         │
-│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                      │
-│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                             │
+│   CloudTrail: ✅ GHI LẠI "DescribeInstances by user X"                       │
+│   AWS Config: ❌ KHÔNG ghi gì (state không đổi)                              │
 │                                                                              │
 │   → CloudTrail ghi read operations!                                          │
 │                                                                              │
@@ -742,20 +742,20 @@ aws configservice select-aggregate-resource-config \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                CloudTrail + Config = Complete Picture                        │
+│                CloudTrail + Config = Complete Picture                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Security Incident Investigation:                                           │
 │                                                                             │
-│  AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                │
-│               vì port 22 open to 0.0.0.0/0"                                │
+│  AWS Config: "Security Group sg-123 hiện đang NON-COMPLIANT                 │
+│               vì port 22 open to 0.0.0.0/0"                                 │
 │                                                                             │
-│  → Đi check CloudTrail                                                     │
+│  → Đi check CloudTrail                                                      │
 │                                                                             │
-│  CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress      │
-│               lúc 10:30 AM từ IP 1.2.3.4"                                  │
+│  CloudTrail: "User john@company.com gọi AuthorizeSecurityGroupIngress       │
+│               lúc 10:30 AM từ IP 1.2.3.4"                                   │
 │                                                                             │
-│  → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm              │
+│  → Complete Picture: BIẾT cấu hình hiện tại + BIẾT ai đã làm                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -773,7 +773,7 @@ aws configservice select-aggregate-resource-config \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS Config Pricing                                    │
+│                        AWS Config Pricing                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Configuration Items:                                                       │
@@ -789,10 +789,10 @@ aws configservice select-aggregate-resource-config \
 │  ─────────────────────────────────────────────────────────────────────────  │
 │                                                                             │
 │  Example - Medium organization:                                             │
-│  • 1,000 resources, changes 5 times/month each = 5,000 CIs                 │
-│  • 20 rules, evaluate 5,000 times = 100,000 evaluations                    │
+│  • 1,000 resources, changes 5 times/month each = 5,000 CIs                  │
+│  • 20 rules, evaluate 5,000 times = 100,000 evaluations                     │
 │                                                                             │
-│  Cost = (5,000 × $0.003) + (100,000 × $0.001) = $15 + $100 = ~$115/month   │
+│  Cost = (5,000 × $0.003) + (100,000 × $0.001) = $15 + $100 = ~$115/month    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -877,7 +877,7 @@ aws configservice deliver-config-snapshot \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Config Integrations                                   │
+│                    AWS Config Integrations                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Security:                                                                  │

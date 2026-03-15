@@ -24,22 +24,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS Pricing Calculator                        │
-│            https://calculator.aws                                │
+│                    AWS Pricing Calculator                       │
+│            https://calculator.aws                               │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   "Estimate your AWS costs BEFORE you deploy"                    │
-│                                                                  │
+│                                                                 │
+│   "Estimate your AWS costs BEFORE you deploy"                   │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                          │   │
+│   │                                                         │   │
 │   │   Select Services → Configure → Get Estimate → Share    │   │
-│   │                                                          │   │
+│   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│   ✅ Free to use                                                 │
-│   ✅ No AWS account required                                     │
-│   ✅ Shareable estimates via link                                │
-│                                                                  │
+│                                                                 │
+│   ✅ Free to use                                                │
+│   ✅ No AWS account required                                    │
+│   ✅ Shareable estimates via link                               │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -66,31 +66,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Pricing Calculator Workflow                   │
+│                    Pricing Calculator Workflow                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Create Estimate                                              │
+│                                                                 │
+│  1. Create Estimate                                             │
 │     └── Đặt tên cho estimate                                    │
-│                                                                  │
-│  2. Add Service                                                  │
+│                                                                 │
+│  2. Add Service                                                 │
 │     └── Chọn service (EC2, S3, RDS...)                          │
-│                                                                  │
-│  3. Configure Service                                            │
+│                                                                 │
+│  3. Configure Service                                           │
 │     ├── Chọn Region                                             │
 │     ├── Chọn instance type/storage class                        │
 │     ├── Nhập usage (hours, GB, requests...)                     │
 │     └── Chọn pricing option (On-Demand, Reserved...)            │
-│                                                                  │
-│  4. Review Estimate                                              │
+│                                                                 │
+│  4. Review Estimate                                             │
 │     ├── Monthly cost                                            │
 │     ├── Upfront cost (nếu có)                                   │
 │     └── 12-month total                                          │
-│                                                                  │
-│  5. Export/Share                                                 │
+│                                                                 │
+│  5. Export/Share                                                │
 │     ├── Share link                                              │
 │     ├── Export CSV                                              │
 │     └── Export PDF                                              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -112,34 +112,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    EC2 Configuration                             │
+│                    EC2 Configuration                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Basic Settings:                                                 │
+│                                                                 │
+│  Basic Settings:                                                │
 │  ├── Region: ap-southeast-1 (Singapore)                         │
-│  ├── OS: Linux                                                   │
-│  ├── Quantity: 2 instances                                       │
+│  ├── OS: Linux                                                  │
+│  ├── Quantity: 2 instances                                      │
 │  └── Usage: 730 hours/month (24/7)                              │
-│                                                                  │
-│  Instance Type:                                                  │
-│  ├── Family: t3                                                  │
-│  ├── Size: medium                                                │
+│                                                                 │
+│  Instance Type:                                                 │
+│  ├── Family: t3                                                 │
+│  ├── Size: medium                                               │
 │  └── vCPU: 2, Memory: 4 GB                                      │
-│                                                                  │
-│  Pricing Strategy:                                               │
-│  ├── On-Demand                                                   │
+│                                                                 │
+│  Pricing Strategy:                                              │
+│  ├── On-Demand                                                  │
 │  ├── Reserved (1yr/3yr, No/Partial/All Upfront)                 │
-│  └── Savings Plans                                               │
-│                                                                  │
-│  Storage (EBS):                                                  │
-│  ├── Type: gp3                                                   │
-│  ├── Size: 100 GB                                                │
+│  └── Savings Plans                                              │
+│                                                                 │
+│  Storage (EBS):                                                 │
+│  ├── Type: gp3                                                  │
+│  ├── Size: 100 GB                                               │
 │  └── IOPS/Throughput: default                                   │
-│                                                                  │
-│  Data Transfer:                                                  │
-│  ├── Inbound: Free                                               │
+│                                                                 │
+│  Data Transfer:                                                 │
+│  ├── Inbound: Free                                              │
 │  └── Outbound: 100 GB/month                                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -171,32 +171,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    EC2 Pricing Comparison                        │
+│                    EC2 Pricing Comparison                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  On-Demand ($100/month ví dụ)                                   │
 │  ├── Flexibility: ★★★★★                                         │
-│  ├── Commitment: None                                            │
-│  └── Discount: 0%                                                │
-│                                                                  │
-│  ─────────────────────────────────────────────────────────────   │
-│                                                                  │
-│  Reserved Instance - 1 Year                                      │
+│  ├── Commitment: None                                           │
+│  └── Discount: 0%                                               │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  Reserved Instance - 1 Year                                     │
 │  ├── No Upfront:      ~$75/month (25% off)                      │
 │  ├── Partial Upfront: ~$70/month (30% off)                      │
 │  └── All Upfront:     ~$65/month (35% off)                      │
-│                                                                  │
-│  Reserved Instance - 3 Year                                      │
+│                                                                 │
+│  Reserved Instance - 3 Year                                     │
 │  ├── No Upfront:      ~$55/month (45% off)                      │
 │  ├── Partial Upfront: ~$50/month (50% off)                      │
 │  └── All Upfront:     ~$40/month (60% off)                      │
-│                                                                  │
-│  ─────────────────────────────────────────────────────────────   │
-│                                                                  │
-│  Savings Plans                                                   │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  Savings Plans                                                  │
 │  ├── Compute SP: Flexible (any instance)                        │
 │  └── EC2 Instance SP: Specific instance family                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -218,28 +218,28 @@ Bạn có thể nhóm services theo:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Estimate with Groups                          │
+│                    Estimate with Groups                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  My Application Estimate                                         │
+│                                                                 │
+│  My Application Estimate                                        │
 │  ├── 📁 Production Environment         $2,500/month             │
-│  │   ├── EC2 (4 instances)                                       │
-│  │   ├── RDS Multi-AZ                                            │
-│  │   ├── ElastiCache                                             │
-│  │   └── S3 + CloudFront                                         │
-│  │                                                               │
+│  │   ├── EC2 (4 instances)                                      │
+│  │   ├── RDS Multi-AZ                                           │
+│  │   ├── ElastiCache                                            │
+│  │   └── S3 + CloudFront                                        │
+│ │                                                               │
 │  ├── 📁 Staging Environment            $800/month               │
-│  │   ├── EC2 (2 instances)                                       │
-│  │   └── RDS Single-AZ                                           │
-│  │                                                               │
+│  │   ├── EC2 (2 instances)                                      │
+│  │   └── RDS Single-AZ                                          │
+│ │                                                               │
 │  └── 📁 Development Environment        $300/month               │
-│      ├── EC2 (1 instance)                                        │
-│      └── RDS Single-AZ                                           │
-│                                                                  │
-│  ───────────────────────────────────────────────────────────     │
+│      ├── EC2 (1 instance)                                       │
+│      └── RDS Single-AZ                                          │
+│                                                                 │
+│  ───────────────────────────────────────────────────────────    │
 │  TOTAL MONTHLY:                        $3,600/month             │
 │  TOTAL 12-MONTH:                       $43,200/year             │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -256,17 +256,17 @@ Bạn có thể nhóm services theo:
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                   AWS Cost Management Tools                      │
+│                   AWS Cost Management Tools                    │
 ├────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   BEFORE deployment:                                             │
-│   └── AWS Pricing Calculator (estimate)                         │
-│                                                                  │
-│   AFTER deployment:                                              │
-│   ├── AWS Cost Explorer (analyze historical costs)              │
-│   ├── AWS Budgets (set spending limits & alerts)                │
-│   └── Cost & Usage Report (detailed breakdown)                  │
-│                                                                  │
+│                                                                │
+│   BEFORE deployment:                                           │
+│   └── AWS Pricing Calculator (estimate)                        │
+│                                                                │
+│   AFTER deployment:                                            │
+│   ├── AWS Cost Explorer (analyze historical costs)             │
+│   ├── AWS Budgets (set spending limits & alerts)               │
+│   └── Cost & Usage Report (detailed breakdown)                 │
+│                                                                │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -278,27 +278,27 @@ Bạn có thể nhóm services theo:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Hidden Costs to Consider                      │
+│                    Hidden Costs to Consider                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ⚠️ Data Transfer Out                                            │
 │     └── Internet egress không free (sau 100GB/month)            │
-│                                                                  │
-│  ⚠️ Cross-Region/Cross-AZ Transfer                              │
+│                                                                 │
+│  ⚠️ Cross-Region/Cross-AZ Transfer                               │
 │     └── Traffic giữa regions/AZs tính phí                       │
-│                                                                  │
+│                                                                 │
 │  ⚠️ API Requests                                                 │
 │     └── S3 PUT/GET, Lambda invocations...                       │
-│                                                                  │
-│  ⚠️ Snapshots & Backups                                         │
+│                                                                 │
+│  ⚠️ Snapshots & Backups                                          │
 │     └── EBS snapshots, RDS backups...                           │
-│                                                                  │
+│                                                                 │
 │  ⚠️ NAT Gateway                                                  │
 │     └── Hourly charge + data processing                         │
-│                                                                  │
-│  ⚠️ Elastic IPs (unused)                                        │
+│                                                                 │
+│  ⚠️ Elastic IPs (unused)                                         │
 │     └── Tính phí nếu không attach                               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -384,7 +384,7 @@ Steps:
 
 ```
 ┌─────────────────────────┬─────────────────────────────────────┐
-│         Tool            │              Purpose                 │
+│         Tool            │              Purpose                │
 ├─────────────────────────┼─────────────────────────────────────┤
 │ Pricing Calculator      │ Estimate TRƯỚC khi deploy           │
 │ Cost Explorer           │ Analyze SAU khi deploy              │
@@ -400,20 +400,20 @@ Steps:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                AWS Pricing Calculator Summary                    │
+│                AWS Pricing Calculator Summary                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Estimate AWS costs BEFORE deploying                         │
 │  ✅ Free, no AWS account required                               │
-│  ✅ 170+ services supported                                      │
+│  ✅ 170+ services supported                                     │
 │  ✅ Compare On-Demand vs Reserved vs Savings Plans              │
 │  ✅ Export to PDF/CSV, share via link                           │
 │  ✅ Group services by environment/project                       │
-│                                                                  │
-│  URL: https://calculator.aws                                     │
-│                                                                  │
+│                                                                 │
+│  URL: https://calculator.aws                                    │
+│                                                                 │
 │  Nhớ: "Pricing Calculator = ƯỚC TÍNH trước khi dùng"            │
 │       "Cost Explorer = PHÂN TÍCH sau khi dùng"                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

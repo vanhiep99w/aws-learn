@@ -127,19 +127,19 @@ Tại sao dùng Snow Family thay vì upload qua internet?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AWS SNOWMOBILE                                     │
+│                           AWS SNOWMOBILE                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  🚛  ════════════════════════════════════════════════════════════   │   │
 │   │       45-foot shipping container trên xe tải                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   Storage:     100 PB (100,000 TB) per Snowmobile                           │
 │   Security:    GPS tracking, 24/7 video surveillance, security escort       │
 │   Encryption:  256-bit encryption                                           │
-│   Network:     Multiple 40 Gbps connections                                  │
-│                                                                              │
+│   Network:     Multiple 40 Gbps connections                                 │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

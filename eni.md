@@ -43,20 +43,20 @@ KHÔNG CÓ ENI:                      CÓ ENI:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        EC2 Instance                              │
-│                                                                  │
+│                        EC2 Instance                             │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                   ENI (Network Interface)                │   │
+│   │                   ENI (Network Interface)               │   │
 │   │                                                         │   │
-│   │   ├── Private IP: 10.0.1.50                            │   │
-│   │   ├── Public IP: 54.123.45.67 (optional)               │   │
-│   │   ├── Elastic IP: 52.1.2.3 (optional)                  │   │
-│   │   ├── MAC Address: 02:xx:xx:xx:xx:xx                   │   │
-│   │   ├── Security Groups: [sg-web, sg-ssh]                │   │
-│   │   └── Subnet: subnet-12345                             │   │
+│   │   ├── Private IP: 10.0.1.50                             │   │
+│   │   ├── Public IP: 54.123.45.67 (optional)                │   │
+│   │   ├── Elastic IP: 52.1.2.3 (optional)                   │   │
+│   │   ├── MAC Address: 02:xx:xx:xx:xx:xx                    │   │
+│   │   ├── Security Groups: [sg-web, sg-ssh]                 │   │
+│   │   └── Subnet: subnet-12345                              │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,25 +78,25 @@ KHÔNG CÓ ENI:                      CÓ ENI:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ENI = "Network Identity"                      │
-│                                                                  │
+│                    ENI = "Network Identity"                     │
+│                                                                 │
 │   Mọi thứ về network đều gắn vào ENI:                           │
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                        ENI                               │   │
+│   │                        ENI                              │   │
 │   │                                                         │   │
-│   │   ├── Private IP(s)     ← Gắn vào ENI                  │   │
-│   │   ├── Public IP         ← Gắn vào ENI                  │   │
-│   │   ├── Elastic IP        ← Gắn vào ENI                  │   │
-│   │   ├── MAC Address       ← Thuộc về ENI                 │   │
-│   │   ├── Security Groups   ← Gắn vào ENI                  │   │
-│   │   └── Subnet            ← ENI thuộc về subnet          │   │
+│   │   ├── Private IP(s)     ← Gắn vào ENI                   │   │
+│   │   ├── Public IP         ← Gắn vào ENI                   │   │
+│   │   ├── Elastic IP        ← Gắn vào ENI                   │   │
+│   │   ├── MAC Address       ← Thuộc về ENI                  │   │
+│   │   ├── Security Groups   ← Gắn vào ENI                   │   │
+│   │   └── Subnet            ← ENI thuộc về subnet           │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                          │                                       │
-│                          ▼                                       │
-│                    EC2 Instance                                  │
-│                                                                  │
+│                         │                                       │
+│                          ▼                                      │
+│                    EC2 Instance                                 │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -108,19 +108,19 @@ KHÔNG CÓ ENI:                      CÓ ENI:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         ENI                                      │
+│                         ENI                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   Private IP:  ✅ BẮT BUỘC (luôn có)                            │
-│                Ví dụ: 10.0.1.50                                  │
-│                                                                  │
+│                Ví dụ: 10.0.1.50                                 │
+│                                                                 │
 │   1 ENI có thể có NHIỀU Private IPs:                            │
-│   ├── Primary:   10.0.1.50 (không thể xóa)                     │
+│   ├── Primary:   10.0.1.50 (không thể xóa)                      │
 │   ├── Secondary: 10.0.1.51                                      │
 │   └── Secondary: 10.0.1.52                                      │
-│                                                                  │
+│                                                                 │
 │   Use case: Host nhiều websites trên 1 EC2                      │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -155,21 +155,21 @@ ENI ở Private Subnet + Elastic IP:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    EC2 VỚI NHIỀU ENIs                            │
-│                                                                  │
+│                    EC2 VỚI NHIỀU ENIs                           │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                    EC2 Instance                          │   │
+│   │                    EC2 Instance                         │   │
 │   │                                                         │   │
 │   │   eth0 (Primary ENI)          eth1 (Secondary ENI)      │   │
 │   │   ├── 10.0.1.50               ├── 10.0.2.50             │   │
 │   │   ├── Public Subnet           ├── Private Subnet        │   │
 │   │   └── SG: web-sg              └── SG: db-sg             │   │
 │   │                                                         │   │
-│   │   ⚠️ eth0 không thể detach                              │   │
+│   │   ⚠️ eth0 không thể detach                               │   │
 │   │   ✅ eth1, eth2... có thể detach/attach                 │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -246,13 +246,13 @@ ip addr show
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    EC2 Instance                                  │
-│                                                                  │
+│                    EC2 Instance                                 │
+│                                                                 │
 │   eth0 (Public)               eth1 (Private)                    │
-│   ├── 10.0.0.10               ├── 10.0.1.10                    │
-│   ├── EIP: 54.1.2.3           └── Connect to RDS               │
+│   ├── 10.0.0.10               ├── 10.0.1.10                     │
+│   ├── EIP: 54.1.2.3           └── Connect to RDS                │
 │   └── Web traffic                                               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 → Web traffic qua eth0, Database traffic qua eth1
@@ -320,25 +320,25 @@ ENI là cầu nối giữa AWS resource và network (VPC). Không có ENI = Khô
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  1️⃣  VPC-BASED SERVICES (Cần ENI trong VPC của BẠN)            │
+│  1️⃣  VPC-BASED SERVICES (Cần ENI trong VPC của BẠN)             │
 │                                                                 │
-│      EC2, RDS, Lambda (VPC), ECS, EKS, ElastiCache,            │
-│      NAT Gateway, ALB/NLB, VPC Endpoints (Interface)...        │
+│      EC2, RDS, Lambda (VPC), ECS, EKS, ElastiCache,             │
+│      NAT Gateway, ALB/NLB, VPC Endpoints (Interface)...         │
 │                                                                 │
-│      → Nằm TRONG VPC của bạn                                   │
-│      → IP thuộc subnet của bạn (vd: 10.0.1.50)                │
-│      → BẠN quản lý network                                     │
-│      → Cần ENI để có IP trong VPC                              │
+│      → Nằm TRONG VPC của bạn                                    │
+│      → IP thuộc subnet của bạn (vd: 10.0.1.50)                  │
+│      → BẠN quản lý network                                      │
+│      → Cần ENI để có IP trong VPC                               │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│  2️⃣  PUBLIC/REGIONAL SERVICES (AWS quản lý IP)                 │
+│  2️⃣  PUBLIC/REGIONAL SERVICES (AWS quản lý IP)                  │
 │                                                                 │
-│      S3, DynamoDB, SQS, SNS, Lambda (không VPC)...             │
+│      S3, DynamoDB, SQS, SNS, Lambda (không VPC)...              │
 │                                                                 │
-│      → Nằm NGOÀI VPC của bạn                                   │
-│      → Connect qua URL: s3.amazonaws.com                       │
-│      → AWS quản lý IP (bạn không thấy, không control)          │
-│      → KHÔNG cần ENI trong VPC của bạn                         │
+│      → Nằm NGOÀI VPC của bạn                                    │
+│      → Connect qua URL: s3.amazonaws.com                        │
+│      → AWS quản lý IP (bạn không thấy, không control)           │
+│      → KHÔNG cần ENI trong VPC của bạn                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

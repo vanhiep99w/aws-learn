@@ -285,31 +285,31 @@ Mỗi Product có thể có **nhiều versions**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Launch Constraint                             │
+│                    Launch Constraint                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Không có Launch Constraint:                                    │
 │  ────────────────────────────                                   │
 │  User cần có đầy đủ IAM permissions (ec2:*, rds:*, etc.)        │
-│  → Không đạt được governance!                                    │
+│  → Không đạt được governance!                                   │
 │                                                                 │
 │  Có Launch Constraint:                                          │
 │  ──────────────────────                                         │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  IAM Role: ServiceCatalogLaunchRole                       │  │
-│  │                                                           │  │
-│  │  {                                                        │  │
-│  │    "Effect": "Allow",                                     │  │
-│  │    "Action": [                                            │  │
-│  │      "ec2:*",                                             │  │
-│  │      "rds:*",                                             │  │
-│  │      "cloudformation:*"                                   │  │
-│  │    ],                                                     │  │
-│  │    "Resource": "*"                                        │  │
-│  │  }                                                        │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  IAM Role: ServiceCatalogLaunchRole                      │   │
+│  │                                                          │   │
+│  │  {                                                       │   │
+│  │    "Effect": "Allow",                                    │   │
+│  │    "Action": [                                           │   │
+│  │      "ec2:*",                                            │   │
+│  │      "rds:*",                                            │   │
+│  │      "cloudformation:*"                                  │   │
+│  │    ],                                                    │   │
+│  │    "Resource": "*"                                       │   │
+│  │  }                                                       │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
-│  User chỉ cần: servicecatalog:ProvisionProduct                 │
+│  User chỉ cần: servicecatalog:ProvisionProduct                  │
 │  → Governance đạt được! ✅                                      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -321,13 +321,13 @@ Giới hạn parameter choices trong CloudFormation template:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Template Constraint                           │
+│                    Template Constraint                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Original CloudFormation Parameters:                            │
 │  ──────────────────────────────────                             │
-│  InstanceType: [t3.micro, t3.small, t3.medium, t3.large,       │
-│                 t3.xlarge, t3.2xlarge, m5.large, c5.xlarge...] │
+│  InstanceType: [t3.micro, t3.small, t3.medium, t3.large,        │
+│                 t3.xlarge, t3.2xlarge, m5.large, c5.xlarge...]  │
 │                                                                 │
 │  Template Constraint (JSON):                                    │
 │  ──────────────────────────                                     │
@@ -337,7 +337,7 @@ Giới hạn parameter choices trong CloudFormation template:
 │        "Assertions": [{                                         │
 │          "Assert": {                                            │
 │            "Fn::Contains": [                                    │
-│              ["t3.micro", "t3.small", "t3.medium"],            │
+│              ["t3.micro", "t3.small", "t3.medium"],             │
 │              {"Ref": "InstanceType"}                            │
 │            ]                                                    │
 │          }                                                      │
@@ -346,7 +346,7 @@ Giới hạn parameter choices trong CloudFormation template:
 │    }                                                            │
 │  }                                                              │
 │                                                                 │
-│  User chỉ thấy: [t3.micro, t3.small, t3.medium]                │
+│  User chỉ thấy: [t3.micro, t3.small, t3.medium]                 │
 │  → Cost control! 💰                                             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -358,19 +358,19 @@ Giới hạn parameter choices trong CloudFormation template:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                   Service Catalog Integrations                                │
+│                   Service Catalog Integrations                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│                              Service Catalog                                  │
+│                              Service Catalog                                 │
 │                                    │                                         │
-│     ┌──────────────────────────────┼──────────────────────────────┐         │
-│     │              │               │               │              │         │
-│     ▼              ▼               ▼               ▼              ▼         │
-│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐    │
-│  │ CFN  │    │   AWS    │    │   AWS    │    │   SNS   │    │  AWS    │    │
-│  │      │    │  Config  │    │  Orgs    │    │         │    │  SSM    │    │
-│  │Deploy│    │Compliance│    │Multi-acc │    │ Notify  │    │  Docs   │    │
-│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘    │
+│     ┌──────────────────────────────┼──────────────────────────────┐          │
+│     │              │               │               │               │         │
+│     ▼              ▼               ▼               ▼              ▼          │
+│  ┌──────┐    ┌──────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐      │
+│  │ CFN  │    │   AWS    │    │   AWS    │    │   SNS   │    │  AWS    │      │
+│  │      │    │  Config  │    │  Orgs    │    │         │    │  SSM    │      │
+│  │Deploy│    │Compliance│    │Multi-acc │    │ Notify  │    │  Docs   │      │
+│  └──────┘    └──────────┘    └──────────┘    └─────────┘    └─────────┘      │
 │                                                                              │
 │  CloudFormation: Underlying engine để deploy                                 │
 │  AWS Config: Track compliance của provisioned products                       │
@@ -385,32 +385,32 @@ Giới hạn parameter choices trong CloudFormation template:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              Portfolio Sharing across Accounts                   │
+│              Portfolio Sharing across Accounts                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │                  Management Account                             │
-│                  ┌─────────────────┐                           │
-│                  │  Portfolio:     │                           │
-│                  │  "Approved      │                           │
-│                  │   Resources"    │                           │
-│                  └────────┬────────┘                           │
+│                  ┌─────────────────┐                            │
+│                  │  Portfolio:     │                            │
+│                  │  "Approved      │                            │
+│                  │   Resources"    │                            │
+│                  └────────┬────────┘                            │
 │                           │                                     │
 │            Share via AWS Organizations                          │
 │                           │                                     │
-│         ┌─────────────────┼─────────────────┐                  │
-│         │                 │                 │                  │
-│         ▼                 ▼                 ▼                  │
-│   ┌───────────┐    ┌───────────┐    ┌───────────┐             │
-│   │  Dev      │    │  Staging  │    │   Prod    │             │
-│   │  Account  │    │  Account  │    │  Account  │             │
-│   │           │    │           │    │           │             │
-│   │ Imported  │    │ Imported  │    │ Imported  │             │
-│   │ Portfolio │    │ Portfolio │    │ Portfolio │             │
-│   └───────────┘    └───────────┘    └───────────┘             │
+│         ┌─────────────────┼─────────────────┐                   │
+│         │                 │                  │                  │
+│         ▼                 ▼                 ▼                   │
+│   ┌───────────┐    ┌───────────┐    ┌───────────┐               │
+│   │  Dev      │    │  Staging  │    │   Prod    │               │
+│   │  Account  │    │  Account  │    │  Account  │               │
+│   │           │    │           │    │           │               │
+│   │ Imported  │    │ Imported  │    │ Imported  │               │
+│   │ Portfolio │    │ Portfolio │    │ Portfolio │               │
+│   └───────────┘    └───────────┘    └───────────┘               │
 │                                                                 │
-│   ✅ Centralized governance                                    │
-│   ✅ Consistent across all accounts                            │
-│   ✅ Update once, applies everywhere                           │
+│   ✅ Centralized governance                                     │
+│   ✅ Consistent across all accounts                             │
+│   ✅ Update once, applies everywhere                            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -494,7 +494,7 @@ Benefits:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Security Best Practices                        │
+│                   Security Best Practices                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ✅ Always use Launch Constraints                               │
@@ -503,14 +503,14 @@ Benefits:
 │  ✅ Least privilege cho Launch Role                             │
 │     → Chỉ cho quyền cần thiết cho product                       │
 │                                                                 │
-│  ✅ Template Constraints cho cost control                        │
+│  ✅ Template Constraints cho cost control                       │
 │     → Giới hạn instance types, sizes                            │
 │                                                                 │
-│  ✅ Tag Options cho tracking                                     │
+│  ✅ Tag Options cho tracking                                    │
 │     → Mandatory tags: CostCenter, Owner, Environment            │
 │                                                                 │
-│  ✅ Review và audit regularly                                    │
-│     → Check provisioned products, unused resources               │
+│  ✅ Review và audit regularly                                   │
+│     → Check provisioned products, unused resources              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

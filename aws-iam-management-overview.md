@@ -115,7 +115,7 @@ graph TB
 │                           AWS ACCOUNT                                               │
 │                                                                                     │
 │   ┌──────────┐                                                                      │
-│   │Root User │──── ⚠️ Toàn quyền, chỉ dùng khi thật sự cần thiết                    │
+│   │Root User │──── ⚠️ Toàn quyền, chỉ dùng khi thật sự cần thiết                     │
 │   └──────────┘                                                                      │
 │         │                                                                           │
 │         │ tạo & quản lý                                                             │

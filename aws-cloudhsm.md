@@ -25,12 +25,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       AWS CloudHSM                               │
+│                       AWS CloudHSM                              │
 │     "Dedicated Hardware Security Module in the Cloud"           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────┐           │
-│   │              Your VPC                            │           │
+│   │              Your VPC                           │           │
 │   │   ┌───────────────────────────────────────┐     │           │
 │   │   │           CloudHSM Cluster            │     │           │
 │   │   │  ┌─────────┐  ┌─────────┐  ┌─────────┐│     │           │
@@ -39,11 +39,11 @@
 │   │   │  └─────────┘  └─────────┘  └─────────┘│     │           │
 │   │   └───────────────────────────────────────┘     │           │
 │   └─────────────────────────────────────────────────┘           │
-│                                                                  │
+│                                                                 │
 │   ✅ FIPS 140-2 Level 3 certified                               │
 │   ✅ Single-tenant (dedicated hardware)                         │
 │   ✅ You control keys, AWS has NO access                        │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -106,22 +106,22 @@ AWS có nhiều services liên quan đến key/secret management:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    FIPS 140-2 Levels                             │
+│                    FIPS 140-2 Levels                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Level 1: Basic security, no physical protection                │
 │           └── Software encryption                               │
-│                                                                  │
+│                                                                 │
 │  Level 2: Tamper-evident seals, role-based authentication       │
 │           └── AWS KMS (overall service)                         │
-│                                                                  │
+│                                                                 │
 │  Level 3: Tamper-resistant, physical protection, identity-based │
 │           └── AWS CloudHSM ✅                                   │
 │           └── Zeroize keys if tampering detected                │
-│                                                                  │
+│                                                                 │
 │  Level 4: Highest, environmental protection                     │
 │           └── Extreme conditions (voltage, temperature)         │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -147,22 +147,22 @@ AWS có nhiều services liên quan đến key/secret management:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Chọn KMS hay CloudHSM?                          │
+│                  Chọn KMS hay CloudHSM?                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Chọn AWS KMS khi:                                               │
+│                                                                 │
+│  Chọn AWS KMS khi:                                              │
 │  ├── Encrypt data trong AWS services (S3, EBS, RDS)             │
 │  ├── Không cần FIPS Level 3                                     │
 │  ├── Muốn đơn giản, managed                                     │
-│  └── Budget hạn chế                                              │
-│                                                                  │
-│  Chọn CloudHSM khi:                                              │
+│  └── Budget hạn chế                                             │
+│                                                                 │
+│  Chọn CloudHSM khi:                                             │
 │  ├── Compliance yêu cầu FIPS 140-2 Level 3                      │
 │  ├── Cần full control, AWS không được access keys               │
 │  ├── Dùng standard APIs (PKCS#11, JCE)                          │
-│  ├── Legacy/custom applications                                  │
+│  ├── Legacy/custom applications                                 │
 │  └── High-speed crypto operations                               │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -210,22 +210,22 @@ AWS có nhiều services liên quan đến key/secret management:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              SSL/TLS Offloading with CloudHSM                    │
+│              SSL/TLS Offloading with CloudHSM                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Client ──► Web Server ──► CloudHSM                             │
-│                  │              │                                │
+│                  │             │                                │
 │                  │              └── Private key stored here     │
 │                  │                  (never leaves HSM)          │
-│                  │                                               │
+│                 │                                               │
 │                  └── SSL termination, key operations            │
 │                      delegated to HSM                           │
-│                                                                  │
-│  Benefits:                                                       │
+│                                                                 │
+│  Benefits:                                                      │
 │  • Private key never exposed to web server                      │
 │  • FIPS 140-2 Level 3 protection                                │
-│  • Compliance requirements met                                   │
-│                                                                  │
+│  • Compliance requirements met                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -255,19 +255,19 @@ AWS cho phép kết hợp **KMS + CloudHSM** để có cả hai lợi ích:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              KMS Custom Key Store (Best of Both Worlds)          │
+│              KMS Custom Key Store (Best of Both Worlds)         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────┐         ┌─────────────────────────────┐   │
-│  │    AWS KMS      │ ──────► │      CloudHSM Cluster       │   │
-│  │  (API + Mgmt)   │         │   (Key Storage - Level 3)   │   │
-│  └─────────────────┘         └─────────────────────────────┘   │
-│                                                                  │
-│  Benefits:                                                       │
+│                                                                 │
+│  ┌─────────────────┐         ┌─────────────────────────────┐    │
+│  │    AWS KMS      │ ──────► │      CloudHSM Cluster       │    │
+│  │  (API + Mgmt)   │         │   (Key Storage - Level 3)   │    │
+│  └─────────────────┘         └─────────────────────────────┘    │
+│                                                                 │
+│  Benefits:                                                      │
 │  ✅ Easy KMS API (100+ AWS service integrations)                │
 │  ✅ FIPS 140-2 Level 3 key storage (CloudHSM)                   │
 │  ✅ AWS cannot access your keys                                 │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -292,15 +292,15 @@ AWS cho phép kết hợp **KMS + CloudHSM** để có cả hai lợi ích:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    HA Best Practices                             │
+│                    HA Best Practices                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Deploy ít nhất 2 HSMs trong 2 AZs khác nhau                 │
 │  ✅ Keys tự động sync giữa các HSMs trong cluster               │
 │  ✅ Client tự động failover khi 1 HSM fail                      │
-│                                                                  │
+│                                                                 │
 │  Production recommendation: 3 HSMs trong 3 AZs                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -344,7 +344,7 @@ AWS cho phép kết hợp **KMS + CloudHSM** để có cả hai lợi ích:
 
 ```
 ┌─────────────────────────┬─────────────────────────────────────┐
-│          KMS            │            CloudHSM                  │
+│          KMS            │            CloudHSM                 │
 ├─────────────────────────┼─────────────────────────────────────┤
 │ Multi-tenant (shared)   │ Single-tenant (dedicated)           │
 │ FIPS Level 2            │ FIPS Level 3                        │
@@ -361,22 +361,22 @@ AWS cho phép kết hợp **KMS + CloudHSM** để có cả hai lợi ích:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS CloudHSM Summary                          │
+│                    AWS CloudHSM Summary                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Dedicated Hardware Security Module                          │
 │  ✅ FIPS 140-2 Level 3 (highest security)                       │
 │  ✅ Single-tenant (hardware dành riêng)                         │
 │  ✅ Customer controls keys (AWS has NO access)                  │
-│  ✅ Runs in your VPC                                             │
+│  ✅ Runs in your VPC                                            │
 │  ✅ Standard APIs: PKCS#11, JCE, CNG                            │
-│                                                                  │
-│  Use when:                                                       │
+│                                                                 │
+│  Use when:                                                      │
 │  • Compliance requires FIPS Level 3                             │
-│  • Need full key control                                         │
-│  • Legacy apps need PKCS#11/JCE                                  │
-│                                                                  │
+│  • Need full key control                                        │
+│  • Legacy apps need PKCS#11/JCE                                 │
+│                                                                 │
 │  Cost: ~$1.45/hour per HSM (~$1,050/month)                      │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

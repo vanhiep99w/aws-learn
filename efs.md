@@ -380,7 +380,7 @@ Data **chỉ lưu trong 1 AZ**, nhưng **vẫn share được** từ EC2 ở AZ 
 │   └──────────────┘        └──────────────┘        └────────────┘│
 │                                                                 │
 │   EC2 ở AZ-b, AZ-c VẪN TRUY CẬP ĐƯỢC (qua network cross-AZ)     │
-│   ⚠️ AZ-a down = KHÔNG truy cập được data                       │
+│   ⚠️ AZ-a down = KHÔNG truy cập được data                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

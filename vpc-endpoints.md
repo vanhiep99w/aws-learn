@@ -18,31 +18,31 @@ VPC Endpoint cho phép EC2 trong Private Subnet kết nối đến AWS Services 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AWS Region                                    │
-│                                                                      │
+│                        AWS Region                                   │
+│                                                                     │
 │   ┌──────────────────────────────────────┐                          │
-│   │           YOUR VPC                    │                          │
-│   │                                       │                          │
+│   │           YOUR VPC                   │                          │
+│   │                                      │                          │
 │   │   ┌───────────────────────────────┐  │                          │
 │   │   │     Private Subnet            │  │                          │
 │   │   │    ┌──────────────┐           │  │                          │
 │   │   │    │     EC2      │           │  │                          │
-│   │   │    │ (no public IP)│           │  │                          │
+│   │   │    │ (no public IP)│           │ │                          │
 │   │   │    └──────────────┘           │  │                          │
 │   │   └───────────────────────────────┘  │                          │
-│   │                                       │                          │
+│   │                                      │                          │
 │   │   ❌ SQS, S3, SNS KHÔNG Ở TRONG VPC! │                          │
 │   └──────────────────────────────────────┘                          │
-│                                                                      │
+│                                                                     │
 │   ┌──────────────────────────────────────────────────────────────┐  │
-│   │                  AWS PUBLIC SERVICES                          │  │
-│   │            (Truy cập qua INTERNET endpoint)                   │  │
-│   │                                                                │  │
+│   │                  AWS PUBLIC SERVICES                         │  │
+│   │            (Truy cập qua INTERNET endpoint)                  │  │
+│   │                                                              │  │
 │   │   ┌─────┐  ┌─────────┐  ┌─────┐  ┌─────┐  ┌─────┐            │  │
 │   │   │ SQS │  │   SNS   │  │ S3  │  │ SSM │  │ ECR │            │  │
 │   │   └─────┘  └─────────┘  └─────┘  └─────┘  └─────┘            │  │
-│   │                                                                │  │
-│   │   Endpoint: sqs.ap-southeast-2.amazonaws.com (PUBLIC!)        │  │
+│   │                                                              │  │
+│   │   Endpoint: sqs.ap-southeast-2.amazonaws.com (PUBLIC!)       │  │
 │   └──────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -104,18 +104,18 @@ EC2 → ENI (Private IP) → AWS Private Network → SQS
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        YOUR VPC                              │
-│                                                              │
+│                        YOUR VPC                             │
+│                                                             │
 │   ┌──────────┐        Route Table                ┌───────┐  │
 │   │   EC2    │            │                      │       │  │
 │   │          │────────────┼─────────────────────►│  S3   │  │
 │   │          │            │                      │       │  │
 │   └──────────┘     "S3 → đi thẳng"               └───────┘  │
-│                                                              │
+│                                                             │
 │   KHÔNG CẦN CỬA (ENI)!                                      │
 │   AWS đã xây sẵn đường hầm xuyên tường cho S3               │
 │   → Chỉ cần bảng chỉ đường (Route)                          │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,21 +123,21 @@ EC2 → ENI (Private IP) → AWS Private Network → SQS
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        YOUR VPC                              │
-│                                                              │
+│                        YOUR VPC                             │
+│                                                             │
 │   ┌──────────┐     ┌────────────┐                 ┌───────┐ │
 │   │   EC2    │     │    ENI     │                 │       │ │
 │   │          │────►│   (cửa)    │────────────────►│  SQS  │ │
 │   │          │     │            │ AWS Private     │       │ │
 │   └──────────┘     └────────────┘ Network         └───────┘ │
-│                          │                                   │
+│                         │                                   │
 │                    CẦN CỬA (ENI) để đi ra!                  │
-│                    (có địa chỉ: 10.100.11.149)               │
-│                                                              │
+│                    (có địa chỉ: 10.100.11.149)              │
+│                                                             │
 │   SQS không có đường hầm sẵn                                │
 │   → Phải mở cửa (ENI) trong VPC                             │
 │   → Cửa cần bảo vệ (Security Group)                         │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -156,28 +156,28 @@ EC2 → ENI (Private IP) → AWS Private Network → SQS
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              YOUR VPC                                │
-│                          (10.100.0.0/16)                             │
-│                                                                      │
+│                              YOUR VPC                               │
+│                          (10.100.0.0/16)                            │
+│                                                                     │
 │   ┌────────────────────────────────────────────────────────────┐    │
-│   │                    Private Subnet                           │    │
-│   │                   (10.100.11.0/24)                          │    │
-│   │                                                             │    │
+│   │                    Private Subnet                          │    │
+│   │                   (10.100.11.0/24)                         │    │
+│   │                                                            │    │
 │   │   ┌──────────────┐         ┌──────────────────────────┐    │    │
 │   │   │     EC2      │   443   │   Interface Endpoint     │    │    │
 │   │   │ 10.100.11.163│────────►│   (ENI: 10.100.11.149)   │    │    │
 │   │   │              │         │                          │    │    │
-│   │   │  SG: allow   │         │   SG: allow 443 từ VPC  │    │    │
+│   │   │  SG: allow   │         │   SG: allow 443 từ VPC  │     │    │
 │   │   │  outbound 443│         │                          │    │    │
 │   │   └──────────────┘         └────────────┬─────────────┘    │    │
-│   │                                         │                   │    │
-│   └─────────────────────────────────────────┼───────────────────┘    │
-│                                             │                        │
-│   VPC DNS (10.100.0.2):                     │                        │
-│   sqs.ap-southeast-2.amazonaws.com          │                        │
-│         → 10.100.11.149 (Endpoint IP)       │                        │
-│                                             │                        │
-└─────────────────────────────────────────────┼────────────────────────┘
+│   │                                         │                  │    │
+│   └─────────────────────────────────────────┼──────────────────┘    │
+│                                            │                        │
+│   VPC DNS (10.100.0.2):                    │                        │
+│   sqs.ap-southeast-2.amazonaws.com         │                        │
+│         → 10.100.11.149 (Endpoint IP)      │                        │
+│                                            │                        │
+└─────────────────────────────────────────────┼───────────────────────┘
                                               │
                                    AWS Private Network
                                    (không qua Internet!)
@@ -408,29 +408,29 @@ Port: 443
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 INTERFACE ENDPOINT CHECKLIST                 │
+│                 INTERFACE ENDPOINT CHECKLIST                │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  VPC Settings:                                               │
-│    ☐ DNS Resolution = Enabled                                │
-│    ☐ DNS Hostnames = Enabled                                 │
-│                                                              │
-│  Interface Endpoint:                                         │
-│    ☐ Status = Available                                      │
-│    ☐ Cùng VPC với EC2                                        │
-│    ☐ Subnet chứa EC2 được chọn                               │
-│    ☐ Private DNS = Enabled                                   │
-│    ☐ Security Group allow TCP 443 từ VPC CIDR                │
-│                                                              │
-│  EC2:                                                        │
-│    ☐ Security Group allow outbound 443                       │
-│    ☐ IAM Role với permissions phù hợp                        │
-│                                                              │
-│  Test:                                                       │
-│    ☐ nslookup trả về Private IP (10.x.x.x)                   │
-│    ☐ curl không timeout                                      │
-│    ☐ AWS CLI command thành công                              │
-│                                                              │
+│                                                             │
+│  VPC Settings:                                              │
+│    ☐ DNS Resolution = Enabled                               │
+│    ☐ DNS Hostnames = Enabled                                │
+│                                                             │
+│  Interface Endpoint:                                        │
+│    ☐ Status = Available                                     │
+│    ☐ Cùng VPC với EC2                                       │
+│    ☐ Subnet chứa EC2 được chọn                              │
+│    ☐ Private DNS = Enabled                                  │
+│    ☐ Security Group allow TCP 443 từ VPC CIDR               │
+│                                                             │
+│  EC2:                                                       │
+│    ☐ Security Group allow outbound 443                      │
+│    ☐ IAM Role với permissions phù hợp                       │
+│                                                             │
+│  Test:                                                      │
+│    ☐ nslookup trả về Private IP (10.x.x.x)                  │
+│    ☐ curl không timeout                                     │
+│    ☐ AWS CLI command thành công                             │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 

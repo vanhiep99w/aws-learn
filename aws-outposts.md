@@ -25,9 +25,9 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         AWS Outposts Architecture                        │
+│                         AWS Outposts Architecture                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │   ┌─────────────────────┐          ┌─────────────────────────────────┐  │
 │   │   AWS Region        │          │   Your Data Center              │  │
 │   │   ┌─────────────┐   │   VPN/   │   ┌─────────────────────────┐   │  │
@@ -41,7 +41,7 @@
 │   │                     │          │   │  └─────┘ └─────┘ └────┘ │   │  │
 │   │                     │          │   └─────────────────────────┘   │  │
 │   └─────────────────────┘          └─────────────────────────────────┘  │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -134,7 +134,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                      S3 on Outposts                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌───────────────────┐     ┌───────────────────────────────┐    │
 │  │   S3 on Outposts  │     │   S3 Regional (Standard)      │    │
 │  │                   │     │                               │    │
@@ -142,12 +142,12 @@
 │  │  • Access Points  │     │  • Full S3 features           │    │
 │  │  • Bucket policy  │     │  • Cross-region replication   │    │
 │  └───────────────────┘     └───────────────────────────────┘    │
-│                                                                  │
-│  Key Differences:                                                │
+│                                                                 │
+│  Key Differences:                                               │
 │  • S3 on Outposts: Data stays LOCAL                             │
 │  • Uses Access Points (required) instead of bucket URLs         │
 │  • Limited storage capacity (based on Outpost config)           │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -157,10 +157,10 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     Outposts Network Connectivity                        │
+│                     Outposts Network Connectivity                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│   Your Data Center                              AWS Region               │
+│                                                                         │
+│   Your Data Center                              AWS Region              │
 │   ┌───────────────────┐                    ┌───────────────────┐        │
 │   │                   │                    │                   │        │
 │   │   ┌───────────┐   │   Service Link     │   ┌───────────┐   │        │
@@ -172,11 +172,11 @@
 │   │   └───────────┘   │  (Data traffic)    │                   │        │
 │   │                   │                    │                   │        │
 │   └───────────────────┘                    └───────────────────┘        │
-│                                                                          │
-│   Connection Options:                                                    │
+│                                                                         │
+│   Connection Options:                                                   │
 │   1. AWS Direct Connect (Recommended - dedicated, consistent)           │
 │   2. VPN over Internet (Backup option)                                  │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -201,10 +201,10 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Outposts - Control vs Data Plane                      │
+│                    AWS Outposts - Control vs Data Plane                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Your Data Center                           AWS Region                      │
+│                                                                             │
+│   Your Data Center                           AWS Region                     │
 │   ┌────────────────────────┐                ┌─────────────────────────┐     │
 │   │     OUTPOSTS           │                │                         │     │
 │   │  ┌──────────────────┐  │   Service Link │  ┌───────────────────┐  │     │
@@ -218,9 +218,9 @@
 │   │  └──────────────────┘  │                │  │  • Updates        │  │     │
 │   │                        │                │  └───────────────────┘  │     │
 │   └────────────────────────┘                └─────────────────────────┘     │
-│                                                                              │
-│   DATA stays LOCAL ✅                        MANAGEMENT from AWS ✅          │
-│                                                                              │
+│                                                                             │
+│   DATA stays LOCAL ✅                        MANAGEMENT from AWS ✅         │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -268,18 +268,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Quản lý Outposts - GIỐNG HỆT AWS Cloud                    │
+│                    Quản lý Outposts - GIỐNG HỆT AWS Cloud                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Bạn dùng:                                                                 │
 │   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────┐ │
 │   │  AWS Console    │  │   AWS CLI       │  │   AWS SDK / IaC             │ │
 │   │  (Web Portal)   │  │                 │  │   (CDK, Terraform, CF)      │ │
 │   └────────┬────────┘  └────────┬────────┘  └─────────────┬───────────────┘ │
-│            │                    │                         │                  │
-│            └────────────────────┼─────────────────────────┘                  │
-│                                 │                                            │
-│                                 ▼                                            │
+│            │                    │                        │                  │
+│            └────────────────────┼─────────────────────────┘                 │
+│                                │                                            │
+│                                 ▼                                           │
 │                    ┌───────────────────────┐                                │
 │                    │     AWS Region        │                                │
 │                    │     (Control)         │                                │
@@ -291,10 +291,10 @@
 │   │  EC2 trên Cloud  │              │  EC2 trên        │                    │
 │   │  (AWS Region)    │              │  OUTPOSTS        │                    │
 │   └──────────────────┘              │  (Your DC)       │                    │
-│                                     └──────────────────┘                    │
-│                                                                              │
-│   ✅ CÙNG Console  ✅ CÙNG CLI  ✅ CÙNG APIs  ✅ CÙNG Tools                │
-│                                                                              │
+│              └───────────────────────────────────┘                          │
+│                                                                             │
+│   ✅ CÙNG Console  ✅ CÙNG CLI  ✅ CÙNG APIs  ✅ CÙNG Tools                 │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -341,9 +341,9 @@ Bạn chỉ cần chọn **subnet thuộc Outposts** → Instance tự động c
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
-│                    Hybrid Cloud Solutions Comparison                        │
+│                    Hybrid Cloud Solutions Comparison                       │
 ├────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
+│                                                                            │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────┐ │
 │  │  AWS Outposts   │  │  VMware Cloud   │  │  Azure Stack / Google       │ │
 │  │                 │  │  on AWS         │  │  Anthos                     │ │
@@ -353,7 +353,7 @@ Bạn chỉ cần chọn **subnet thuộc Outposts** → Instance tự động c
 │  │ • AWS managed   │  │ • Hybrid VMware │  │ • Different APIs            │ │
 │  │ • Your DC       │  │ • AWS Region    │  │                             │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────────────────────┘ │
-│                                                                             │
+│                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -363,30 +363,30 @@ Bạn chỉ cần chọn **subnet thuộc Outposts** → Instance tự động c
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    Outposts HA Architecture                              │
+│                    Outposts HA Architecture                             │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│   Primary Site                          Secondary Site                   │
+│                                                                         │
+│   Primary Site                          Secondary Site                  │
 │   ┌─────────────────┐                  ┌─────────────────┐              │
 │   │  Outposts #1    │                  │  Outposts #2    │              │
 │   │  ┌───────────┐  │                  │  ┌───────────┐  │              │
 │   │  │ App + DB  │  │  ──Replication─► │  │ Standby   │  │              │
 │   │  └───────────┘  │                  │  └───────────┘  │              │
 │   └────────┬────────┘                  └────────┬────────┘              │
-│            │                                    │                        │
-│            └──────────┬─────────────────────────┘                        │
-│                       │                                                  │
-│                       ▼                                                  │
-│               ┌───────────────┐                                          │
-│               │  AWS Region   │                                          │
-│               │  (Control)    │                                          │
-│               └───────────────┘                                          │
-│                                                                          │
-│   Best Practices:                                                        │
-│   • Deploy across multiple Outposts                                      │
-│   • Use AWS Region as DR target                                          │
-│   • Replicate data to S3 in Region                                       │
-│                                                                          │
+│            │                                   │                        │
+│            └──────────┬─────────────────────────┘                       │
+│                      │                                                  │
+│                       ▼                                                 │
+│               ┌───────────────┐                                         │
+│               │  AWS Region   │                                         │
+│               │  (Control)    │                                         │
+│               └───────────────┘                                         │
+│                                                                         │
+│   Best Practices:                                                       │
+│   • Deploy across multiple Outposts                                     │
+│   • Use AWS Region as DR target                                         │
+│   • Replicate data to S3 in Region                                      │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -429,27 +429,27 @@ Khi mất kết nối với AWS Region:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      AWS Outposts - Summary                              │
+│                      AWS Outposts - Summary                             │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  ✅ WHAT: AWS infrastructure tại data center của bạn                    │
-│                                                                          │
-│  ✅ WHY:                                                                 │
-│     • Low latency requirements                                           │
-│     • Data residency compliance                                          │
-│     • Hybrid cloud architecture                                          │
-│                                                                          │
-│  ✅ HOW:                                                                 │
-│     • AWS ships & installs hardware                                      │
-│     • AWS manages & maintains                                            │
-│     • You provide power, cooling, space, network                         │
-│                                                                          │
-│  ✅ TYPES:                                                               │
+│                                                                         │
+│  ✅ WHY:                                                                │
+│     • Low latency requirements                                          │
+│     • Data residency compliance                                         │
+│     • Hybrid cloud architecture                                         │
+│                                                                         │
+│  ✅ HOW:                                                                │
+│     • AWS ships & installs hardware                                     │
+│     • AWS manages & maintains                                           │
+│     • You provide power, cooling, space, network                        │
+│                                                                         │
+│  ✅ TYPES:                                                              │
 │     • Outposts Rack (42U) - Full services                               │
 │     • Outposts Server (1U/2U) - EC2 + EBS only                          │
-│                                                                          │
+│                                                                         │
 │  ✅ SERVICES: EC2, EBS, S3, ECS, EKS, RDS, ElastiCache, ALB...          │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 

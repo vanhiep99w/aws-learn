@@ -24,7 +24,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS WAF Protection                            │
+│                    AWS WAF Protection                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌───────────────┐                                              │
@@ -39,12 +39,12 @@
 │          │ • Fraud: Fake account creation                       │
 │          ▼                                                      │
 │  ┌───────────────────────────────────────────┐                  │
-│  │              AWS WAF                       │                  │
+│  │              AWS WAF                      │                  │
 │  │  ┌─────────────────────────────────────┐  │                  │
-│  │  │           Web ACL                    │  │                  │
-│  │  │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐   │  │                  │
-│  │  │  │Rule1│ │Rule2│ │Rule3│ │Rule4│   │  │                  │
-│  │  │  └─────┘ └─────┘ └─────┘ └─────┘   │  │                  │
+│  │  │           Web ACL                   │  │                  │
+│  │  │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐    │  │                  │
+│  │  │  │Rule1│ │Rule2│ │Rule3│ │Rule4│    │  │                  │
+│  │  │  └─────┘ └─────┘ └─────┘ └─────┘    │  │                  │
 │  │  └─────────────────────────────────────┘  │                  │
 │  │                                           │                  │
 │  │  ❌ BLOCK malicious requests              │                  │
@@ -58,7 +58,7 @@
 │          │                                                      │
 │          ▼                                                      │
 │  ┌───────────────────────────────────────────┐                  │
-│  │         Your Application                   │                  │
+│  │         Your Application                  │                  │
 │  └───────────────────────────────────────────┘                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -80,15 +80,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                         AWS WAF Architecture                              │
+│                         AWS WAF Architecture                             │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │   ┌────────────────────────────────────────────────────────────────┐     │
-│   │                        Web ACL                                  │     │
-│   │                                                                 │     │
+│   │                        Web ACL                                 │     │
+│   │                                                                │     │
 │   │   ┌─────────────────────────────────────────────────────────┐  │     │
-│   │   │                    Rule Groups                           │  │     │
-│   │   │                                                          │  │     │
+│   │   │                    Rule Groups                          │  │     │
+│   │   │                                                         │  │     │
 │   │   │  ┌──────────────────┐  ┌──────────────────┐             │  │     │
 │   │   │  │ AWS Managed      │  │ Your Custom      │             │  │     │
 │   │   │  │ Rule Groups      │  │ Rule Groups      │             │  │     │
@@ -99,26 +99,26 @@
 │   │   │  │ • Bot Control    │  │ • Custom logic   │             │  │     │
 │   │   │  └──────────────────┘  └──────────────────┘             │  │     │
 │   │   └─────────────────────────────────────────────────────────┘  │     │
-│   │                                                                 │     │
+│   │                                                                │     │
 │   │   ┌─────────────────────────────────────────────────────────┐  │     │
-│   │   │                   Individual Rules                       │  │     │
-│   │   │                                                          │  │     │
-│   │   │  Rule 1 ──► Rule 2 ──► Rule 3 ──► ... ──► Default Action │  │     │
-│   │   │                                                          │  │     │
-│   │   │  Đánh giá theo thứ tự priority (số nhỏ = ưu tiên cao)    │  │     │
+│   │   │                   Individual Rules                      │  │     │
+│   │   │                                                         │  │     │
+│   │   │  Rule 1 ──► Rule 2 ──► Rule 3 ──► ... ──► Default Action│  │     │
+│   │   │                                                         │  │     │
+│   │   │  Đánh giá theo thứ tự priority (số nhỏ = ưu tiên cao)   │  │     │
 │   │   └─────────────────────────────────────────────────────────┘  │     │
-│   │                                                                 │     │
+│   │                                                                │     │
 │   └────────────────────────────────────────────────────────────────┘     │
-│                                     │                                     │
-│                    Associated với Resources                               │
-│                                     │                                     │
+│                                    │                                     │
+│                    Associated với Resources                              │
+│                                    │                                     │
 │         ┌───────────────────────────┼───────────────────────────┐        │
 │         │               │           │           │               │        │
 │         ▼               ▼           ▼           ▼               ▼        │
-│   ┌──────────┐   ┌──────────┐ ┌──────────┐ ┌──────────┐  ┌──────────┐   │
-│   │CloudFront│   │   ALB    │ │   API    │ │ AppSync  │  │ Cognito  │   │
-│   │          │   │          │ │ Gateway  │ │          │  │          │   │
-│   └──────────┘   └──────────┘ └──────────┘ └──────────┘  └──────────┘   │
+│   ┌──────────┐   ┌──────────┐ ┌──────────┐ ┌──────────┐  ┌──────────┐    │
+│   │CloudFront│   │   ALB    │ │   API    │ │ AppSync  │  │ Cognito  │    │
+│   │          │   │          │ │ Gateway  │ │          │  │          │    │
+│   └──────────┘   └──────────┘ └──────────┘ └──────────┘  └──────────┘    │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -155,7 +155,7 @@ Mỗi rule tiêu thụ một lượng **WCU** nhất định. Web ACL có giới
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    WCU Examples                              │
+│                    WCU Examples                             │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  Rule Type                          │ WCU Cost              │
@@ -168,7 +168,7 @@ Mỗi rule tiêu thụ một lượng **WCU** nhất định. Web ACL có giới
 │  Rate-based rule                    │ 2 WCUs                │
 │  AWS Managed Rule Groups            │ Varies (25-700 WCUs)  │
 │                                                             │
-│  ⚠️ Vượt quá 1,500 WCUs → tính phí thêm $0.20/1M requests  │
+│  ⚠️ Vượt quá 1,500 WCUs → tính phí thêm $0.20/1M requests   │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -195,7 +195,7 @@ Block IP khi vượt quá threshold requests trong khoảng thời gian.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Rate-based Rule                           │
+│                    Rate-based Rule                          │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  Threshold: 2000 requests / 5 minutes (per IP)              │
@@ -232,45 +232,45 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                    AWS Managed Rule Groups                                │
+│                    AWS Managed Rule Groups                               │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  BASELINE RULE GROUPS (Khuyên dùng cho mọi ứng dụng)             │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesCommonRuleSet (Core Rule Set - CRS)            │   │
-│  │    → OWASP Top 10, SQL injection, XSS, path traversal            │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesAdminProtectionRuleSet                         │   │
-│  │    → Block external access to admin pages                        │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesKnownBadInputsRuleSet                          │   │
-│  │    → Block known bad request patterns                            │   │
-│  │                                                                   │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │  BASELINE RULE GROUPS (Khuyên dùng cho mọi ứng dụng)             │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesCommonRuleSet (Core Rule Set - CRS)            │    │
+│  │    → OWASP Top 10, SQL injection, XSS, path traversal            │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesAdminProtectionRuleSet                         │    │
+│  │    → Block external access to admin pages                        │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesKnownBadInputsRuleSet                          │    │
+│  │    → Block known bad request patterns                            │    │
+│  │                                                                  │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
 │                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  USE-CASE SPECIFIC RULE GROUPS                                    │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesSQLiRuleSet         → SQL injection protection │   │
-│  │  • AWSManagedRulesLinuxRuleSet        → Linux-specific attacks   │   │
-│  │  • AWSManagedRulesUnixRuleSet         → Unix-specific attacks    │   │
-│  │  • AWSManagedRulesWindowsRuleSet      → Windows-specific attacks │   │
-│  │  • AWSManagedRulesPHPRuleSet          → PHP-specific attacks     │   │
-│  │  • AWSManagedRulesWordPressRuleSet    → WordPress vulnerabilities│   │
-│  │                                                                   │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │  USE-CASE SPECIFIC RULE GROUPS                                   │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesSQLiRuleSet         → SQL injection protection │    │
+│  │  • AWSManagedRulesLinuxRuleSet        → Linux-specific attacks   │    │
+│  │  • AWSManagedRulesUnixRuleSet         → Unix-specific attacks    │    │
+│  │  • AWSManagedRulesWindowsRuleSet      → Windows-specific attacks │    │
+│  │  • AWSManagedRulesPHPRuleSet          → PHP-specific attacks     │    │
+│  │  • AWSManagedRulesWordPressRuleSet    → WordPress vulnerabilities│    │
+│  │                                                                  │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
 │                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  IP REPUTATION RULE GROUPS                                        │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesAmazonIpReputationList                         │   │
-│  │    → Block known malicious IPs từ AWS threat intelligence        │   │
-│  │                                                                   │   │
-│  │  • AWSManagedRulesAnonymousIpList                                │   │
-│  │    → Block traffic từ VPNs, Tor, proxies, hosting providers      │   │
-│  │                                                                   │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │  IP REPUTATION RULE GROUPS                                       │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesAmazonIpReputationList                         │    │
+│  │    → Block known malicious IPs từ AWS threat intelligence        │    │
+│  │                                                                  │    │
+│  │  • AWSManagedRulesAnonymousIpList                                │    │
+│  │    → Block traffic từ VPNs, Tor, proxies, hosting providers      │    │
+│  │                                                                  │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -296,31 +296,31 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                         Bot Control Levels                                │
+│                         Bot Control Levels                               │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  ┌───────────────────────────────────────────────────────────────┐      │
-│  │  COMMON BOT CONTROL                                            │      │
-│  │                                                                │      │
-│  │  • Phát hiện bots phổ biến (scrapers, crawlers, bots tốt)     │      │
-│  │  • Categorize: Verified bots, Unverified bots, Good bots      │      │
-│  │  • Fingerprinting dựa trên request patterns                   │      │
-│  │                                                                │      │
-│  │  Cost: $1/million requests (10M free/month)                   │      │
-│  │                                                                │      │
-│  └───────────────────────────────────────────────────────────────┘      │
+│  ┌───────────────────────────────────────────────────────────────┐       │
+│  │  COMMON BOT CONTROL                                           │       │
+│  │                                                               │       │
+│  │  • Phát hiện bots phổ biến (scrapers, crawlers, bots tốt)     │       │
+│  │  • Categorize: Verified bots, Unverified bots, Good bots      │       │
+│  │  • Fingerprinting dựa trên request patterns                   │       │
+│  │                                                               │       │
+│  │  Cost: $1/million requests (10M free/month)                   │       │
+│  │                                                               │       │
+│  └───────────────────────────────────────────────────────────────┘       │
 │                                                                          │
-│  ┌───────────────────────────────────────────────────────────────┐      │
-│  │  TARGETED BOT CONTROL                                          │      │
-│  │                                                                │      │
-│  │  • ML-based detection cho sophisticated bots                   │      │
-│  │  • Behavioral analysis                                         │      │
-│  │  • Browser fingerprinting                                      │      │
-│  │  • JavaScript challenge interstitials                          │      │
-│  │                                                                │      │
-│  │  Cost: $10/million requests (1M free/month)                   │      │
-│  │                                                                │      │
-│  └───────────────────────────────────────────────────────────────┘      │
+│  ┌───────────────────────────────────────────────────────────────┐       │
+│  │  TARGETED BOT CONTROL                                         │       │
+│  │                                                               │       │
+│  │  • ML-based detection cho sophisticated bots                  │       │
+│  │  • Behavioral analysis                                        │       │
+│  │  • Browser fingerprinting                                     │       │
+│  │  • JavaScript challenge interstitials                         │       │
+│  │                                                               │       │
+│  │  Cost: $10/million requests (1M free/month)                   │       │
+│  │                                                               │       │
+│  └───────────────────────────────────────────────────────────────┘       │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -344,42 +344,42 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                         Fraud Control Features                            │
+│                         Fraud Control Features                           │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  ┌───────────────────────────────────────────────────────────────┐      │
-│  │  ACCOUNT TAKEOVER PREVENTION (ATP)                             │      │
-│  │                                                                │      │
-│  │  Bảo vệ LOGIN pages khỏi:                                     │      │
-│  │  • Credential stuffing (dùng leaked passwords)                │      │
-│  │  • Credential cracking (brute force)                          │      │
-│  │  • Distributed attacks từ nhiều IPs                           │      │
-│  │                                                                │      │
-│  │  Cách hoạt động:                                              │      │
-│  │  1. Inspect login requests                                    │      │
-│  │  2. Check credentials against stolen credential databases     │      │
-│  │  3. Analyze login patterns (rate, success/failure)            │      │
-│  │  4. Block suspicious attempts                                 │      │
-│  │                                                                │      │
-│  └───────────────────────────────────────────────────────────────┘      │
+│  ┌───────────────────────────────────────────────────────────────┐       │
+│  │  ACCOUNT TAKEOVER PREVENTION (ATP)                            │       │
+│  │                                                               │       │
+│  │  Bảo vệ LOGIN pages khỏi:                                     │       │
+│  │  • Credential stuffing (dùng leaked passwords)                │       │
+│  │  • Credential cracking (brute force)                          │       │
+│  │  • Distributed attacks từ nhiều IPs                           │       │
+│  │                                                               │       │
+│  │  Cách hoạt động:                                              │       │
+│  │  1. Inspect login requests                                    │       │
+│  │  2. Check credentials against stolen credential databases     │       │
+│  │  3. Analyze login patterns (rate, success/failure)            │       │
+│  │  4. Block suspicious attempts                                 │       │
+│  │                                                               │       │
+│  └───────────────────────────────────────────────────────────────┘       │
 │                                                                          │
-│  ┌───────────────────────────────────────────────────────────────┐      │
-│  │  ACCOUNT CREATION FRAUD PREVENTION (ACFP)                      │      │
-│  │                                                                │      │
-│  │  Bảo vệ SIGNUP pages khỏi:                                    │      │
-│  │  • Automated fake account creation                            │      │
-│  │  • Bonus abuse (tạo nhiều accounts lấy promo)                 │      │
-│  │  • Spam accounts                                              │      │
-│  │                                                                │      │
-│  │  Cách hoạt động:                                              │      │
-│  │  1. Analyze signup request patterns                           │      │
-│  │  2. Check email/phone reputation                              │      │
-│  │  3. Detect automated behavior                                 │      │
-│  │  4. CAPTCHA or block suspicious signups                       │      │
-│  │                                                                │      │
-│  └───────────────────────────────────────────────────────────────┘      │
+│  ┌───────────────────────────────────────────────────────────────┐       │
+│  │  ACCOUNT CREATION FRAUD PREVENTION (ACFP)                     │       │
+│  │                                                               │       │
+│  │  Bảo vệ SIGNUP pages khỏi:                                    │       │
+│  │  • Automated fake account creation                            │       │
+│  │  • Bonus abuse (tạo nhiều accounts lấy promo)                 │       │
+│  │  • Spam accounts                                              │       │
+│  │                                                               │       │
+│  │  Cách hoạt động:                                              │       │
+│  │  1. Analyze signup request patterns                           │       │
+│  │  2. Check email/phone reputation                              │       │
+│  │  3. Detect automated behavior                                 │       │
+│  │  4. CAPTCHA or block suspicious signups                       │       │
+│  │                                                               │       │
+│  └───────────────────────────────────────────────────────────────┘       │
 │                                                                          │
-│  Cost: $10/month per Web ACL + $1/1000 requests                         │
+│  Cost: $10/month per Web ACL + $1/1000 requests                          │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -404,32 +404,32 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                    CloudFront + WAF Integration                           │
+│                    CloudFront + WAF Integration                          │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │     Users (Worldwide)                                                    │
 │           │                                                              │
 │           ▼                                                              │
-│   ┌───────────────────────────────────────────────────────────────┐     │
-│   │                    CloudFront (Edge)                           │     │
-│   │                                                                │     │
-│   │  ┌──────────────────────────────────────────────────────────┐ │     │
-│   │  │                     AWS WAF                               │ │     │
-│   │  │                                                           │ │     │
-│   │  │  ✅ Request allowed                                       │ │     │
-│   │  │  ❌ Request blocked → Return 403                          │ │     │
-│   │  │                                                           │ │     │
-│   │  └──────────────────────────────────────────────────────────┘ │     │
-│   │                                                                │     │
-│   │  Cache Hit? → Return cached content                           │     │
-│   │  Cache Miss? → Forward to origin                              │     │
-│   │                                                                │     │
-│   └───────────────────────────────────────────────────────────────┘     │
+│   ┌───────────────────────────────────────────────────────────────┐      │
+│   │                    CloudFront (Edge)                          │      │
+│   │                                                               │      │
+│   │  ┌──────────────────────────────────────────────────────────  │      │
+│   │  │                     AWS WAF                              │ │      │
+│   │  │                                                          │ │      │
+│   │  │  ✅ Request allowed                                      │ │      │
+│   │  │  ❌ Request blocked → Return 403                         │ │      │
+│   │  │                                                          │ │      │
+│   │  └──────────────────────────────────────────────────────────┘ │      │
+│   │                                                               │      │
+│   │  Cache Hit? → Return cached content                           │      │
+│   │  Cache Miss? → Forward to origin                              │      │
+│   │                                                               │      │
+│   └───────────────────────────────────────────────────────────────┘      │
 │           │                                                              │
 │           ▼                                                              │
-│   ┌───────────────────────────────────────────────────────────────┐     │
-│   │                      Origin (S3, ALB, EC2)                     │     │
-│   └───────────────────────────────────────────────────────────────┘     │
+│   ┌───────────────────────────────────────────────────────────────┐      │
+│   │                      Origin (S3, ALB, EC2)                    │      │
+│   └───────────────────────────────────────────────────────────────┘      │
 │                                                                          │
 │   Lợi ích:                                                               │
 │   • Block tại Edge trước khi traffic đến origin                          │
@@ -445,47 +445,47 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│              WAF vs Shield vs Firewall Manager                            │
+│              WAF vs Shield vs Firewall Manager                           │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                        AWS WAF                                   │    │
-│  │                                                                  │    │
-│  │  Layer: 7 (Application)                                         │    │
-│  │  Protects: Web apps, APIs                                       │    │
-│  │  Against: SQL injection, XSS, bots, L7 DDoS                     │    │
-│  │  Cost: Pay per rule, request                                    │    │
-│  │                                                                  │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────────────┐     │
+│  │                        AWS WAF                                  │     │
+│  │                                                                 │     │
+│  │  Layer: 7 (Application)                                         │     │
+│  │  Protects: Web apps, APIs                                       │     │
+│  │  Against: SQL injection, XSS, bots, L7 DDoS                     │     │
+│  │  Cost: Pay per rule, request                                    │     │
+│  │                                                                 │     │
+│  └─────────────────────────────────────────────────────────────────┘     │
 │                                                                          │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                       AWS Shield                                 │    │
-│  │                                                                  │    │
-│  │  Layer: 3, 4 (Network, Transport)                               │    │
-│  │  Protects: All AWS resources                                    │    │
-│  │  Against: DDoS attacks (SYN floods, UDP reflection)             │    │
-│  │                                                                  │    │
-│  │  ┌─────────────────┐  ┌─────────────────────────────────────┐   │    │
-│  │  │ Shield Standard │  │ Shield Advanced                     │   │    │
-│  │  │                 │  │                                     │   │    │
-│  │  │ • FREE          │  │ • $3,000/month                      │   │    │
-│  │  │ • Auto-enabled  │  │ • 24/7 DRT support                  │   │    │
-│  │  │ • L3/L4 DDoS    │  │ • L3/L4/L7 DDoS                     │   │    │
-│  │  │                 │  │ • Cost protection                   │   │    │
-│  │  │                 │  │ • WAF included                      │   │    │
-│  │  └─────────────────┘  └─────────────────────────────────────┘   │    │
-│  │                                                                  │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────────────┐     │
+│  │                       AWS Shield                                │     │
+│  │                                                                 │     │
+│  │  Layer: 3, 4 (Network, Transport)                               │     │
+│  │  Protects: All AWS resources                                    │     │
+│  │  Against: DDoS attacks (SYN floods, UDP reflection)             │     │
+│  │                                                                 │     │
+│  │  ┌─────────────────┐  ┌─────────────────────────────────────┐   │     │
+│  │  │ Shield Standard │  │ Shield Advanced                     │   │     │
+│  │  │                 │  │                                     │   │     │
+│  │  │ • FREE          │  │ • $3,000/month                      │   │     │
+│  │  │ • Auto-enabled  │  │ • 24/7 DRT support                  │   │     │
+│  │  │ • L3/L4 DDoS    │  │ • L3/L4/L7 DDoS                     │   │     │
+│  │  │                 │  │ • Cost protection                   │   │     │
+│  │  │                 │  │ • WAF included                      │   │     │
+│  │  └─────────────────┘  └─────────────────────────────────────┘   │     │
+│  │                                                                 │     │
+│  └─────────────────────────────────────────────────────────────────┘     │
 │                                                                          │
-│  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                   AWS Firewall Manager                           │    │
-│  │                                                                  │    │
-│  │  Purpose: Centralized management                                │    │
-│  │  Manages: WAF, Shield Advanced, Security Groups, Network FW     │    │
-│  │  Scope: Across AWS Organization (multiple accounts)             │    │
-│  │  Cost: $100/month per region                                    │    │
-│  │                                                                  │    │
-│  └─────────────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────────────┐     │
+│  │                   AWS Firewall Manager                          │     │
+│  │                                                                 │     │
+│  │  Purpose: Centralized management                                │     │
+│  │  Manages: WAF, Shield Advanced, Security Groups, Network FW     │     │
+│  │  Scope: Across AWS Organization (multiple accounts)             │     │
+│  │  Cost: $100/month per region                                    │     │
+│  │                                                                 │     │
+│  └─────────────────────────────────────────────────────────────────┘     │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -545,7 +545,7 @@ Nhóm nhiều rules lại với nhau để tái sử dụng.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│             Monthly Cost Example                             │
+│             Monthly Cost Example                            │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  Setup:                                                     │
@@ -597,7 +597,7 @@ Trước khi BLOCK:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Recommended Order                         │
+│                    Recommended Order                        │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  Priority 0:    IP Whitelist (ALLOW)                        │

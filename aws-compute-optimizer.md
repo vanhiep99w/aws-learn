@@ -24,15 +24,15 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AWS COMPUTE OPTIMIZER                                  │
+│                       AWS COMPUTE OPTIMIZER                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 MỤC ĐÍCH:                                                              │
 │   ─────────────────────────────────────────                                 │
 │   • Phân tích utilization metrics của resources                             │
-│   • Đưa ra recommendations để optimize cost và performance                 │
-│   • Giảm over-provisioning (đang dùng quá lớn)                             │
-│   • Giảm under-provisioning (đang dùng quá nhỏ)                            │
+│   • Đưa ra recommendations để optimize cost và performance                  │
+│   • Giảm over-provisioning (đang dùng quá lớn)                              │
+│   • Giảm under-provisioning (đang dùng quá nhỏ)                             │
 │                                                                             │
 │   📊 SUPPORTED RESOURCES:                                                   │
 │   ─────────────────────────────────────────                                 │
@@ -41,7 +41,7 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 │   • EBS Volumes                                                             │
 │   • Lambda Functions                                                        │
 │   • ECS Services (Fargate)                                                  │
-│   • License recommendations (SQL Server, Oracle, etc.)                     │
+│   • License recommendations (SQL Server, Oracle, etc.)                      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -52,30 +52,30 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    HOW COMPUTE OPTIMIZER WORKS                               │
+│                    HOW COMPUTE OPTIMIZER WORKS                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌──────────────┐      ┌──────────────┐      ┌──────────────┐             │
-│   │  CloudWatch  │─────►│   Compute    │─────►│  Rightsizing │             │
-│   │   Metrics    │      │   Optimizer  │      │ Recommendations│            │
-│   │  (14 days+)  │      │   (ML/AI)    │      │              │             │
-│   └──────────────┘      └──────────────┘      └──────────────┘             │
+│   ┌──────────────┐      ┌──────────────┐      ┌──────────────┐              │
+│   │  CloudWatch  │─────►│   Compute    │─────►│  Rightsizing │              │
+│   │   Metrics    │      │   Optimizer  │      │ Recommendations│              │
+│   │  (14 days+)  │      │   (ML/AI)    │      │              │              │
+│   └──────────────┘      └──────────────┘      └──────────────┘              │
 │                                                                             │
 │   PROCESS:                                                                  │
 │                                                                             │
-│   1. COLLECT: Thu thập utilization metrics từ CloudWatch                   │
+│   1. COLLECT: Thu thập utilization metrics từ CloudWatch                    │
 │      • CPU utilization                                                      │
-│      • Memory utilization (cần CloudWatch agent)                           │
+│      • Memory utilization (cần CloudWatch agent)                            │
 │      • Network I/O                                                          │
 │      • Disk I/O                                                             │
 │                                                                             │
-│   2. ANALYZE: Dùng Machine Learning phân tích patterns                     │
+│   2. ANALYZE: Dùng Machine Learning phân tích patterns                      │
 │      • Historical usage patterns                                            │
 │      • Peak/Average utilization                                             │
 │      • Workload characteristics                                             │
 │                                                                             │
 │   3. RECOMMEND: Đưa ra recommendations                                      │
-│      • Right-size (tăng/giảm instance type)                                │
+│      • Right-size (tăng/giảm instance type)                                 │
 │      • Graviton migration                                                   │
 │      • Idle resource detection                                              │
 │                                                                             │
@@ -88,33 +88,33 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      RECOMMENDATION TYPES                                    │
+│                      RECOMMENDATION TYPES                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  🔴 OVER-PROVISIONED (Đang dùng quá lớn)                            │   │
 │   │                                                                     │   │
-│   │  Hiện tại: m5.xlarge (4 vCPU, 16 GB RAM)                           │   │
+│   │  Hiện tại: m5.xlarge (4 vCPU, 16 GB RAM)                            │   │
 │   │  CPU Utilization: Average 5%, Peak 20%                              │   │
 │   │                                                                     │   │
-│   │  → Recommendation: Downsize to m5.large (2 vCPU, 8 GB RAM)         │   │
-│   │  → Savings: ~50% cost reduction                                    │   │
+│   │  → Recommendation: Downsize to m5.large (2 vCPU, 8 GB RAM)          │   │
+│   │  → Savings: ~50% cost reduction                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  🟡 UNDER-PROVISIONED (Đang dùng quá nhỏ)                          │   │
+│   │  🟡 UNDER-PROVISIONED (Đang dùng quá nhỏ)                           │   │
 │   │                                                                     │   │
-│   │  Hiện tại: t3.micro (2 vCPU, 1 GB RAM)                             │   │
-│   │  CPU Utilization: Average 95%, Peak 100% (throttling!)             │   │
+│   │  Hiện tại: t3.micro (2 vCPU, 1 GB RAM)                              │   │
+│   │  CPU Utilization: Average 95%, Peak 100% (throttling!)              │   │
 │   │                                                                     │   │
-│   │  → Recommendation: Upsize to t3.medium (2 vCPU, 4 GB RAM)          │   │
-│   │  → Benefit: Better performance, no throttling                      │   │
+│   │  → Recommendation: Upsize to t3.medium (2 vCPU, 4 GB RAM)           │   │
+│   │  → Benefit: Better performance, no throttling                       │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  ✅ OPTIMIZED (Đang dùng phù hợp)                                   │   │
 │   │                                                                     │   │
-│   │  Hiện tại: m5.large (2 vCPU, 8 GB RAM)                             │   │
+│   │  Hiện tại: m5.large (2 vCPU, 8 GB RAM)                              │   │
 │   │  CPU Utilization: Average 60%, Peak 85%                             │   │
 │   │                                                                     │   │
 │   │  → Recommendation: Keep current configuration                       │   │
@@ -124,11 +124,11 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  ⚪ IDLE (Không sử dụng)                                            │   │
 │   │                                                                     │   │
-│   │  Hiện tại: m5.large running 24/7                                   │   │
-│   │  CPU Utilization: Average 0.5%, no network traffic                 │   │
+│   │  Hiện tại: m5.large running 24/7                                    │   │
+│   │  CPU Utilization: Average 0.5%, no network traffic                  │   │
 │   │                                                                     │   │
 │   │  → Recommendation: Consider terminating or stopping                 │   │
-│   │  → Savings: 100% if terminated                                     │   │
+│   │  → Savings: 100% if terminated                                      │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -153,13 +153,13 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│            COMPUTE OPTIMIZER vs RELATED SERVICES                             │
+│            COMPUTE OPTIMIZER vs RELATED SERVICES                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  AWS COMPUTE OPTIMIZER                                              │   │
 │   │  • Focus: Rightsizing compute resources                             │   │
-│   │  • Resources: EC2, ASG, EBS, Lambda, ECS Fargate                   │   │
+│   │  • Resources: EC2, ASG, EBS, Lambda, ECS Fargate                    │   │
 │   │  • Output: Instance type recommendations                            │   │
 │   │  • Method: ML-based analysis                                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
@@ -167,16 +167,16 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  AWS TRUSTED ADVISOR                                                │   │
 │   │  • Focus: Best practices across 5 categories                        │   │
-│   │  • Scope: Cost, Performance, Security, Fault Tolerance, Limits     │   │
+│   │  • Scope: Cost, Performance, Security, Fault Tolerance, Limits      │   │
 │   │  • Output: General recommendations                                  │   │
 │   │  • Method: Rule-based checks                                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  AWS COST EXPLORER (Rightsizing Recommendations)                   │   │
+│   │  AWS COST EXPLORER (Rightsizing Recommendations)                    │   │
 │   │  • Focus: Cost optimization for EC2                                 │   │
 │   │  • Resources: EC2 only                                              │   │
-│   │  • Output: Instance type changes with cost impact                  │   │
+│   │  • Output: Instance type changes with cost impact                   │   │
 │   │  • Method: Utilization-based                                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -201,25 +201,25 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         REQUIREMENTS                                         │
+│                         REQUIREMENTS                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   📋 MINIMUM REQUIREMENTS:                                                  │
 │   ─────────────────────────────────────────                                 │
-│   • Metrics data: Ít nhất 14 ngày (30 ngày recommended)                    │
+│   • Metrics data: Ít nhất 14 ngày (30 ngày recommended)                     │
 │   • CloudWatch: Enabled (default)                                           │
-│   • Opt-in: Phải enable Compute Optimizer cho account                      │
+│   • Opt-in: Phải enable Compute Optimizer cho account                       │
 │                                                                             │
 │   📊 ENHANCED RECOMMENDATIONS (Optional):                                   │
 │   ─────────────────────────────────────────                                 │
-│   • CloudWatch Agent: Cài để thu thập memory metrics                       │
-│   • Extended metrics: 3 tháng lookback (paid feature)                      │
-│   • External metrics: Third-party monitoring tools                         │
+│   • CloudWatch Agent: Cài để thu thập memory metrics                        │
+│   • Extended metrics: 3 tháng lookback (paid feature)                       │
+│   • External metrics: Third-party monitoring tools                          │
 │                                                                             │
 │   💰 PRICING:                                                               │
 │   ─────────────────────────────────────────                                 │
 │   • Basic recommendations: FREE                                             │
-│   • Enhanced infrastructure metrics: $0.0003367 per resource per hour      │
+│   • Enhanced infrastructure metrics: $0.0003367 per resource per hour       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -230,21 +230,21 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    GRAVITON MIGRATION RECOMMENDATIONS                        │
+│                    GRAVITON MIGRATION RECOMMENDATIONS                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   Compute Optimizer có thể recommend migrate từ x86 → Graviton             │
+│   Compute Optimizer có thể recommend migrate từ x86 → Graviton              │
 │                                                                             │
-│   Current: m5.xlarge (x86, Intel)                                          │
+│   Current: m5.xlarge (x86, Intel)                                           │
 │       ↓                                                                     │
-│   Recommended: m6g.xlarge (Graviton2, ARM)                                 │
+│   Recommended: m6g.xlarge (Graviton2, ARM)                                  │
 │       ↓                                                                     │
 │   Benefits:                                                                 │
-│   • ~20% better price/performance                                          │
+│   • ~20% better price/performance                                           │
 │   • Lower cost                                                              │
 │   • Same or better performance                                              │
 │                                                                             │
-│   ⚠️ NOTE: Cần verify application compatible với ARM architecture          │
+│   ⚠️ NOTE: Cần verify application compatible với ARM architecture            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -257,23 +257,23 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SAMPLE EXAM QUESTIONS                                     │
+│                    SAMPLE EXAM QUESTIONS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ ❓ "Service nào giúp rightsizing EC2 instances dựa trên utilization?"      │
-│    → AWS Compute Optimizer                                                 │
+│ ❓ "Service nào giúp rightsizing EC2 instances dựa trên utilization?"       │
+│    → AWS Compute Optimizer                                                  │
 │                                                                             │
-│ ❓ "Service nào dùng ML để recommend optimal instance types?"              │
-│    → AWS Compute Optimizer                                                 │
+│ ❓ "Service nào dùng ML để recommend optimal instance types?"               │
+│    → AWS Compute Optimizer                                                  │
 │                                                                             │
-│ ❓ "Làm sao biết EC2 instance đang over-provisioned?"                      │
-│    → AWS Compute Optimizer                                                 │
+│ ❓ "Làm sao biết EC2 instance đang over-provisioned?"                       │
+│    → AWS Compute Optimizer                                                  │
 │                                                                             │
 │ ❓ "Service nào recommend Lambda memory configuration?"                     │
-│    → AWS Compute Optimizer                                                 │
+│    → AWS Compute Optimizer                                                  │
 │                                                                             │
-│ ❓ "Service nào giúp detect idle EC2 instances?"                           │
-│    → AWS Compute Optimizer (hoặc Trusted Advisor)                          │
+│ ❓ "Service nào giúp detect idle EC2 instances?"                            │
+│    → AWS Compute Optimizer (hoặc Trusted Advisor)                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -282,10 +282,10 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         KEY POINTS                                           │
+│                         KEY POINTS                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ✅ Compute Optimizer = Rightsizing recommendations (ML-based)            │
+│   ✅ Compute Optimizer = Rightsizing recommendations (ML-based)             │
 │                                                                             │
 │   ✅ SUPPORTED RESOURCES:                                                   │
 │      • EC2 Instances                                                        │
@@ -301,14 +301,14 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 │      • Idle → Consider terminating                                          │
 │                                                                             │
 │   ✅ REQUIREMENTS:                                                          │
-│      • 14 days of CloudWatch metrics (minimum)                             │
-│      • CloudWatch agent for memory metrics                                 │
+│      • 14 days of CloudWatch metrics (minimum)                              │
+│      • CloudWatch agent for memory metrics                                  │
 │                                                                             │
 │   ✅ PRICING: Basic = FREE                                                  │
 │                                                                             │
 │   ✅ Khác với Trusted Advisor:                                              │
-│      • Compute Optimizer = ML, deeper rightsizing                          │
-│      • Trusted Advisor = Rule-based, broader checks                        │
+│      • Compute Optimizer = ML, deeper rightsizing                           │
+│      • Trusted Advisor = Rule-based, broader checks                         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -319,25 +319,25 @@ Nói đơn giản: **"Chỉ cho bạn resource nào đang over-provisioned hoặ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    COMPUTE OPTIMIZER SUMMARY                                 │
+│                    COMPUTE OPTIMIZER SUMMARY                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: ML-based service để rightsizing compute resources               │
+│   🎯 WHAT: ML-based service để rightsizing compute resources                │
 │                                                                             │
 │   📊 ANALYZES:                                                              │
-│      • CPU, Memory, Network, Disk utilization                              │
+│      • CPU, Memory, Network, Disk utilization                               │
 │      • Historical patterns                                                  │
 │                                                                             │
 │   💡 OUTPUTS:                                                               │
-│      • Over-provisioned → "Downsize to save cost"                          │
-│      • Under-provisioned → "Upsize for better performance"                 │
+│      • Over-provisioned → "Downsize to save cost"                           │
+│      • Under-provisioned → "Upsize for better performance"                  │
 │      • Idle → "Consider terminating"                                        │
-│      • Graviton → "Migrate for better price/performance"                   │
+│      • Graviton → "Migrate for better price/performance"                    │
 │                                                                             │
 │   🆚 COMPARISON:                                                            │
-│      • Compute Optimizer = Deep ML analysis for compute                    │
-│      • Trusted Advisor = Broad best practices checks                       │
-│      • Cost Explorer = Cost-focused EC2 rightsizing                        │
+│      • Compute Optimizer = Deep ML analysis for compute                     │
+│      • Trusted Advisor = Broad best practices checks                        │
+│      • Cost Explorer = Cost-focused EC2 rightsizing                         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

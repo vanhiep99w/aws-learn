@@ -25,21 +25,21 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS Partner Solutions                         │
-│            (formerly AWS Quick Starts)                           │
+│                    AWS Partner Solutions                        │
+│            (formerly AWS Quick Starts)                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   "Deploy popular technologies on AWS in minutes"                │
-│                                                                  │
+│                                                                 │
+│   "Deploy popular technologies on AWS in minutes"               │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │  CloudFormation Templates + Deployment Guide             │   │
-│   │        ↓                                                  │   │
-│   │  Production-ready architecture in minutes                │   │
+│   │  CloudFormation Templates + Deployment Guide            │   │
+│   │        ↓                                                │   │
+│   │  Production-ready architecture in minutes               │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │   Trước: Days/Weeks để setup manually                           │
 │   Sau:   Minutes/Hours với Partner Solutions                    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -66,27 +66,27 @@ Mỗi Partner Solution thường bao gồm:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Partner Solution Components                     │
+│                  Partner Solution Components                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. CloudFormation Template(s)                                  │
 │     └── Infrastructure as Code (IaC)                            │
 │     └── Automated resource provisioning                         │
-│                                                                  │
-│  2. Deployment Guide                                             │
-│     └── Architecture diagrams                                    │
+│                                                                 │
+│  2. Deployment Guide                                            │
+│     └── Architecture diagrams                                   │
 │     └── Step-by-step instructions                               │
-│     └── Configuration options                                    │
-│     └── Cost estimates                                           │
-│                                                                  │
-│  3. Architecture Diagram                                         │
+│     └── Configuration options                                   │
+│     └── Cost estimates                                          │
+│                                                                 │
+│  3. Architecture Diagram                                        │
 │     └── Visual representation của infrastructure                │
-│     └── Multi-AZ design                                          │
-│                                                                  │
-│  4. Partner Software (optional)                                  │
+│     └── Multi-AZ design                                         │
+│                                                                 │
+│  4. Partner Software (optional)                                 │
 │     └── AMIs với pre-installed software                         │
 │     └── License (BYOL hoặc qua AWS Marketplace)                 │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -110,15 +110,15 @@ Hầu hết Partner Solutions cung cấp 2-3 deployment options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Infrastructure Solutions                       │
+│                   Infrastructure Solutions                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  • Kubernetes (Amazon EKS)                                       │
+│                                                                 │
+│  • Kubernetes (Amazon EKS)                                      │
 │  • HashiCorp Vault / Consul / Terraform                         │
-│  • Active Directory                                              │
-│  • Bastion Hosts                                                 │
-│  • VPN Solutions                                                 │
-│                                                                  │
+│  • Active Directory                                             │
+│  • Bastion Hosts                                                │
+│  • VPN Solutions                                                │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -161,31 +161,31 @@ Hầu hết Partner Solutions cung cấp 2-3 deployment options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Deployment Workflow                           │
+│                    Deployment Workflow                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Tìm Solution                                                 │
+│                                                                 │
+│  1. Tìm Solution                                                │
 │     └── https://aws.amazon.com/solutions/partners/              │
 │     └── Tìm theo technology hoặc partner                        │
-│                                                                  │
-│  2. Đọc Deployment Guide                                         │
-│     └── Hiểu architecture                                        │
-│     └── Review prerequisites                                     │
-│     └── Xem cost estimate                                        │
-│                                                                  │
-│  3. Launch Stack                                                 │
+│                                                                 │
+│  2. Đọc Deployment Guide                                        │
+│     └── Hiểu architecture                                       │
+│     └── Review prerequisites                                    │
+│     └── Xem cost estimate                                       │
+│                                                                 │
+│  3. Launch Stack                                                │
 │     └── Click "Launch Stack" button                             │
 │     └── Redirect tới CloudFormation console                     │
-│     └── Fill in parameters                                       │
-│                                                                  │
-│  4. Wait for Deployment                                          │
+│     └── Fill in parameters                                      │
+│                                                                 │
+│  4. Wait for Deployment                                         │
 │     └── CloudFormation tự động tạo resources                    │
 │     └── Thường mất 15-45 phút                                   │
-│                                                                  │
-│  5. Access & Configure                                           │
+│                                                                 │
+│  5. Access & Configure                                          │
 │     └── Outputs tab có URLs, endpoints                          │
-│     └── Configure application                                    │
-│                                                                  │
+│     └── Configure application                                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -235,17 +235,17 @@ Hầu hết Partner Solutions cung cấp 2-3 deployment options:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               Security Best Practices                            │
+│               Security Best Practices                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Public/Private subnets separation                           │
 │  ✅ Security groups với least privilege                         │
 │  ✅ IAM roles với minimum permissions                           │
 │  ✅ Encryption at rest (EBS, S3, RDS)                           │
 │  ✅ Encryption in transit (TLS/SSL)                             │
-│  ✅ CloudWatch logging enabled                                   │
+│  ✅ CloudWatch logging enabled                                  │
 │  ✅ Multi-AZ for high availability                              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -304,21 +304,21 @@ Chi phí estimate: ~$200-400/month (tùy instance type)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│         Partner Solutions vs AWS Marketplace                     │
+│         Partner Solutions vs AWS Marketplace                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Partner Solutions:                                              │
+│                                                                 │
+│  Partner Solutions:                                             │
 │  └── Focus: Full architecture deployment                        │
-│  └── Output: VPC + EC2 + RDS + networking...                   │
+│  └── Output: VPC + EC2 + RDS + networking...                    │
 │  └── Cost: Only AWS resources                                   │
-│                                                                  │
-│  AWS Marketplace:                                                │
+│                                                                 │
+│  AWS Marketplace:                                               │
 │  └── Focus: Software licensing + deployment                     │
-│  └── Output: AMI hoặc SaaS subscription                        │
+│  └── Output: AMI hoặc SaaS subscription                         │
 │  └── Cost: AWS resources + software license                     │
-│                                                                  │
+│                                                                 │
 │  Integration: Nhiều Partner Solutions dùng Marketplace AMIs     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -348,9 +348,9 @@ Chi phí estimate: ~$200-400/month (tùy instance type)
 
 ```
 ┌─────────────────────────┬─────────────────────────────────────┐
-│       Service           │              Purpose                 │
+│       Service           │              Purpose                │
 ├─────────────────────────┼─────────────────────────────────────┤
-│ Partner Solutions       │ Full architecture deployment         │
+│ Partner Solutions       │ Full architecture deployment        │
 │ AWS Marketplace         │ Software licensing + purchase       │
 │ AWS Service Catalog     │ Internal approved products          │
 │ CloudFormation          │ IaC (build your own templates)      │
@@ -364,18 +364,18 @@ Chi phí estimate: ~$200-400/month (tùy instance type)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                AWS Partner Solutions Summary                     │
+│                AWS Partner Solutions Summary                    │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Automated reference deployments                             │
 │  ✅ Built by AWS + Partners (HashiCorp, MongoDB, Datadog...)    │
 │  ✅ CloudFormation templates + Deployment Guide                 │
 │  ✅ Production-ready, Multi-AZ, Security best practices         │
 │  ✅ Deploy in minutes instead of days/weeks                     │
 │  ✅ Free (only pay for AWS resources)                           │
-│                                                                  │
+│                                                                 │
 │  Nhớ: "Quick Starts" = "Partner Solutions" (tên mới)            │
 │  URL: https://aws.amazon.com/solutions/partners/                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

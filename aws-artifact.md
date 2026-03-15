@@ -18,27 +18,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        AWS ARTIFACT                              │
+│                        AWS ARTIFACT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  🎯 AWS Artifact = "Thư viện compliance documents của AWS"     │
-│                                                                  │
+│                                                                 │
+│  🎯 AWS Artifact = "Thư viện compliance documents của AWS"      │
+│                                                                 │
 │  Bạn có thể:                                                    │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  📄 Download AWS compliance REPORTS                      │   │
-│  │     • SOC reports                                        │   │
-│  │     • PCI DSS reports                                    │   │
-│  │     • ISO certifications                                 │   │
-│  │     • HIPAA documentation                                │   │
-│  │                                                         │   │
-│  │  📝 Accept/manage AGREEMENTS                             │   │
-│  │     • HIPAA BAA (Business Associate Addendum)           │   │
-│  │     • GDPR DPA (Data Processing Addendum)               │   │
-│  │     • Australian Privacy Act                             │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  💰 Cost: FREE (included in AWS account)                       │
-│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  📄 Download AWS compliance REPORTS                     │    │
+│  │     • SOC reports                                       │    │
+│  │     • PCI DSS reports                                   │    │
+│  │     • ISO certifications                                │    │
+│  │     • HIPAA documentation                               │    │
+│  │                                                         │    │
+│  │  📝 Accept/manage AGREEMENTS                            │    │
+│  │     • HIPAA BAA (Business Associate Addendum)           │    │
+│  │     • GDPR DPA (Data Processing Addendum)               │    │
+│  │     • Australian Privacy Act                            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  💰 Cost: FREE (included in AWS account)                        │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -52,23 +52,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ARTIFACT REPORTS                              │
+│                    ARTIFACT REPORTS                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Dùng khi: "Tôi cần chứng minh AWS đã được certify"             │
-│                                                                  │
-│  Download được:                                                  │
+│                                                                 │
+│  Download được:                                                 │
 │  • SOC 1, SOC 2, SOC 3 reports                                  │
 │  • PCI DSS Attestation of Compliance                            │
 │  • ISO 27001, 27017, 27018 certifications                       │
 │  • FedRAMP reports                                              │
 │  • HIPAA compliance documentation                               │
 │  • And 50+ more compliance reports...                           │
-│                                                                  │
-│  Use case:                                                       │
+│                                                                 │
+│  Use case:                                                      │
 │  → Auditor yêu cầu: "AWS có SOC 2 report không?"                │
 │  → Vào Artifact → Download SOC 2 report → Gửi cho auditor       │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,27 +78,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ARTIFACT AGREEMENTS                           │
+│                    ARTIFACT AGREEMENTS                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Dùng khi: "Tôi cần ký thỏa thuận compliance với AWS"           │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  🏥 HIPAA BAA (Business Associate Addendum)              │   │
-│  │     • Bắt buộc nếu xử lý PHI (Protected Health Info)    │   │
-│  │     • Accept trong Artifact → Được dùng HIPAA services  │   │
-│  │                                                         │   │
-│  │  🇪🇺 GDPR DPA (Data Processing Addendum)                 │   │
-│  │     • Cho EU data protection requirements               │   │
-│  │                                                         │   │
-│  │  🇦🇺 Australian Privacy Act                              │   │
-│  │     • Cho Australian privacy requirements               │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  Có thể accept cho:                                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  🏥 HIPAA BAA (Business Associate Addendum)             │    │
+│  │     • Bắt buộc nếu xử lý PHI (Protected Health Info)    │    │
+│  │     • Accept trong Artifact → Được dùng HIPAA services  │    │
+│  │                                                         │    │
+│  │  🇪🇺 GDPR DPA (Data Processing Addendum)                 │    │
+│  │     • Cho EU data protection requirements               │    │
+│  │                                                         │    │
+│  │  🇦🇺 Australian Privacy Act                              │    │
+│  │     • Cho Australian privacy requirements               │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  Có thể accept cho:                                             │
 │  • Single account                                               │
 │  • All accounts trong AWS Organization                          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -126,25 +126,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      HIPAA BAA                                   │
+│                      HIPAA BAA                                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  📋 HIPAA = Health Insurance Portability and Accountability Act │
-│  🏥 PHI = Protected Health Information (dữ liệu bệnh nhân)     │
-│                                                                  │
+│  🏥 PHI = Protected Health Information (dữ liệu bệnh nhân)      │
+│                                                                 │
 │  Nếu bạn xử lý PHI trên AWS:                                    │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  1. Vào AWS Artifact                                     │   │
-│  │  2. Tìm HIPAA BAA                                        │   │
-│  │  3. Review và Accept agreement                           │   │
-│  │  4. Chỉ dùng HIPAA-eligible services                    │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  1. Vào AWS Artifact                                    │    │
+│  │  2. Tìm HIPAA BAA                                       │    │
+│  │  3. Review và Accept agreement                          │    │
+│  │  4. Chỉ dùng HIPAA-eligible services                    │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  ⚠️ QUAN TRỌNG:                                                  │
-│  • Không phải TẤT CẢ AWS services đều HIPAA-eligible           │
-│  • Phải check danh sách HIPAA-eligible services                │
-│  • Common eligible: S3, EC2, RDS, Lambda, DynamoDB, etc.       │
-│                                                                  │
+│  • Không phải TẤT CẢ AWS services đều HIPAA-eligible            │
+│  • Phải check danh sách HIPAA-eligible services                 │
+│  • Common eligible: S3, EC2, RDS, Lambda, DynamoDB, etc.        │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -154,26 +154,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    HOW TO USE ARTIFACT                           │
+│                    HOW TO USE ARTIFACT                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  AWS Console → AWS Artifact                                     │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                         │   │
-│  │  📂 Reports                                             │   │
-│  │  └─ Browse → Select report → Download PDF               │   │
-│  │                                                         │   │
-│  │  📝 Agreements                                          │   │
-│  │  └─ Browse → Select agreement → Review → Accept         │   │
-│  │                                                         │   │
-│  │  🏢 Organization Agreements (nếu dùng AWS Orgs)         │   │
-│  │  └─ Accept for ALL accounts trong organization          │   │
-│  │                                                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  Permissions needed: IAM policy với artifact:* permissions     │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  📂 Reports                                             │    │
+│  │  └─ Browse → Select report → Download PDF                │   │
+│  │                                                         │    │
+│  │  📝 Agreements                                          │    │
+│  │  └─ Browse → Select agreement → Review → Accept          │   │
+│  │                                                         │    │
+│  │  🏢 Organization Agreements (nếu dùng AWS Orgs)         │    │
+│  │  └─ Accept for ALL accounts trong organization           │   │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  Permissions needed: IAM policy với artifact:* permissions      │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -191,21 +191,21 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    PHÂN BIỆT QUAN TRỌNG                          │
+│                    PHÂN BIỆT QUAN TRỌNG                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  AWS Artifact:                                                   │
+│                                                                 │
+│  AWS Artifact:                                                  │
 │  → "AWS's compliance documentation" (của AWS)                   │
 │  → Download để chứng minh AWS đã comply                         │
-│                                                                  │
-│  AWS Config:                                                     │
+│                                                                 │
+│  AWS Config:                                                    │
 │  → "Your resources' compliance" (của BẠN)                       │
 │  → Check xem resources của bạn có đúng config không             │
-│                                                                  │
-│  AWS Audit Manager:                                              │
+│                                                                 │
+│  AWS Audit Manager:                                             │
 │  → "Your compliance audits" (của BẠN)                           │
 │  → Automate collecting evidence cho audits                      │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

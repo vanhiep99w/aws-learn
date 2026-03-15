@@ -24,23 +24,23 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                  AWS Legal & Compliance Documents                            │
+│                  AWS Legal & Compliance Documents                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                    Core Documents                                   │   │
 │   │                                                                     │   │
 │   │   📋 AWS Customer Agreement                                         │   │
-│   │      → Hợp đồng chính giữa bạn và AWS                              │   │
+│   │      → Hợp đồng chính giữa bạn và AWS                               │   │
 │   │                                                                     │   │
 │   │   📋 AWS Acceptable Use Policy (AUP)                                │   │
-│   │      → Những gì ĐƯỢC và KHÔNG ĐƯỢC làm trên AWS                    │   │
+│   │      → Những gì ĐƯỢC và KHÔNG ĐƯỢC làm trên AWS                     │   │
 │   │                                                                     │   │
 │   │   📋 AWS Service Terms                                              │   │
-│   │      → Điều khoản cụ thể cho từng service                          │   │
+│   │      → Điều khoản cụ thể cho từng service                           │   │
 │   │                                                                     │   │
 │   │   📋 AWS Privacy Policy                                             │   │
-│   │      → Cách AWS xử lý data của bạn                                 │   │
+│   │      → Cách AWS xử lý data của bạn                                  │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
@@ -59,7 +59,7 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      PROHIBITED ACTIVITIES                                   │
+│                      PROHIBITED ACTIVITIES                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🚫 ILLEGAL ACTIVITIES:                                                    │
@@ -109,10 +109,10 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                 Permitted Penetration Testing Services                       │
+│                 Permitted Penetration Testing Services                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ✅ Bạn ĐƯỢC PHÉP pen test các services sau MÀ KHÔNG CẦN xin phép AWS:    │
+│   ✅ Bạn ĐƯỢC PHÉP pen test các services sau MÀ KHÔNG CẦN xin phép AWS:     │
 │                                                                             │
 │   • Amazon EC2 instances                                                    │
 │   • Amazon RDS                                                              │
@@ -130,7 +130,7 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      Always Prohibited Activities                            │
+│                      Always Prohibited Activities                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🚫 LUÔN BỊ CẤM (dù có xin phép cũng không được):                          │
@@ -141,7 +141,7 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 │   • Protocol flooding                                                       │
 │   • Request flooding                                                        │
 │                                                                             │
-│   ⚠️ LƯU Ý:                                                                 │
+│   ⚠️ LƯU Ý:                                                                  │
 │   • Chỉ được test trên resources CỦA MÌNH                                   │
 │   • Không được làm ảnh hưởng đến customers khác                             │
 │                                                                             │
@@ -160,7 +160,7 @@ Phần này thuộc **Domain 3: Security and Compliance (30%)** của AWS Cloud 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AWS Artifact                                       │
+│                           AWS Artifact                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   📋 ARTIFACT REPORTS:                                                      │
@@ -203,7 +203,7 @@ AWS tuân thủ nhiều compliance programs:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS Compliance Programs                                   │
+│                    AWS Compliance Programs                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🏥 HEALTHCARE:                                                            │
@@ -212,7 +212,7 @@ AWS tuân thủ nhiều compliance programs:
 │   💳 PAYMENT:                                                               │
 │   • PCI DSS (Payment Card Industry)                                         │
 │                                                                             │
-│   🏛️ GOVERNMENT:                                                            │
+│   🏛️ GOVERNMENT:                                                             │
 │   • FedRAMP (US Federal)                                                    │
 │   • GovCloud (US Government workloads)                                      │
 │                                                                             │
@@ -235,28 +235,28 @@ Hiểu rõ ai chịu trách nhiệm gì:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Shared Responsibility Model                               │
+│                    Shared Responsibility Model                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║                    CUSTOMER RESPONSIBILITY                             ║ │
-│   ║                    (Security IN the Cloud)                             ║ │
+│   ║                    CUSTOMER RESPONSIBILITY                             ║│
+│   ║                    (Security IN the Cloud)                             ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Customer Data                                                       ║ │
-│   ║  • Platform, Applications, IAM                                         ║ │
+│   ║  • Customer Data                                                       ║│
+│   ║  • Platform, Applications, IAM                                         ║│
 │   ║  • Operating System, Network, Firewall Configuration                  ║ │
-│   ║  • Client-side Encryption                                              ║ │
-│   ║  • Tuân thủ Acceptable Use Policy                                      ║ │
+│   ║  • Client-side Encryption                                              ║│
+│   ║  • Tuân thủ Acceptable Use Policy                                      ║│
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║                    AWS RESPONSIBILITY                                  ║ │
-│   ║                    (Security OF the Cloud)                             ║ │
+│   ║                    AWS RESPONSIBILITY                                  ║│
+│   ║                    (Security OF the Cloud)                             ║│
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Hardware/AWS Global Infrastructure                                  ║ │
+│   ║  • Hardware/AWS Global Infrastructure                                  ║│
 │   ║  • Regions, Availability Zones, Edge Locations                        ║ │
 │   ║  • Compute, Storage, Database, Networking (Hardware)                  ║ │
-│   ║  • Physical security of data centers                                   ║ │
+│   ║  • Physical security of data centers                                   ║│
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -270,19 +270,19 @@ AWS cung cấp **5 Support Plans** với các mức độ hỗ trợ khác nhau:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS SUPPORT PLANS                                     │
+│                        AWS SUPPORT PLANS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │    Enterprise ───▶ $15,000+/tháng  │ Designated TAM, 15-min critical        │
-│         ↑                                                                    │
+│         ↑                                                                   │
 │    Enterprise On-Ramp ───▶ $5,500+/tháng │ TAM pool, 30-min critical        │
-│         ↑                                                                    │
+│         ↑                                                                   │
 │    Business ───▶ $100+/tháng │ 24/7 support, 1-hour urgent                  │
-│         ↑                                                                    │
+│         ↑                                                                   │
 │    Developer ───▶ $29+/tháng │ Email only, business hours                   │
-│         ↑                                                                    │
+│         ↑                                                                   │
 │    Basic ───▶ FREE │ Documentation, forums only                             │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -346,7 +346,7 @@ Hỗ trợ configuration và troubleshooting AWS **interoperability** với ph�
 ┌─────────────────────────────────────────────────────────────────────────┐
 │              ENTERPRISE SUPPORT - 2 TEAMS KHÁC NHAU                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  TAM (Technical Account Manager)                                        │
 │  ════════════════════════════════                                       │
 │  • Designated technical expert                                          │
@@ -354,14 +354,14 @@ Hỗ trợ configuration và troubleshooting AWS **interoperability** với ph�
 │  • Operational best practices                                           │
 │  • Infrastructure event management                                      │
 │  • Proactive technical guidance                                         │
-│                                                                          │
+│                                                                         │
 │  Concierge Support Team                                                 │
 │  ══════════════════════════                                             │
 │  • Billing và payment questions                                         │
 │  • Account issues                                                       │
 │  • Service limits increases                                             │
 │  • Cost optimization tips                                               │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -393,7 +393,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         AWS Abuse Team                                       │
+│                         AWS Abuse Team                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   📧 Contact: abuse@amazonaws.com                                           │
@@ -447,26 +447,26 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   Tại sao cần APN?                                           │
+│                   Tại sao cần APN?                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   Tình huống: Bạn là công ty ABC, muốn dùng AWS nhưng...                   │
+│   Tình huống: Bạn là công ty ABC, muốn dùng AWS nhưng...                    │
 │                                                                             │
 │   😰 "Chúng tôi không biết gì về AWS!"                                      │
 │   😰 "Không có người để build infrastructure!"                              │
-│   😰 "Muốn migrate từ on-premises lên cloud nhưng không biết làm!"         │
+│   😰 "Muốn migrate từ on-premises lên cloud nhưng không biết làm!"          │
 │                                                                             │
-│   → Giải pháp: Thuê CONSULTING PARTNER (công ty tư vấn)                    │
-│     Họ sẽ giúp bạn design, build, migrate, manage AWS                      │
+│   → Giải pháp: Thuê CONSULTING PARTNER (công ty tư vấn)                     │
+│     Họ sẽ giúp bạn design, build, migrate, manage AWS                       │
 │                                                                             │
-│   ─────────────────────────────────────────────────────────────────────────│
+│   ───────────────────────────────────────────────────────────────────────── │
 │                                                                             │
-│   😰 "Cần thêm monitoring tool cho AWS nhưng CloudWatch không đủ!"        │
-│   😰 "Muốn dùng MongoDB trên AWS!"                                         │
-│   😰 "Cần security software chạy trên EC2!"                                │
+│   😰 "Cần thêm monitoring tool cho AWS nhưng CloudWatch không đủ!"          │
+│   😰 "Muốn dùng MongoDB trên AWS!"                                          │
+│   😰 "Cần security software chạy trên EC2!"                                 │
 │                                                                             │
-│   → Giải pháp: Mua từ TECHNOLOGY PARTNER (qua AWS Marketplace)             │
-│     Họ bán software chạy trên/tích hợp với AWS                             │
+│   → Giải pháp: Mua từ TECHNOLOGY PARTNER (qua AWS Marketplace)              │
+│     Họ bán software chạy trên/tích hợp với AWS                              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -475,7 +475,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      AWS Partner Network (APN)                               │
+│                      AWS Partner Network (APN)                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   AWS có 2 loại Partners chính:                                             │
@@ -483,7 +483,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  🏢 CONSULTING PARTNERS                                             │   │
 │   │                                                                     │   │
-│   │  = Công ty tư vấn, giúp customers thiết kế, xây dựng,              │   │
+│   │  = Công ty tư vấn, giúp customers thiết kế, xây dựng,               │   │
 │   │    migrate và quản lý workloads trên AWS                            │   │
 │   │                                                                     │   │
 │   │  Họ làm gì?                                                         │   │
@@ -493,13 +493,13 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 │   │  • Managed services                                                 │   │
 │   │  • Training                                                         │   │
 │   │                                                                     │   │
-│   │  Ví dụ: Accenture, Deloitte, Rackspace, NashTech...                │   │
+│   │  Ví dụ: Accenture, Deloitte, Rackspace, NashTech...                 │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  📦 TECHNOLOGY PARTNERS                                             │   │
 │   │                                                                     │   │
-│   │  = Công ty cung cấp software/tools chạy trên hoặc                  │   │
+│   │  = Công ty cung cấp software/tools chạy trên hoặc                   │   │
 │   │    tích hợp với AWS                                                 │   │
 │   │                                                                     │   │
 │   │  Họ làm gì?                                                         │   │
@@ -507,7 +507,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 │   │  • Tools tích hợp với AWS                                           │   │
 │   │  • SaaS solutions                                                   │   │
 │   │                                                                     │   │
-│   │  Ví dụ: Datadog, Splunk, MongoDB, HashiCorp, Confluent...          │   │
+│   │  Ví dụ: Datadog, Splunk, MongoDB, HashiCorp, Confluent...           │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -526,7 +526,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Partner Tiers                                         │
+│                        Partner Tiers                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🥇 Premier Partner    ← Cao nhất, expertise sâu nhất                      │
@@ -544,7 +544,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS Marketplace                                       │
+│                        AWS Marketplace                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   📦 Mua và deploy software trực tiếp trên AWS                              │
@@ -555,7 +555,7 @@ Khi phát hiện resources của bạn bị abuse (spam, attack) hoặc bạn l�
 │   • Data products                                                           │
 │   • Professional services                                                   │
 │                                                                             │
-│   💰 Billing: Tích hợp vào AWS bill (consolidated billing)                 │
+│   💰 Billing: Tích hợp vào AWS bill (consolidated billing)                  │
 │                                                                             │
 │   Ví dụ products:                                                           │
 │   • Security: Trend Micro, Palo Alto                                        │
@@ -652,7 +652,7 @@ Win-win-win:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Key Points for Cloud Practitioner                         │
+│                    Key Points for Cloud Practitioner                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   📋 DOCUMENTS:                                                             │
@@ -663,7 +663,7 @@ Win-win-win:
 │                                                                             │
 │   🔐 PENETRATION TESTING:                                                   │
 │   ─────────────────────────────────────────                                 │
-│   • Permitted: EC2, RDS, Lambda, CloudFront... (không cần xin phép)        │
+│   • Permitted: EC2, RDS, Lambda, CloudFront... (không cần xin phép)         │
 │   • Prohibited: DDoS, DNS zone walking, flooding                            │
 │                                                                             │
 │   📊 AWS ARTIFACT:                                                          │
@@ -676,7 +676,7 @@ Win-win-win:
 │   • Report: abuse@amazonaws.com                                             │
 │   • Cho spam, attacks, illegal content                                      │
 │                                                                             │
-│   ⚠️ REMEMBER:                                                              │
+│   ⚠️ REMEMBER:                                                               │
 │   ─────────────────────────────────────────                                 │
 │   • "Fair Use Policy" → KHÔNG TỒN TẠI                                       │
 │   • "Applicable Use Policy" → KHÔNG TỒN TẠI                                 │

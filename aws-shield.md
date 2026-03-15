@@ -17,19 +17,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         AWS Shield Overview                                  │
+│                         AWS Shield Overview                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   🌐 INTERNET                                                                │
-│        │                                                                     │
-│        │  ⚡ DDoS Attack                                                     │
-│        │  • Volumetric attacks                                               │
-│        │  • Protocol attacks                                                 │
-│        │  • Application layer attacks                                        │
-│        ▼                                                                     │
+│                                                                             │
+│   🌐 INTERNET                                                               │
+│       │                                                                     │
+│        │  ⚡ DDoS Attack                                                    │
+│        │  • Volumetric attacks                                              │
+│        │  • Protocol attacks                                                │
+│        │  • Application layer attacks                                       │
+│        ▼                                                                    │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                      🛡️ AWS Shield                                   │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   │   Standard (FREE)           │    Advanced ($3,000/mo)               │   │
 │   │   ─────────────────         │    ─────────────────                  │   │
 │   │   • Layer 3/4 protection    │    • Layer 3/4/7 protection           │   │
@@ -37,12 +37,12 @@
 │   │   • Automatic mitigation    │    • Cost protection                  │   │
 │   │                             │    • Real-time visibility             │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│        │                                                                     │
-│        ▼                                                                     │
+│       │                                                                     │
+│        ▼                                                                    │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                 ✅ Your Protected Application                        │   │
+│   │                 ✅ Your Protected Application                       │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -76,23 +76,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      SHIELD STANDARD (FREE)                                  │
+│                      SHIELD STANDARD (FREE)                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ✅ Tự động bật cho TẤT CẢ AWS customers                                   │
-│   ✅ Không cần cấu hình                                                      │
-│   ✅ Always-on detection và mitigation                                       │
-│                                                                              │
-│   PROTECTS AGAINST:                                                          │
-│   • SYN/UDP floods                                                           │
-│   • Reflection attacks                                                       │
-│   • Other Layer 3/4 attacks                                                  │
-│                                                                              │
-│   BEST WITH:                                                                 │
-│   • CloudFront                                                               │
-│   • Route 53                                                                 │
-│   → Comprehensive Layer 3/4 protection                                       │
-│                                                                              │
+│   ✅ Không cần cấu hình                                                     │
+│   ✅ Always-on detection và mitigation                                      │
+│                                                                             │
+│   PROTECTS AGAINST:                                                         │
+│   • SYN/UDP floods                                                          │
+│   • Reflection attacks                                                      │
+│   • Other Layer 3/4 attacks                                                 │
+│                                                                             │
+│   BEST WITH:                                                                │
+│   • CloudFront                                                              │
+│   • Route 53                                                                │
+│   → Comprehensive Layer 3/4 protection                                      │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -100,34 +100,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                   SHIELD ADVANCED ($3,000/month)                             │
+│                   SHIELD ADVANCED ($3,000/month)                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   Everything in Standard PLUS:                                               │
-│                                                                              │
+│                                                                             │
+│   Everything in Standard PLUS:                                              │
+│                                                                             │
 │   🛡️ ENHANCED PROTECTION                                                     │
 │   • Layer 7 (Application) protection                                        │
-│   • Larger và more sophisticated attacks                                     │
-│   • Custom mitigation rules                                                  │
-│                                                                              │
+│   • Larger và more sophisticated attacks                                    │
+│   • Custom mitigation rules                                                 │
+│                                                                             │
 │   👨‍💻 DDoS RESPONSE TEAM (DRT)                                               │
-│   • 24/7 expert support                                                      │
-│   • Proactive engagement during attacks                                      │
-│   • Custom mitigation policies                                               │
-│                                                                              │
-│   💰 COST PROTECTION                                                         │
-│   • Refund for scaling charges from DDoS                                     │
+│   • 24/7 expert support                                                     │
+│   • Proactive engagement during attacks                                     │
+│   • Custom mitigation policies                                              │
+│                                                                             │
+│   💰 COST PROTECTION                                                        │
+│   • Refund for scaling charges from DDoS                                    │
 │   • Covers EC2, ELB, CloudFront, Route 53...                                │
-│                                                                              │
-│   📊 VISIBILITY                                                              │
-│   • Real-time attack metrics                                                 │
-│   • Advanced diagnostics                                                     │
-│   • CloudWatch integration                                                   │
-│                                                                              │
-│   🔗 WAF INTEGRATION                                                         │
+│                                                                             │
+│   📊 VISIBILITY                                                             │
+│   • Real-time attack metrics                                                │
+│   • Advanced diagnostics                                                    │
+│   • CloudWatch integration                                                  │
+│                                                                             │
+│   🔗 WAF INTEGRATION                                                        │
 │   • AWS WAF included (no extra cost)                                        │
 │   • Up to 50B WAF requests/month                                            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -208,26 +208,26 @@ Shield Advanced Cost Protection:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Security Services Comparison                              │
+│                    Security Services Comparison                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   🛡️ AWS SHIELD                                                              │
-│   ─────────────────────────────────────                                      │
+│   ─────────────────────────────────────                                     │
 │   • DDoS protection (Layer 3, 4, 7)                                         │
-│   • Volumetric và protocol attacks                                           │
-│                                                                              │
-│   🔥 AWS WAF                                                                 │
-│   ─────────────────────────────────────                                      │
+│   • Volumetric và protocol attacks                                          │
+│                                                                             │
+│   🔥 AWS WAF                                                                │
+│   ─────────────────────────────────────                                     │
 │   • Layer 7 protection (Application)                                        │
 │   • SQL injection, XSS, bad bots                                            │
-│   • Custom rules                                                             │
-│                                                                              │
+│   • Custom rules                                                            │
+│                                                                             │
 │   🎛️ AWS FIREWALL MANAGER                                                    │
-│   ─────────────────────────────────────                                      │
+│   ─────────────────────────────────────                                     │
 │   • Centrally manage security across accounts                               │
 │   • Manage WAF, Shield, Security Groups                                     │
-│   • Requires AWS Organizations                                               │
-│                                                                              │
+│   • Requires AWS Organizations                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -101,19 +101,19 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 │                        EC2 PRICING MODELS OVERVIEW                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   💰 On-Demand ────────▶ Linh hoạt nhất, không cam kết                     │
+│   💰 On-Demand ────────▶ Linh hoạt nhất, không cam kết                      │
 │                                                                             │
-│   📅 Reserved Instance ─▶ Cam kết 1-3 năm, giảm tới 72%                    │
+│   📅 Reserved Instance ─▶ Cam kết 1-3 năm, giảm tới 72%                     │
 │                                                                             │
-│   💳 Savings Plans ────▶ Cam kết $/giờ, linh hoạt instance type            │
+│   💳 Savings Plans ────▶ Cam kết $/giờ, linh hoạt instance type             │
 │                                                                             │
-│   🔖 Spot Instances ────▶ Capacity thừa, giảm tới 90% (có thể bị interrupt)│
+│   🔖 Spot Instances ────▶ Capacity thừa, giảm tới 90% (có thể bị interrupt) │
 │                                                                             │
-│   🏠 Dedicated Hosts ──▶ Physical server riêng, BYOL support               │
+│   🏠 Dedicated Hosts ──▶ Physical server riêng, BYOL support                │
 │                                                                             │
-│   🔒 Dedicated Instances▶ Instance chạy trên hardware riêng                │
+│   🔒 Dedicated Instances▶ Instance chạy trên hardware riêng                 │
 │                                                                             │
-│   📦 Capacity Reservations▶ Đảm bảo capacity trong AZ cụ thể              │
+│   📦 Capacity Reservations▶ Đảm bảo capacity trong AZ cụ thể                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -136,18 +136,18 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     ON-DEMAND PRICING                            │
+│                     ON-DEMAND PRICING                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Không cần thanh toán trước (No upfront payment)             │
-│  ✅ Không cam kết dài hạn (No long-term commitment)              │
+│  ✅ Không cam kết dài hạn (No long-term commitment)             │
 │  ✅ Tăng/giảm capacity bất kỳ lúc nào                           │
 │  ❌ Giá cao nhất trong các mô hình                              │
-│                                                                  │
-│  Billing:                                                        │
+│                                                                 │
+│  Billing:                                                       │
 │  • Linux/Ubuntu: Per-second (min 60 giây)                       │
-│  • Windows/RHEL/SUSE: Per-hour                                   │
-│                                                                  │
+│  • Windows/RHEL/SUSE: Per-hour                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -175,26 +175,26 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        RESERVED INSTANCES                                    │
+│                        RESERVED INSTANCES                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Commitment: 1 năm hoặc 3 năm                                               │
 │  Discount: Lên đến 72% so với On-Demand                                     │
-│                                                                              │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    HAI LOẠI RESERVED INSTANCES                       │    │
+│  │                    HAI LOẠI RESERVED INSTANCES                      │    │
 │  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                      │    │
-│  │  STANDARD RI                    CONVERTIBLE RI                       │    │
-│  │  ─────────────                  ──────────────                       │    │
-│  │  • Discount cao hơn (~72%)      • Discount thấp hơn (~66%)           │    │
-│  │  • Không đổi được instance      • Có thể đổi sang instance           │    │
-│  │    family (vd: m5 → m5)           family khác (vd: m5 → c5)          │    │
-│  │  • Có thể modify size            • Linh hoạt hơn cho tương lai       │    │
-│  │    trong cùng family                                                 │    │
-│  │                                                                      │    │
+│  │                                                                     │    │
+│  │  STANDARD RI                    CONVERTIBLE RI                      │    │
+│  │  ─────────────                  ──────────────                      │    │
+│  │  • Discount cao hơn (~72%)      • Discount thấp hơn (~66%)          │    │
+│  │  • Không đổi được instance      • Có thể đổi sang instance          │    │
+│  │    family (vd: m5 → m5)           family khác (vd: m5 → c5)         │    │
+│  │  • Có thể modify size            • Linh hoạt hơn cho tương lai      │    │
+│  │    trong cùng family                                                │    │
+│  │                                                                     │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -204,24 +204,24 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    3 PAYMENT OPTIONS                                         │
+│                    3 PAYMENT OPTIONS                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  1️⃣ NO UPFRONT (Không trả trước)                                            │
 │     • Trả: $0 ngay + monthly payment                                        │
 │     • Discount: Thấp nhất                                                   │
 │     • Phù hợp: Không muốn bỏ tiền trước nhiều                               │
-│                                                                              │
+│                                                                             │
 │  2️⃣ PARTIAL UPFRONT (Trả trước một phần)                                    │
 │     • Trả: ~50% upfront + reduced monthly                                   │
 │     • Discount: Trung bình                                                  │
 │     • Phù hợp: Cân bằng giữa upfront và monthly                             │
-│                                                                              │
+│                                                                             │
 │  3️⃣ ALL UPFRONT (Trả trước 100%)                                            │
 │     • Trả: 100% ngay từ đầu, $0 monthly                                     │
 │     • Discount: Cao nhất                                                    │
 │     • Phù hợp: Có sẵn tiền, muốn tiết kiệm tối đa                           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -257,46 +257,46 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         REGIONAL vs ZONAL RI                                 │
+│                         REGIONAL vs ZONAL RI                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  REGIONAL RI (Default - Khuyến nghị)                                        │
-│  ───────────────────────────────────                                         │
-│                                                                              │
+│  ───────────────────────────────────                                        │
+│                                                                             │
 │       ┌───────────────────────────────────────────────────────┐             │
-│       │                    us-east-1                           │             │
+│       │                    us-east-1                          │             │
 │       │   ┌─────────┐   ┌─────────┐   ┌─────────┐             │             │
 │       │   │  1a ✅  │   │  1b ✅  │   │  1c ✅  │             │             │
 │       │   │ Discount│   │ Discount│   │ Discount│             │             │
 │       │   └─────────┘   └─────────┘   └─────────┘             │             │
-│       │                                                        │             │
-│       │   Discount áp dụng ở BẤT KỲ AZ nào trong Region!       │             │
+│       │                                                       │             │
+│       │   Discount áp dụng ở BẤT KỲ AZ nào trong Region!      │             │
 │       └───────────────────────────────────────────────────────┘             │
-│                                                                              │
-│  ✅ AZ Flexibility: Launch ở AZ nào cũng được discount                       │
-│  ✅ Size Flexibility: m5.large = 2 × m5.medium (cùng family)                 │
-│  ❌ Không có capacity reservation                                            │
-│                                                                              │
+│                                                                             │
+│  ✅ AZ Flexibility: Launch ở AZ nào cũng được discount                      │
+│  ✅ Size Flexibility: m5.large = 2 × m5.medium (cùng family)                │
+│  ❌ Không có capacity reservation                                           │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ZONAL RI (Chọn AZ cụ thể)                                                  │
-│  ─────────────────────────                                                   │
-│                                                                              │
+│  ─────────────────────────                                                  │
+│                                                                             │
 │       ┌───────────────────────────────────────────────────────┐             │
-│       │                    us-east-1                           │             │
+│       │                    us-east-1                          │             │
 │       │   ┌─────────┐   ┌─────────┐   ┌─────────┐             │             │
 │       │   │  1a ✅  │   │  1b ❌  │   │  1c ❌  │             │             │
 │       │   │ Discount│   │ No disc │   │ No disc │             │             │
 │       │   │+Capacity│   │         │   │         │             │             │
 │       │   └─────────┘   └─────────┘   └─────────┘             │             │
-│       │                                                        │             │
-│       │   Discount CHỈ ở AZ đã chọn (us-east-1a)!              │             │
+│       │                                                       │             │
+│       │   Discount CHỈ ở AZ đã chọn (us-east-1a)!             │             │
 │       └───────────────────────────────────────────────────────┘             │
-│                                                                              │
+│                                                                             │
 │  ✅ Capacity Reservation: Đảm bảo LUÔN có máy sẵn trong AZ                  │
-│  ❌ Không có AZ flexibility                                                  │
-│  ❌ Không có Size flexibility                                                │
-│                                                                              │
+│  ❌ Không có AZ flexibility                                                 │
+│  ❌ Không có Size flexibility                                               │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -318,31 +318,31 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│      RI Sharing - Regional RI vs Zonal RI trong Consolidated Billing         │
+│      RI Sharing - Regional RI vs Zonal RI trong Consolidated Billing        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Scenario: Susan (Account A) mua 5 RIs m5.large                             │
-│            Bob (Account B) chạy 3 instances m5.large                         │
-│            Cả hai trong cùng AWS Organization                                │
-│                                                                              │
+│            Bob (Account B) chạy 3 instances m5.large                        │
+│            Cả hai trong cùng AWS Organization                               │
+│                                                                             │
 │  ─────────────────────────────────────────────────────────────────────────  │
-│                                                                              │
+│                                                                             │
 │  Nếu Susan mua REGIONAL RI (us-east-1):                                     │
-│  │                                                                           │
+│ │                                                                           │
 │  │  Susan chạy ở: us-east-1a                                                │
 │  │  Bob chạy ở:   us-east-1b  ← KHÁC AZ                                     │
-│  │                                                                           │
+│ │                                                                           │
 │  │  → Bob VẪN được discount! (Regional RI flexible across AZs)              │
-│  │                                                                           │
+│ │                                                                           │
 │  ─────────────────────────────────────────────────────────────────────────  │
-│                                                                              │
+│                                                                             │
 │  Nếu Susan mua ZONAL RI (us-east-1a):                                       │
-│  │                                                                           │
-│  │  Susan chạy ở: us-east-1a ✅                                              │
-│  │  Bob chạy ở:   us-east-1b ❌ KHÔNG được discount!                         │
-│  │                                                                           │
+│ │                                                                           │
+│  │  Susan chạy ở: us-east-1a ✅                                             │
+│  │  Bob chạy ở:   us-east-1b ❌ KHÔNG được discount!                        │
+│ │                                                                           │
 │  │  → Bob phải chạy ở us-east-1a thì mới được discount                      │
-│  │                                                                           │
+│ │                                                                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -383,19 +383,19 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 RI MARKETPLACE                                   │
+│                 RI MARKETPLACE                                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  BÁN RI:                                                        │
 │  • Bán RI còn thời hạn (tối thiểu 1 tháng remaining)            │
-│  • AWS giữ 12% fee                                               │
+│  • AWS giữ 12% fee                                              │
 │  • Chỉ bán được Standard RI (không bán Convertible)             │
-│                                                                  │
+│                                                                 │
 │  MUA RI:                                                        │
 │  • Mua RI của seller khác với giá rẻ hơn                        │
 │  • Thời hạn còn lại ngắn hơn (vd: 6 tháng thay vì 12)           │
 │  • Phù hợp nếu cần RI ngắn hạn                                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -415,32 +415,32 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           SAVINGS PLANS                                      │
+│                           SAVINGS PLANS                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Commitment: Cam kết số $/giờ trong 1 hoặc 3 năm                            │
 │  Discount: Lên đến 72% so với On-Demand                                     │
-│                                                                              │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    BA LOẠI SAVINGS PLANS                             │    │
+│  │                    BA LOẠI SAVINGS PLANS                            │    │
 │  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                      │    │
+│  │                                                                     │    │
 │  │  1. COMPUTE SAVINGS PLANS (Linh hoạt nhất)                          │    │
-│  │     • Áp dụng cho: EC2, Fargate, Lambda                              │    │
-│  │     • Không quan tâm: Region, Instance family, OS, Tenancy           │    │
-│  │     • Discount: Lên đến 66%                                          │    │
-│  │                                                                      │    │
+│  │     • Áp dụng cho: EC2, Fargate, Lambda                             │    │
+│  │     • Không quan tâm: Region, Instance family, OS, Tenancy          │    │
+│  │     • Discount: Lên đến 66%                                         │    │
+│  │                                                                     │    │
 │  │  2. EC2 INSTANCE SAVINGS PLANS (Discount cao hơn)                   │    │
 │  │     • Cam kết: Instance family + Region (vd: M5 ở us-east-1)        │    │
 │  │     • Linh hoạt: Size, OS, Tenancy trong family đó                  │    │
-│  │     • Discount: Lên đến 72%                                          │    │
-│  │                                                                      │    │
-│  │  3. SAGEMAKER SAVINGS PLANS                                          │    │
-│  │     • Áp dụng cho: SageMaker ML instances                            │    │
-│  │     • Discount: Lên đến 64%                                          │    │
-│  │                                                                      │    │
+│  │     • Discount: Lên đến 72%                                         │    │
+│  │                                                                     │    │
+│  │  3. SAGEMAKER SAVINGS PLANS                                         │    │
+│  │     • Áp dụng cho: SageMaker ML instances                           │    │
+│  │     • Discount: Lên đến 64%                                         │    │
+│  │                                                                     │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -455,28 +455,28 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SAVINGS PLANS WORKFLOW                                    │
+│                    SAVINGS PLANS WORKFLOW                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Bước 1: Bạn cam kết $10/giờ trong 1 năm                                    │
-│           ↓                                                                  │
+│           ↓                                                                 │
 │  Bước 2: Mỗi giờ, AWS tự động apply Savings Plans discount                  │
-│           ↓                                                                  │
+│           ↓                                                                 │
 │  Bước 3: Usage vượt $10/giờ → phần thừa tính theo On-Demand                 │
-│                                                                              │
-│  VÍ DỤ:                                                                      │
+│                                                                             │
+│  VÍ DỤ:                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
+│  │                                                                     │    │
 │  │  Cam kết: $10/giờ                                                   │    │
-│  │                                                                      │    │
+│  │                                                                     │    │
 │  │  Giờ 1: Usage = $8   → Trả $10 (cam kết), $2 không dùng hết         │    │
 │  │  Giờ 2: Usage = $10  → Trả $10 (đúng cam kết)                       │    │
 │  │  Giờ 3: Usage = $15  → Trả $10 (cam kết) + $5 (On-Demand) = $15     │    │
-│  │                                                                      │    │
-│  │  ⚠️ Lưu ý: Cam kết phải trả dù có dùng hay không!                   │    │
-│  │                                                                      │    │
+│  │                                                                     │    │
+│  │  ⚠️ Lưu ý: Cam kết phải trả dù có dùng hay không!                    │    │
+│  │                                                                     │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -509,26 +509,26 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           SPOT INSTANCES                                     │
+│                           SPOT INSTANCES                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  💰 Discount: Lên đến 90% so với On-Demand                                  │
-│  ⚠️ Risk: Có thể bị interrupt với 2 phút warning                           │
-│                                                                              │
+│  ⚠️ Risk: Có thể bị interrupt với 2 phút warning                             │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    SPOT INSTANCE LIFECYCLE                           │    │
+│  │                    SPOT INSTANCE LIFECYCLE                          │    │
 │  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                      │    │
+│  │                                                                     │    │
 │  │  Request ──▶ Running ──▶ Interrupted (khi AWS cần capacity)         │    │
-│  │                 │                    │                               │    │
+│  │                 │                    │                              │    │
 │  │                 │         ┌──────────┴──────────┐                   │    │
-│  │                 │         ▼                     ▼                    │    │
-│  │                 │    Terminate            Hibernate/Stop             │    │
-│  │                 │                                                    │    │
-│  │                 └──▶ User Terminate                                  │    │
-│  │                                                                      │    │
+│  │                 │         ▼                     ▼                   │    │
+│  │                 │    Terminate            Hibernate/Stop            │    │
+│  │                 │                                                   │    │
+│  │                 └──▶ User Terminate                                 │    │
+│  │                                                                     │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -541,20 +541,20 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    SPOT PRICE EXAMPLE                            │
+│                    SPOT PRICE EXAMPLE                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  m5.large (us-east-1):                                          │
-│                                                                  │
+│                                                                 │
 │  On-Demand:  $0.096/giờ                                         │
 │  Spot:       $0.035/giờ (biến động)                             │
-│  Savings:    63%                                                 │
-│                                                                  │
+│  Savings:    63%                                                │
+│                                                                 │
 │  Spot price biến động theo:                                     │
-│  • Availability Zone                                             │
-│  • Instance type                                                 │
+│  • Availability Zone                                            │
+│  • Instance type                                                │
 │  • Thời điểm trong ngày/tuần                                    │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -578,28 +578,28 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SPOT INTERRUPTION FREQUENCY                               │
+│                    SPOT INTERRUPTION FREQUENCY                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Trung bình: < 5% instances bị interrupt trong 1 tháng                      │
-│                                                                              │
+│                                                                             │
 │  Tỷ lệ thay đổi theo:                                                       │
-│                                                                              │
-│  📍 REGION                                                                   │
+│                                                                             │
+│  📍 REGION                                                                  │
 │  • us-east-1 (phổ biến) → nhiều demand → interrupt cao hơn                  │
 │  • Region ít popular → interrupt thấp hơn                                   │
-│                                                                              │
-│  💻 INSTANCE TYPE                                                            │
+│                                                                             │
+│  💻 INSTANCE TYPE                                                           │
 │  • Instance phổ biến (m5, c5) → interrupt cao hơn                           │
 │  • Instance ít dùng (m5a, m6i) → interrupt thấp hơn                         │
-│                                                                              │
-│  🕐 THỜI ĐIỂM                                                                │
-│  • Peak hours → interrupt cao hơn                                            │
+│                                                                             │
+│  🕐 THỜI ĐIỂM                                                               │
+│  • Peak hours → interrupt cao hơn                                           │
 │  • Off-peak, weekends → interrupt thấp hơn                                  │
-│                                                                              │
-│  📦 AVAILABILITY ZONE                                                        │
+│                                                                             │
+│  📦 AVAILABILITY ZONE                                                       │
 │  • AZ khác nhau có tỷ lệ khác nhau                                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -615,23 +615,23 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SPOT STRATEGIES                                           │
+│                    SPOT STRATEGIES                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  1. SPOT FLEET                                                               │
+│                                                                             │
+│  1. SPOT FLEET                                                              │
 │     • Kết hợp nhiều instance types + AZs                                    │
 │     • Tự động thay thế khi bị interrupt                                     │
 │     • Allocation strategies: lowestPrice, capacityOptimized, diversified    │
-│                                                                              │
+│                                                                             │
 │  2. EC2 AUTO SCALING với MIXED INSTANCES POLICY                             │
 │     • Base capacity: On-Demand (đảm bảo baseline)                           │
 │     • Scale capacity: Spot (tiết kiệm chi phí)                              │
 │     • Ví dụ: 2 On-Demand + 8 Spot                                           │
-│                                                                              │
+│                                                                             │
 │  3. SPOT BLOCK (Đã deprecated)                                              │
 │     • Đặt Spot trong 1-6 giờ, không bị interrupt                            │
 │     • AWS đã ngừng offering mới từ 07/2021                                  │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -667,24 +667,24 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           DEDICATED HOSTS                                    │
+│                           DEDICATED HOSTS                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Physical Server ──────────────────────────────────────────────────────     │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Host ID: h-0abc123def456789                                         │    │
-│  │  Instance Family: m5                                                  │    │
-│  │  Sockets: 2  │  Cores: 48  │  Available Instances: varies            │    │
-│  │                                                                      │    │
+│  │  Host ID: h-0abc123def456789                                        │    │
+│  │  Instance Family: m5                                                │    │
+│  │  Sockets: 2  │  Cores: 48  │  Available Instances: varies           │    │
+│  │                                                                     │    │
 │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐        │    │
 │  │  │ m5.lg   │ │ m5.lg   │ │ m5.xl   │ │ m5.2xl  │ │ (empty) │        │    │
 │  │  │ Your    │ │ Your    │ │ Your    │ │ Your    │ │         │        │    │
 │  │  │ Instance│ │ Instance│ │ Instance│ │ Instance│ │         │        │    │
 │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘        │    │
-│  │                                                                      │    │
-│  │  ⚠️ Bạn control: Physical server có bao nhiêu instances chạy        │    │
+│  │                                                                     │    │
+│  │  ⚠️ Bạn control: Physical server có bao nhiêu instances chạy         │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -704,28 +704,28 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    PLACEMENT CONTROL                                         │
+│                    PLACEMENT CONTROL                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  KHÔNG CÓ Dedicated Host (On-Demand/Spot thường):                           │
-│  ─────────────────────────────────────────────────                           │
+│  ─────────────────────────────────────────────────                          │
 │  Bạn launch EC2 → AWS tự động chọn physical server cho bạn                  │
 │  Bạn KHÔNG BIẾT instance chạy trên server nào                               │
-│                                                                              │
+│                                                                             │
 │                     ┌──────────────────────┐                                │
 │  Launch EC2 ──────▶ │  AWS chọn server     │ ──▶ Instance chạy ở đâu đó     │
 │                     │  (bạn ko control)    │                                │
 │                     └──────────────────────┘                                │
-│                                                                              │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  CÓ Dedicated Host:                                                         │
-│  ─────────────────                                                           │
+│  ─────────────────                                                          │
 │  Bạn có physical server riêng với Host ID (vd: h-0abc123def)                │
 │  Bạn có thể QUYẾT ĐỊNH instances chạy trên host nào                         │
-│                                                                              │
+│                                                                             │
 │  Launch EC2 ──────▶ "Đặt lên host h-0abc123def" ──▶ Instance chạy ở host đó │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -742,19 +742,19 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    BYOL EXAMPLE                                  │
+│                    BYOL EXAMPLE                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Dedicated Host (48 cores, 2 sockets):                          │
 │  ├── Windows Server #1 (8 cores) ✅                             │
 │  ├── Windows Server #2 (8 cores) ✅                             │
 │  ├── Windows Server #3 (8 cores) ✅                             │
 │  └── Còn trống 24 cores                                         │
-│                                                                  │
+│                                                                 │
 │  → Bạn report cho Microsoft: "Tôi dùng 24 cores trên 1 host"    │
 │  → Bạn CONTROL được việc này vì biết chính xác placement        │
 │  → Tiết kiệm license cost so với mua từ AWS                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -783,25 +783,25 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│              DEDICATED INSTANCES vs DEDICATED HOSTS                          │
+│              DEDICATED INSTANCES vs DEDICATED HOSTS                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  DEDICATED INSTANCES                      DEDICATED HOSTS                   │
-│  ─────────────────────                    ────────────────                   │
+│  ─────────────────────                    ────────────────                  │
 │  • Hardware riêng cho account             • Physical server riêng cho bạn   │
-│  • Không control placement                • Control placement instances      │
+│  • Không control placement                • Control placement instances     │
 │  • Không biết socket/core info            • Biết socket/core information    │
 │  • Không support BYOL                     • Support BYOL                    │
 │  • Phí: +$2/giờ/region + instance price   • Phí: Per-host pricing           │
-│                                                                              │
+│                                                                             │
 │  ┌───────────────────────────────┐        ┌───────────────────────────────┐ │
 │  │ Physical Server (AWS managed) │        │ Physical Server (You control) │ │
-│  │ ┌────┐ ┌────┐ ┌────┐ ┌────┐  │        │ ┌────┐ ┌────┐ ┌────┐ ┌────┐  │ │
-│  │ │You │ │You │ │You │ │    │  │        │ │You │ │You │ │You │ │    │  │ │
-│  │ └────┘ └────┘ └────┘ └────┘  │        │ └────┘ └────┘ └────┘ └────┘  │ │
+│  │ ┌────┐ ┌────┐ ┌────┐ ┌────┐  │        │ ┌────┐ ┌────┐ ┌────┐ ┌────┐    │ │
+│  │ │You │ │You │ │You │ │    │  │        │ │You │ │You │ │You │ │    │    │ │
+│  │ └────┘ └────┘ └────┘ └────┘  │        │ └────┘ └────┘ └────┘ └────┘    │ │
 │  │ Chỉ instances trong account   │        │ Bạn decide instances nào chạy │ │
 │  └───────────────────────────────┘        └───────────────────────────────┘ │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -836,27 +836,27 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CAPACITY RESERVATIONS                                     │
+│                    CAPACITY RESERVATIONS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Đảm bảo bạn LUÔN CÓ capacity để launch instances                           │
-│                                                                              │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
+│  │                                                                     │    │
 │  │  Vấn đề: Khi AWS hết capacity trong một AZ                          │    │
-│  │  ───────────────────────────────────────────                         │    │
-│  │                                                                      │    │
-│  │  ❌ Không có Capacity Reservation:                                   │    │
-│  │     Launch request → "InsufficientInstanceCapacity" error            │    │
-│  │                                                                      │    │
-│  │  ✅ Có Capacity Reservation:                                         │    │
-│  │     Launch request → Success (capacity đã được reserved)             │    │
-│  │                                                                      │    │
+│  │  ───────────────────────────────────────────                        │    │
+│  │                                                                     │    │
+│  │  ❌ Không có Capacity Reservation:                                  │    │
+│  │     Launch request → "InsufficientInstanceCapacity" error           │    │
+│  │                                                                     │    │
+│  │  ✅ Có Capacity Reservation:                                        │    │
+│  │     Launch request → Success (capacity đã được reserved)            │    │
+│  │                                                                     │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ⚠️ LƯU Ý: Capacity Reservation KHÔNG tự động có discount!                 │
+│                                                                             │
+│  ⚠️ LƯU Ý: Capacity Reservation KHÔNG tự động có discount!                   │
 │     Phải kết hợp với RI hoặc Savings Plans để có discount                   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -877,29 +877,29 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                CAPACITY RESERVATION + RI/SP                      │
+│                CAPACITY RESERVATION + RI/SP                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Kịch bản: Reserve 5 × m5.large ở us-east-1a                    │
-│                                                                  │
+│                                                                 │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │ Option 1: Chỉ Capacity Reservation                       │   │
 │  │ → Trả On-Demand price (không discount)                   │   │
-│  │ → Đảm bảo capacity                                        │   │
+│  │ → Đảm bảo capacity                                       │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Option 2: Capacity Reservation + Zonal RI                 │   │
-│  │ → Discount từ RI + Đảm bảo capacity                       │   │
-│  │ → Best of both worlds!                                    │   │
+│  │ Option 2: Capacity Reservation + Zonal RI                │   │
+│  │ → Discount từ RI + Đảm bảo capacity                      │   │
+│  │ → Best of both worlds!                                   │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Option 3: Capacity Reservation + Savings Plans            │   │
-│  │ → Discount từ SP + Đảm bảo capacity                       │   │
-│  │ → Linh hoạt hơn RI                                        │   │
+│  │ Option 3: Capacity Reservation + Savings Plans           │   │
+│  │ → Discount từ SP + Đảm bảo capacity                      │   │
+│  │ → Linh hoạt hơn RI                                       │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -948,18 +948,18 @@ AWS cung cấp Free Tier cho người dùng mới:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PER-SECOND BILLING EXAMPLE                        │
+│                    PER-SECOND BILLING EXAMPLE                       │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │  Linux instance chạy 5 phút 30 giây:                                │
 │  → Bạn trả cho: 5 phút 30 giây = 330 giây                           │
-│                                                                      │
+│                                                                     │
 │  Linux instance chạy 45 giây:                                       │
 │  → Bạn trả cho: 1 phút (minimum)                                    │
-│                                                                      │
+│                                                                     │
 │  Windows instance chạy 5 phút 30 giây:                              │
 │  → Bạn trả cho: 1 giờ (per-hour billing)                            │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -977,38 +977,38 @@ AWS cung cấp Free Tier cho người dùng mới:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    PRICING MODEL DECISION TREE                               │
+│                    PRICING MODEL DECISION TREE                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Workload có thể bị interrupt?                                              │
-│  │                                                                           │
+│ │                                                                           │
 │  ├── Có → SPOT INSTANCES (giảm 90%)                                         │
 │  │        • Batch processing, CI/CD, analytics                              │
-│  │                                                                           │
-│  └── Không ↓                                                                 │
-│                                                                              │
+│ │                                                                           │
+│  └── Không ↓                                                                │
+│                                                                             │
 │  Biết trước nhu cầu 1-3 năm?                                                │
-│  │                                                                           │
+│ │                                                                           │
 │  ├── Có → SAVINGS PLANS hoặc RESERVED INSTANCES (giảm 72%)                  │
-│  │        │                                                                  │
+│  │       │                                                                  │
 │  │        ├── Cần flexibility → Savings Plans                               │
-│  │        │                                                                  │
+│  │       │                                                                  │
 │  │        └── Cần bán lại RI → Reserved Instances (Standard)                │
-│  │                                                                           │
-│  └── Không ↓                                                                 │
-│                                                                              │
+│ │                                                                           │
+│  └── Không ↓                                                                │
+│                                                                             │
 │  Cần hardware riêng?                                                        │
-│  │                                                                           │
+│ │                                                                           │
 │  ├── Có + Cần BYOL → DEDICATED HOSTS                                        │
-│  │                                                                           │
+│ │                                                                           │
 │  ├── Có + Không cần BYOL → DEDICATED INSTANCES                              │
-│  │                                                                           │
-│  └── Không → ON-DEMAND                                                       │
-│                                                                              │
+│ │                                                                           │
+│  └── Không → ON-DEMAND                                                      │
+│                                                                             │
 │  Cần đảm bảo capacity?                                                      │
-│  │                                                                           │
-│  └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)    │
-│                                                                              │
+│ │                                                                           │
+│  └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)     │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1040,25 +1040,25 @@ AWS cung cấp Free Tier cho người dùng mới:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        PLACEMENT GROUPS                                      │
+│                        PLACEMENT GROUPS                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  1. CLUSTER                    2. SPREAD                 3. PARTITION       │
-│  ─────────────                 ─────────────             ─────────────       │
-│                                                                              │
+│  ─────────────                 ─────────────             ─────────────      │
+│                                                                             │
 │  ┌─────────────┐               ┌─────────────┐           ┌─────────────┐    │
 │  │  Same Rack  │               │ Rack1 Rack2 │           │ Part1 Part2 │    │
 │  │ ┌───┐ ┌───┐ │               │ ┌───┐ ┌───┐ │           │ ┌───┐ ┌───┐ │    │
 │  │ │EC2│ │EC2│ │               │ │EC2│ │EC2│ │           │ │EC2│ │EC2│ │    │
 │  │ └───┘ └───┘ │               │ └───┘ └───┘ │           │ │EC2│ │EC2│ │    │
 │  │ ┌───┐ ┌───┐ │               │ Rack3 Rack4 │           │ └───┘ └───┘ │    │
-│  │ │EC2│ │EC2│ │               │ ┌───┐ ┌───┐ │           │ (cùng (cùng │    │
-│  │ └───┘ └───┘ │               │ │EC2│ │EC2│ │           │  rack) rack) │    │
+│  │ │EC2│ │EC2│ │               │             ┌───────────┐ ┌───┐ │   │ (cùng (cùng │    │
+│  │ └───┘ └───┘ │               │             │EC2        │ │EC2│ │   │  rack) rack)│    │
 │  └─────────────┘               │ └───┘ └───┘ │           └─────────────┘    │
-│                                └─────────────┘                               │
+│                                └─────────────┘                              │
 │  Low latency                   High availability         Distributed        │
 │  High throughput               Isolated failures         Big Data           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1104,9 +1104,9 @@ AWS cung cấp Free Tier cho người dùng mới:
 │   ┌────────────────────────┐   │
 │   │  Server 1 (EC2)        │   │
 │   ├────────────────────────┤   │  ← Các servers chia sẻ:
-│   │  Server 2 (EC2)        │   │    • Cùng nguồn điện
+│   │  Server 2 (EC2)        │   │
 │   ├────────────────────────┤   │    • Cùng network switch
-│   │  Server 3 (EC2)        │   │    • Cùng hệ thống làm mát
+│   │  Server 3 (EC2)        │   │
 │   ├────────────────────────┤   │
 │   │  Network Switch        │   │
 │   └────────────────────────┘   │
@@ -1167,12 +1167,12 @@ Có 3 cách để connect vào EC2 instance:
 │              EC2 Console → Select Instance → Connect                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐       │
-│   │   SSH Client      │  │ EC2 Instance      │  │ Session Manager   │       │
-│   │   (Manual)        │  │ Connect           │  │                   │       │
-│   └───────────────────┘  └───────────────────┘  └───────────────────┘       │
+│   ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐        │
+│   │   SSH Client      │  │ EC2 Instance      │  │ Session Manager   │        │
+│   │   (Manual)        │  │ Connect           │  │                   │        │
+│   └───────────────────┘  └───────────────────┘  └───────────────────┘        │
 │                                                                              │
-│          Tab 1                  Tab 2                  Tab 3                │
+│          Tab 1                  Tab 2                  Tab 3                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1181,21 +1181,21 @@ Có 3 cách để connect vào EC2 instance:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         SSH Client - Flow                                     │
+│                         SSH Client - Flow                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Bạn ──── SSH (port 22) ────► EC2 Instance                                 │
+│   Bạn ──── SSH (port 22) ────► EC2 Instance                                  │
 │        │                           ▲                                         │
 │        │                           │                                         │
 │    Private key               Security Group                                  │
-│    (your machine)            phải mở port 22                                │
+│    (your machine)            phải mở port 22                                 │
 │                                                                              │
-│   Command: ssh -i "key.pem" ec2-user@<public-ip>                            │
+│   Command: ssh -i "key.pem" ec2-user@<public-ip>                             │
 │                                                                              │
-│   YÊU CẦU:                                                                  │
-│   • Key pair (.pem file)                                                    │
-│   • Security Group mở port 22                                               │
-│   • EC2 có public IP hoặc bạn ở cùng VPC                                   │
+│   YÊU CẦU:                                                                   │
+│   • Key pair (.pem file)                                                     │
+│   • Security Group mở port 22                                                │
+│   • EC2 có public IP hoặc bạn ở cùng VPC                                     │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1204,24 +1204,24 @@ Có 3 cách để connect vào EC2 instance:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    EC2 Instance Connect - Flow                                │
+│                    EC2 Instance Connect - Flow                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Bạn ấn "Connect" trong Console:                                           │
+│   Bạn ấn "Connect" trong Console:                                            │
 │                                                                              │
-│   Step 1: AWS tạo temporary SSH key (valid 60 giây)                         │
-│   Step 2: AWS push public key vào ~/.ssh/authorized_keys                    │
-│   Step 3: Browser SSH thẳng vào EC2 qua port 22                             │
+│   Step 1: AWS tạo temporary SSH key (valid 60 giây)                          │
+│   Step 2: AWS push public key vào ~/.ssh/authorized_keys                     │
+│   Step 3: Browser SSH thẳng vào EC2 qua port 22                              │
 │                                                                              │
-│   ┌─────────────────┐      SSH (port 22)       ┌─────────────────┐          │
-│   │  Browser        │ ────────────────────────►│  EC2 Instance   │          │
-│   │  (terminal)     │                          │                 │          │
-│   └─────────────────┘                          └─────────────────┘          │
+│   ┌─────────────────┐      SSH (port 22)       ┌─────────────────┐           │
+│   │  Browser        │ ────────────────────────►│  EC2 Instance   │           │
+│   │  (terminal)     │                          │                 │           │
+│   └─────────────────┘                          └─────────────────┘           │
 │                                                                              │
-│   YÊU CẦU:                                                                  │
-│   • Port 22 PHẢI mở trong Security Group                                    │
-│   • EC2 có public IP                                                        │
-│   • Vẫn là SSH, chỉ là AWS quản lý key cho bạn                             │
+│   YÊU CẦU:                                                                   │
+│   • Port 22 PHẢI mở trong Security Group                                     │
+│   • EC2 có public IP                                                         │
+│   • Vẫn là SSH, chỉ là AWS quản lý key cho bạn                               │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1230,31 +1230,31 @@ Có 3 cách để connect vào EC2 instance:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    Session Manager - Flow                                     │
+│                    Session Manager - Flow                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   Bạn ấn "Connect" với Session Manager:                                     │
+│   Bạn ấn "Connect" với Session Manager:                                      │
 │                                                                              │
-│   ┌─────────────────┐           ┌─────────────────┐                         │
-│   │  Browser/CLI    │ ────────► │  SSM Service    │                         │
-│   └─────────────────┘           └────────┬────────┘                         │
+│   ┌─────────────────┐           ┌─────────────────┐                          │
+│   │  Browser/CLI    │ ────────► │  SSM Service    │                          │
+│   └─────────────────┘           └────────┬────────┘                          │
 │                                          │                                   │
 │                                          ▼                                   │
-│   ┌─────────────────┐           ┌─────────────────┐                         │
-│   │  EC2 Instance   │ ◄──────── │  SSM Agent      │                         │
-│   │  (NO port open) │  polling  │  (trong EC2)    │                         │
-│   └─────────────────┘           └─────────────────┘                         │
+│   ┌─────────────────┐           ┌─────────────────┐                          │
+│   │  EC2 Instance   │ ◄──────── │  SSM Agent      │                          │
+│   │  (NO port open) │  polling  │  (trong EC2)    │                          │
+│   └─────────────────┘           └─────────────────┘                          │
 │                                                                              │
-│   KHÔNG cần:                                                                │
-│   ✅ SSH keys                                                               │
-│   ✅ Port 22 mở                                                             │
-│   ✅ Public IP                                                              │
-│   ✅ Bastion host                                                           │
+│   KHÔNG cần:                                                                 │
+│   ✅ SSH keys                                                                │
+│   ✅ Port 22 mở                                                              │
+│   ✅ Public IP                                                               │
+│   ✅ Bastion host                                                            │
 │                                                                              │
-│   CẦN:                                                                      │
-│   • SSM Agent đang chạy (có sẵn trên Amazon Linux, Windows Server)         │
-│   • IAM Role với AmazonSSMManagedInstanceCore policy                        │
-│   • Agent có đường đi đến SSM Service (internet hoặc VPC Endpoint)         │
+│   CẦN:                                                                       │
+│   • SSM Agent đang chạy (có sẵn trên Amazon Linux, Windows Server)           │
+│   • IAM Role với AmazonSSMManagedInstanceCore policy                         │
+│   • Agent có đường đi đến SSM Service (internet hoặc VPC Endpoint)           │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1493,23 +1493,23 @@ Centralized backup cho EC2 instances và EBS volumes.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SO SÁNH STOP vs HIBERNATE                                 │
+│                    SO SÁNH STOP vs HIBERNATE                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  STOP (Tắt thường):                                                         │
-│  ─────────────────                                                           │
+│  ─────────────────                                                          │
 │  EC2 Running → Stop → RAM bị XÓA SẠCH                                       │
 │                     → Start lại → Phải khởi động OS từ đầu                  │
-│                     → Applications phải start lại                            │
+│                     → Applications phải start lại                           │
 │                     → Boot time: 1-2 phút                                   │
-│                                                                              │
+│                                                                             │
 │  HIBERNATE (Ngủ đông):                                                      │
-│  ────────────────────                                                        │
+│  ────────────────────                                                       │
 │  EC2 Running → Hibernate → RAM được LƯU vào EBS                             │
 │                          → Resume → RAM được nạp lại từ EBS                 │
 │                          → Tiếp tục từ đúng chỗ đang chạy                   │
 │                          → Resume time: Vài giây!                           │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1517,32 +1517,32 @@ Centralized backup cho EC2 instances và EBS volumes.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    HIBERNATE WORKFLOW                            │
+│                    HIBERNATE WORKFLOW                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. HIBERNATE                                                    │
-│     EC2 (Running)                                                │
+│                                                                 │
+│  1. HIBERNATE                                                   │
+│     EC2 (Running)                                               │
 │     ├── RAM: 16GB data                                          │
 │     ├── App đang chạy                                           │
 │     └── [Hibernate] ──────┐                                     │
-│                           ▼                                      │
+│                           ▼                                     │
 │     ┌─────────────────────────────────────┐                     │
-│     │  EBS Root Volume (Encrypted)         │                     │
-│     │  ├── OS files                        │                     │
+│     │  EBS Root Volume (Encrypted)        │                     │
+│     │  ├── OS files                       │                     │
 │     │  └── RAM dump (16GB) ← Lưu tại đây! │                     │
 │     └─────────────────────────────────────┘                     │
-│                                                                  │
-│  2. RESUME (Start)                                               │
+│                                                                 │
+│  2. RESUME (Start)                                              │
 │     ┌─────────────────────────────────────┐                     │
-│     │  EBS Root Volume (Encrypted)         │                     │
+│     │  EBS Root Volume (Encrypted)        │                     │
 │     │  └── RAM dump (16GB) ───────────────┼──┐                  │
 │     └─────────────────────────────────────┘  │                  │
-│                                              ▼                   │
-│     EC2 (Running)                                                │
+│                                              ▼                  │
+│     EC2 (Running)                                               │
 │     ├── RAM: 16GB ← Nạp lại từ EBS                              │
-│     ├── App TIẾP TỤC chạy từ đúng chỗ cũ                       │
+│     ├── App TIẾP TỤC chạy từ đúng chỗ cũ                        │
 │     └── Không cần boot OS lại!                                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

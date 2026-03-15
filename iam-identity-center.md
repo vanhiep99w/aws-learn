@@ -44,18 +44,18 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      IAM Identity Center                             │
-│                                                                      │
-│   ┌──────────────────┐    ┌──────────────────┐    ┌──────────────┐ │
-│   │   Identity       │    │   Permission     │    │    Access    │ │
-│   │   Source         │───▶│   Sets           │───▶│    Portal    │ │
-│   └──────────────────┘    └──────────────────┘    └──────────────┘ │
+│                      IAM Identity Center                            │
+│                                                                     │
+│   ┌──────────────────┐    ┌──────────────────┐    ┌──────────────┐  │
+│   │   Identity       │    │   Permission     │    │    Access    │  │
+│   │   Source         │───▶│   Sets           │───▶│    Portal    │  │
+│   └──────────────────┘    └──────────────────┘    └──────────────┘  │
 │          │                        │                       │         │
 │          ▼                        ▼                       ▼         │
-│   • Built-in directory      • Admin Access         Single login    │
-│   • External IdP            • Developer Access     to all AWS      │
-│   • Active Directory        • ReadOnly Access      accounts &      │
-│                                                     applications   │
+│   • Built-in directory      • Admin Access         Single login     │
+│   • External IdP            • Developer Access     to all AWS       │
+│   • Active Directory        • ReadOnly Access      accounts &       │
+│                                                     applications    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -80,33 +80,33 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    1 AWS ACCOUNT CHO TẤT CẢ                              │
+│                    1 AWS ACCOUNT CHO TẤT CẢ                             │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│   Account "MyCompany"                                                    │
+│                                                                         │
+│   Account "MyCompany"                                                   │
 │   ┌───────────────────────────────────────────────────────────────────┐ │
 │   │  Dev EC2, RDS     Staging EC2, RDS     Prod EC2, RDS              │ │
 │   │  Dev S3 buckets   Staging S3           Prod S3                    │ │
 │   └───────────────────────────────────────────────────────────────────┘ │
-│                                                                          │
-│   😱 VẤN ĐỀ:                                                             │
-│                                                                          │
-│   1. XÓA NHẦM PROD:                                                      │
+│                                                                         │
+│   😱 VẤN ĐỀ:                                                            │
+│                                                                         │
+│   1. XÓA NHẦM PROD:                                                     │
 │      Developer có quyền xóa EC2 để dọn dev                              │
 │      → Nhầm tay xóa Production Database! 💥                             │
-│                                                                          │
-│   2. BILLING LẪN LỘN:                                                    │
+│                                                                         │
+│   2. BILLING LẪN LỘN:                                                   │
 │      CFO hỏi: "Chi phí Dev bao nhiêu? Prod bao nhiêu?"                  │
-│      → "Khó tách lắm..." 😅                                              │
-│                                                                          │
-│   3. LIMITS CHUNG:                                                       │
+│      → "Khó tách lắm..." 😅                                             │
+│                                                                         │
+│   3. LIMITS CHUNG:                                                      │
 │      Dev team dùng hết 18/20 EC2 slots                                  │
-│      → Prod chỉ còn 2 slots!                                             │
-│                                                                          │
-│   4. SECURITY:                                                           │
+│      → Prod chỉ còn 2 slots!                                            │
+│                                                                         │
+│   4. SECURITY:                                                          │
 │      Auditor: "Ai có quyền access prod?"                                │
-│      → Rất khó kiểm soát                                                 │
-│                                                                          │
+│      → Rất khó kiểm soát                                                │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -114,9 +114,9 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    AWS ORGANIZATIONS (Multi-Account)                     │
+│                    AWS ORGANIZATIONS (Multi-Account)                    │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐             │
 │  │  DEV ACCOUNT   │  │ STAGING ACCOUNT│  │  PROD ACCOUNT  │             │
 │  │                │  │                │  │                │             │
@@ -126,12 +126,12 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 │  │  Devs: FULL    │  │  Devs: limited │  │  Devs: READ    │             │
 │  │  access        │  │  access        │  │  ONLY          │             │
 │  └────────────────┘  └────────────────┘  └────────────────┘             │
-│                                                                          │
+│                                                                         │
 │  ✅ Devs có FULL quyền trong Dev Account                                │
 │  ✅ Devs KHÔNG THỂ xóa nhầm Prod (vì khác account hoàn toàn!)           │
-│  ✅ Billing tách riêng từng account                                      │
-│  ✅ Limits riêng, không ảnh hưởng nhau                                   │
-│                                                                          │
+│  ✅ Billing tách riêng từng account                                     │
+│  ✅ Limits riêng, không ảnh hưởng nhau                                  │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -139,46 +139,46 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│               KHÔNG CÓ IAM IDENTITY CENTER                               │
+│               KHÔNG CÓ IAM IDENTITY CENTER                              │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  Developer "Hiệp" cần access 5 accounts:                                │
-│                                                                          │
+│                                                                         │
 │  Account Dev     → Tạo IAM User "hiep" + password + MFA                 │
 │  Account Staging → Tạo IAM User "hiep" + password + MFA                 │
 │  Account Prod    → Tạo IAM User "hiep" + password + MFA                 │
 │  Account Logs    → Tạo IAM User "hiep" + password + MFA                 │
 │  Account Network → Tạo IAM User "hiep" + password + MFA                 │
-│                                                                          │
-│  😱 5 accounts = 5 passwords + 5 MFA devices!                            │
+│                                                                         │
+│  😱 5 accounts = 5 passwords + 5 MFA devices!                           │
 │  😱 Hiệp nghỉ việc → Admin phải vào 5 accounts để xóa user              │
-│  😱 50 developers × 10 accounts = 500 IAM Users!                         │
-│                                                                          │
+│  😱 50 developers × 10 accounts = 500 IAM Users!                        │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                 CÓ IAM IDENTITY CENTER                                   │
+│                 CÓ IAM IDENTITY CENTER                                  │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  Developer "Hiệp":                                                       │
-│                                                                          │
+│                                                                         │
+│  Developer "Hiệp":                                                      │
+│                                                                         │
 │  1. Đăng nhập 1 lần vào AWS Access Portal                               │
 │     https://my-company.awsapps.com/start                                │
-│                                                                          │
+│                                                                         │
 │  2. Thấy TẤT CẢ accounts được phân quyền:                               │
 │     ┌────────────────────────────────────────────┐                      │
 │     │  🏠 AWS Access Portal                      │                      │
 │     │                                            │                      │
-│     │  Account Dev     → [Console] [CLI]        │                      │
-│     │  Account Staging → [Console] [CLI]        │                      │
-│     │  Account Prod    → [Console] [CLI]        │                      │
+│     │  Account Dev     → [Console] [CLI]         │                      │
+│     │  Account Staging → [Console] [CLI]         │                      │
+│     │  Account Prod    → [Console] [CLI]         │                      │
 │     └────────────────────────────────────────────┘                      │
-│                                                                          │
+│                                                                         │
 │  3. Click vào account nào → Tự động vào! (không cần password nữa)       │
-│                                                                          │
+│                                                                         │
 │  ✅ 1 password + 1 MFA cho TẤT CẢ accounts                              │
 │  ✅ Hiệp nghỉ việc → Disable 1 chỗ = mất quyền tất cả                   │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -204,35 +204,35 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                 KHÔNG CÓ SSO - Nhân viên phải nhớ                        │
+│                 KHÔNG CÓ SSO - Nhân viên phải nhớ                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  Sáng thứ 2, bắt đầu làm việc:                                          │
-│                                                                          │
+│                                                                         │
 │  ┌──────────────┐  Username: hiep@company.com                           │
 │  │  Salesforce  │  Password: Xyz123!@#                                  │
-│  └──────────────┘  MFA: App riêng                                        │
-│                                                                          │
+│  └──────────────┘  MFA: App riêng                                       │
+│                                                                         │
 │  ┌──────────────┐  Username: hiep@company.com                           │
 │  │    Slack     │  Password: Abc456$%^                                  │
-│  └──────────────┘  MFA: SMS                                              │
-│                                                                          │
+│  └──────────────┘  MFA: SMS                                             │
+│                                                                         │
 │  ┌──────────────┐  Username: hiep@company.com                           │
 │  │    Zoom      │  Password: Qwe789&*(                                  │
-│  └──────────────┘  MFA: Email                                            │
-│                                                                          │
+│  └──────────────┘  MFA: Email                                           │
+│                                                                         │
 │  ┌──────────────┐  Username: hiep@company.com                           │
 │  │ Microsoft365 │  Password: Rty012!@#                                  │
-│  └──────────────┘  MFA: MS Authenticator                                 │
-│                                                                          │
+│  └──────────────┘  MFA: MS Authenticator                                │
+│                                                                         │
 │  ┌──────────────┐  Username: hiep-dev                                   │
 │  │  AWS Dev     │  Password: Asd345$%^                                  │
-│  └──────────────┘  MFA: Khác                                             │
-│                                                                          │
-│  😱 5+ passwords, 5+ MFA devices!                                        │
-│  😱 Quên password → Gọi IT helpdesk                                      │
+│  └──────────────┘  MFA: Khác                                            │
+│                                                                         │
+│  😱 5+ passwords, 5+ MFA devices!                                       │
+│  😱 Quên password → Gọi IT helpdesk                                     │
 │  😱 Hiệp nghỉ việc → IT phải disable 5+ tài khoản                       │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -240,41 +240,41 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                       SINGLE SIGN-ON (SSO)                               │
-│              "Đăng nhập 1 lần, truy cập tất cả"                          │
+│                       SINGLE SIGN-ON (SSO)                              │
+│              "Đăng nhập 1 lần, truy cập tất cả"                         │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  Hiệp đăng nhập 1 lần vào Identity Provider:                            │
-│                                                                          │
+│                                                                         │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                    AWS IAM Identity Center                       │    │
-│  │                                                                   │    │
-│  │   Username: hiep@company.com                                     │    │
-│  │   Password: **********                                           │    │
-│  │   MFA: 123456                                                     │    │
-│  │                                                                   │    │
-│  │   [Login]                                                         │    │
+│  │                    AWS IAM Identity Center                      │    │
+│  │                                                                 │    │
+│  │   Username: hiep@company.com                                    │    │
+│  │   Password: **********                                          │    │
+│  │   MFA: 123456                                                   │    │
+│  │                                                                 │    │
+│  │   [Login]                                                       │    │
 │  └─────────────────────────────────────────────────────────────────┘    │
-│                              │                                           │
-│                              │ ✅ Đã xác thực                            │
-│                              ▼                                           │
+│                             │                                           │
+│                              │ ✅ Đã xác thực                           │
+│                              ▼                                          │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │                      ACCESS PORTAL                               │    │
-│  │                                                                   │    │
+│  │                      ACCESS PORTAL                              │    │
+│  │                                                                 │    │
 │  │   ┌────────────┐  ┌────────────┐  ┌────────────┐                │    │
 │  │   │ Salesforce │  │   Slack    │  │    Zoom    │                │    │
 │  │   │   [Open]   │  │   [Open]   │  │   [Open]   │                │    │
 │  │   └────────────┘  └────────────┘  └────────────┘                │    │
-│  │                                                                   │    │
+│  │                                                                 │    │
 │  │   ┌────────────┐  ┌────────────┐  ┌────────────┐                │    │
 │  │   │ Microsoft  │  │  AWS Dev   │  │  AWS Prod  │                │    │
 │  │   │    365     │  │   [Open]   │  │   [Open]   │                │    │
 │  │   │   [Open]   │  └────────────┘  └────────────┘                │    │
-│  │   └────────────┘                                                 │    │
+│  │   └────────────┘                                                │    │
 │  └─────────────────────────────────────────────────────────────────┘    │
-│                                                                          │
+│                                                                         │
 │   Click [Open] → Tự động đăng nhập vào app đó! (không cần password)     │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -282,22 +282,22 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         SAML SSO FLOW                                    │
+│                         SAML SSO FLOW                                   │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  1. Hiệp click "Salesforce" trong portal                                │
-│                                                                          │
+│                                                                         │
 │  2. IAM Identity Center:                                                │
 │     "Hiệp đã login, cho phép vào Salesforce"                            │
 │     → Tạo SAML Token (giấy chứng nhận)                                  │
-│                                                                          │
+│                                                                         │
 │  3. Gửi SAML Token đến Salesforce                                       │
-│                                                                          │
-│  4. Salesforce:                                                          │
+│                                                                         │
+│  4. Salesforce:                                                         │
 │     "Token này từ IAM Identity Center mà tôi TRUST"                     │
 │     → Cho Hiệp vào, không hỏi password!                                 │
-│                                                                          │
-│                                                                          │
+│                                                                         │
+│                                                                         │
 │   User          Identity Center         Salesforce                      │
 │    │                  │                     │                           │
 │    │──── Login ──────►│                     │                           │
@@ -308,7 +308,7 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 │    │                                        │                           │
 │    │◄──────────── Welcome Hiệp! ───────────│                            │
 │    │          (no password needed)          │                           │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -327,26 +327,26 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│           IAM IDENTITY CENTER SSO CAPABILITIES                  │
+│           IAM IDENTITY CENTER SSO CAPABILITIES                 │
 ├────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  AWS Resources:                                                 │
-│    ✅ AWS Accounts (Dev, Staging, Prod...)                      │
-│    ✅ AWS Console                                               │
-│    ✅ AWS CLI (temporary credentials)                           │
-│                                                                 │
-│  Business Applications (SAML 2.0):                              │
-│    ✅ Salesforce                                                │
-│    ✅ Slack                                                      │
-│    ✅ Zoom                                                       │
-│    ✅ Microsoft 365 (Office, Outlook, Teams)                    │
-│    ✅ Dropbox                                                    │
-│    ✅ Jira, Confluence                                           │
-│    ✅ GitHub Enterprise                                          │
-│    ✅ Box                                                        │
-│    ✅ ServiceNow                                                 │
-│    ✅ ... và hàng nghìn apps khác hỗ trợ SAML!                  │
-│                                                                 │
+│                                                                │
+│  AWS Resources:                                                │
+│    ✅ AWS Accounts (Dev, Staging, Prod...)                     │
+│    ✅ AWS Console                                              │
+│    ✅ AWS CLI (temporary credentials)                          │
+│                                                                │
+│  Business Applications (SAML 2.0):                             │
+│    ✅ Salesforce                                               │
+│    ✅ Slack                                                    │
+│    ✅ Zoom                                                     │
+│    ✅ Microsoft 365 (Office, Outlook, Teams)                   │
+│    ✅ Dropbox                                                  │
+│    ✅ Jira, Confluence                                         │
+│    ✅ GitHub Enterprise                                        │
+│    ✅ Box                                                      │
+│    ✅ ServiceNow                                               │
+│    ✅ ... và hàng nghìn apps khác hỗ trợ SAML!                 │
+│                                                                │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -386,22 +386,22 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         IAM Identity Center                              │
-│                                                                          │
-│  ┌─────────────────┐   ┌─────────────────┐   ┌───────────────────────┐ │
-│  │ IDENTITY SOURCE │   │ PERMISSION SETS │   │    ASSIGNMENTS        │ │
-│  │                 │   │                 │   │                       │ │
-│  │ Who can access? │   │ What can they   │   │ Which accounts/apps   │ │
-│  │                 │   │ do?             │   │ can they access?      │ │
-│  └─────────────────┘   └─────────────────┘   └───────────────────────┘ │
-│          │                     │                       │               │
-│          └─────────────────────┼───────────────────────┘               │
+│                         IAM Identity Center                             │
+│                                                                         │
+│  ┌─────────────────┐   ┌─────────────────┐   ┌───────────────────────┐  │
+│  │ IDENTITY SOURCE │   │ PERMISSION SETS │   │    ASSIGNMENTS        │  │
+│  │                 │   │                 │   │                       │  │
+│  │ Who can access? │   │ What can they   │   │ Which accounts/apps   │  │
+│  │                 │   │ do?             │   │ can they access?      │  │
+│  └─────────────────┘   └─────────────────┘   └───────────────────────┘  │
+│          │                     │                        │               │
+│          └─────────────────────┼───────────────────────┘                │
 │                                ▼                                        │
-│                    ┌───────────────────────┐                           │
-│                    │     ACCESS PORTAL     │                           │
-│                    │  https://d-xxx.awsapps│                           │
-│                    │  .com/start           │                           │
-│                    └───────────────────────┘                           │
+│                    ┌───────────────────────┐                            │
+│                    │     ACCESS PORTAL     │                            │
+│                    │  https://d-xxx.awsapps│                            │
+│                    │  .com/start           │                            │
+│                    └───────────────────────┘                            │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -471,20 +471,20 @@ Permission Sets là collections of IAM policies được gán cho users/groups �
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                        Permission Set Flow                            │
-│                                                                       │
-│  ┌─────────────┐     ┌─────────────────┐     ┌────────────────────┐ │
-│  │ Permission  │     │   Assignment    │     │   AWS Account      │ │
-│  │    Set      │────▶│                 │────▶│                    │ │
-│  │             │     │ User/Group +    │     │  IAM Role Created  │ │
-│  │ Admin       │     │ Account + PS    │     │  Automatically     │ │
-│  └─────────────┘     └─────────────────┘     └────────────────────┘ │
+│                        Permission Set Flow                           │
+│                                                                      │
+│  ┌─────────────┐     ┌─────────────────┐     ┌────────────────────┐  │
+│  │ Permission  │     │   Assignment    │     │   AWS Account      │  │
+│  │    Set      │────▶│                 │────▶│                    │  │
+│  │             │     │ User/Group +    │     │  IAM Role Created  │  │
+│  │ Admin       │     │ Account + PS    │     │  Automatically     │  │
+│  └─────────────┘     └─────────────────┘     └────────────────────┘  │
 │                                                       │              │
 │                                                       ▼              │
-│                                              ┌────────────────────┐ │
-│                                              │ AWSReservedSSO_    │ │
-│                                              │ AdminAccess_*      │ │
-│                                              └────────────────────┘ │
+│                                              ┌────────────────────┐  │
+│                                              │ AWSReservedSSO_    │  │
+│                                              │ AdminAccess_*      │  │
+│                                              └────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -494,7 +494,7 @@ Permission Sets là collections of IAM policies được gán cho users/groups �
 
 ```
 ┌────────────────────────────────────────────────────┐
-│         AWS Managed Permission Sets                 │
+│         AWS Managed Permission Sets                │
 ├────────────────────────────────────────────────────┤
 │ • AdministratorAccess    - Full admin              │
 │ • PowerUserAccess        - Dev without IAM         │
@@ -589,19 +589,19 @@ IAM Identity Center hoạt động tốt nhất với AWS Organizations:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Permission Assignment                             │
-│                                                                      │
+│                    Permission Assignment                            │
+│                                                                     │
 │   Permission Set    +    User/Group    +    Account/OU              │
-│        │                     │                  │                    │
-│        ▼                     ▼                  ▼                    │
-│   ┌──────────┐         ┌──────────┐       ┌──────────┐             │
-│   │ Developer│    +    │ DevTeam  │  +    │  Dev     │             │
-│   │ Access   │         │ Group    │       │  Account │             │
-│   └──────────┘         └──────────┘       └──────────┘             │
-│                              │                                       │
-│                              ▼                                       │
+│        │                     │                 │                    │
+│        ▼                     ▼                  ▼                   │
+│   ┌──────────┐         ┌──────────┐       ┌──────────┐              │
+│   │ Developer│    +    │ DevTeam  │  +    │  Dev     │              │
+│   │ Access   │         │ Group    │       │  Account │              │
+│   └──────────┘         └──────────┘       └──────────┘              │
+│                             │                                       │
+│                              ▼                                      │
 │              DevTeam members có Developer Access                    │
-│              trong Dev Account                                       │
+│              trong Dev Account                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -613,23 +613,23 @@ IAM Identity Center hoạt động tốt nhất với AWS Organizations:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    MFA Options                                       │
+│                    MFA Options                                      │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   ┌────────────────┐   ┌────────────────┐   ┌────────────────────┐ │
-│   │  FIDO2/WebAuthn│   │  TOTP Apps     │   │  Built-in         │ │
-│   │                │   │                │   │  Authenticator    │ │
-│   │  • YubiKey     │   │  • Google Auth │   │                   │ │
-│   │  • Windows     │   │  • Authy       │   │  • Push notif     │ │
-│   │    Hello       │   │  • Microsoft   │   │  • AWS mobile app │ │
-│   │  • Touch ID    │   │    Auth        │   │                   │ │
-│   └────────────────┘   └────────────────┘   └────────────────────┘ │
-│                                                                      │
+│                                                                     │
+│   ┌────────────────┐   ┌────────────────┐   ┌────────────────────┐  │
+│   │  FIDO2/WebAuthn│   │  TOTP Apps     │   │  Built-in          │  │
+│   │                │   │                │   │  Authenticator     │  │
+│   │  • YubiKey     │   │  • Google Auth │   │                    │  │
+│   │  • Windows     │   │  • Authy       │   │  • Push notif      │  │
+│   │    Hello       │   │  • Microsoft   │   │  • AWS mobile app  │  │
+│   │  • Touch ID    │   │    Auth        │   │                    │  │
+│   └────────────────┘   └────────────────┘   └────────────────────┘  │
+│                                                                     │
 │   MFA Enforcement Options:                                          │
 │   • Context-aware: Require MFA based on risk                        │
 │   • Every sign-in: Always require MFA                               │
 │   • Only specific apps: Selective enforcement                       │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -637,9 +637,9 @@ IAM Identity Center hoạt động tốt nhất với AWS Organizations:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│               IAM Identity Center vs Long-term Credentials          │
-│                                                                     │
-│   Traditional IAM User               IAM Identity Center            │
+│               IAM Identity Center vs Long-term Credentials         │
+│                                                                    │
+│   Traditional IAM User               IAM Identity Center           │
 │   ┌─────────────────────┐           ┌─────────────────────┐        │
 │   │ Access Key ID       │           │ Temporary Creds     │        │
 │   │ Secret Access Key   │           │                     │        │
@@ -649,7 +649,7 @@ IAM Identity Center hoạt động tốt nhất với AWS Organizations:
 │   │   manually          │           │ • No static keys    │        │
 │   │ • Risk if leaked    │           │                     │        │
 │   └─────────────────────┘           └─────────────────────┘        │
-│                                                                     │
+│                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -706,10 +706,10 @@ ABAC:
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                                                                            │
-│   IAM Users                              IAM Identity Center               │
-│   ─────────                              ──────────────────────            │
-│                                                                            │
+│                                                                           │
+│   IAM Users                              IAM Identity Center              │
+│   ─────────                              ──────────────────────           │
+│                                                                           │
 │   ┌─────────────┐                       ┌─────────────────────┐           │
 │   │ Account A   │                       │ Identity Center     │           │
 │   │ ├─ user1    │                       │                     │           │
@@ -721,13 +721,13 @@ ABAC:
 │   │ ├─ user1    │   Same user,          │         └──▶ Acc B  │           │
 │   │ └─ user2    │   different creds     │                     │           │
 │   └─────────────┘                       └─────────────────────┘           │
-│                                          One identity,                     │
-│   ┌─────────────┐                        multiple accounts                 │
-│   │ Account C   │                                                          │
-│   │ ├─ user1    │                                                          │
-│   │ └─ user2    │                                                          │
-│   └─────────────┘                                                          │
-│                                                                            │
+│                                          One identity,                    │
+│   ┌─────────────┐                        multiple accounts                │
+│   │ Account C   │                                                         │
+│   │ ├─ user1    │                                                         │
+│   │ └─ user2   │                                                          │
+│   └─────────────┘                                                         │
+│                                                                           │
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -748,15 +748,15 @@ ABAC:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     Decision Matrix                                  │
+│                     Decision Matrix                                 │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │   Use IAM Users when:                                               │
 │   ✓ Single AWS account                                              │
 │   ✓ Service accounts/applications (với access keys)                 │
 │   ✓ Legacy requirements                                             │
 │   ✓ Very simple use case                                            │
-│                                                                      │
+│                                                                     │
 │   Use IAM Identity Center when:                                     │
 │   ✓ Multiple AWS accounts (recommended)                             │
 │   ✓ Human users accessing console/CLI                               │
@@ -764,7 +764,7 @@ ABAC:
 │   ✓ Centralized access management                                   │
 │   ✓ Compliance requirements                                         │
 │   ✓ AWS Organizations đã được setup                                 │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -776,21 +776,21 @@ ABAC:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│   Developer accesses multiple accounts với single login             │
-│                                                                     │
+│   Developer accesses multiple accounts với single login            │
+│                                                                    │
 │   ┌─────────┐      ┌──────────────────┐                            │
 │   │Developer│─────▶│ Identity Center  │                            │
 │   │   👤    │      │     Portal       │                            │
 │   └─────────┘      └────────┬─────────┘                            │
-│                             │                                       │
+│                            │                                       │
 │              ┌──────────────┼──────────────┐                       │
 │              ▼              ▼              ▼                       │
-│        ┌──────────┐   ┌──────────┐   ┌──────────┐                 │
-│        │ Dev Acc  │   │ Stage Acc│   │ Prod Acc │                 │
-│        │          │   │          │   │          │                 │
-│        │ Admin    │   │ Admin    │   │ ReadOnly │                 │
-│        └──────────┘   └──────────┘   └──────────┘                 │
-│                                                                     │
+│        ┌──────────┐   ┌──────────┐   ┌──────────┐                  │
+│        │ Dev Acc  │   │ Stage Acc│   │ Prod Acc │                  │
+│        │          │   │          │   │          │                  │
+│        │ Admin    │   │ Admin    │   │ ReadOnly │                  │
+│        └──────────┘   └──────────┘   └──────────┘                  │
+│                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -798,20 +798,20 @@ ABAC:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│   Single login cho AWS + Business Apps                              │
-│                                                                     │
+│   Single login cho AWS + Business Apps                             │
+│                                                                    │
 │   ┌─────────┐      ┌──────────────────┐                            │
 │   │ Employee│─────▶│ Identity Center  │                            │
 │   │   👤    │      │     Portal       │                            │
 │   └─────────┘      └────────┬─────────┘                            │
-│                             │                                       │
+│                            │                                       │
 │        ┌────────────────────┼────────────────────┐                 │
 │        ▼                    ▼                    ▼                 │
-│   ┌────────────┐      ┌────────────┐      ┌────────────┐          │
-│   │    AWS     │      │ Salesforce │      │ Microsoft  │          │
-│   │  Console   │      │            │      │    365     │          │
-│   └────────────┘      └────────────┘      └────────────┘          │
-│                                                                     │
+│   ┌────────────┐      ┌────────────┐      ┌────────────┐           │
+│   │    AWS     │      │ Salesforce │      │ Microsoft  │           │
+│   │  Console   │      │            │      │    365     │           │
+│   └────────────┘      └────────────┘      └────────────┘           │
+│                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -899,9 +899,9 @@ Access Reviews:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Operational Checklist                             │
+│                    Operational Checklist                            │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │ ☐ Enable in Management Account only                                 │
 │ ☐ Connect to AWS Organizations                                      │
 │ ☐ Configure identity source (IdP recommended)                       │
@@ -911,7 +911,7 @@ Access Reviews:
 │ ☐ Document access portal URL for users                              │
 │ ☐ Create runbook for onboarding/offboarding                         │
 │ ☐ Set up emergency access (break-glass) procedure                   │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -921,16 +921,16 @@ Access Reviews:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         Pricing                                      │
+│                         Pricing                                     │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │   IAM Identity Center:  FREE ✓                                      │
-│                                                                      │
-│   You only pay for:                                                  │
+│                                                                     │
+│   You only pay for:                                                 │
 │   • Underlying AWS services users access                            │
 │   • AWS Managed Microsoft AD (if used)                              │
 │   • External IdP licenses (Okta, Azure AD, etc.)                    │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -23,28 +23,28 @@ AWS cung cấp nhiều **FREE resources** để học và troubleshoot, ngoài c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS SUPPORT RESOURCES                         │
+│                    AWS SUPPORT RESOURCES                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    FREE RESOURCES                        │   │
-│  ├─────────────────────────────────────────────────────────┤   │
-│  │  • AWS re:Post (Community Q&A)                          │   │
-│  │  • AWS Documentation                                     │   │
-│  │  • AWS Knowledge Center                                  │   │
-│  │  • AWS Whitepapers                                       │   │
-│  │  • AWS Blogs                                             │   │
-│  │  • AWS Training (Free digital courses)                   │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                   PAID SUPPORT                           │   │
-│  ├─────────────────────────────────────────────────────────┤   │
-│  │  • AWS Support Plans (Developer/Business/Enterprise)    │   │
-│  │  • AWS Professional Services                             │   │
-│  │  • AWS Managed Services (AMS)                            │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                    FREE RESOURCES                       │    │
+│  ├─────────────────────────────────────────────────────────┤    │
+│  │  • AWS re:Post (Community Q&A)                          │    │
+│  │  • AWS Documentation                                    │    │
+│  │  • AWS Knowledge Center                                 │    │
+│  │  • AWS Whitepapers                                      │    │
+│  │  • AWS Blogs                                            │    │
+│  │  • AWS Training (Free digital courses)                  │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                   PAID SUPPORT                          │    │
+│  ├─────────────────────────────────────────────────────────┤    │
+│  │  • AWS Support Plans (Developer/Business/Enterprise)    │    │
+│  │  • AWS Professional Services                            │    │
+│  │  • AWS Managed Services (AMS)                           │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -58,27 +58,27 @@ AWS cung cấp nhiều **FREE resources** để học và troubleshoot, ngoài c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        AWS re:Post                               │
+│                        AWS re:Post                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  🔗 https://repost.aws/                                         │
-│                                                                  │
-│  Workflow:                                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                         │   │
-│  │  1. Search → Tìm câu hỏi/answer đã có                  │   │
-│  │                 │                                       │   │
-│  │                 ▼                                       │   │
-│  │  2. Ask Question → Đặt câu hỏi mới                     │   │
-│  │                 │                                       │   │
-│  │                 ▼                                       │   │
-│  │  3. Get Answers → Community + AWS Experts trả lời      │   │
-│  │                 │                                       │   │
-│  │                 ▼                                       │   │
-│  │  4. Accept Answer → Đánh dấu giải quyết               │   │
-│  │                                                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
+│  Workflow:                                                      │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  1. Search → Tìm câu hỏi/answer đã có                   │    │
+│  │                 │                                       │    │
+│  │                 ▼                                       │    │
+│  │  2. Ask Question → Đặt câu hỏi mới                      │    │
+│  │                 │                                       │    │
+│  │                 ▼                                       │    │
+│  │  3. Get Answers → Community + AWS Experts trả lời       │    │
+│  │                 │                                       │    │
+│  │                 ▼                                       │    │
+│  │  4. Accept Answer → Đánh dấu giải quyết                 │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -135,18 +135,18 @@ AWS cung cấp nhiều **FREE resources** để học và troubleshoot, ngoài c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AWS Knowledge Center                          │
+│                    AWS Knowledge Center                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  "How do I..." articles:                                         │
-│                                                                  │
+│                                                                 │
+│  "How do I..." articles:                                        │
+│                                                                 │
 │  • How do I reset my root password?                             │
 │  • How do I troubleshoot EC2 connectivity issues?               │
 │  • How do I reduce my S3 costs?                                 │
 │  • How do I configure VPC peering?                              │
-│                                                                  │
+│                                                                 │
 │  → Short, focused answers cho common questions                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -230,30 +230,30 @@ AWS cung cấp nhiều **FREE resources** để học và troubleshoot, ngoài c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                AWS PROFESSIONAL SERVICES                         │
+│                AWS PROFESSIONAL SERVICES                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  AWS gửi consultants đến làm việc trực tiếp với bạn:            │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  📋 Migration Planning                                   │   │
-│  │     └─ Đánh giá, lập kế hoạch migration                 │   │
-│  │                                                         │   │
-│  │  🏗️ Architecture Design                                 │   │
-│  │     └─ Thiết kế solution trên AWS                       │   │
-│  │                                                         │   │
-│  │  🚀 Implementation                                       │   │
-│  │     └─ Triển khai, migrate workloads                    │   │
-│  │                                                         │   │
-│  │  📚 Training & Enablement                                │   │
-│  │     └─ Đào tạo team của bạn                             │   │
-│  │                                                         │   │
-│  │  🔒 Security Assessments                                 │   │
-│  │     └─ Đánh giá và cải thiện security                   │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  💰 Cost: Project-based (very expensive - enterprise level)    │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  📋 Migration Planning                                  │    │
+│  │     └─ Đánh giá, lập kế hoạch migration                 │    │
+│  │                                                         │    │
+│  │  🏗️ Architecture Design                                 │    │
+│  │     └─ Thiết kế solution trên AWS                       │    │
+│  │                                                         │    │
+│  │  🚀 Implementation                                      │    │
+│  │     └─ Triển khai, migrate workloads                    │    │
+│  │                                                         │    │
+│  │  📚 Training & Enablement                               │    │
+│  │     └─ Đào tạo team của bạn                             │    │
+│  │                                                         │    │
+│  │  🔒 Security Assessments                                │    │
+│  │     └─ Đánh giá và cải thiện security                   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  💰 Cost: Project-based (very expensive - enterprise level)     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -287,27 +287,27 @@ AWS cung cấp nhiều **FREE resources** để học và troubleshoot, ngoài c
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  AWS MANAGED SERVICES (AMS)                      │
+│                  AWS MANAGED SERVICES (AMS)                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  AWS quản lý infrastructure của bạn 24/7:                       │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                         │   │
-│  │  Your Apps ────────────────►  Bạn quản lý              │   │
-│  │                                                         │   │
-│  │  ─────────────────────────────────────────────────────  │   │
-│  │                                                         │   │
-│  │  OS, Patching ────────────►  AWS AMS quản lý           │   │
-│  │  Monitoring   ────────────►  AWS AMS quản lý           │   │
-│  │  Security     ────────────►  AWS AMS quản lý           │   │
-│  │  Backup       ────────────►  AWS AMS quản lý           │   │
-│  │  Compliance   ────────────►  AWS AMS quản lý           │   │
-│  │                                                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│  → Bạn focus vào business, AWS lo infrastructure               │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  Your Apps ────────────────►  Bạn quản lý               │    │
+│  │                                                         │    │
+│  │  ─────────────────────────────────────────────────────  │    │
+│  │                                                         │    │
+│  │  OS, Patching ────────────►  AWS AMS quản lý            │    │
+│  │  Monitoring   ────────────►  AWS AMS quản lý            │    │
+│  │  Security     ────────────►  AWS AMS quản lý            │    │
+│  │  Backup       ────────────►  AWS AMS quản lý            │    │
+│  │  Compliance   ────────────►  AWS AMS quản lý            │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  → Bạn focus vào business, AWS lo infrastructure                │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

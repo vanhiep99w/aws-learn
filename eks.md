@@ -26,19 +26,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      KUBERNETES (K8s)                                │
-│                                                                       │
-│   = Hệ thống ORCHESTRATION cho containers                            │
-│   = "Bộ não" điều khiển hàng ngàn containers                         │
-│   = Open-source, được Google phát triển ban đầu                      │
-│                                                                       │
-│   Kubernetes làm gì?                                                  │
-│   ├── Scheduling: Container nào chạy ở đâu?                          │
-│   ├── Scaling: Tự động scale containers lên/xuống                    │
-│   ├── Healing: Restart containers bị lỗi                             │
-│   ├── Load Balancing: Phân phối traffic                              │
-│   ├── Service Discovery: Containers tìm thấy nhau                    │
-│   └── Rolling Updates: Deploy version mới không downtime             │
+│                      KUBERNETES (K8s)                               │
+│                                                                     │
+│   = Hệ thống ORCHESTRATION cho containers                           │
+│   = "Bộ não" điều khiển hàng ngàn containers                        │
+│   = Open-source, được Google phát triển ban đầu                     │
+│                                                                     │
+│   Kubernetes làm gì?                                                │
+│   ├── Scheduling: Container nào chạy ở đâu?                         │
+│   ├── Scaling: Tự động scale containers lên/xuống                   │
+│   ├── Healing: Restart containers bị lỗi                            │
+│   ├── Load Balancing: Phân phối traffic                             │
+│   ├── Service Discovery: Containers tìm thấy nhau                   │
+│   └── Rolling Updates: Deploy version mới không downtime            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -62,9 +62,9 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                   SELF-MANAGED KUBERNETES                            │
-│                                                                       │
-│   Bạn phải lo:                                                       │
+│                   SELF-MANAGED KUBERNETES                           │
+│                                                                     │
+│   Bạn phải lo:                                                      │
 │   ├── Cài đặt K8s cluster (kubeadm, kops, kubespray)                │
 │   ├── Setup etcd cluster (distributed state store)                  │
 │   ├── Cấu hình API server, scheduler, controller-manager            │
@@ -73,9 +73,9 @@
 │   ├── Upgrade K8s version (có thể breaking changes!)                │
 │   ├── Backup & restore etcd                                         │
 │   ├── High Availability cho control plane                           │
-│   └── Security patches                                               │
-│                                                                       │
-│   ⏰ Setup: 1-2 tuần                                                 │
+│   └── Security patches                                              │
+│                                                                     │
+│   ⏰ Setup: 1-2 tuần                                                │
 │   👨‍💻 Cần: Senior DevOps/Platform Engineer                           │
 │   💰 Chi phí ẩn: Operations, maintenance, on-call                   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -85,18 +85,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AMAZON EKS                                    │
-│                                                                       │
+│                        AMAZON EKS                                   │
+│                                                                     │
 │   AWS lo (Control Plane):                     Bạn lo (Data Plane):  │
 │   ├── API Server                              ├── Worker nodes      │
 │   ├── etcd cluster                            ├── Applications      │
 │   ├── Scheduler                               ├── Pods, Services    │
 │   ├── Controller Manager                      └── Container images  │
-│   ├── Updates & patches                                              │
-│   ├── HA across 3 AZs                                                │
-│   └── Backup & security                                              │
-│                                                                       │
-│   ⏰ Setup: 15-30 phút                                               │
+│   ├── Updates & patches                                             │
+│   ├── HA across 3 AZs                                               │
+│   └── Backup & security                                             │
+│                                                                     │
+│   ⏰ Setup: 15-30 phút                                              │
 │   👨‍💻 Cần: Biết K8s concepts                                         │
 │   💰 Chi phí: $0.10/hour cho control plane + worker nodes           │
 └─────────────────────────────────────────────────────────────────────┘
@@ -119,39 +119,39 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         AWS CLOUD                                    │
-│                                                                       │
+│                         AWS CLOUD                                   │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    EKS CONTROL PLANE                         │    │
-│  │                   (AWS Managed - ẨN)                         │    │
-│  │                                                              │    │
+│  │                    EKS CONTROL PLANE                        │    │
+│  │                   (AWS Managed - ẨN)                        │    │
+│  │                                                             │    │
 │  │  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │    │
 │  │  │ API      │  │ etcd     │  │ Scheduler│                   │    │
 │  │  │ Server   │  │ Cluster  │  │          │                   │    │
 │  │  └──────────┘  └──────────┘  └──────────┘                   │    │
-│  │                                                              │    │
+│  │                                                             │    │
 │  │  ┌──────────────────────────────────────────┐               │    │
-│  │  │        Controller Manager                 │               │    │
+│  │  │        Controller Manager                 │              │    │
 │  │  └──────────────────────────────────────────┘               │    │
-│  │                                                              │    │
+│  │                                                             │    │
 │  │  🔒 Runs across 3 AZs, fully managed by AWS                 │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│                              │                                       │
-│                              │ kubectl / API calls                   │
-│                              ▼                                       │
+│                             │                                       │
+│                              │ kubectl / API calls                  │
+│                              ▼                                      │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    EKS DATA PLANE                            │    │
-│  │                   (Your VPC - Bạn quản lý)                   │    │
-│  │                                                              │    │
+│  │                    EKS DATA PLANE                           │    │
+│  │                   (Your VPC - Bạn quản lý)                  │    │
+│  │                                                             │    │
 │  │  ┌─────────────────┐  ┌─────────────────┐                   │    │
-│  │  │  Worker Node     │  │  Worker Node     │                   │    │
-│  │  │  (EC2/Fargate)   │  │  (EC2/Fargate)   │                   │    │
+│  │  │  Worker Node     │  │  Worker Node     │                 │    │
+│  │  │  (EC2/Fargate)   │  │  (EC2/Fargate)   │                 │    │
 │  │  │  ┌─────┐┌─────┐ │  │  ┌─────┐┌─────┐ │                   │    │
 │  │  │  │ Pod ││ Pod │ │  │  │ Pod ││ Pod │ │                   │    │
 │  │  │  └─────┘└─────┘ │  │  └─────┘└─────┘ │                   │    │
 │  │  └─────────────────┘  └─────────────────┘                   │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│                                                                       │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -163,28 +163,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                             POD                                      │
-│                                                                       │
-│   = Đơn vị deploy nhỏ nhất trong K8s                                 │
-│   = Wrapper xung quanh 1 hoặc nhiều containers                       │
-│   = Có IP riêng trong cluster                                        │
-│                                                                       │
+│                             POD                                     │
+│                                                                     │
+│   = Đơn vị deploy nhỏ nhất trong K8s                                │
+│   = Wrapper xung quanh 1 hoặc nhiều containers                      │
+│   = Có IP riêng trong cluster                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                        POD                                   │   │
+│   │                        POD                                  │   │
 │   │  ┌─────────────────┐  ┌─────────────────┐                   │   │
 │   │  │   Container     │  │   Container     │                   │   │
 │   │  │   (app)         │  │   (sidecar)     │                   │   │
 │   │  └─────────────────┘  └─────────────────┘                   │   │
-│   │                                                              │   │
-│   │  Shared:                                                     │   │
+│   │                                                             │   │
+│   │  Shared:                                                    │   │
 │   │  ├── Network namespace (cùng IP, localhost)                 │   │
 │   │  ├── Storage volumes                                        │   │
 │   │  └── Lifecycle (sống chết cùng nhau)                        │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │  IP: 10.0.0.15 (cluster internal)                           │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ⚠️ Pod là EPHEMERAL - có thể bị xóa và tạo mới bất cứ lúc nào!    │
+│                                                                     │
+│   ⚠️ Pod là EPHEMERAL - có thể bị xóa và tạo mới bất cứ lúc nào!     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -217,26 +217,26 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          DEPLOYMENT                                  │
-│                                                                       │
-│   = Quản lý việc deploy và scale Pods                                │
-│   = Đảm bảo số lượng Pods mong muốn luôn chạy                        │
-│   = Hỗ trợ rolling updates, rollbacks                                │
-│                                                                       │
+│                          DEPLOYMENT                                 │
+│                                                                     │
+│   = Quản lý việc deploy và scale Pods                               │
+│   = Đảm bảo số lượng Pods mong muốn luôn chạy                       │
+│   = Hỗ trợ rolling updates, rollbacks                               │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                     DEPLOYMENT: my-app                       │   │
-│   │                     replicas: 3                              │   │
-│   │                                                              │   │
+│   │                     DEPLOYMENT: my-app                      │   │
+│   │                     replicas: 3                             │   │
+│   │                                                             │   │
 │   │  ┌──────────────────────────────────────────────────────┐   │   │
-│   │  │                    REPLICASET                         │   │   │
-│   │  │                                                       │   │   │
+│   │  │                    REPLICASET                         │  │   │
+│   │  │                                                       │  │   │
 │   │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐               │   │   │
 │   │  │  │  Pod 1  │  │  Pod 2  │  │  Pod 3  │               │   │   │
 │   │  │  │ nginx   │  │ nginx   │  │ nginx   │               │   │   │
 │   │  │  └─────────┘  └─────────┘  └─────────┘               │   │   │
 │   │  └──────────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   Pod chết → ReplicaSet tạo Pod mới → Luôn có 3 Pods!               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -270,27 +270,27 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           SERVICE                                    │
-│                                                                       │
-│   = Stable endpoint để truy cập Pods                                 │
-│   = Pods có IP thay đổi, Service có IP cố định                       │
-│   = Load balancing giữa các Pods                                     │
-│                                                                       │
-│   Vấn đề:                                                            │
-│   ┌───────────┐                                                      │
+│                           SERVICE                                   │
+│                                                                     │
+│   = Stable endpoint để truy cập Pods                                │
+│   = Pods có IP thay đổi, Service có IP cố định                      │
+│   = Load balancing giữa các Pods                                    │
+│                                                                     │
+│   Vấn đề:                                                           │
+│   ┌───────────┐                                                     │
 │   │ Pod A     │ IP: 10.0.0.15 → Pod chết → IP mất!                  │
-│   └───────────┘                                                      │
-│   ┌───────────┐                                                      │
+│   └───────────┘                                                     │
+│   ┌───────────┐                                                     │
 │   │ Pod A'    │ IP: 10.0.0.47 → Pod mới, IP khác!                   │
-│   └───────────┘                                                      │
-│                                                                       │
-│   Giải pháp: SERVICE                                                 │
-│                                                                       │
+│   └───────────┘                                                     │
+│                                                                     │
+│   Giải pháp: SERVICE                                                │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                  SERVICE: my-app-svc                         │   │
-│   │                  ClusterIP: 10.100.50.20 (cố định!)          │   │
-│   │                  Port: 80                                    │   │
-│   │                                                              │   │
+│   │                  SERVICE: my-app-svc                        │   │
+│   │                  ClusterIP: 10.100.50.20 (cố định!)         │   │
+│   │                  Port: 80                                   │   │
+│   │                                                             │   │
 │   │            ┌──────────┬──────────┬──────────┐               │   │
 │   │            ▼          ▼          ▼                          │   │
 │   │       ┌─────────┐┌─────────┐┌─────────┐                     │   │
@@ -298,8 +298,8 @@ spec:
 │   │       │10.0.0.15││10.0.0.16││10.0.0.17│                     │   │
 │   │       └─────────┘└─────────┘└─────────┘                     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Client gọi: my-app-svc:80 → Service route tới 1 trong 3 Pods     │
+│                                                                     │
+│   Client gọi: my-app-svc:80 → Service route tới 1 trong 3 Pods      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -332,26 +332,26 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         KUBERNETES CLUSTER                           │
-│                                                                       │
+│                         KUBERNETES CLUSTER                          │
+│                                                                     │
 │  ┌──────────────────────┐  ┌──────────────────────┐                 │
-│  │   NAMESPACE: dev      │  │   NAMESPACE: prod     │                 │
-│  │                       │  │                       │                 │
+│  │   NAMESPACE: dev     │  │   NAMESPACE: prod    │                 │
+│  │                      │  │                      │                 │
 │  │  ┌────────────────┐  │  │  ┌────────────────┐  │                 │
 │  │  │ Deployment:    │  │  │  │ Deployment:    │  │                 │
 │  │  │ my-app         │  │  │  │ my-app         │  │                 │
 │  │  │ (3 replicas)   │  │  │  │ (10 replicas)  │  │                 │
 │  │  └────────────────┘  │  │  └────────────────┘  │                 │
-│  │                       │  │                       │                 │
+│  │                      │  │                      │                 │
 │  │  Resource quotas:    │  │  Resource quotas:    │                 │
 │  │  CPU: 4 cores        │  │  CPU: 32 cores       │                 │
 │  │  Memory: 8Gi         │  │  Memory: 64Gi        │                 │
-│  │                       │  │                       │                 │
+│  │                      │  │                      │                 │
 │  └──────────────────────┘  └──────────────────────┘                 │
-│                                                                       │
+│                                                                     │
 │  ✅ Cùng tên "my-app" nhưng hoàn toàn tách biệt!                    │
-│  ✅ Resource quotas khác nhau                                        │
-│  ✅ RBAC (quyền truy cập) khác nhau                                  │
+│  ✅ Resource quotas khác nhau                                       │
+│  ✅ RBAC (quyền truy cập) khác nhau                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -361,24 +361,24 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CONFIGMAP & SECRET                                │
-│                                                                       │
-│   ConfigMap = Lưu config không nhạy cảm                              │
-│   Secret = Lưu data nhạy cảm (encoded base64)                        │
-│                                                                       │
+│                    CONFIGMAP & SECRET                               │
+│                                                                     │
+│   ConfigMap = Lưu config không nhạy cảm                             │
+│   Secret = Lưu data nhạy cảm (encoded base64)                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  ConfigMap: app-config                                       │   │
+│   │  ConfigMap: app-config                                      │   │
 │   │  ├── DATABASE_HOST=mydb.example.com                         │   │
 │   │  ├── LOG_LEVEL=info                                         │   │
 │   │  └── FEATURE_FLAG=true                                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Secret: app-secrets                                         │   │
+│   │  Secret: app-secrets                                        │   │
 │   │  ├── DATABASE_PASSWORD=c2VjcmV0cGFzcw==                     │   │
 │   │  └── API_KEY=YXBpLWtleS0xMjM0NQ==                           │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   Inject vào Pod như environment variables hoặc volume mounts       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -389,25 +389,25 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           INGRESS                                    │
-│                                                                       │
-│   = HTTP/HTTPS routing vào cluster                                   │
-│   = Host-based và path-based routing                                 │
-│   = SSL/TLS termination                                              │
-│                                                                       │
-│                      Internet                                        │
-│                          │                                           │
-│                          ▼                                           │
+│                           INGRESS                                   │
+│                                                                     │
+│   = HTTP/HTTPS routing vào cluster                                  │
+│   = Host-based và path-based routing                                │
+│   = SSL/TLS termination                                             │
+│                                                                     │
+│                      Internet                                       │
+│                         │                                           │
+│                          ▼                                          │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │              INGRESS CONTROLLER (ALB)                        │   │
-│   │                                                              │   │
-│   │  Rules:                                                      │   │
+│   │              INGRESS CONTROLLER (ALB)                       │   │
+│   │                                                             │   │
+│   │  Rules:                                                     │   │
 │   │  ├── api.example.com → Service: api-svc                     │   │
 │   │  ├── web.example.com → Service: web-svc                     │   │
 │   │  └── example.com/admin → Service: admin-svc                 │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                    │           │           │                         │
-│                    ▼           ▼           ▼                         │
+│                    │           │          │                         │
+│                    ▼           ▼           ▼                        │
 │              ┌─────────┐ ┌─────────┐ ┌─────────┐                    │
 │              │ api-svc │ │ web-svc │ │admin-svc│                    │
 │              │  Pods   │ │  Pods   │ │  Pods   │                    │
@@ -446,29 +446,29 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    EKS MANAGED NODE GROUPS                           │
-│                                                                       │
-│   = EC2 instances AWS quản lý                                        │
-│   = Tự động provisioning, updates, scaling                           │
-│   = Sử dụng EKS-optimized AMI                                        │
-│                                                                       │
+│                    EKS MANAGED NODE GROUPS                          │
+│                                                                     │
+│   = EC2 instances AWS quản lý                                       │
+│   = Tự động provisioning, updates, scaling                          │
+│   = Sử dụng EKS-optimized AMI                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                  NODE GROUP: general-purpose                 │   │
-│   │                                                              │   │
-│   │  Instance type: m5.large                                     │   │
+│   │                  NODE GROUP: general-purpose                │   │
+│   │                                                             │   │
+│   │  Instance type: m5.large                                    │   │
 │   │  Min: 2, Max: 10, Desired: 3                                │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
 │   │  │   Node 1    │  │   Node 2    │  │   Node 3    │          │   │
 │   │  │  m5.large   │  │  m5.large   │  │  m5.large   │          │   │
 │   │  │ (AZ-a)      │  │ (AZ-b)      │  │ (AZ-c)      │          │   │
 │   │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   AWS lo:                              Bạn lo:                       │
-│   ├── Provisioning EC2               ├── Chọn instance type        │
-│   ├── Join nodes vào cluster         ├── Scaling policies          │
-│   ├── AMI updates                    └── Application deployment    │
+│                                                                     │
+│   AWS lo:                              Bạn lo:                      │
+│   ├── Provisioning EC2               ├── Chọn instance type         │
+│   ├── Join nodes vào cluster         ├── Scaling policies           │
+│   ├── AMI updates                    └── Application deployment     │
 │   └── Drain & replace nodes                                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -477,17 +477,17 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                   SELF-MANAGED NODE GROUPS                           │
-│                                                                       │
-│   = Bạn tự quản lý EC2 instances                                     │
-│   = Flexibility cao nhất                                             │
-│   = Cần expertise nhiều hơn                                          │
-│                                                                       │
-│   Khi nào dùng?                                                      │
-│   ├── Custom AMI requirements                                        │
+│                   SELF-MANAGED NODE GROUPS                          │
+│                                                                     │
+│   = Bạn tự quản lý EC2 instances                                    │
+│   = Flexibility cao nhất                                            │
+│   = Cần expertise nhiều hơn                                         │
+│                                                                     │
+│   Khi nào dùng?                                                     │
+│   ├── Custom AMI requirements                                       │
 │   ├── GPU instances (p3, g4)                                        │
 │   ├── Spot instances (cost saving)                                  │
-│   └── Special networking needs                                       │
+│   └── Special networking needs                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -495,31 +495,31 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        EKS FARGATE                                   │
-│                                                                       │
-│   = Serverless compute cho Kubernetes                                │
-│   = Không cần quản lý nodes                                          │
+│                        EKS FARGATE                                  │
+│                                                                     │
+│   = Serverless compute cho Kubernetes                               │
+│   = Không cần quản lý nodes                                         │
 │   = Pay-per-pod (theo CPU/Memory sử dụng)                           │
-│                                                                       │
+│                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                  FARGATE PROFILE                             │   │
-│   │                                                              │   │
-│   │  Selector:                                                   │   │
+│   │                  FARGATE PROFILE                            │   │
+│   │                                                             │   │
+│   │  Selector:                                                  │   │
 │   │  ├── namespace: production                                  │   │
 │   │  └── labels: compute=fargate                                │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │  Pods matching → Run on Fargate automatically!              │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
+│                                                                     │
 │   ┌─────────┐  ┌─────────┐  ┌─────────┐                             │
 │   │  Pod 1  │  │  Pod 2  │  │  Pod 3  │                             │
 │   │ Fargate │  │ Fargate │  │ Fargate │                             │
 │   │ (ẩn)    │  │ (ẩn)    │  │ (ẩn)    │                             │
 │   └─────────┘  └─────────┘  └─────────┘                             │
-│                                                                       │
-│   ✅ No nodes to manage                                              │
-│   ✅ Right-sized per pod                                             │
-│   ⚠️ Một số giới hạn (DaemonSets, privileged pods)                  │
+│                                                                     │
+│   ✅ No nodes to manage                                             │
+│   ✅ Right-sized per pod                                            │
+│   ⚠️ Một số giới hạn (DaemonSets, privileged pods)                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -543,29 +543,29 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│               AWS LOAD BALANCER CONTROLLER                           │
-│                                                                       │
-│   = Tự động provision ALB/NLB từ K8s resources                       │
-│   = Ingress → ALB                                                    │
-│   = Service type LoadBalancer → NLB                                  │
-│                                                                       │
-│                    ┌─────────────────────┐                           │
-│                    │   K8s Ingress       │                           │
-│                    │   (yaml manifest)   │                           │
-│                    └──────────┬──────────┘                           │
-│                               │                                       │
-│                               ▼                                       │
-│                    ┌─────────────────────┐                           │
-│                    │  AWS LB Controller  │                           │
-│                    │  (watches & acts)   │                           │
-│                    └──────────┬──────────┘                           │
-│                               │                                       │
-│                               ▼                                       │
-│                    ┌─────────────────────┐                           │
-│                    │   Application       │                           │
-│                    │   Load Balancer     │                           │
-│                    │   (auto created!)   │                           │
-│                    └─────────────────────┘                           │
+│               AWS LOAD BALANCER CONTROLLER                          │
+│                                                                     │
+│   = Tự động provision ALB/NLB từ K8s resources                      │
+│   = Ingress → ALB                                                   │
+│   = Service type LoadBalancer → NLB                                 │
+│                                                                     │
+│                    ┌─────────────────────┐                          │
+│                    │   K8s Ingress       │                          │
+│                    │   (yaml manifest)   │                          │
+│                    └──────────┬──────────┘                          │
+│                             │                                       │
+│                               ▼                                     │
+│                    ┌─────────────────────┐                          │
+│                    │  AWS LB Controller  │                          │
+│                    │  (watches & acts)   │                          │
+│                    └──────────┬──────────┘                          │
+│                             │                                       │
+│                               ▼                                     │
+│                    ┌─────────────────────┐                          │
+│                    │   Application       │                          │
+│                    │   Load Balancer     │                          │
+│                    │   (auto created!)   │                          │
+│                    └─────────────────────┘                          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -573,33 +573,33 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 IAM ROLES FOR SERVICE ACCOUNTS                       │
-│                                                                       │
-│   = Fine-grained IAM permissions cho Pods                            │
-│   = Không cần hardcode AWS credentials                               │
+│                 IAM ROLES FOR SERVICE ACCOUNTS                      │
+│                                                                     │
+│   = Fine-grained IAM permissions cho Pods                           │
+│   = Không cần hardcode AWS credentials                              │
 │   = Mỗi Pod có IAM Role riêng (thay vì node-level)                  │
-│                                                                       │
-│   Trước IRSA:                                                        │
+│                                                                     │
+│   Trước IRSA:                                                       │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  Node IAM Role: Admin access (quá nhiều quyền!)             │   │
-│   │                                                              │   │
+│   │                                                             │   │
 │   │  ┌─────────┐  ┌─────────┐  ┌─────────┐                      │   │
-│   │  │ Pod A   │  │ Pod B   │  │ Pod C   │  ← Tất cả dùng      │   │
-│   │  │ S3 only │  │ RDS only│  │ SQS only│    cùng IAM Role!   │   │
+│   │  │ Pod A   │  │ Pod B   │  │ Pod C   │  ← Tất cả dùng       │   │
+│   │  │ S3 only │  │ RDS only│  │ SQS only│    cùng IAM Role!    │   │
 │   │  └─────────┘  └─────────┘  └─────────┘                      │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   Với IRSA:                                                          │
+│                                                                     │
+│   Với IRSA:                                                         │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  ┌─────────┐  ┌─────────┐  ┌─────────┐                      │   │
 │   │  │ Pod A   │  │ Pod B   │  │ Pod C   │                      │   │
-│   │  │ Role:S3 │  │ Role:RDS│  │Role:SQS │  ← Mỗi Pod có      │   │
-│   │  └─────────┘  └─────────┘  └─────────┘    IAM Role riêng!  │   │
+│   │  │ Role:S3 │  │ Role:RDS│  │Role:SQS │  ← Mỗi Pod có        │   │
+│   │  └─────────┘  └─────────┘  └─────────┘    IAM Role riêng!   │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│   ✅ Least privilege principle                                       │
-│   ✅ Pod identity                                                     │
-│   ✅ Audit trong CloudTrail                                          │
+│                                                                     │
+│   ✅ Least privilege principle                                      │
+│   ✅ Pod identity                                                   │
+│   ✅ Audit trong CloudTrail                                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -693,19 +693,19 @@ kubectl cluster-info
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       EKS vs ECS                                     │
-│                                                                       │
-│   ECS                              EKS                               │
-│   ┌───────────────────┐            ┌───────────────────┐             │
-│   │ AWS Proprietary   │            │ Open Source K8s   │             │
-│   │                   │            │                   │             │
-│   │ ✅ Simpler        │            │ ✅ Portable       │             │
-│   │ ✅ Less learning  │            │ ✅ Rich ecosystem │             │
-│   │ ✅ Lower cost     │            │ ✅ Industry std   │             │
-│   │                   │            │                   │             │
-│   │ ❌ AWS lock-in    │            │ ❌ More complex   │             │
-│   │ ❌ Limited tools  │            │ ❌ Steeper curve  │             │
-│   └───────────────────┘            └───────────────────┘             │
+│                       EKS vs ECS                                    │
+│                                                                     │
+│   ECS                              EKS                              │
+│   ┌───────────────────┐            ┌───────────────────┐            │
+│   │ AWS Proprietary   │            │ Open Source K8s   │            │
+│   │                   │            │                   │            │
+│   │ ✅ Simpler        │            │ ✅ Portable       │            │
+│   │ ✅ Less learning  │            │ ✅ Rich ecosystem │            │
+│   │ ✅ Lower cost     │            │ ✅ Industry std   │            │
+│   │                   │            │                   │            │
+│   │ ❌ AWS lock-in    │            │ ❌ More complex   │            │
+│   │ ❌ Limited tools  │            │ ❌ Steeper curve  │            │
+│   └───────────────────┘            └───────────────────┘            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -744,22 +744,22 @@ kubectl cluster-info
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                 PRODUCTION EKS ARCHITECTURE                          │
-│                                                                       │
+│                 PRODUCTION EKS ARCHITECTURE                         │
+│                                                                     │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                        VPC                                   │    │
+│  │                        VPC                                  │    │
 │  │  ┌──────────────────────────────────────────────────────┐   │    │
-│  │  │                  PUBLIC SUBNETS                       │   │    │
+│  │  │                  PUBLIC SUBNETS                       │  │    │
 │  │  │  ┌─────────────────────────────────────────────────┐ │   │    │
 │  │  │  │          Application Load Balancer              │ │   │    │
 │  │  │  └─────────────────────────────────────────────────┘ │   │    │
-│  │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐     │   │    │
-│  │  │  │ NAT GW (a) │  │ NAT GW (b) │  │ NAT GW (c) │     │   │    │
-│  │  │  └────────────┘  └────────────┘  └────────────┘     │   │    │
+│  │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐     │    │    │
+│  │  │  │ NAT GW (a) │  │ NAT GW (b) │  │ NAT GW (c) │     │    │    │
+│  │  │  └────────────┘  └────────────┘  └────────────┘     │    │    │
 │  │  └──────────────────────────────────────────────────────┘   │    │
-│  │                                                              │    │
+│  │                                                             │    │
 │  │  ┌──────────────────────────────────────────────────────┐   │    │
-│  │  │                 PRIVATE SUBNETS                       │   │    │
+│  │  │                 PRIVATE SUBNETS                       │  │    │
 │  │  │  ┌───────────┐  ┌───────────┐  ┌───────────┐         │   │    │
 │  │  │  │  Node     │  │  Node     │  │  Node     │         │   │    │
 │  │  │  │  (AZ-a)   │  │  (AZ-b)   │  │  (AZ-c)   │         │   │    │
@@ -769,11 +769,11 @@ kubectl cluster-info
 │  │  │  └───────────┘  └───────────┘  └───────────┘         │   │    │
 │  │  └──────────────────────────────────────────────────────┘   │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│                                                                       │
-│  ✅ Nodes trong private subnets                                      │
-│  ✅ ALB trong public subnets                                         │
-│  ✅ NAT Gateway cho outbound traffic                                 │
-│  ✅ Multi-AZ cho high availability                                   │
+│                                                                     │
+│  ✅ Nodes trong private subnets                                     │
+│  ✅ ALB trong public subnets                                        │
+│  ✅ NAT Gateway cho outbound traffic                                │
+│  ✅ Multi-AZ cho high availability                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -850,25 +850,25 @@ spec:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│               CLOUDWATCH CONTAINER INSIGHTS                          │
-│                                                                       │
-│   = Metrics và logs từ EKS vào CloudWatch                            │
-│   = Pre-built dashboards                                             │
-│   = Automatic alarms                                                 │
-│                                                                       │
-│   Metrics thu thập:                                                  │
+│               CLOUDWATCH CONTAINER INSIGHTS                         │
+│                                                                     │
+│   = Metrics và logs từ EKS vào CloudWatch                           │
+│   = Pre-built dashboards                                            │
+│   = Automatic alarms                                                │
+│                                                                     │
+│   Metrics thu thập:                                                 │
 │   ├── CPU/Memory utilization (cluster, node, pod)                   │
-│   ├── Network I/O                                                    │
-│   ├── Storage utilization                                            │
-│   ├── Container restart counts                                       │
-│   └── Pod scheduling status                                          │
-│                                                                       │
-│   Enable:                                                            │
-│   aws eks update-cluster-config \                                    │
-│     --name my-cluster \                                              │
+│   ├── Network I/O                                                   │
+│   ├── Storage utilization                                           │
+│   ├── Container restart counts                                      │
+│   └── Pod scheduling status                                         │
+│                                                                     │
+│   Enable:                                                           │
+│   aws eks update-cluster-config \                                   │
+│     --name my-cluster \                                             │
 │     --logging '{"clusterLogging":[{"types":["api","audit",          │
-│                 "authenticator","controllerManager","scheduler"],    │
-│                 "enabled":true}]}'                                   │
+│                 "authenticator","controllerManager","scheduler"],   │
+│                 "enabled":true}]}'                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

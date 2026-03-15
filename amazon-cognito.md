@@ -24,26 +24,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Amazon Cognito                              │
+│                      Amazon Cognito                             │
 │      "Add sign-up, sign-in, and access control easily"          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   Cognito có 2 thành phần chính:                                │
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │  1. USER POOLS                                           │   │
+│   │  1. USER POOLS                                          │   │
 │   │     └── User directory (sign-up, sign-in)               │   │
 │   │     └── Trả về JWT tokens                               │   │
 │   │     └── "WHO are you?" (Authentication)                 │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │  2. IDENTITY POOLS (Federated Identities)               │   │
 │   │     └── Cấp AWS credentials tạm thời                    │   │
 │   │     └── Access AWS services (S3, DynamoDB...)           │   │
 │   │     └── "WHAT can you do?" (Authorization)              │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -90,29 +90,29 @@ CÓ Cognito:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    User Pool Features                            │
+│                    User Pool Features                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Authentication:                                                 │
+│                                                                 │
+│  Authentication:                                                │
 │  ├── Sign-up / Sign-in                                          │
 │  ├── Email/Phone verification                                   │
-│  ├── Password policies (min length, special chars...)          │
-│  ├── MFA (SMS, TOTP, hardware keys)                            │
+│  ├── Password policies (min length, special chars...)           │
+│  ├── MFA (SMS, TOTP, hardware keys)                             │
 │  └── Account recovery                                           │
-│                                                                  │
+│                                                                 │
 │  Social/Enterprise Identity Providers:                          │
-│  ├── Google, Facebook, Apple, Amazon                           │
-│  ├── SAML 2.0 (Okta, Azure AD, OneLogin...)                   │
+│  ├── Google, Facebook, Apple, Amazon                            │
+│  ├── SAML 2.0 (Okta, Azure AD, OneLogin...)                     │
 │  └── OIDC (OpenID Connect)                                      │
-│                                                                  │
-│  Customization:                                                  │
-│  ├── Hosted UI (ready-to-use login page)                       │
-│  ├── Custom UI (use your own)                                  │
-│  ├── Lambda Triggers (custom logic)                            │
+│                                                                 │
+│  Customization:                                                 │
+│  ├── Hosted UI (ready-to-use login page)                        │
+│  ├── Custom UI (use your own)                                   │
+│  ├── Lambda Triggers (custom logic)                             │
 │  └── Custom attributes                                          │
-│                                                                  │
-│  Output: JWT Tokens (ID Token, Access Token, Refresh Token)    │
-│                                                                  │
+│                                                                 │
+│  Output: JWT Tokens (ID Token, Access Token, Refresh Token)     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -120,30 +120,30 @@ CÓ Cognito:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                User Pool Authentication Flow                  │
+│                User Pool Authentication Flow                 │
 ├──────────────────────────────────────────────────────────────┤
-│                                                               │
+│                                                              │
 │  User                    Cognito                  Your App   │
 │    │                     User Pool                    │      │
 │    │                        │                         │      │
-│    │  1. Sign up/Sign in   │                         │      │
+│    │  1. Sign up/Sign in   │                          │      │
 │    │───────────────────────►│                         │      │
 │    │                        │                         │      │
-│    │  2. Verify (email/MFA)│                         │      │
+│    │  2. Verify (email/MFA)│                          │      │
 │    │◄──────────────────────►│                         │      │
 │    │                        │                         │      │
-│    │  3. JWT Tokens        │                         │      │
+│    │  3. JWT Tokens        │                          │      │
 │    │◄───────────────────────│                         │      │
 │    │                        │                         │      │
-│    │  4. Call API with token                         │      │
+│    │  4. Call API with token                          │      │
 │    │─────────────────────────────────────────────────►│      │
 │    │                        │                         │      │
-│    │                        │  5. Verify token       │      │
+│    │                        │  5. Verify token        │      │
 │    │                        │◄────────────────────────│      │
 │    │                        │                         │      │
-│    │  6. Response          │                         │      │
+│    │  6. Response          │                          │      │
 │    │◄─────────────────────────────────────────────────│      │
-│                                                               │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -165,26 +165,26 @@ CÓ Cognito:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                Identity Pool Workflow                         │
+│                Identity Pool Workflow                        │
 ├──────────────────────────────────────────────────────────────┤
-│                                                               │
-│  1. User authenticates với User Pool (hoặc external IdP)    │
-│                                         │                     │
-│                                         ▼                     │
-│  2. Get JWT Token                                             │
-│                                         │                     │
-│                                         ▼                     │
+│                                                              │
+│  1. User authenticates với User Pool (hoặc external IdP)     │
+│                                        │                     │
+│                                         ▼                    │
+│  2. Get JWT Token                                            │
+│                                        │                     │
+│                                         ▼                    │
 │  3. Exchange token với Identity Pool                         │
-│                                         │                     │
-│                                         ▼                     │
+│                                        │                     │
+│                                         ▼                    │
 │  4. Identity Pool gọi STS AssumeRoleWithWebIdentity          │
-│                                         │                     │
-│                                         ▼                     │
+│                                        │                     │
+│                                         ▼                    │
 │  5. Nhận AWS credentials tạm thời (Access Key, Secret Key)   │
-│                                         │                     │
-│                                         ▼                     │
+│                                        │                     │
+│                                         ▼                    │
 │  6. Access AWS services (S3, DynamoDB, API Gateway...)       │
-│                                                               │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -194,25 +194,25 @@ Identity Pool có 2 loại IAM Roles:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  Identity Pool IAM Roles                         │
+│                  Identity Pool IAM Roles                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Authenticated Role:                                             │
+│                                                                 │
+│  Authenticated Role:                                            │
 │  └── Cho users đã đăng nhập                                     │
 │  └── Có nhiều permissions hơn                                   │
-│                                                                  │
-│  Unauthenticated Role (Guest):                                   │
+│                                                                 │
+│  Unauthenticated Role (Guest):                                  │
 │  └── Cho users CHƯA đăng nhập                                   │
 │  └── Permissions hạn chế (read-only, limited)                   │
-│                                                                  │
-│  Example Authenticated Policy:                                   │
-│  {                                                               │
-│    "Effect": "Allow",                                            │
+│                                                                 │
+│  Example Authenticated Policy:                                  │
+│  {                                                              │
+│    "Effect": "Allow",                                           │
 │    "Action": ["s3:GetObject", "s3:PutObject"],                  │
-│    "Resource": "arn:aws:s3:::bucket/${cognito-identity.sub}/*" │
-│  }                                                               │
-│  └── User chỉ access được folder của riêng họ                  │
-│                                                                  │
+│    "Resource": "arn:aws:s3:::bucket/${cognito-identity.sub}/*"  │
+│  }                                                              │
+│  └── User chỉ access được folder của riêng họ                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -232,23 +232,23 @@ Identity Pool có 2 loại IAM Roles:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  User Pools vs Identity Pools                    │
+│                  User Pools vs Identity Pools                   │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Chỉ cần USER POOLS khi:                                        │
-│  ├── App có backend API (API Gateway + Lambda)                 │
+│  ├── App có backend API (API Gateway + Lambda)                  │
 │  ├── Backend verify JWT token                                   │
-│  └── Users không cần access AWS trực tiếp                      │
-│                                                                  │
-│  Cần IDENTITY POOLS khi:                                         │
-│  ├── Mobile/Web app access AWS trực tiếp                       │
-│  ├── Upload files to S3 từ client                              │
-│  ├── Read/Write DynamoDB từ client                             │
-│  └── Cần AWS credentials cho SDK                               │
-│                                                                  │
-│  Thường dùng CẢ HAI:                                             │
-│  User Pool (authenticate) → Identity Pool (AWS access)         │
-│                                                                  │
+│  └── Users không cần access AWS trực tiếp                       │
+│                                                                 │
+│  Cần IDENTITY POOLS khi:                                        │
+│  ├── Mobile/Web app access AWS trực tiếp                        │
+│  ├── Upload files to S3 từ client                               │
+│  ├── Read/Write DynamoDB từ client                              │
+│  └── Cần AWS credentials cho SDK                                │
+│                                                                 │
+│  Thường dùng CẢ HAI:                                            │
+│  User Pool (authenticate) → Identity Pool (AWS access)          │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -260,20 +260,20 @@ Identity Pool có 2 loại IAM Roles:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│      User Pool + API Gateway (Most Common)                    │
+│      User Pool + API Gateway (Most Common)                   │
 ├──────────────────────────────────────────────────────────────┤
-│                                                               │
+│                                                              │
 │  Mobile/Web ──► Cognito ──► JWT Token                        │
-│     App         User Pool                                     │
-│      │                                                        │
-│      │ JWT Token in Authorization header                      │
-│      ▼                                                        │
+│     App         User Pool                                    │
+│     │                                                        │
+│      │ JWT Token in Authorization header                     │
+│      ▼                                                       │
 │  API Gateway ──► Lambda ──► DynamoDB                         │
-│      │                                                        │
+│     │                                                        │
 │      └── Cognito Authorizer validates JWT                    │
-│                                                               │
+│                                                              │
 │  Benefits: Serverless, scalable, secure                      │
-│                                                               │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -281,19 +281,19 @@ Identity Pool có 2 loại IAM Roles:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│      Direct AWS Access (S3 Upload from Client)                │
+│      Direct AWS Access (S3 Upload from Client)               │
 ├──────────────────────────────────────────────────────────────┤
-│                                                               │
+│                                                              │
 │  Mobile ──► Cognito ──► JWT ──► Cognito ──► AWS Credentials  │
-│   App       User Pool          Identity Pool                  │
-│    │                                                          │
-│    │ AWS SDK with credentials                                 │
-│    ▼                                                          │
+│   App       User Pool          Identity Pool                 │
+│   │                                                          │
+│    │ AWS SDK with credentials                                │
+│    ▼                                                         │
 │   S3 (upload photos to user's folder)                        │
-│                                                               │
-│  Policy: s3:PutObject on bucket/${cognito-identity.sub}/*   │
+│                                                              │
+│  Policy: s3:PutObject on bucket/${cognito-identity.sub}/*    │
 │  └── Each user can only access their own folder              │
-│                                                               │
+│                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -305,30 +305,30 @@ User Pool có thể trigger Lambda functions tại các events:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Lambda Triggers                               │
+│                    Lambda Triggers                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Pre Sign-up:                                                    │
-│  └── Validate user, auto-confirm, auto-verify                  │
-│                                                                  │
-│  Post Confirmation:                                              │
-│  └── Welcome email, create user in database                    │
-│                                                                  │
-│  Pre Authentication:                                             │
-│  └── Custom validation before login                            │
-│                                                                  │
-│  Post Authentication:                                            │
-│  └── Log login activity, update last login                     │
-│                                                                  │
-│  Pre Token Generation:                                           │
+│                                                                 │
+│  Pre Sign-up:                                                   │
+│  └── Validate user, auto-confirm, auto-verify                   │
+│                                                                 │
+│  Post Confirmation:                                             │
+│  └── Welcome email, create user in database                     │
+│                                                                 │
+│  Pre Authentication:                                            │
+│  └── Custom validation before login                             │
+│                                                                 │
+│  Post Authentication:                                           │
+│  └── Log login activity, update last login                      │
+│                                                                 │
+│  Pre Token Generation:                                          │
 │  └── Add custom claims to JWT                                   │
-│                                                                  │
-│  Custom Message:                                                 │
-│  └── Customize verification email/SMS                          │
-│                                                                  │
-│  User Migration:                                                 │
-│  └── Migrate users from old system on-the-fly                 │
-│                                                                  │
+│                                                                 │
+│  Custom Message:                                                │
+│  └── Customize verification email/SMS                           │
+│                                                                 │
+│  User Migration:                                                │
+│  └── Migrate users from old system on-the-fly                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -340,34 +340,34 @@ Cognito cung cấp **Hosted UI** - trang login ready-to-use:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       Hosted UI                                  │
+│                       Hosted UI                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  URL: https://your-domain.auth.region.amazoncognito.com/login  │
-│                                                                  │
+│                                                                 │
+│  URL: https://your-domain.auth.region.amazoncognito.com/login   │
+│                                                                 │
 │  ┌───────────────────────────────────────────────┐              │
 │  │                                               │              │
-│  │   ┌─────────────────────────────────────┐    │              │
-│  │   │          Your App Logo              │    │              │
-│  │   └─────────────────────────────────────┘    │              │
+│  │   ┌─────────────────────────────────────┐     │              │
+│  │   │          Your App Logo              │     │              │
+│  │   └─────────────────────────────────────┘     │              │
 │  │                                               │              │
-│  │   Email: [_________________________]         │              │
+│  │   Email: [_________________________]          │              │
 │  │                                               │              │
-│  │   Password: [_________________________]      │              │
+│  │   Password: [_________________________]       │              │
 │  │                                               │              │
-│  │   [         Sign In         ]                │              │
+│  │   [         Sign In         ]                 │              │
 │  │                                               │              │
-│  │   ─────────── OR ───────────                 │              │
+│  │   ─────────── OR ───────────                  │              │
 │  │                                               │              │
-│  │   [ Sign in with Google ]                    │              │
-│  │   [ Sign in with Facebook ]                  │              │
+│  │   [ Sign in with Google ]                     │              │
+│  │   [ Sign in with Facebook ]                   │              │
 │  │                                               │              │
-│  │   Don't have account? Sign up                │              │
+│  │   Don't have account? Sign up                 │              │
 │  │                                               │              │
 │  └───────────────────────────────────────────────┘              │
-│                                                                  │
+│                                                                 │
 │  Customizable: Logo, CSS, colors                                │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -438,23 +438,23 @@ Cognito cung cấp **Hosted UI** - trang login ready-to-use:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Amazon Cognito Summary                         │
+│                   Amazon Cognito Summary                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ✅ Managed authentication & authorization                      │
-│  ✅ User Pools: Sign-up, sign-in, JWT tokens                   │
-│  ✅ Identity Pools: AWS credentials for direct access          │
+│  ✅ User Pools: Sign-up, sign-in, JWT tokens                    │
+│  ✅ Identity Pools: AWS credentials for direct access           │
 │  ✅ Social login (Google, Facebook, Apple)                      │
 │  ✅ Enterprise federation (SAML, OIDC)                          │
 │  ✅ MFA, password policies, email verification                  │
 │  ✅ Lambda triggers for custom logic                            │
-│  ✅ Hosted UI or custom UI                                       │
-│                                                                  │
-│  Common Pattern:                                                 │
+│  ✅ Hosted UI or custom UI                                      │
+│                                                                 │
+│  Common Pattern:                                                │
 │  User Pool → JWT → API Gateway → Lambda                         │
-│  User Pool → Identity Pool → S3/DynamoDB (direct access)       │
-│                                                                  │
+│  User Pool → Identity Pool → S3/DynamoDB (direct access)        │
+│                                                                 │
 │  Pricing: 50,000 MAU free, then $0.0055/MAU                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

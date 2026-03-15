@@ -26,24 +26,24 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AWS AI/ML STACK                                       │
+│                        AWS AI/ML STACK                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   LAYER 3: AI SERVICES (Pre-trained, No ML knowledge needed)               │
+│   LAYER 3: AI SERVICES (Pre-trained, No ML knowledge needed)                │
 │   ─────────────────────────────────────────────────────────────────────     │
-│   │ Rekognition │ Textract │ Polly │ Transcribe │ Translate │             │
-│   │ Comprehend  │ Lex      │ Kendra│ Personalize │ Forecast │             │
-│   │ Fraud Detector │ CodeGuru │ Bedrock │ Q │                             │
+│   │ Rekognition │ Textract │ Polly │ Transcribe │ Translate   │             │
+│   │ Comprehend  │ Lex      │ Kendra│ Personalize │ Forecast   │             │
+│   │ Fraud Detector │ CodeGuru │ Bedrock │ Q   │                             │
 │   ─────────────────────────────────────────────────────────────────────     │
 │                                                                             │
-│   LAYER 2: ML SERVICES (Build custom models)                               │
+│   LAYER 2: ML SERVICES (Build custom models)                                │
 │   ─────────────────────────────────────────────────────────────────────     │
-│   │ SageMaker │ SageMaker Canvas │ SageMaker Ground Truth │               │
+│   │ SageMaker │ SageMaker Canvas │ SageMaker Ground Truth   │               │
 │   ─────────────────────────────────────────────────────────────────────     │
 │                                                                             │
 │   LAYER 1: ML FRAMEWORKS & INFRASTRUCTURE                                   │
 │   ─────────────────────────────────────────────────────────────────────     │
-│   │ EC2 (GPU instances) │ Deep Learning AMIs │ Containers │               │
+│   │ EC2 (GPU instances) │ Deep Learning AMIs │ Containers   │               │
 │   ─────────────────────────────────────────────────────────────────────     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -57,7 +57,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON REKOGNITION                                    │
+│                        AMAZON REKOGNITION                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Nhận dạng hình ảnh và video bằng Deep Learning                   │
@@ -74,9 +74,9 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │     • Compare faces (is this the same person?)                      │   │
 │   │     • Search faces in a collection                                  │   │
 │   │                                                                     │   │
-│   │  🏷️ Object & Scene Detection                                        │   │
-│   │     • Detect objects: car, tree, dog, cat...                       │   │
-│   │     • Detect scenes: beach, office, kitchen...                     │   │
+│   │  🏷️ Object & Scene Detection                                         │   │
+│   │     • Detect objects: car, tree, dog, cat...                        │   │
+│   │     • Detect scenes: beach, office, kitchen...                      │   │
 │   │                                                                     │   │
 │   │  📝 Text Detection (in images)                                      │   │
 │   │     • Read text from images (signs, documents)                      │   │
@@ -95,11 +95,11 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • User verification (face login)                                         │
-│   • Content moderation for social media                                    │
-│   • People counting in retail                                              │
-│   • Celebrity detection in media                                           │
-│   • Security surveillance                                                  │
+│   • User verification (face login)                                          │
+│   • Content moderation for social media                                     │
+│   • People counting in retail                                               │
+│   • Celebrity detection in media                                            │
+│   • Security surveillance                                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -108,7 +108,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON TEXTRACT                                       │
+│                        AMAZON TEXTRACT                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Trích xuất text, tables, forms từ documents                      │
@@ -116,7 +116,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   So sánh với OCR truyền thống:                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  OCR cũ: Chỉ extract raw text                                       │   │
-│   │  Textract: Extract text + UNDERSTAND structure (tables, forms)     │   │
+│   │  Textract: Extract text + UNDERSTAND structure (tables, forms)      │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   CAPABILITIES:                                                             │
@@ -145,10 +145,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Automate document processing                                           │
-│   • Extract data from invoices                                             │
-│   • Process loan applications                                              │
-│   • Digitize paper records                                                 │
+│   • Automate document processing                                            │
+│   • Extract data from invoices                                              │
+│   • Process loan applications                                               │
+│   • Digitize paper records                                                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -161,10 +161,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON POLLY                                          │
+│                        AMAZON POLLY                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Chuyển TEXT → SPEECH (Đọc văn bản thành giọng nói)              │
+│   🎯 WHAT: Chuyển TEXT → SPEECH (Đọc văn bản thành giọng nói)               │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
@@ -181,18 +181,18 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   FEATURES:                                                                 │
-│   • 60+ voices in 30+ languages                                            │
-│   • Neural TTS (more natural sounding)                                     │
-│   • SSML support (control pronunciation, pauses, emphasis)                 │
-│   • Real-time streaming                                                    │
-│   • Lexicons (custom pronunciations)                                       │
+│   • 60+ voices in 30+ languages                                             │
+│   • Neural TTS (more natural sounding)                                      │
+│   • SSML support (control pronunciation, pauses, emphasis)                  │
+│   • Real-time streaming                                                     │
+│   • Lexicons (custom pronunciations)                                        │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • E-learning (đọc bài giảng)                                             │
-│   • Accessibility (cho người khiếm thị)                                    │
-│   • News reading apps                                                      │
-│   • IVR systems (automated phone menus)                                    │
-│   • Audiobook generation                                                   │
+│   • E-learning (đọc bài giảng)                                              │
+│   • Accessibility (cho người khiếm thị)                                     │
+│   • News reading apps                                                       │
+│   • IVR systems (automated phone menus)                                     │
+│   • Audiobook generation                                                    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -201,10 +201,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON TRANSCRIBE                                     │
+│                        AMAZON TRANSCRIBE                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Chuyển SPEECH → TEXT (Nhận dạng giọng nói thành văn bản)        │
+│   🎯 WHAT: Chuyển SPEECH → TEXT (Nhận dạng giọng nói thành văn bản)         │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
@@ -221,20 +221,20 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   FEATURES:                                                                 │
-│   • Automatic language detection                                           │
-│   • Speaker identification (phân biệt người nói)                           │
-│   • Custom vocabulary (technical terms)                                    │
-│   • Content redaction (hide sensitive info: PII)                           │
-│   • Real-time transcription                                                │
-│   • Medical transcription (Transcribe Medical)                             │
-│   • Call Analytics (analyze call center recordings)                        │
+│   • Automatic language detection                                            │
+│   • Speaker identification (phân biệt người nói)                            │
+│   • Custom vocabulary (technical terms)                                     │
+│   • Content redaction (hide sensitive info: PII)                            │
+│   • Real-time transcription                                                 │
+│   • Medical transcription (Transcribe Medical)                              │
+│   • Call Analytics (analyze call center recordings)                         │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Subtitle generation cho videos                                         │
-│   • Meeting transcription                                                  │
-│   • Call center analytics                                                  │
-│   • Medical documentation                                                  │
-│   • Voice search                                                           │
+│   • Subtitle generation cho videos                                          │
+│   • Meeting transcription                                                   │
+│   • Call center analytics                                                   │
+│   • Medical documentation                                                   │
+│   • Voice search                                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -243,21 +243,21 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    POLLY vs TRANSCRIBE                                       │
+│                    POLLY vs TRANSCRIBE                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   ┌──────────────────────┐         ┌──────────────────────┐                │
-│   │      POLLY           │         │    TRANSCRIBE        │                │
-│   │   Text → Speech      │         │   Speech → Text      │                │
-│   │                      │         │                      │                │
-│   │  "Hello" → 🔊        │         │  🎤 → "Hello"        │                │
-│   │                      │         │                      │                │
-│   │  TTS (Text-to-Speech)│         │  STT (Speech-to-Text)│                │
-│   └──────────────────────┘         └──────────────────────┘                │
+│   ┌──────────────────────┐         ┌──────────────────────┐                 │
+│   │      POLLY           │         │    TRANSCRIBE        │                 │
+│   │   Text → Speech      │         │   Speech → Text      │                 │
+│   │                      │         │                      │                 │
+│   │  "Hello" → 🔊        │         │  🎤 → "Hello"        │                 │
+│   │                      │         │                      │                 │
+│   │  TTS (Text-to-Speech)│         │  STT (Speech-to-Text)│                 │
+│   └──────────────────────┘         └──────────────────────┘                 │
 │                                                                             │
 │   💡 Nhớ:                                                                   │
-│   • Polly = Parrot (con vẹt) = NÓI                                         │
-│   • Transcribe = Ghi chép = VIẾT                                           │
+│   • Polly = Parrot (con vẹt) = NÓI                                          │
+│   • Transcribe = Ghi chép = VIẾT                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -270,26 +270,26 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON TRANSLATE                                      │
+│                        AMAZON TRANSLATE                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Dịch text từ ngôn ngữ này sang ngôn ngữ khác                     │
 │                                                                             │
-│   "Hello, how are you?" ──► "Xin chào, bạn khỏe không?"                    │
+│   "Hello, how are you?" ──► "Xin chào, bạn khỏe không?"                     │
 │          (English)                    (Vietnamese)                          │
 │                                                                             │
 │   FEATURES:                                                                 │
-│   • 75+ languages supported                                                │
-│   • Real-time và batch translation                                         │
-│   • Custom terminology (giữ nguyên terms như brand names)                  │
-│   • Neural machine translation (high quality)                              │
-│   • Automatic language detection                                           │
+│   • 75+ languages supported                                                 │
+│   • Real-time và batch translation                                          │
+│   • Custom terminology (giữ nguyên terms như brand names)                   │
+│   • Neural machine translation (high quality)                               │
+│   • Automatic language detection                                            │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Website localization                                                   │
-│   • Multilingual customer support                                          │
-│   • Real-time chat translation                                             │
-│   • Document translation                                                   │
+│   • Website localization                                                    │
+│   • Multilingual customer support                                           │
+│   • Real-time chat translation                                              │
+│   • Document translation                                                    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -298,7 +298,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON COMPREHEND                                     │
+│                        AMAZON COMPREHEND                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Phân tích và hiểu nội dung văn bản (NLP)                         │
@@ -307,39 +307,39 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  😊😠😐 Sentiment Analysis                                          │   │
-│   │     Input: "I love this product! Best purchase ever!"              │   │
-│   │     Output: POSITIVE (98% confidence)                              │   │
+│   │     Input: "I love this product! Best purchase ever!"               │   │
+│   │     Output: POSITIVE (98% confidence)                               │   │
 │   │                                                                     │   │
-│   │  🏷️ Entity Recognition (NER)                                        │   │
-│   │     Input: "John works at Amazon in Seattle"                       │   │
+│   │  🏷️ Entity Recognition (NER)                                         │   │
+│   │     Input: "John works at Amazon in Seattle"                        │   │
 │   │     Output: John (PERSON), Amazon (ORGANIZATION), Seattle (LOCATION)│   │
 │   │                                                                     │   │
 │   │  🔑 Key Phrase Extraction                                           │   │
-│   │     Input: "The quick brown fox jumps over the lazy dog"           │   │
-│   │     Output: ["quick brown fox", "lazy dog"]                        │   │
+│   │     Input: "The quick brown fox jumps over the lazy dog"            │   │
+│   │     Output: ["quick brown fox", "lazy dog"]                         │   │
 │   │                                                                     │   │
 │   │  🌐 Language Detection                                              │   │
-│   │     Input: "Bonjour, comment allez-vous?"                          │   │
-│   │     Output: French (fr)                                            │   │
+│   │     Input: "Bonjour, comment allez-vous?"                           │   │
+│   │     Output: French (fr)                                             │   │
 │   │                                                                     │   │
 │   │  📂 Topic Modeling                                                  │   │
-│   │     Analyze documents to find common topics                        │   │
+│   │     Analyze documents to find common topics                         │   │
 │   │                                                                     │   │
 │   │  🔒 PII Detection (Comprehend + PII)                                │   │
-│   │     Detect và redact personal information                          │   │
+│   │     Detect và redact personal information                           │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   🏥 COMPREHEND MEDICAL:                                                    │
-│   • Specialized cho medical text                                           │
-│   • Detect diseases, medications, dosages, procedures                      │
-│   • Extract PHI (Protected Health Information)                             │
+│   • Specialized cho medical text                                            │
+│   • Detect diseases, medications, dosages, procedures                       │
+│   • Extract PHI (Protected Health Information)                              │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Customer review analysis                                               │
-│   • Social media monitoring                                                │
-│   • Document classification                                                │
-│   • Call center analytics                                                  │
+│   • Customer review analysis                                                │
+│   • Social media monitoring                                                 │
+│   • Document classification                                                 │
+│   • Call center analytics                                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -352,44 +352,44 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON LEX                                            │
+│                        AMAZON LEX                                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Build conversational chatbots (SAME technology as Alexa!)       │
+│   🎯 WHAT: Build conversational chatbots (SAME technology as Alexa!)        │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
-│   │  User: "I want to book a hotel in Paris for 3 nights"              │   │
+│   │  User: "I want to book a hotel in Paris for 3 nights"               │   │
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
-│   │          ┌──────────────────────────────┐                          │   │
-│   │          │         AMAZON LEX           │                          │   │
-│   │          │  ┌────────────────────────┐  │                          │   │
-│   │          │  │ 1. ASR (Speech→Text)   │  │                          │   │
-│   │          │  │ 2. NLU (Understand     │  │                          │   │
-│   │          │  │    intent + entities)  │  │                          │   │
-│   │          │  └────────────────────────┘  │                          │   │
-│   │          └──────────────────────────────┘                          │   │
+│   │          ┌──────────────────────────────┐                           │   │
+│   │          │         AMAZON LEX           │                           │   │
+│   │          │  ┌────────────────────────┐  │                           │   │
+│   │          │  │ 1. ASR (Speech→Text)   │  │                           │   │
+│   │          │  │ 2. NLU (Understand     │  │                           │   │
+│   │          │  │    intent + entities)  │  │                           │   │
+│   │          │  └────────────────────────┘  │                           │   │
+│   │          └──────────────────────────────┘                           │   │
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
-│   │  Intent: BookHotel                                                 │   │
-│   │  Slots: City="Paris", Nights=3                                     │   │
+│   │  Intent: BookHotel                                                  │   │
+│   │  Slots: City="Paris", Nights=3                                      │   │
 │   │                         │                                           │   │
 │   │                         ▼ (Trigger Lambda)                          │   │
-│   │  Bot: "Great! I found hotels in Paris. Which one would you like?" │   │
+│   │  Bot: "Great! I found hotels in Paris. Which one would you like?"   │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   KEY CONCEPTS:                                                             │
-│   • Intent: Mục đích của user (BookHotel, OrderPizza, CheckBalance)        │
-│   • Slot: Thông tin cần thu thập (city, date, amount)                      │
-│   • Fulfillment: Action sau khi có đủ slots (Lambda function)              │
+│   • Intent: Mục đích của user (BookHotel, OrderPizza, CheckBalance)         │
+│   • Slot: Thông tin cần thu thập (city, date, amount)                       │
+│   • Fulfillment: Action sau khi có đủ slots (Lambda function)               │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Customer service chatbots                                              │
-│   • Voice assistants                                                       │
-│   • Booking systems                                                        │
-│   • FAQ bots                                                               │
+│   • Customer service chatbots                                               │
+│   • Voice assistants                                                        │
+│   • Booking systems                                                         │
+│   • FAQ bots                                                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -402,10 +402,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON KENDRA                                         │
+│                        AMAZON KENDRA                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Enterprise search powered by ML (Natural Language Search)       │
+│   🎯 WHAT: Enterprise search powered by ML (Natural Language Search)        │
 │                                                                             │
 │   So sánh với keyword search:                                               │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
@@ -414,10 +414,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   FEATURES:                                                                 │
-│   • Natural language queries (hỏi bằng ngôn ngữ tự nhiên)                  │
-│   • Incremental learning (học từ user feedback)                            │
-│   • FAQ matching                                                           │
-│   • Document ranking                                                       │
+│   • Natural language queries (hỏi bằng ngôn ngữ tự nhiên)                   │
+│   • Incremental learning (học từ user feedback)                             │
+│   • FAQ matching                                                            │
+│   • Document ranking                                                        │
 │                                                                             │
 │   DATA SOURCES:                                                             │
 │   • S3                                                                      │
@@ -428,10 +428,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   • Custom connectors                                                       │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Internal knowledge base search                                         │
-│   • Customer support portal                                                │
-│   • Research document search                                               │
-│   • HR policy search                                                       │
+│   • Internal knowledge base search                                          │
+│   • Customer support portal                                                 │
+│   • Research document search                                                │
+│   • HR policy search                                                        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -440,7 +440,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON PERSONALIZE                                    │
+│                        AMAZON PERSONALIZE                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Real-time personalization và recommendations                     │
@@ -449,8 +449,8 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  Input: User behavior data                                          │   │
-│   │  • User A viewed: iPhone, AirPods, MacBook                         │   │
-│   │  • User A purchased: iPhone case                                   │   │
+│   │  • User A viewed: iPhone, AirPods, MacBook                          │   │
+│   │  • User A purchased: iPhone case                                    │   │
 │   │                                                                     │   │
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
@@ -460,7 +460,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
 │   │                                                                     │   │
-│   │  Output: "Users who bought this also bought..."                    │   │
+│   │  Output: "Users who bought this also bought..."                     │   │
 │   │  • Apple Watch                                                      │   │
 │   │  • Lightning Cable                                                  │   │
 │   │  • Screen Protector                                                 │   │
@@ -468,10 +468,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Product recommendations (e-commerce)                                   │
-│   • Content recommendations (streaming)                                    │
-│   • Personalized marketing                                                 │
-│   • Search re-ranking                                                      │
+│   • Product recommendations (e-commerce)                                    │
+│   • Content recommendations (streaming)                                     │
+│   • Personalized marketing                                                  │
+│   • Search re-ranking                                                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -484,7 +484,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON FORECAST                                       │
+│                        AMAZON FORECAST                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Dự đoán time-series data bằng ML                                 │
@@ -493,10 +493,10 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  Input: Historical data                                             │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐   │   │
-│   │  │  Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec │   │   │
-│   │  │  100  110  95   120  130  150  180  200  160  140  170  250 │   │   │
-│   │  └─────────────────────────────────────────────────────────────┘   │   │
+│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
+│   │  │  Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec │    │   │
+│   │  │  100  110  95   120  130  150  180  200  160  140  170  250 │    │   │
+│   │  └─────────────────────────────────────────────────────────────┘    │   │
 │   │                                                                     │   │
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
@@ -506,17 +506,17 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │                         │                                           │   │
 │   │                         ▼                                           │   │
 │   │                                                                     │   │
-│   │  Output: Predicted values for next period                          │   │
-│   │  Next Jan: 115, Next Feb: 125, Next Mar: 105...                   │   │
+│   │  Output: Predicted values for next period                           │   │
+│   │  Next Jan: 115, Next Feb: 125, Next Mar: 105...                     │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Inventory planning                                                     │
-│   • Demand forecasting                                                     │
-│   • Resource capacity planning                                             │
-│   • Financial forecasting                                                  │
-│   • Workforce planning                                                     │
+│   • Inventory planning                                                      │
+│   • Demand forecasting                                                      │
+│   • Resource capacity planning                                              │
+│   • Financial forecasting                                                   │
+│   • Workforce planning                                                      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -525,7 +525,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON FRAUD DETECTOR                                 │
+│                        AMAZON FRAUD DETECTOR                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: Detect potential fraud using ML                                  │
@@ -537,15 +537,15 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   • Promotional abuse                                                       │
 │                                                                             │
 │   HOW IT WORKS:                                                             │
-│   1. Upload historical fraud data                                          │
-│   2. Fraud Detector trains ML model                                        │
-│   3. Get fraud predictions in real-time                                    │
+│   1. Upload historical fraud data                                           │
+│   2. Fraud Detector trains ML model                                         │
+│   3. Get fraud predictions in real-time                                     │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • E-commerce fraud detection                                             │
-│   • Banking transaction monitoring                                         │
-│   • Account security                                                       │
-│   • Promotional abuse prevention                                           │
+│   • E-commerce fraud detection                                              │
+│   • Banking transaction monitoring                                          │
+│   • Account security                                                        │
+│   • Promotional abuse prevention                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -558,19 +558,19 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON CODEGURU                                       │
+│                        AMAZON CODEGURU                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: ML-powered code review và performance recommendations           │
+│   🎯 WHAT: ML-powered code review và performance recommendations            │
 │                                                                             │
 │   2 COMPONENTS:                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  📝 CODEGURU REVIEWER                                               │   │
 │   │     • Automated code reviews                                        │   │
-│   │     • Find bugs, security issues, best practices                   │   │
+│   │     • Find bugs, security issues, best practices                    │   │
 │   │     • Supports Java, Python                                         │   │
-│   │     • Integrates với GitHub, CodeCommit, Bitbucket                 │   │
+│   │     • Integrates với GitHub, CodeCommit, Bitbucket                  │   │
 │   │                                                                     │   │
 │   │  📊 CODEGURU PROFILER                                               │   │
 │   │     • Analyze application runtime behavior                          │   │
@@ -582,9 +582,9 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Automate code reviews                                                  │
-│   • Find performance bottlenecks                                           │
-│   • Reduce production issues                                               │
+│   • Automate code reviews                                                   │
+│   • Find performance bottlenecks                                            │
+│   • Reduce production issues                                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -593,21 +593,21 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON DEVOPS GURU                                    │
+│                        AMAZON DEVOPS GURU                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   🎯 WHAT: ML-powered để detect operational issues                          │
 │                                                                             │
 │   WHAT IT DOES:                                                             │
-│   • Analyze CloudWatch metrics, Config, CloudTrail, X-Ray                  │
-│   • Detect anomalous behavior                                              │
-│   • Identify potential problems BEFORE they impact users                   │
-│   • Provide recommendations cho remediation                                │
+│   • Analyze CloudWatch metrics, Config, CloudTrail, X-Ray                   │
+│   • Detect anomalous behavior                                               │
+│   • Identify potential problems BEFORE they impact users                    │
+│   • Provide recommendations cho remediation                                 │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Proactive operations monitoring                                        │
-│   • Reduce MTTR (Mean Time To Resolution)                                  │
-│   • Prevent outages                                                        │
+│   • Proactive operations monitoring                                         │
+│   • Reduce MTTR (Mean Time To Resolution)                                   │
+│   • Prevent outages                                                         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -620,20 +620,20 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON BEDROCK                                        │
+│                        AMAZON BEDROCK                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Fully managed service để access Foundation Models (LLMs)        │
+│   🎯 WHAT: Fully managed service để access Foundation Models (LLMs)         │
 │            Không cần manage infrastructure!                                 │
 │                                                                             │
 │   FOUNDATION MODELS AVAILABLE:                                              │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  🔹 Amazon Titan (Amazon's own)                                     │   │
-│   │     • Text generation, embeddings, image generation                │   │
+│   │     • Text generation, embeddings, image generation                 │   │
 │   │                                                                     │   │
 │   │  🔹 Anthropic Claude                                                │   │
-│   │     • Advanced reasoning, analysis, coding                         │   │
+│   │     • Advanced reasoning, analysis, coding                          │   │
 │   │                                                                     │   │
 │   │  🔹 Meta Llama 2                                                    │   │
 │   │     • Open-source LLM                                               │   │
@@ -642,7 +642,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │     • Image generation                                              │   │
 │   │                                                                     │   │
 │   │  🔹 Cohere                                                          │   │
-│   │     • Enterprise-focused language models                           │   │
+│   │     • Enterprise-focused language models                            │   │
 │   │                                                                     │   │
 │   │  🔹 AI21 Labs (Jurassic)                                            │   │
 │   │     • Text generation                                               │   │
@@ -650,19 +650,19 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   KEY FEATURES:                                                             │
-│   • Serverless (không manage infrastructure)                               │
-│   • Fine-tuning với custom data (private, secure)                          │
-│   • Knowledge Bases (RAG - Retrieval Augmented Generation)                │
-│   • Agents cho complex tasks                                               │
-│   • Guardrails cho responsible AI                                          │
+│   • Serverless (không manage infrastructure)                                │
+│   • Fine-tuning với custom data (private, secure)                           │
+│   • Knowledge Bases (RAG - Retrieval Augmented Generation)                  │
+│   • Agents cho complex tasks                                                │
+│   • Guardrails cho responsible AI                                           │
 │                                                                             │
 │   USE CASES:                                                                │
-│   • Chatbots, virtual assistants                                           │
-│   • Text summarization                                                     │
-│   • Content generation                                                     │
-│   • Code generation                                                        │
-│   • Image generation                                                       │
-│   • Search với semantic understanding                                      │
+│   • Chatbots, virtual assistants                                            │
+│   • Text summarization                                                      │
+│   • Content generation                                                      │
+│   • Code generation                                                         │
+│   • Image generation                                                        │
+│   • Search với semantic understanding                                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -671,35 +671,35 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON Q                                              │
+│                        AMAZON Q                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Generative AI-powered assistant for work                        │
+│   🎯 WHAT: Generative AI-powered assistant for work                         │
 │                                                                             │
 │   2 MAIN PRODUCTS:                                                          │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
 │   │  💼 AMAZON Q BUSINESS                                               │   │
 │   │     • AI assistant for employees                                    │   │
-│   │     • Connect to enterprise data (S3, SharePoint, Salesforce...)  │   │
-│   │     • Answer questions from company knowledge                      │   │
+│   │     • Connect to enterprise data (S3, SharePoint, Salesforce...)    │   │
+│   │     • Answer questions from company knowledge                       │   │
 │   │     • Summarize documents                                           │   │
 │   │     • Draft emails, reports                                         │   │
 │   │                                                                     │   │
 │   │  💻 AMAZON Q DEVELOPER                                              │   │
-│   │     • AI coding assistant (like GitHub Copilot)                    │   │
+│   │     • AI coding assistant (like GitHub Copilot)                     │   │
 │   │     • Code suggestions in IDE                                       │   │
 │   │     • Explain code                                                  │   │
 │   │     • Debug and fix issues                                          │   │
 │   │     • Security scanning                                             │   │
-│   │     • Upgrade code (e.g., Java 8 → Java 17)                        │   │
+│   │     • Upgrade code (e.g., Java 8 → Java 17)                         │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   ALSO AVAILABLE IN:                                                        │
-│   • AWS Console (Q in Console)                                             │
-│   • QuickSight (Q for BI)                                                  │
-│   • AWS Connect (contact center)                                           │
+│   • AWS Console (Q in Console)                                              │
+│   • QuickSight (Q for BI)                                                   │
+│   • AWS Connect (contact center)                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -712,28 +712,28 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        AMAZON SAGEMAKER                                      │
+│                        AMAZON SAGEMAKER                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🎯 WHAT: Complete platform để build, train, deploy ML models             │
-│            End-to-end ML lifecycle management                              │
+│   🎯 WHAT: Complete platform để build, train, deploy ML models              │
+│            End-to-end ML lifecycle management                               │
 │                                                                             │
 │   ML LIFECYCLE:                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
-│   │  ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   │   │
-│   │  │ Label  │──►│ Build  │──►│ Train  │──►│ Tune   │──►│ Deploy │   │   │
-│   │  │ (GT)   │   │(Studio)│   │(Jobs)  │   │(HPO)   │   │(Endpoint)│  │   │
-│   │  └────────┘   └────────┘   └────────┘   └────────┘   └────────┘   │   │
+│   │  ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐     │   │
+│   │  │ Label  │──►│ Build  │──►│ Train  │──►│ Tune   │──►│ Deploy │     │   │
+│   │  │ (GT)   │   │(Studio)│   │(Jobs)  │   │(HPO)   │   │(Endpoint)│   │   │
+│   │  └────────┘   └────────┘   └────────┘   └────────┘   └────────┘     │   │
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
 │   KEY COMPONENTS:                                                           │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                     │   │
-│   │  🏷️ GROUND TRUTH                                                    │   │
+│   │  🏷️ GROUND TRUTH                                                     │   │
 │   │     • Data labeling service                                         │   │
-│   │     • Human labelers + ML-assisted labeling                        │   │
+│   │     • Human labelers + ML-assisted labeling                         │   │
 │   │                                                                     │   │
 │   │  📊 SAGEMAKER STUDIO                                                │   │
 │   │     • Web-based IDE cho ML                                          │   │
@@ -742,13 +742,13 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │                                                                     │   │
 │   │  🎨 SAGEMAKER CANVAS                                                │   │
 │   │     • No-code ML!                                                   │   │
-│   │     • Build models với visual interface                            │   │
-│   │     • For business analysts (không cần code)                       │   │
+│   │     • Build models với visual interface                             │   │
+│   │     • For business analysts (không cần code)                        │   │
 │   │                                                                     │   │
 │   │  🚀 TRAINING JOBS                                                   │   │
 │   │     • Distributed training                                          │   │
 │   │     • Built-in algorithms + custom                                  │   │
-│   │     • Spot instances for cost savings                              │   │
+│   │     • Spot instances for cost savings                               │   │
 │   │                                                                     │   │
 │   │  🎯 HYPERPARAMETER TUNING                                           │   │
 │   │     • Automatic model optimization                                  │   │
@@ -767,8 +767,8 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                             │
-│   💡 For Cloud Practitioner: Focus on knowing SageMaker = full ML platform │
-│      Canvas = No-code ML, Ground Truth = Data labeling                     │
+│   💡 For Cloud Practitioner: Focus on knowing SageMaker = full ML platform  │
+│      Canvas = No-code ML, Ground Truth = Data labeling                      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -806,47 +806,47 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SAMPLE EXAM QUESTIONS                                     │
+│                    SAMPLE EXAM QUESTIONS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ ❓ "Service để detect faces trong images?"                                 │
-│    → Amazon Rekognition                                                    │
+│ ❓ "Service để detect faces trong images?"                                  │
+│    → Amazon Rekognition                                                     │
 │                                                                             │
-│ ❓ "Service để extract text từ scanned documents với tables?"              │
-│    → Amazon Textract                                                       │
+│ ❓ "Service để extract text từ scanned documents với tables?"               │
+│    → Amazon Textract                                                        │
 │                                                                             │
-│ ❓ "Convert text to natural sounding speech?"                              │
-│    → Amazon Polly                                                          │
+│ ❓ "Convert text to natural sounding speech?"                               │
+│    → Amazon Polly                                                           │
 │                                                                             │
-│ ❓ "Convert audio recordings to text?"                                     │
-│    → Amazon Transcribe                                                     │
+│ ❓ "Convert audio recordings to text?"                                      │
+│    → Amazon Transcribe                                                      │
 │                                                                             │
-│ ❓ "Analyze sentiment of customer reviews?"                                │
-│    → Amazon Comprehend                                                     │
+│ ❓ "Analyze sentiment of customer reviews?"                                 │
+│    → Amazon Comprehend                                                      │
 │                                                                             │
-│ ❓ "Build chatbot like Alexa?"                                             │
-│    → Amazon Lex                                                            │
+│ ❓ "Build chatbot like Alexa?"                                              │
+│    → Amazon Lex                                                             │
 │                                                                             │
-│ ❓ "Intelligent search that understands natural language questions?"       │
-│    → Amazon Kendra                                                         │
+│ ❓ "Intelligent search that understands natural language questions?"        │
+│    → Amazon Kendra                                                          │
 │                                                                             │
-│ ❓ "Product recommendations for e-commerce?"                               │
-│    → Amazon Personalize                                                    │
+│ ❓ "Product recommendations for e-commerce?"                                │
+│    → Amazon Personalize                                                     │
 │                                                                             │
-│ ❓ "Predict future demand/inventory?"                                      │
-│    → Amazon Forecast                                                       │
+│ ❓ "Predict future demand/inventory?"                                       │
+│    → Amazon Forecast                                                        │
 │                                                                             │
-│ ❓ "No-code ML for business analysts?"                                     │
-│    → Amazon SageMaker Canvas                                               │
+│ ❓ "No-code ML for business analysts?"                                      │
+│    → Amazon SageMaker Canvas                                                │
 │                                                                             │
-│ ❓ "Full ML platform để build và deploy models?"                           │
-│    → Amazon SageMaker                                                      │
+│ ❓ "Full ML platform để build và deploy models?"                            │
+│    → Amazon SageMaker                                                       │
 │                                                                             │
-│ ❓ "Access to foundation models like Claude, Llama?"                       │
-│    → Amazon Bedrock                                                        │
+│ ❓ "Access to foundation models like Claude, Llama?"                        │
+│    → Amazon Bedrock                                                         │
 │                                                                             │
-│ ❓ "AI coding assistant?"                                                  │
-│    → Amazon Q Developer (hoặc CodeWhisperer)                               │
+│ ❓ "AI coding assistant?"                                                   │
+│    → Amazon Q Developer (hoặc CodeWhisperer)                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -855,12 +855,12 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         MEMORY TRICKS                                        │
+│                         MEMORY TRICKS                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   🦜 Polly = Parrot = SPEAKS (Text → Speech)                               │
-│   📝 Transcribe = WRITES DOWN what you say (Speech → Text)                 │
-│   👁️ Rekognition = RECOGNIZES faces/objects in images                      │
+│   🦜 Polly = Parrot = SPEAKS (Text → Speech)                                │
+│   📝 Transcribe = WRITES DOWN what you say (Speech → Text)                  │
+│   👁️ Rekognition = RECOGNIZES faces/objects in images                        │
 │   📄 Textract = EXTRACTS text from documents                                │
 │   🌐 Translate = TRANSLATES languages                                       │
 │   🧠 Comprehend = COMPREHENDS/understands text                              │
@@ -868,7 +868,7 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 │   🔍 Kendra = SMART SEARCH                                                  │
 │   🛒 Personalize = RECOMMENDATIONS (like Amazon.com)                        │
 │   📈 Forecast = PREDICTS future (like Amazon logistics)                     │
-│   🛡️ Fraud Detector = Detects FRAUD                                        │
+│   🛡️ Fraud Detector = Detects FRAUD                                          │
 │   💻 CodeGuru = GURU reviews your code                                      │
 │   🤖 Bedrock = FOUNDATION for AI apps                                       │
 │   🎓 SageMaker = MAKES ML models (full platform)                            │
@@ -882,26 +882,26 @@ AWS cung cấp rất nhiều AI/ML services, được chia thành **3 layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AWS AI/ML SERVICES SUMMARY                                │
+│                    AWS AI/ML SERVICES SUMMARY                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   VISION:        Rekognition, Textract                                      │
-│   SPEECH:        Polly (TTS), Transcribe (STT)                             │
-│   LANGUAGE:      Translate, Comprehend                                     │
+│   SPEECH:        Polly (TTS), Transcribe (STT)                              │
+│   LANGUAGE:      Translate, Comprehend                                      │
 │   CHATBOT:       Lex                                                        │
 │   SEARCH:        Kendra                                                     │
 │   RECOMMENDATIONS: Personalize                                              │
-│   FORECASTING:   Forecast, Fraud Detector                                  │
-│   DEVELOPER:     CodeGuru, DevOps Guru                                     │
-│   GENERATIVE AI: Bedrock, Q                                                │
-│   ML PLATFORM:   SageMaker (Canvas for no-code)                            │
+│   FORECASTING:   Forecast, Fraud Detector                                   │
+│   DEVELOPER:     CodeGuru, DevOps Guru                                      │
+│   GENERATIVE AI: Bedrock, Q                                                 │
+│   ML PLATFORM:   SageMaker (Canvas for no-code)                             │
 │                                                                             │
 │   ─────────────────────────────────────────────────────────────────────     │
 │                                                                             │
 │   KEY POINT FOR EXAM:                                                       │
 │   • Biết service nào làm gì                                                 │
-│   • Biết input/output của mỗi service                                      │
-│   • Không cần biết cách implement chi tiết                                 │
+│   • Biết input/output của mỗi service                                       │
+│   • Không cần biết cách implement chi tiết                                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

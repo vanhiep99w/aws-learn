@@ -65,30 +65,30 @@ Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì
 ┌─────────────────────────────────────────────────────────────┐
 │              MYSQL/POSTGRESQL TRUYỀN THỐNG                  │
 │                                                             │
-│   DB Engine ──▶ Write full pages (16KB) ──▶ EBS Primary    │
+│   DB Engine ──▶ Write full pages (16KB) ──▶ EBS Primary     │
 │                        │                                    │
-│                        └──▶ Replicate 16KB ──▶ Standby EBS │
+│                        └──▶ Replicate 16KB ──▶ Standby EBS  │
 │                                                             │
-│   ❌ Ghi toàn bộ page 16KB dù chỉ thay đổi 1 byte          │
+│   ❌ Ghi toàn bộ page 16KB dù chỉ thay đổi 1 byte           │
 │   ❌ Network I/O rất nặng                                   │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
 │                     AMAZON AURORA                           │
 │                                                             │
-│   DB Engine ──▶ Write only REDO LOG (~bytes)               │
+│   DB Engine ──▶ Write only REDO LOG (~bytes)                │
 │                        │                                    │
 │                        ▼                                    │
-│   ┌─────────────────────────────────────────────────┐      │
-│   │      Aurora Distributed Storage (6 copies)      │      │
-│   │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐│      │
-│   │  │AZ-a │ │AZ-a │ │AZ-b │ │AZ-b │ │AZ-c │ │AZ-c ││      │
-│   │  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ └─────┘│      │
-│   └─────────────────────────────────────────────────┘      │
+│   ┌─────────────────────────────────────────────────┐       │
+│   │      Aurora Distributed Storage (6 copies)      │       │
+│   │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ │      │
+│   │  │AZ-a │ │AZ-a │ │AZ-b │ │AZ-b │ │AZ-c │ │AZ-c │ │      │
+│   │  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ │      │
+│   └─────────────────────────────────────────────────┘       │
 │                                                             │
-│   ✅ Chỉ gửi log records (rất nhỏ) - Giảm 90%+ I/O        │
+│   ✅ Chỉ gửi log records (rất nhỏ) - Giảm 90%+ I/O          │
 │   ✅ Storage nodes tự rebuild pages                         │
-│   ✅ Quorum writes: Chỉ cần 4/6 nodes ACK = COMMIT         │
+│   ✅ Quorum writes: Chỉ cần 4/6 nodes ACK = COMMIT          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -149,24 +149,24 @@ Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    RDS INSTANCE CLASSES                                      │
+│                    RDS INSTANCE CLASSES                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  1. STANDARD (M classes) - db.m5, db.m6g, db.m7g                            │
-│     • General purpose, cân bằng CPU/RAM                                      │
-│     • CPU performance ỔN ĐỊNH, không giới hạn                                │
-│     • Phù hợp: Production workloads thông thường                              │
-│                                                                              │
+│     • General purpose, cân bằng CPU/RAM                                     │
+│     • CPU performance ỔN ĐỊNH, không giới hạn                               │
+│     • Phù hợp: Production workloads thông thường                            │
+│                                                                             │
 │  2. MEMORY OPTIMIZED (R, X classes) - db.r5, db.r6g, db.x2g                 │
-│     • RAM nhiều hơn so với CPU                                               │
-│     • Tối ưu cho workloads cần cache nhiều data trong memory                 │
-│     • Phù hợp: Large databases, analytics                                    │
-│                                                                              │
+│     • RAM nhiều hơn so với CPU                                              │
+│     • Tối ưu cho workloads cần cache nhiều data trong memory                │
+│     • Phù hợp: Large databases, analytics                                   │
+│                                                                             │
 │  3. BURSTABLE (T classes) - db.t3, db.t4g                                   │
-│     • CPU baseline thấp, có thể "burst" lên cao khi cần                       │
-│     • Dùng CPU credits để burst                                              │
-│     • Phù hợp: Dev/Test, low traffic (✓ Free Tier: db.t3.micro)              │
-│                                                                              │
+│     • CPU baseline thấp, có thể "burst" lên cao khi cần                     │
+│     • Dùng CPU credits để burst                                             │
+│     • Phù hợp: Dev/Test, low traffic (✓ Free Tier: db.t3.micro)             │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -239,8 +239,8 @@ RDS sử dụng **Amazon EBS (Elastic Block Store)** - là **network-attached st
 ```
 Allocated Storage = 100 GB
 ┌─────────────────────────────────────────────────────────────────┐
-│██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│
-│   Data: 30 GB                    Còn trống: 70 GB            │
+│██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  │
+│   Data: 30 GB                    Còn trống: 70 GB               │
 └─────────────────────────────────────────────────────────────────┘
 
 → Tính tiền theo 100 GB (allocated), không phải 30 GB (used)
@@ -270,21 +270,21 @@ Allocated Storage = 100 GB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         PARAMETER GROUP                                      │
+│                         PARAMETER GROUP                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Parameter Group = "my-mysql-params"                                       │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  max_connections = 200                                               │   │
+│   │  max_connections = 200                                              │   │
 │   │  innodb_buffer_pool_size = 1073741824                               │   │
-│   │  slow_query_log = 1                                                  │   │
-│   │  long_query_time = 2                                                 │   │
-│   │  character_set_server = utf8mb4                                      │   │
-│   │  ...                                                                 │   │
+│   │  slow_query_log = 1                                                 │   │
+│   │  long_query_time = 2                                                │   │
+│   │  character_set_server = utf8mb4                                     │   │
+│   │  ...                                                                │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-│   Tương đương file my.cnf (MySQL) hoặc postgresql.conf (PostgreSQL)        │
-│                                                                              │
+│                                                                             │
+│   Tương đương file my.cnf (MySQL) hoặc postgresql.conf (PostgreSQL)         │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -321,19 +321,19 @@ aws rds modify-db-parameter-group \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         OPTION GROUP                                         │
+│                         OPTION GROUP                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Option Group = "my-mysql-options"                                         │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  MEMCACHED          → In-memory caching                             │   │
 │   │  MARIADB_AUDIT_PLUGIN → Audit logging                               │   │
-│   │  ...                                                                 │   │
+│   │  ...                                                                │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 │   Options = Các plugins/features THÊM VÀO engine                            │
 │   (Không phải config parameters)                                            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -368,22 +368,22 @@ Khi thay đổi Parameter Group hoặc Option Group, RDS đang chạy sẽ bị 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    IMPACT KHI THAY ĐỔI                                       │
+│                    IMPACT KHI THAY ĐỔI                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   PARAMETER GROUP:                                                          │
-│   ════════════════                                                           │
+│   ════════════════                                                          │
 │   Dynamic params (max_connections, slow_query_log)                          │
 │   → Áp dụng NGAY, không cần reboot, không downtime                          │
-│                                                                              │
+│                                                                             │
 │   Static params (innodb_file_per_table)                                     │
 │   → Phải REBOOT để áp dụng, có downtime vài phút                            │
 │   → Status hiện "pending-reboot"                                            │
-│                                                                              │
+│                                                                             │
 │   OPTION GROUP:                                                             │
-│   ══════════════                                                             │
+│   ══════════════                                                            │
 │   Tùy option: một số áp dụng ngay, một số cần reboot                        │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -419,17 +419,17 @@ rds-demo.ct8kskq8gl6t.ap-southeast-2.rds.amazonaws.com
 
 ```
 ┌───────────────────────────────────────────────────────────────────────┐
-│                          DNS RESOLUTION                                │
+│                          DNS RESOLUTION                               │
 ├───────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  Bình thường:                                                          │
+│                                                                       │
+│  Bình thường:                                                         │
 │  rds-demo.xxx.rds.amazonaws.com  ──►  10.0.1.50 (Primary ở AZ-1)      │
-│                                                                        │
-│  Sau failover:                                                         │
+│                                                                       │
+│  Sau failover:                                                        │
 │  rds-demo.xxx.rds.amazonaws.com  ──►  10.0.2.75 (Primary mới ở AZ-2)  │
-│                                                                        │
+│                                                                       │
 │  → App KHÔNG cần thay đổi connection string!                          │
-│                                                                        │
+│                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -445,12 +445,12 @@ rds-demo.ct8kskq8gl6t.ap-southeast-2.rds.amazonaws.com
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          RDS DNS MANAGEMENT                                  │
+│                          RDS DNS MANAGEMENT                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   rds-demo.xxx.ap-southeast-2.rds.amazonaws.com                             │
-│                        │                                                     │
-│                        ▼                                                     │
+│                       │                                                     │
+│                        ▼                                                    │
 │   ┌──────────────────────────────────────────────┐                          │
 │   │     AWS INTERNAL DNS SERVICE                 │                          │
 │   │     (Không phải Route 53 của bạn!)           │                          │
@@ -460,7 +460,7 @@ rds-demo.ct8kskq8gl6t.ap-southeast-2.rds.amazonaws.com
 │   │   • Bạn KHÔNG thể xem trong Route 53         │                          │
 │   │   • Bạn KHÔNG thể modify                     │                          │
 │   └──────────────────────────────────────────────┘                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -528,7 +528,7 @@ mysql -h rds-demo.xxx.ap-southeast-2.rds.amazonaws.com \
 ├──────────────────────────────────────────────────────────────────────┤
 │                                                                      │
 │   WRITER ENDPOINT (cho writes):                                      │
-│   mydb.cluster-xxx.region.rds.amazonaws.com                         │
+│   mydb.cluster-xxx.region.rds.amazonaws.com                          │
 │                        │                                             │
 │                        ▼                                             │
 │                   ┌─────────┐                                        │
@@ -536,7 +536,7 @@ mysql -h rds-demo.xxx.ap-southeast-2.rds.amazonaws.com \
 │                   └─────────┘                                        │
 │                                                                      │
 │   READER ENDPOINT (cho reads):                                       │
-│   mydb.cluster-ro-xxx.region.rds.amazonaws.com                      │
+│   mydb.cluster-ro-xxx.region.rds.amazonaws.com                       │
 │                        │                                             │
 │            ┌───────────┼───────────┐                                 │
 │            ▼           ▼           ▼                                 │
@@ -579,12 +579,12 @@ mysql -h rds-demo.xxx.ap-southeast-2.rds.amazonaws.com \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         DB SUBNET GROUP                                      │
+│                         DB SUBNET GROUP                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                          VPC                                         │   │
-│   │                                                                      │   │
+│   │                          VPC                                        │   │
+│   │                                                                     │   │
 │   │    AZ-a                    AZ-b                    AZ-c             │   │
 │   │   ┌──────────┐           ┌──────────┐           ┌──────────┐        │   │
 │   │   │ Private  │           │ Private  │           │ Private  │        │   │
@@ -592,14 +592,14 @@ mysql -h rds-demo.xxx.ap-southeast-2.rds.amazonaws.com \
 │   │   └────┬─────┘           └────┬─────┘           └────┬─────┘        │   │
 │   │        │                      │                      │              │   │
 │   │        └──────────────────────┼──────────────────────┘              │   │
-│   │                               │                                      │   │
+│   │                               │                                     │   │
 │   │                    ┌──────────┴──────────┐                          │   │
 │   │                    │   DB Subnet Group   │                          │   │
 │   │                    │  "my-db-subnet-grp" │                          │   │
 │   │                    └─────────────────────┘                          │   │
-│   │                                                                      │   │
+│   │                                                                     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -680,25 +680,25 @@ Khi tạo DB Subnet Group, số lượng AZs và subnets ảnh hưởng đến d
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AZ VÀ SUBNET SCENARIOS                                    │
+│                    AZ VÀ SUBNET SCENARIOS                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  Scenario 1: Chọn 3 AZs nhưng chỉ có 2 subnets                              │
-│  ══════════════════════════════════════════════                              │
-│                                                                              │
-│   Chọn AZs:  ✓ 2a    ✓ 2b    ✓ 2c                                          │
-│   Subnets:   ✓ subnet-2a   ✓ subnet-2b   ❌ không có subnet 2c             │
-│                                                                              │
+│  ══════════════════════════════════════════════                             │
+│                                                                             │
+│   Chọn AZs:  ✓ 2a    ✓ 2b    ✓ 2c                                           │
+│   Subnets:   ✓ subnet-2a   ✓ subnet-2b   ❌ không có subnet 2c              │
+│                                                                             │
 │   → Subnet Group TẠO ĐƯỢC với 2 subnets                                     │
-│   → ❌ KHÔNG tạo được Multi-AZ Cluster (cần 3 subnets/3 AZs)               │
-│   → ✅ CÓ THỂ tạo Multi-AZ Instance (chỉ cần 2 subnets/2 AZs)              │
-│                                                                              │
+│   → ❌ KHÔNG tạo được Multi-AZ Cluster (cần 3 subnets/3 AZs)                │
+│   → ✅ CÓ THỂ tạo Multi-AZ Instance (chỉ cần 2 subnets/2 AZs)               │
+│                                                                             │
 │  Scenario 2: Chọn 1 AZ nhưng muốn add subnet từ AZ khác                     │
-│  ══════════════════════════════════════════════════════                      │
-│                                                                              │
-│   → KHÔNG THỂ! Dropdown subnets chỉ hiện subnets TRONG AZ đã chọn          │
-│   → Phải thêm AZ vào selection để thấy subnets của AZ đó                   │
-│                                                                              │
+│  ══════════════════════════════════════════════════════                     │
+│                                                                             │
+│   → KHÔNG THỂ! Dropdown subnets chỉ hiện subnets TRONG AZ đã chọn           │
+│   → Phải thêm AZ vào selection để thấy subnets của AZ đó                    │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -737,25 +737,25 @@ Cho phép EC2/Lambda truy cập RDS/Aurora qua **IAM Role** thay vì password.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    IAM DATABASE AUTHENTICATION                               │
+│                    IAM DATABASE AUTHENTICATION                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   TRUYỀN THỐNG (Password):                                                  │
 │   ┌─────┐                           ┌─────────────────┐                     │
-│   │ EC2 │ ──── username/password ──► │ RDS / Aurora  │                     │
+│   │ EC2 │ ──── username/password ──►│ RDS / Aurora    │                     │
 │   └─────┘                           └─────────────────┘                     │
 │   ❌ Password hardcode trong code/config                                    │
 │   ❌ Password có thể bị lộ                                                  │
-│                                                                              │
-│   IAM AUTHENTICATION:                                                        │
+│                                                                             │
+│   IAM AUTHENTICATION:                                                       │
 │   ┌─────┐       ┌─────┐             ┌─────────────────┐                     │
-│   │ EC2 │ ───►  │ IAM │ ──token──► │ RDS / Aurora   │                     │
+│   │ EC2 │ ───►  │ IAM │ ──token──►  │ RDS / Aurora    │                     │
 │   │Role │       │ API │             └─────────────────┘                     │
 │   └─────┘       └─────┘                                                     │
 │   ✅ Không cần password                                                     │
-│   ✅ Token tự động expire (15 phút)                                        │
-│   ✅ IAM policies control access                                           │
-│                                                                              │
+│   ✅ Token tự động expire (15 phút)                                         │
+│   ✅ IAM policies control access                                            │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1037,26 +1037,26 @@ aws rds modify-db-instance --db-instance-identifier my-db --multi-az
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    QUÁ TRÌNH FAILOVER                                        │
+│                    QUÁ TRÌNH FAILOVER                                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  1. DETECTION (~10-30s)                                                      │
+│                                                                             │
+│  1. DETECTION (~10-30s)                                                     │
 │     • AWS phát hiện Primary failed                                          │
 │     • Health checks xác nhận lỗi (tránh false positive)                     │
-│                                                                              │
+│                                                                             │
 │  2. DNS PROPAGATION (~30-60s)                                               │
 │     • DNS endpoint được cập nhật để trỏ đến Standby                         │
 │     • DNS TTL cần thời gian để propagate                                    │
-│                                                                              │
-│  3. DATABASE RECOVERY                                                        │
+│                                                                             │
+│  3. DATABASE RECOVERY                                                       │
 │     • Standby replay các transaction logs chưa apply                        │
 │     • Đảm bảo data consistency - không mất transaction                      │
 │     • Database engine "warm up"                                             │
-│                                                                              │
+│                                                                             │
 │  4. CONNECTION RE-ESTABLISHMENT                                             │
 │     • Connections cũ bị đóng                                                │
 │     • Application cần reconnect đến endpoint                                │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1103,21 +1103,21 @@ Option **"Reboot with failover"** chỉ xuất hiện khi RDS đang ở **Multi-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    REBOOT OPTIONS                                            │
+│                    REBOOT OPTIONS                                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   SINGLE-AZ:                                                                 │
+│                                                                             │
+│   SINGLE-AZ:                                                                │
 │   ┌────────────────────────────────────────────┐                            │
 │   │  ○ Reboot                                  │  ← Chỉ có 1 option         │
-│   │  ☐ Reboot with failover (KHÔNG CÓ)        │                            │
+│   │  ☐ Reboot with failover (KHÔNG CÓ)         │                            │
 │   └────────────────────────────────────────────┘                            │
-│                                                                              │
-│   MULTI-AZ:                                                                  │
+│                                                                             │
+│   MULTI-AZ:                                                                 │
 │   ┌────────────────────────────────────────────┐                            │
 │   │  ○ Reboot                                  │  ← Reboot instance hiện tại│
-│   │  ☑ Reboot with failover                   │  ← Chuyển sang Standby     │
+│   │  ☑ Reboot with failover                    │  ← Chuyển sang Standby     │
 │   └────────────────────────────────────────────┘                            │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1279,7 +1279,7 @@ Trước failover:                    Sau failover:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                Multi-AZ + Read Replicas (Production Setup)                    │
+│                Multi-AZ + Read Replicas (Production Setup)                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │         MULTI-AZ (HA)                          READ REPLICAS (Scale)         │
@@ -1367,25 +1367,25 @@ aws rds create-db-instance-read-replica \
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    VẤN ĐỀ: QUÁ NHIỀU CONNECTIONS                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   KHÔNG CÓ RDS PROXY:                                                       │
-│   ════════════════════                                                       │
-│                                                                              │
+│   ════════════════════                                                      │
+│                                                                             │
 │   Lambda 1 ──┐                                                              │
 │   Lambda 2 ──┼──► RDS (max_connections = 100)                               │
 │   Lambda 3 ──┤     ❌ Connection exhausted!                                 │
 │   ...        │     ❌ Mỗi Lambda mở connection mới                          │
 │   Lambda 100─┘     ❌ Lambda scale lên = connections tăng                   │
-│                                                                              │
+│                                                                             │
 │   CÓ RDS PROXY:                                                             │
-│   ══════════════                                                             │
-│                                                                              │
+│   ══════════════                                                            │
+│                                                                             │
 │   Lambda 1 ──┐                    ┌──────────┐                              │
 │   Lambda 2 ──┼──► RDS Proxy ──────►│   RDS   │                              │
 │   Lambda 3 ──┤   (Connection Pool) │         │                              │
 │   ...        │   ✅ Reuse connections│       │                              │
 │   Lambda 1000┘   ✅ 1000 requests → 50 connections                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1403,14 +1403,14 @@ aws rds create-db-instance-read-replica \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                              │
+│                                                                             │
 │   Application/Lambda                                                        │
 │         │                                                                   │
 │         ▼                                                                   │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                        RDS PROXY                                     │   │
+│   │                        RDS PROXY                                    │   │
 │   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │              Connection Pool (reusable connections)          │    │   │
+│   │  │              Connection Pool (reusable connections)          │   │   │
 │   │  │    ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐          │    │   │
 │   │  │    │ C1│ │ C2│ │ C3│ │ C4│ │ C5│ │...│ │C49│ │C50│          │    │   │
 │   │  │    └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ └───┘          │    │   │
@@ -1418,10 +1418,10 @@ aws rds create-db-instance-read-replica \
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │         │                                                                   │
 │         ▼                                                                   │
-│   ┌────────────────────┐    ┌────────────────────┐                         │
-│   │   RDS Primary      │    │   RDS Read Replica │                         │
-│   └────────────────────┘    └────────────────────┘                         │
-│                                                                              │
+│   ┌────────────────────┐    ┌────────────────────┐                          │
+│   │   RDS Primary      │    │   RDS Read Replica │                          │
+│   └────────────────────┘    └────────────────────┘                          │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1445,18 +1445,18 @@ aws rds create-db-instance-read-replica \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                              │
+│                                                                             │
 │   SPRING BOOT:                      LAMBDA:                                 │
-│   ════════════                      ═══════                                  │
+│   ════════════                      ═══════                                 │
 │   ┌─────────────────┐               Lambda 1 ──┐                            │
-│   │ HikariCP Pool   │               Lambda 2 ──┼── Mỗi instance = 1 conn   │
-│   │ (built-in)      │               Lambda 3 ──┘   → Cần RDS Proxy!        │
-│   └────────┬────────┘                      │                                │
+│   │ HikariCP Pool   │               Lambda 2 ──┼── Mỗi instance = 1 conn    │
+│   │ (built-in)      │               Lambda 3 ──┘   → Cần RDS Proxy!         │
+│   └────────┬────────┘                          │                            │
 │            │                               ▼                                │
 │            ▼                        ┌──────────────┐                        │
 │      ┌──────────┐                   │  RDS Proxy   │                        │
 │      │   RDS    │                   └──────┬───────┘                        │
-│      └──────────┘                          ▼                                │
+│                                     └──────────────┘                          ▼                                │
 │                                      ┌──────────┐                           │
 │   → Không cần Proxy                  │   RDS    │                           │
 │                                      └──────────┘                           │
@@ -1652,11 +1652,11 @@ Automatic election khi Primary fail
 ┌─────────────────────────────────────────┐
 │          Automated Backup               │
 │                                         │
-│  • Daily full backup (backup window)   │
+│  • Daily full backup (backup window)    │
 │  • Transaction logs (every 5 minutes)   │
 │  • Retention: 0-35 days                 │
-│  • Point-in-time recovery              │
-│  • Stored in S3 (managed by AWS)       │
+│  • Point-in-time recovery               │
+│  • Stored in S3 (managed by AWS)        │
 └─────────────────────────────────────────┘
 ```
 
@@ -1672,7 +1672,7 @@ Automatic election khi Primary fail
 │                                         │
 │  • User-initiated                       │
 │  • No expiration                        │
-│  • Can copy cross-region               │
+│  • Can copy cross-region                │
 │  • Can share with other accounts        │
 └─────────────────────────────────────────┘
 ```

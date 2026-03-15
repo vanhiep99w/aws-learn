@@ -71,7 +71,7 @@ CAF chia thành **6 perspectives**, mỗi perspective đại diện cho một kh
 │   │                                                                     │   │
 │   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   │
 │   │   │  PLATFORM    │  │  SECURITY    │  │  OPERATIONS  │              │   │
-│   │   │     🏗️       │  │     🔐       │  │      ⚙️      │              │   │
+│   │   │     🏗️       │  │     🔐       │  │      ⚙️      │                │   │
 │   │   │              │  │              │  │              │              │   │
 │   │   │ Architecture,│  │ IAM,         │  │ Monitoring,  │              │   │
 │   │   │ CI/CD,       │  │ Detection,   │  │ Incident,    │              │   │
@@ -258,15 +258,15 @@ CAF định nghĩa 4 giai đoạn để thực hiện cloud transformation:
 │      ❌ "Chưa có cloud governance policies"                                 │
 │      → Action: Define policies, cost management, compliance                 │
 │                                                                             │
-│   🏗️ PLATFORM:                                                              │
+│   🏗️ PLATFORM:                                                               │
 │      ❌ "Chưa có landing zone, CI/CD"                                       │
 │      → Action: Setup AWS Landing Zone, implement CI/CD                      │
 │                                                                             │
 │   🔐 SECURITY:                                                              │
-│      ⚠️ "Có IAM nhưng chưa có security monitoring"                          │
+│      ⚠️ "Có IAM nhưng chưa có security monitoring"                           │
 │      → Action: Implement GuardDuty, Security Hub                            │
 │                                                                             │
-│   ⚙️ OPERATIONS:                                                            │
+│   ⚙️ OPERATIONS:                                                             │
 │      ❌ "Chưa có cloud monitoring strategy"                                 │
 │      → Action: Setup CloudWatch, define runbooks                            │
 │                                                                             │
@@ -378,9 +378,9 @@ CAF định nghĩa 4 giai đoạn để thực hiện cloud transformation:
 │      💼 Business - Strategy & outcomes                                      │
 │      👥 People - Culture & skills                                           │
 │      📋 Governance - Risk & compliance                                      │
-│      🏗️ Platform - Architecture & infra                                     │
+│      🏗️ Platform - Architecture & infra                                      │
 │      🔐 Security - Protection & IAM                                         │
-│      ⚙️ Operations - Monitoring & automation                                │
+│      ⚙️ Operations - Monitoring & automation                                 │
 │                                                                             │
 │   🚀 4 PHASES: Envision → Align → Launch → Scale                            │
 │                                                                             │

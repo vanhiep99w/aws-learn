@@ -115,7 +115,7 @@ graph LR
 │                           RPO vs RTO                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ⏱️ RPO (Recovery Point Objective)   ⏱️ RTO (Recovery Time Objective)       │
+│  ⏱️ RPO (Recovery Point Objective)   ⏱️ RTO (Recovery Time Objective)         │
 │  ══════════════════════════════════   ══════════════════════════════════    │
 │                                                                             │
 │  "Mất bao nhiêu DATA?"               "DOWN bao lâu?"                        │
@@ -252,11 +252,11 @@ graph TB
 │  • AWS Backup (centralized)                                                 │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
-│  1. Restore DB từ snapshot              (⏱️ 30-60 min)                      │
-│  2. Launch EC2 từ AMI                   (⏱️ 10-30 min)                      │
-│  3. Deploy application code             (⏱️ 15-30 min)                      │
-│  4. Update Route 53 DNS                 (⏱️ 5-15 min)                       │
-│  5. Test & validate                     (⏱️ 30+ min)                        │
+│  1. Restore DB từ snapshot              (⏱️ 30-60 min)                       │
+│  2. Launch EC2 từ AMI                   (⏱️ 10-30 min)                       │
+│  3. Deploy application code             (⏱️ 15-30 min)                       │
+│  4. Update Route 53 DNS                 (⏱️ 5-15 min)                        │
+│  5. Test & validate                     (⏱️ 30+ min)                         │
 │  → Tổng: vài giờ đến 1 ngày                                                 │
 │                                                                             │
 │  ✅ Ưu điểm: Chi phí thấp nhất, đơn giản                                    │
@@ -291,10 +291,10 @@ graph TB
 │  • Route 53 health checks + failover                                        │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
-│  1. Promote DB replica → primary        (⏱️ 1-5 min)                        │
-│  2. Launch app servers từ AMI           (⏱️ 5-15 min)                       │
-│  3. Scale to production size            (⏱️ 5-10 min)                       │
-│  4. Route 53 tự failover (health check) (⏱️ auto)                           │
+│  1. Promote DB replica → primary        (⏱️ 1-5 min)                         │
+│  2. Launch app servers từ AMI           (⏱️ 5-15 min)                        │
+│  3. Scale to production size            (⏱️ 5-10 min)                        │
+│  4. Route 53 tự failover (health check) (⏱️ auto)                            │
 │  → Tổng: 10-30 phút                                                         │
 │                                                                             │
 │  ✅ Ưu điểm: DB luôn sync, fast DB failover                                 │
@@ -308,7 +308,7 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  🌡️ WARM STANDBY             RPO: Seconds | RTO: Minutes | Cost: $$$        │
+│  🌡️ WARM STANDBY             RPO: Seconds | RTO: Minutes | Cost: $$$         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  PRIMARY REGION                         DR REGION                           │
@@ -330,9 +330,9 @@ graph TB
 │  • Route 53 weighted/failover routing                                       │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
-│  1. Promote DB replica → primary        (⏱️ 1-5 min)                        │
-│  2. ASG scale up (25% → 100%)           (⏱️ 3-10 min)                       │
-│  3. Route 53 tự failover (health check) (⏱️ auto, < 1 min)                  │
+│  1. Promote DB replica → primary        (⏱️ 1-5 min)                         │
+│  2. ASG scale up (25% → 100%)           (⏱️ 3-10 min)                        │
+│  3. Route 53 tự failover (health check) (⏱️ auto, < 1 min)                   │
 │  → Tổng: vài phút                                                           │
 │                                                                             │
 │  ✅ Ưu điểm: Recovery nhanh, app đã running sẵn                             │
@@ -346,7 +346,7 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$                │
+│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  REGION A (Active)                      REGION B (Active)                   │
@@ -372,14 +372,14 @@ graph TB
 │  • CloudFormation StackSets (deploy đồng bộ)                                │
 │                                                                             │
 │  🔧 Khi Disaster xảy ra:                                                    │
-│  1. Route 53 health check phát hiện     (⏱️ auto, seconds)                  │
-│  2. Traffic tự route sang region healthy (⏱️ auto, seconds)                 │
-│  3. KHÔNG cần action thủ công           (⏱️ 0)                              │
+│  1. Route 53 health check phát hiện     (⏱️ auto, seconds)                   │
+│  2. Traffic tự route sang region healthy (⏱️ auto, seconds)                  │
+│  3. KHÔNG cần action thủ công           (⏱️ 0)                               │
 │  → Tổng: gần như 0s                                                         │
 │                                                                             │
 │  ✅ Ưu điểm: Zero downtime, best user experience                            │
 │  ❌ Nhược điểm: Chi phí gấp đôi, phức tạp data consistency                  │
-│  ⚠️ Challenge: Conflict resolution (last writer wins - DynamoDB)            │
+│  ⚠️ Challenge: Conflict resolution (last writer wins - DynamoDB)             │
 │  🎯 Use case: Mission-critical (banking, healthcare, global SaaS)           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -472,13 +472,13 @@ graph LR
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│          6Rs: Trade-off Migration Effort vs Long-term Benefit                │
+│          6Rs: Trade-off Migration Effort vs Long-term Benefit               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Migration    │                                                             │
 │  Effort ▲     │                                                             │
 │  (time+cost)  │                                                             │
-│         5 ────│──────────────────────── ⭐ REFACTOR ──────────────── max     │
+│         5 ────│──────────────────────── ⭐ REFACTOR ──────────────── max    │
 │               │                        (months, high dev cost)              │
 │         4 ────│                                                             │
 │               │                                                             │
@@ -487,15 +487,15 @@ graph LR
 │         2 ────│──── REPLATFORM ──── REPURCHASE                              │
 │               │    (weeks, low)     (weeks, license)                        │
 │         1 ────│── REHOST ──────────────────────────────────── min           │
-│               │  (days, lowest)   RETIRE     RETAIN                        │
-│         0 ────┼─────────┬─────────┬─────────┬─────────┬──────► Long-term   │
-│               │  Thấp   │   TB    │   Cao   │ Rất cao │        Benefit     │
+│               │  (days, lowest)   RETIRE     RETAIN                         │
+│         0 ────┼─────────┬─────────┬─────────┬─────────┬──────► Long-term    │
+│               │  Thấp   │   TB    │   Cao   │ Rất cao │        Benefit      │
 │                                                                             │
-│  📌 REHOST  = nhanh nhất, rẻ nhất lúc migrate, nhưng chưa optimize         │
-│  📌 REFACTOR = lâu nhất, đắt nhất lúc migrate, nhưng benefit lâu dài tốt  │
-│  📌 RETIRE/RETAIN = không tốn effort migrate, nhưng lý do khác nhau       │
-│     → Retire = không cần nữa, tắt đi tiết kiệm                           │
-│     → Retain = chưa migrate được, giữ lại on-prem chờ plan sau            │
+│  📌 REHOST  = nhanh nhất, rẻ nhất lúc migrate, nhưng chưa optimize          │
+│  📌 REFACTOR = lâu nhất, đắt nhất lúc migrate, nhưng benefit lâu dài tốt    │
+│  📌 RETIRE/RETAIN = không tốn effort migrate, nhưng lý do khác nhau         │
+│     → Retire = không cần nữa, tắt đi tiết kiệm                              │
+│     → Retain = chưa migrate được, giữ lại on-prem chờ plan sau              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -655,7 +655,7 @@ graph LR
 │  PostgreSQL → Aurora PostgreSQL                                             │
 │  Oracle → RDS Oracle                                                        │
 │                                                                             │
-│  ⚠️ HETEROGENEOUS (khác engine) → CẦN SCT trước                             │
+│  ⚠️ HETEROGENEOUS (khác engine) → CẦN SCT trước                              │
 │  ═══════════════════════════════════════════                                │
 │  Oracle → Aurora PostgreSQL     (SCT convert schema trước)                  │
 │  SQL Server → Aurora MySQL      (SCT convert schema trước)                  │
@@ -729,7 +729,7 @@ graph TB
 │  • Cross-Region Copy: Tự động copy backup sang DR region                    │
 │  • Cross-Account Copy: Copy sang account khác (security)                    │
 │                                                                             │
-│  🗃️ Backup Vault:                                                           │
+│  🗃️ Backup Vault:                                                            │
 │  • Encrypted với KMS                                                        │
 │  • Vault Lock: WORM (Write Once Read Many) — không xóa được                 │
 │  • Resource-based access policies                                           │

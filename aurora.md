@@ -46,11 +46,11 @@ Aurora nhanh hơn **không phải vì thay đổi MySQL/PostgreSQL engine**, mà
 ┌─────────────────────────────────────────────────────────────┐
 │              MYSQL/POSTGRESQL TRUYỀN THỐNG                  │
 │                                                             │
-│   DB Engine ──▶ Write full pages (16KB) ──▶ EBS Primary    │
+│   DB Engine ──▶ Write full pages (16KB) ──▶ EBS Primary     │
 │                        │                                    │
-│                        └──▶ Replicate 16KB ──▶ Standby EBS │
+│                        └──▶ Replicate 16KB ──▶ Standby EBS  │
 │                                                             │
-│   ❌ Ghi toàn bộ page 16KB dù chỉ thay đổi 1 byte          │
+│   ❌ Ghi toàn bộ page 16KB dù chỉ thay đổi 1 byte           │
 │   ❌ Network I/O rất nặng                                   │
 │   ❌ Replica lag cao (seconds)                              │
 └─────────────────────────────────────────────────────────────┘
@@ -62,19 +62,19 @@ Aurora nhanh hơn **không phải vì thay đổi MySQL/PostgreSQL engine**, mà
 ┌─────────────────────────────────────────────────────────────┐
 │                     AMAZON AURORA                           │
 │                                                             │
-│   DB Engine ──▶ Write only REDO LOG (~bytes)               │
+│   DB Engine ──▶ Write only REDO LOG (~bytes)                │
 │                        │                                    │
 │                        ▼                                    │
-│   ┌─────────────────────────────────────────────────┐      │
-│   │      Aurora Distributed Storage (6 copies)      │      │
-│   │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐│      │
-│   │  │AZ-a │ │AZ-a │ │AZ-b │ │AZ-b │ │AZ-c │ │AZ-c ││      │
-│   │  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ └─────┘│      │
-│   └─────────────────────────────────────────────────┘      │
+│   ┌─────────────────────────────────────────────────┐       │
+│   │      Aurora Distributed Storage (6 copies)      │       │
+│   │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ │      │
+│   │  │AZ-a │ │AZ-a │ │AZ-b │ │AZ-b │ │AZ-c │ │AZ-c │ │      │
+│   │  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ └─────┘ │      │
+│   └─────────────────────────────────────────────────┘       │
 │                                                             │
-│   ✅ Chỉ gửi log records (~bytes) - Giảm 90%+ I/O         │
+│   ✅ Chỉ gửi log records (~bytes) - Giảm 90%+ I/O           │
 │   ✅ Storage nodes tự rebuild pages                         │
-│   ✅ Quorum writes: Chỉ cần 4/6 nodes ACK = COMMIT         │
+│   ✅ Quorum writes: Chỉ cần 4/6 nodes ACK = COMMIT          │
 │   ✅ Replica lag ~10-20ms                                   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -104,29 +104,29 @@ Khi bạn ghi **1 record** vào Aurora, Aurora **TỰ ĐỘNG sao chép** record
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA STORAGE LAYER (TỰ ĐỘNG)                            │
+│                    AURORA STORAGE LAYER (TỰ ĐỘNG)                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Bạn có 1 Aurora Instance:                                                 │
-│         │                                                                    │
+│        │                                                                    │
 │         ▼  INSERT INTO users VALUES ('John')                                │
-│                                                                              │
+│                                                                             │
 │   Aurora tự động tạo 6 copies:                                              │
 │   ┌───────────────────────────────────────────────────────────────┐         │
 │   │   AZ-a              AZ-b              AZ-c                    │         │
-│   │  ┌──────────┐      ┌──────────┐      ┌──────────┐            │         │
-│   │  │Copy 1:   │      │Copy 3:   │      │Copy 5:   │            │         │
-│   │  │ John     │      │ John     │      │ John     │            │         │
-│   │  ├──────────┤      ├──────────┤      ├──────────┤            │         │
-│   │  │Copy 2:   │      │Copy 4:   │      │Copy 6:   │            │         │
-│   │  │ John     │      │ John     │      │ John     │            │         │
-│   │  └──────────┘      └──────────┘      └──────────┘            │         │
-│   │   2 copies          2 copies          2 copies   = 6 total   │         │
+│   │  ┌──────────┐      ┌──────────┐      ┌──────────┐             │         │
+│   │  │Copy 1:   │      │Copy 3:   │      │Copy 5:   │             │         │
+│   │  │ John     │      │ John     │      │ John     │             │         │
+│   │  ├──────────┤      ├──────────┤      ├──────────┤             │         │
+│   │  │Copy 2:   │      │Copy 4:   │      │Copy 6:   │             │         │
+│   │  │ John     │      │ John     │      │ John     │             │         │
+│   │  └──────────┘      └──────────┘      └──────────┘             │         │
+│   │   2 copies          2 copies          2 copies   = 6 total    │         │
 │   └───────────────────────────────────────────────────────────────┘         │
-│                                                                              │
-│   ✅ MẶC ĐỊNH - Bạn không cần làm gì                                       │
-│   ✅ Mục đích: Data durability (không bao giờ mất data)                    │
-│                                                                              │
+│                                                                             │
+│   ✅ MẶC ĐỊNH - Bạn không cần làm gì                                        │
+│   ✅ Mục đích: Data durability (không bao giờ mất data)                     │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -191,20 +191,20 @@ Scenario 3: Mất 1 AZ + 1 disk
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    QUORUM WRITES (4/6)                                       │
+│                    QUORUM WRITES (4/6)                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   INSERT INTO users VALUES ('John')                                         │
-│                                                                              │
-│   ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐                                │
-│   │ ✅ │ │ ✅ │ │ ✅ │ │ ✅ │ │ ⏳ │ │ ⏳ │                                │
-│   └────┘ └────┘ └────┘ └────┘ └────┘ └────┘                                │
+│                                                                             │
+│   ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐                                 │
+│   │ ✅ │ │ ✅ │ │ ✅ │ │ ✅ │ │ ⏳ │ │ ⏳ │                                 │
+│   └────┘ └────┘ └────┘ └────┘ └────┘ └────┘                                 │
 │     1      2      3      4      5      6                                    │
 │     └────────────────────────┘                                              │
-│           4 copies OK                                                        │
+│           4 copies OK                                                       │
 │           → Trả SUCCESS ngay!                                               │
 │           → Copy 5, 6 sẽ sync sau (background)                              │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -224,13 +224,13 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    LSN - CÁCH AURORA BIẾT DATA NÀO MỚI                       │
+│                    LSN - CÁCH AURORA BIẾT DATA NÀO MỚI                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Sau UPDATE balance = 1000:                                                │
 │   • 4 copies đã cập nhật (LSN = 101)                                        │
 │   • 2 copies chưa sync (LSN = 100)                                          │
-│                                                                              │
+│                                                                             │
 │   Khi READ (lấy 3 copies bất kỳ):                                           │
 │   ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐          │
 │   │ Copy A           │  │ Copy B           │  │ Copy C           │          │
@@ -241,12 +241,12 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 │            │                   │                    │                       │
 │            └───────────────────┴────────────────────┘                       │
 │                                │                                            │
-│                         Aurora so sánh:                                      │
+│                         Aurora so sánh:                                     │
 │                         MAX(101, 100, 100) = 101                            │
 │                                │                                            │
 │                         → Lấy data từ LSN=101                               │
 │                         → balance = 1000 (ĐÚNG!) ✅                         │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -260,22 +260,22 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    STORAGE AUTO-SCALING                                      │
+│                    STORAGE AUTO-SCALING                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Bắt đầu: 10 GB                                                            │
-│   ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░            │
-│                                                                              │
+│   ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             │
+│                                                                             │
 │   Data tăng → Storage TỰ ĐỘNG tăng (10GB increments)                        │
-│   ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░            │
-│                                                                              │
+│   ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             │
+│                                                                             │
 │   Tối đa: 128 TB                                                            │
 │   ████████████████████████████████████████████████████████████████████████  │
-│                                                                              │
+│                                                                             │
 │   ✅ Không cần provision trước                                              │
 │   ✅ Chỉ trả tiền cho storage đang dùng                                     │
 │   ✅ Không downtime khi scaling                                             │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -297,25 +297,25 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA REPLICAS                                           │
+│                    AURORA REPLICAS                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐              │
-│   │ WRITER  │     │REPLICA 1│     │REPLICA 2│     │REPLICA 3│              │
-│   │ (RW)    │     │  (RO)   │     │  (RO)   │     │  (RO)   │              │
-│   └────┬────┘     └────┬────┘     └────┬────┘     └────┬────┘              │
+│                                                                             │
+│   ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐               │
+│   │ WRITER  │     │REPLICA 1│     │REPLICA 2│     │REPLICA 3│               │
+│   │ (RW)    │     │  (RO)   │     │  (RO)   │     │  (RO)   │               │
+│   └────┬────┘     └────┬────┘     └────┬────┘     └────┬────┘               │
 │        │               │               │               │                    │
 │        └───────────────┴───────────────┴───────────────┘                    │
-│                               │                                              │
+│                              │                                              │
 │                    ┌──────────▼──────────┐                                  │
 │                    │   SHARED STORAGE    │                                  │
 │                    │   (6 copies/3 AZs)  │                                  │
 │                    └─────────────────────┘                                  │
-│                                                                              │
+│                                                                             │
 │   ✅ Tất cả đọc từ CÙNG storage layer                                       │
 │   ✅ Không cần replicate data giữa instances                                │
 │   ✅ Lag chỉ ~10-20ms (chờ cache invalidation)                              │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -341,31 +341,31 @@ Aurora có **4 loại endpoints**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA ENDPOINTS                                          │
+│                    AURORA ENDPOINTS                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  1. CLUSTER ENDPOINT (Writer)                                               │
 │     mydb.cluster-xxx.region.rds.amazonaws.com                               │
 │     → Luôn trỏ đến Writer instance                                          │
 │     → Dùng cho: INSERT, UPDATE, DELETE                                      │
-│                                                                              │
-│  2. READER ENDPOINT                                                          │
+│                                                                             │
+│  2. READER ENDPOINT                                                         │
 │     mydb.cluster-ro-xxx.region.rds.amazonaws.com                            │
 │     → Load balance giữa TẤT CẢ Aurora Replicas                              │
 │     → Dùng cho: SELECT (general reads)                                      │
 │     → Nếu không có Replica, trỏ về Primary                                  │
-│                                                                              │
-│  3. CUSTOM ENDPOINTS                                                         │
+│                                                                             │
+│  3. CUSTOM ENDPOINTS                                                        │
 │     mydb-analytics.cluster-custom-xxx.region.rds.amazonaws.com              │
 │     → Bạn tự định nghĩa subset of instances                                 │
 │     → Dùng cho: Workload-specific routing                                   │
 │     → Tối đa: 5 custom endpoints per cluster                                │
-│                                                                              │
-│  4. INSTANCE ENDPOINTS                                                       │
+│                                                                             │
+│  4. INSTANCE ENDPOINTS                                                      │
 │     mydb-instance-1.xxx.region.rds.amazonaws.com                            │
 │     → Trỏ trực tiếp đến 1 instance cụ thể                                   │
 │     → Dùng cho: Debugging, testing                                          │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -385,9 +385,9 @@ Aurora có **4 loại endpoints**:
 │    1 Primary + 2 Replicas = 5 Endpoints mặc định                       │
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
-│   ┌──────────┐      ┌──────────┐      ┌──────────┐                    │
-│   │ PRIMARY  │      │REPLICA 1 │      │REPLICA 2 │                    │
-│   └──────────┘      └──────────┘      └──────────┘                    │
+│   ┌──────────┐      ┌──────────┐      ┌──────────┐                     │
+│   │ PRIMARY  │      │REPLICA 1 │      │REPLICA 2 │                     │
+│   └──────────┘      └──────────┘      └──────────┘                     │
 │        ▲                 ▲                 ▲                           │
 │        │                 │                 │                           │
 │   Instance EP-1     Instance EP-2     Instance EP-3                    │
@@ -395,11 +395,11 @@ Aurora có **4 loại endpoints**:
 │        │                 └────────┬────────┘                           │
 │        │                          │                                    │
 │   Cluster EP               Reader EP                                   │
-│   (→ Primary)         (load balance → Replica 1 & 2)                  │
+│   (→ Primary)         (load balance → Replica 1 & 2)                   │
 │                                                                        │
 ├────────────────────────────────────────────────────────────────────────┤
-│   Mặc định: 1 + 1 + 3 = 5 endpoints                                   │
-│   + Custom: Tối đa 5 (tùy bạn tạo)                                    │
+│   Mặc định: 1 + 1 + 3 = 5 endpoints                                    │
+│   + Custom: Tối đa 5 (tùy bạn tạo)                                     │
 │   = Tối đa 10 endpoints                                                │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -411,27 +411,27 @@ Aurora có **4 loại endpoints**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CUSTOM ENDPOINTS                                          │
+│                    CUSTOM ENDPOINTS                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Scenario: Có 2 loại workload khác nhau                                    │
-│                                                                              │
+│                                                                             │
 │   OLTP Workload (nhẹ, nhanh):                                               │
 │   ┌─────────────────────────────────────────────────┐                       │
 │   │  Custom Endpoint: oltp.cluster-custom-xxx       │                       │
 │   │  → Replica 1 (r5.large)                         │                       │
 │   │  → Replica 2 (r5.large)                         │                       │
 │   └─────────────────────────────────────────────────┘                       │
-│                                                                              │
+│                                                                             │
 │   Analytics Workload (nặng, lâu):                                           │
 │   ┌─────────────────────────────────────────────────┐                       │
 │   │  Custom Endpoint: analytics.cluster-custom-xxx  │                       │
-│   │  → Replica 3 (r5.4xlarge) ← Instance lớn hơn   │                       │
+│   │  → Replica 3 (r5.4xlarge) ← Instance lớn hơn    │                       │
 │   │  → Replica 4 (r5.4xlarge)                       │                       │
 │   └─────────────────────────────────────────────────┘                       │
-│                                                                              │
+│                                                                             │
 │   → Analytics queries KHÔNG ảnh hưởng OLTP performance!                     │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -476,24 +476,24 @@ Aurora Serverless v2 **tự động** monitor và scale dựa trên:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SERVERLESS AUTO SCALING                                   │
+│                    SERVERLESS AUTO SCALING                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Bạn config:  Min ACUs: 0.5  │  Max ACUs: 32                               │
-│                                                                              │
+│                                                                             │
 │   Aurora tự động:                                                           │
 │   ┌───────────────────────────────────────────────────────────────────┐     │
-│   │   CPU ↑ cao   ──────►  Thêm ACUs (trong giây)                    │     │
-│   │   Memory ↑    ──────►  Thêm ACUs                                 │     │
-│   │   Connections ↑ ────►  Thêm ACUs                                 │     │
+│   │   CPU ↑ cao   ──────►  Thêm ACUs (trong giây)                     │     │
+│   │   Memory ↑    ──────►  Thêm ACUs                                  │     │
+│   │   Connections ↑ ────►  Thêm ACUs                                  │     │
 │   │                                                                   │     │
-│   │   CPU ↓ thấp  ──────►  Giảm ACUs (từ từ, tránh flapping)        │     │
+│   │   CPU ↓ thấp  ──────►  Giảm ACUs (từ từ, tránh flapping)          │     │
 │   └───────────────────────────────────────────────────────────────────┘     │
-│                                                                              │
+│                                                                             │
 │   ✅ Scale UP: Rất nhanh (giây)                                             │
 │   ✅ Scale DOWN: Chậm hơn (tránh scale lên xuống liên tục)                  │
 │   ✅ Số instances KHÔNG ĐỔI - chỉ thay đổi resources!                       │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -509,31 +509,31 @@ Aurora Serverless v2 **tự động** monitor và scale dựa trên:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA SERVERLESS V2                                      │
+│                    AURORA SERVERLESS V2                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Traffic thấp:                                                             │
 │   ┌─────┐                                                                   │
 │   │ 0.5 │ ACUs                                                              │
 │   │ ACU │                                                                   │
 │   └─────┘                                                                   │
-│                                                                              │
-│   Traffic tăng → Scale NGAY LẬP TỨC (giây):                                │
-│   ┌─────┐┌─────┐┌─────┐┌─────┐                                             │
-│   │     ││     ││     ││     │                                             │
+│                                                                             │
+│   Traffic tăng → Scale NGAY LẬP TỨC (giây):                                 │
+│   ┌─────┐┌─────┐┌─────┐┌─────┐                                              │
+│   │     ││     ││     ││     │                                              │
 │   │     ││     ││     ││     │  8 ACUs                                      │
-│   │     ││     ││     ││     │                                             │
-│   └─────┘└─────┘└─────┘└─────┘                                             │
-│                                                                              │
+│   │     ││     ││     ││     │                                              │
+│   └─────┘└─────┘└─────┘└─────┘                                              │
+│                                                                             │
 │   Traffic giảm → Scale down (smooth):                                       │
 │   ┌─────┐┌─────┐                                                            │
 │   │     ││     │  2 ACUs                                                    │
 │   └─────┘└─────┘                                                            │
-│                                                                              │
+│                                                                             │
 │   ✅ Pay per use (không cần chọn instance size)                             │
 │   ✅ No cold starts như v1                                                  │
-│   ✅ Mixed với Provisioned instances trong cùng cluster                    │
-│                                                                              │
+│   ✅ Mixed với Provisioned instances trong cùng cluster                     │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -569,9 +569,9 @@ Mục tiêu chính:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA GLOBAL DATABASE                                    │
+│                    AURORA GLOBAL DATABASE                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   PRIMARY REGION (us-east-1)           SECONDARY REGION (eu-west-1)         │
 │   ┌─────────────────────────┐         ┌─────────────────────────┐           │
 │   │  ┌────────┐ ┌────────┐  │         │  ┌────────┐ ┌────────┐  │           │
@@ -582,10 +582,10 @@ Mục tiêu chính:
 │   │  │ Storage Layer   │    │  ────►  │  │ Storage Layer   │    │           │
 │   │  └─────────────────┘    │         │  └─────────────────┘    │           │
 │   └─────────────────────────┘         └─────────────────────────┘           │
-│                                                                              │
+│                                                                             │
 │   Replication lag: < 1 giây (typically ~100ms)                              │
-│   Switchover/failover: promote secondary thành primary khi cần               │
-│                                                                              │
+│   Switchover/failover: promote secondary thành primary khi cần              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -687,22 +687,22 @@ FROM customers;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA BACKUP                                             │
+│                    AURORA BACKUP                                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   CONTINUOUS BACKUP to S3 (tự động)                                         │
-│                                                                              │
-│   ┌──────────────────────────────────────────────────────────────────┐     │
-│   │ Aurora Storage ──► S3 (continuous, incremental)                  │     │
-│   │                                                                   │     │
-│   │ Retention: 1-35 days                                             │     │
-│   │ Point-in-Time Recovery: Bất kỳ giây nào trong retention window   │     │
-│   └──────────────────────────────────────────────────────────────────┘     │
-│                                                                              │
-│   ✅ Không ảnh hưởng performance                                           │
-│   ✅ Không cần maintenance window                                          │
-│   ✅ Backup storage FREE (up to 100% of DB size)                           │
-│                                                                              │
+│                                                                             │
+│   ┌──────────────────────────────────────────────────────────────────┐      │
+│   │ Aurora Storage ──► S3 (continuous, incremental)                  │      │
+│   │                                                                  │      │
+│   │ Retention: 1-35 days                                             │      │
+│   │ Point-in-Time Recovery: Bất kỳ giây nào trong retention window   │      │
+│   └──────────────────────────────────────────────────────────────────┘      │
+│                                                                             │
+│   ✅ Không ảnh hưởng performance                                            │
+│   ✅ Không cần maintenance window                                           │
+│   ✅ Backup storage FREE (up to 100% of DB size)                            │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -710,26 +710,26 @@ FROM customers;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA BACKTRACK                                          │
+│                    AURORA BACKTRACK                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   Scenario: Accidentally DELETE important data                              │
-│                                                                              │
-│   Timeline:                                                                  │
-│   ────●────────●────────●────────●────────●────────●────                   │
+│                                                                             │
+│   Timeline:                                                                 │
+│   ────●────────●────────●────────●────────●────────●────                    │
 │       │        │        │        │        │        │                        │
-│     10:00    10:15    10:30    10:45    11:00    Now                       │
+│     10:00    10:15    10:30    10:45    11:00    Now                        │
 │                         │                                                   │
 │                     DELETE!                                                 │
-│                                                                              │
+│                                                                             │
 │   Traditional restore: Cần restore từ snapshot → 30+ phút                   │
-│   Backtrack: "Rewind" database về 10:29 → GIÂY!                            │
-│                                                                              │
+│   Backtrack: "Rewind" database về 10:29 → GIÂY!                             │
+│                                                                             │
 │   ✅ Không cần restore                                                      │
 │   ✅ In-place recovery                                                      │
 │   ✅ Window: up to 72 hours                                                 │
 │   ❌ Chỉ Aurora MySQL                                                       │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -784,44 +784,44 @@ Original cluster                    Clone (copy-on-write)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    RDS MULTI-AZ                                              │
+│                    RDS MULTI-AZ                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌───────────────┐              ┌───────────────┐                          │
 │   │   PRIMARY     │  Sync Block  │   STANDBY     │                          │
 │   │               │─────────────▶│               │                          │
 │   │   ┌───────┐   │  Replication │   ┌───────┐   │                          │
 │   │   │  EBS  │   │              │   │  EBS  │   │                          │
-│   │   │ 100GB │   │              │   │ 100GB │   │  ❌ Không đọc được      │
+│   │   │ 100GB │   │              │   │ 100GB │   │  ❌ Không đọc được       │
 │   │   └───────┘   │              │   └───────┘   │                          │
 │   └───────────────┘              └───────────────┘                          │
-│        AZ-a                           AZ-b                                   │
-│                                                                              │
+│        AZ-a                           AZ-b                                  │
+│                                                                             │
 │   → Failover: 1-2 phút (DNS propagation + recovery)                         │
 │   → Storage: 2 × 100GB = 200GB cost                                         │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    AURORA HA                                                 │
+│                    AURORA HA                                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │   ┌───────────┐   ┌───────────┐   ┌───────────┐                             │
 │   │  PRIMARY  │   │ REPLICA 1 │   │ REPLICA 2 │                             │
-│   │  (Writer) │   │  (Reader) │   │  (Reader) │  ✅ Đọc được!              │
+│   │  (Writer) │   │  (Reader) │   │  (Reader) │  ✅ Đọc được!               │
 │   └─────┬─────┘   └─────┬─────┘   └─────┬─────┘                             │
-│         │               │               │                                    │
-│         └───────────────┴───────────────┘                                    │
-│                         │                                                    │
+│         │               │              │                                    │
+│         └───────────────┴───────────────┘                                   │
+│                        │                                                    │
 │              ┌──────────▼──────────┐                                        │
 │              │   SHARED STORAGE    │                                        │
 │              │   (6 copies/3 AZs)  │                                        │
 │              │       100GB         │                                        │
 │              └─────────────────────┘                                        │
-│                                                                              │
-│   → Failover: ~30 giây (chỉ promote replica)                               │
+│                                                                             │
+│   → Failover: ~30 giây (chỉ promote replica)                                │
 │   → Storage: 100GB cost (shared, trả 1 lần)                                 │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

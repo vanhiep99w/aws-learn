@@ -17,27 +17,27 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    S3 STORAGE LENS                               │
+│                    S3 STORAGE LENS                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │                   AWS Organization                       │   │
-│   │   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │   │
-│   │   │Account 1│  │Account 2│  │Account 3│  │Account N│   │   │
-│   │   │┌───────┐│  │┌───────┐│  │┌───────┐│  │┌───────┐│   │   │
-│   │   ││Bucket ││  ││Bucket ││  ││Bucket ││  ││Bucket ││   │   │
-│   │   │└───────┘│  │└───────┘│  │└───────┘│  │└───────┘│   │   │
-│   │   └─────────┘  └─────────┘  └─────────┘  └─────────┘   │   │
+│   │                   AWS Organization                      │   │
+│   │   ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │   │
+│   │   │Account 1│  │Account 2│  │Account 3│  │Account N│    │   │
+│   │   │┌───────┐│  │┌───────┐│  │┌───────┐│  │┌───────┐│    │   │
+│   │   ││Bucket ││  ││Bucket ││  ││Bucket ││  ││Bucket ││    │   │
+│   │   │└───────┘│  │└───────┘│  │└───────┘│  │└───────┘│    │   │
+│   │   └─────────┘  └─────────┘  └─────────┘  └─────────┘    │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                              │                                   │
-│                              ▼                                   │
+│                             │                                   │
+│                              ▼                                  │
 │   ┌─────────────────────────────────────────────────────────┐   │
-│   │              S3 Storage Lens Dashboard                   │   │
+│   │              S3 Storage Lens Dashboard                  │   │
 │   │                                                         │   │
 │   │   📊 60+ Metrics    📈 Trends    💡 Recommendations     │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -127,18 +127,18 @@ Storage Lens cung cấp **contextual recommendations** để tối ưu:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    COST RECOMMENDATIONS                          │
+│                    COST RECOMMENDATIONS                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ⚠️ 500GB incomplete multipart uploads found                    │
+│                                                                 │
+│  ⚠️ 500GB incomplete multipart uploads found                     │
 │     └── Recommendation: Create lifecycle rule to abort          │
-│                                                                  │
-│  ⚠️ 2TB noncurrent versions in bucket-logs                      │
+│                                                                 │
+│  ⚠️ 2TB noncurrent versions in bucket-logs                       │
 │     └── Recommendation: Review versioning, add lifecycle        │
-│                                                                  │
-│  ⚠️ 80% of bucket-archive not accessed in 90 days              │
+│                                                                 │
+│  ⚠️ 80% of bucket-archive not accessed in 90 days                │
 │     └── Recommendation: Transition to Glacier                   │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

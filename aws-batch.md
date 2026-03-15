@@ -26,34 +26,34 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    REAL-TIME vs BATCH PROCESSING                     │
-│                                                                       │
-│  ┌─────────────────────────────────┐                                 │
-│  │      REAL-TIME PROCESSING       │                                 │
-│  │                                 │                                 │
-│  │   Request → Process → Response  │                                 │
-│  │      ↓         ↓         ↓      │                                 │
-│  │   User     Ngay lập   User      │                                 │
-│  │   gửi      tức xử lý   nhận     │                                 │    
-│  │                                 │                                 │
-│  │   Ví dụ: Web API, Chat app      │                                 │
-│  │   Latency: milliseconds         │                                 │
-│  └─────────────────────────────────┘                                 │
-│                                                                       │
-│  ┌─────────────────────────────────┐                                 │
-│  │       BATCH PROCESSING          │                                 │
-│  │                                 │                                 │
-│  │   Jobs → Queue → Process        │                                 │
-│  │    ↓       ↓        ↓           │                                 │
-│  │  Collect  Wait   Process        │                                 │
-│  │  nhiều   đến     tất cả         │                                 │
-│  │  jobs    lượt    cùng lúc       │                                 │
-│  │                                 │                                 │
-│  │   Ví dụ: Video encoding,        │                                 │
-│  │          Data analysis,         │                                 │
-│  │          ML training            │                                 │
-│  │   Duration: minutes → hours     │                                 │
-│  └─────────────────────────────────┘                                 │
+│                    REAL-TIME vs BATCH PROCESSING                    │
+│                                                                     │
+│  ┌─────────────────────────────────┐                                │
+│  │      REAL-TIME PROCESSING       │                                │
+│  │                                 │                                │
+│  │   Request → Process → Response  │                                │
+│  │      ↓         ↓         ↓      │                                │
+│  │   User     Ngay lập   User      │                                │
+│  │   gửi      tức xử lý   nhận     │                                │
+│  │                                 │                                │
+│  │   Ví dụ: Web API, Chat app      │                                │
+│  │   Latency: milliseconds         │                                │
+│  └─────────────────────────────────┘                                │
+│                                                                     │
+│  ┌─────────────────────────────────┐                                │
+│  │       BATCH PROCESSING          │                                │
+│  │                                 │                                │
+│  │   Jobs → Queue → Process        │                                │
+│  │    ↓       ↓        ↓           │                                │
+│  │  Collect  Wait   Process        │                                │
+│  │  nhiều   đến     tất cả         │                                │
+│  │  jobs    lượt    cùng lúc       │                                │
+│  │                                 │                                │
+│  │   Ví dụ: Video encoding,        │                                │
+│  │          Data analysis,         │                                │
+│  │          ML training            │                                │
+│  │   Duration: minutes → hours     │                                │
+│  └─────────────────────────────────┘                                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -72,32 +72,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      AWS BATCH USE CASES                             │
-│                                                                       │
-│  1. 🎬 MEDIA PROCESSING                                              │
+│                      AWS BATCH USE CASES                            │
+│                                                                     │
+│  1. 🎬 MEDIA PROCESSING                                             │
 │     ├── Video transcoding (1000s videos cùng lúc)                   │
-│     ├── Image processing pipelines                                   │
-│     └── Audio normalization                                          │
-│                                                                       │
-│  2. 🧬 SCIENTIFIC COMPUTING                                          │
-│     ├── Genomics data analysis                                       │
-│     ├── Drug discovery simulations                                   │
-│     └── Climate modeling                                             │
-│                                                                       │
-│  3. 🤖 MACHINE LEARNING                                              │
+│     ├── Image processing pipelines                                  │
+│     └── Audio normalization                                         │
+│                                                                     │
+│  2. 🧬 SCIENTIFIC COMPUTING                                         │
+│     ├── Genomics data analysis                                      │
+│     ├── Drug discovery simulations                                  │
+│     └── Climate modeling                                            │
+│                                                                     │
+│  3. 🤖 MACHINE LEARNING                                             │
 │     ├── Model training (đặc biệt với GPU)                           │
-│     ├── Hyperparameter tuning                                        │
-│     └── Batch inference                                              │
-│                                                                       │
-│  4. 📊 DATA PROCESSING                                               │
+│     ├── Hyperparameter tuning                                       │
+│     └── Batch inference                                             │
+│                                                                     │
+│  4. 📊 DATA PROCESSING                                              │
 │     ├── ETL jobs (Extract, Transform, Load)                         │
-│     ├── Log processing                                               │
-│     └── Financial simulations                                        │
-│                                                                       │
+│     ├── Log processing                                              │
+│     └── Financial simulations                                       │
+│                                                                     │
 │  5. 🏗️ RENDERING                                                     │
 │     ├── 3D rendering (Animation studios)                            │
-│     ├── VFX processing                                               │
-│     └── Architectural visualization                                  │
+│     ├── VFX processing                                              │
+│     └── Architectural visualization                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -109,36 +109,36 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     AWS BATCH ARCHITECTURE                           │
-│                                                                       │
-│  ┌─────────────┐                                                     │
-│  │   Submit    │ ──→ Job Definition (blueprint)                      │
-│  │    Job      │                                                     │
-│  └─────────────┘                                                     │
-│         │                                                            │
-│         ▼                                                            │
+│                     AWS BATCH ARCHITECTURE                          │
+│                                                                     │
+│  ┌─────────────┐                                                    │
+│  │   Submit    │ ──→ Job Definition (blueprint)                     │
+│  │    Job      │                                                    │
+│  └─────────────┘                                                    │
+│        │                                                            │
+│         ▼                                                           │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                      JOB QUEUE                               │    │
+│  │                      JOB QUEUE                              │    │
 │  │  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐          │    │
 │  │  │ Job 1 │ │ Job 2 │ │ Job 3 │ │ Job 4 │ │ Job 5 │          │    │
 │  │  └───────┘ └───────┘ └───────┘ └───────┘ └───────┘          │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│         │                                                            │
-│         ▼                                                            │
+│        │                                                            │
+│         ▼                                                           │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                  AWS BATCH SCHEDULER                         │    │
+│  │                  AWS BATCH SCHEDULER                        │    │
 │  │         (Evaluates when, where, how to run jobs)            │    │
 │  └─────────────────────────────────────────────────────────────┘    │
-│         │                                                            │
-│         ▼                                                            │
+│        │                                                            │
+│         ▼                                                           │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │               COMPUTE ENVIRONMENT                            │    │
-│  │                                                               │    │
-│  │   EC2 Instances hoặc Fargate                                 │    │
-│  │   ┌─────────┐ ┌─────────┐ ┌─────────┐                        │    │
-│  │   │ Job 1   │ │ Job 2   │ │ Job 3   │                        │    │
-│  │   │ Running │ │ Running │ │ Running │                        │    │
-│  │   └─────────┘ └─────────┘ └─────────┘                        │    │
+│  │               COMPUTE ENVIRONMENT                           │    │
+│  │                                                             │    │
+│  │   EC2 Instances hoặc Fargate                                │    │
+│  │   ┌─────────┐ ┌─────────┐ ┌─────────┐                       │    │
+│  │   │ Job 1   │ │ Job 2   │ │ Job 3   │                       │    │
+│  │   │ Running │ │ Running │ │ Running │                       │    │
+│  │   └─────────┘ └─────────┘ └─────────┘                       │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -149,19 +149,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        JOB DEFINITION                                │
-│                                                                       │
-│   = BLUEPRINT / Template cho jobs                                    │
-│   = Tương tự Task Definition trong ECS                               │
-│                                                                       │
-│   Định nghĩa:                                                        │
+│                        JOB DEFINITION                               │
+│                                                                     │
+│   = BLUEPRINT / Template cho jobs                                   │
+│   = Tương tự Task Definition trong ECS                              │
+│                                                                     │
+│   Định nghĩa:                                                       │
 │   ├── Container image (Docker image)                                │
 │   ├── vCPU và Memory requirements                                   │
 │   ├── Job role (IAM permissions)                                    │
-│   ├── Environment variables                                          │
-│   ├── Mount points và volumes                                        │
-│   ├── Retry strategy                                                 │
-│   ├── Timeout settings                                               │
+│   ├── Environment variables                                         │
+│   ├── Mount points và volumes                                       │
+│   ├── Retry strategy                                                │
+│   ├── Timeout settings                                              │
 │   └── Platform (EC2 hoặc Fargate)                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -201,26 +201,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                              JOB                                     │
-│                                                                       │
-│   = Instance của Job Definition đang chạy                            │
-│   = Một unit of work được submit                                     │
-│                                                                       │
-│   Job States:                                                        │
+│                              JOB                                    │
+│                                                                     │
+│   = Instance của Job Definition đang chạy                           │
+│   = Một unit of work được submit                                    │
+│                                                                     │
+│   Job States:                                                       │
 │   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐         │
 │   │ SUBMITTED│ → │ PENDING  │ → │ RUNNABLE │ → │ STARTING │         │
 │   └──────────┘   └──────────┘   └──────────┘   └──────────┘         │
-│                                                       │              │
-│                                                       ▼              │
+│                                                      │              │
+│                                                       ▼             │
 │                                               ┌──────────┐          │
 │                                               │ RUNNING  │          │
 │                                               └──────────┘          │
-│                                                    │                 │
+│                                                   │                 │
 │                                    ┌───────────────┼───────────────┐│
 │                                    ▼               ▼               ▼│
 │                              ┌──────────┐   ┌──────────┐   ┌──────────┐
-│                              │SUCCEEDED │   │  FAILED  │   │  TIMED   │
-│                              └──────────┘   └──────────┘   │   OUT   │
+│                              │SUCCEEDED │   │  FAILED  │   │  TIMED │
+│                              └──────────┘   └──────────┘   │   OUT  │
 │                                                            └──────────┘
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -246,17 +246,17 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         ARRAY JOB                                    │
-│                                                                       │
+│                         ARRAY JOB                                   │
+│                                                                     │
 │   1 Job Definition → 1000 Jobs song song                            │
-│                                                                       │
+│                                                                     │
 │   ┌─────────┐ ┌─────────┐ ┌─────────┐         ┌─────────┐           │
 │   │ Job[0]  │ │ Job[1]  │ │ Job[2]  │  ...    │Job[999] │           │
 │   │image-0  │ │image-1  │ │image-2  │         │image-999│           │
 │   └─────────┘ └─────────┘ └─────────┘         └─────────┘           │
-│                                                                       │
+│                                                                     │
 │   Mỗi job nhận AWS_BATCH_JOB_ARRAY_INDEX env variable               │
-│   để biết mình xử lý item nào                                        │
+│   để biết mình xử lý item nào                                       │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -266,15 +266,15 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          JOB QUEUE                                   │
-│                                                                       │
-│   = Hàng đợi chứa jobs chờ được xử lý                                │
-│   = Kết nối với 1 hoặc nhiều Compute Environments                    │
-│                                                                       │
-│   Features:                                                          │
+│                          JOB QUEUE                                  │
+│                                                                     │
+│   = Hàng đợi chứa jobs chờ được xử lý                               │
+│   = Kết nối với 1 hoặc nhiều Compute Environments                   │
+│                                                                     │
+│   Features:                                                         │
 │   ├── Priority: Queues có priority khác nhau                        │
 │   ├── Scheduling: FIFO trong cùng priority                          │
-│   ├── State: ENABLED / DISABLED                                      │
+│   ├── State: ENABLED / DISABLED                                     │
 │   └── Fallback: Nếu CE 1 đầy → chuyển sang CE 2                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -283,25 +283,25 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PRIORITY QUEUE SYSTEM                             │
-│                                                                       │
+│                    PRIORITY QUEUE SYSTEM                            │
+│                                                                     │
 │   ┌─────────────────────────────┐  Priority: 100 (CAO NHẤT)         │
-│   │    HIGH PRIORITY QUEUE      │  → Production jobs                 │
-│   │    ┌────┐ ┌────┐ ┌────┐     │                                    │
+│   │    HIGH PRIORITY QUEUE      │  → Production jobs                │
+│   │    ┌────┐ ┌────┐ ┌────┐    │                                    │
 │   │    │Job1│ │Job2│ │Job3│     │  ← Được xử lý TRƯỚC               │
-│   └─────────────────────────────┘                                    │
-│                                                                       │
-│   ┌─────────────────────────────┐  Priority: 50                      │
-│   │    MEDIUM PRIORITY QUEUE    │  → Development jobs                │
-│   │    ┌────┐ ┌────┐            │                                    │
+│   └─────────────────────────────┘                                   │
+│                                                                     │
+│   ┌─────────────────────────────┐  Priority: 50                     │
+│   │    MEDIUM PRIORITY QUEUE    │  → Development jobs               │
+│   │    ┌────┐ ┌────┐           │                                    │
 │   │    │Job4│ │Job5│            │  ← Xử lý SAU high priority        │
-│   └─────────────────────────────┘                                    │
-│                                                                       │
+│   └─────────────────────────────┘                                   │
+│                                                                     │
 │   ┌─────────────────────────────┐  Priority: 10 (THẤP NHẤT)         │
-│   │     LOW PRIORITY QUEUE      │  → Batch reports                   │
-│   │    ┌────┐ ┌────┐ ┌────┐     │                                    │
+│   │     LOW PRIORITY QUEUE      │  → Batch reports                  │
+│   │    ┌────┐ ┌────┐ ┌────┐    │                                    │
 │   │    │    │ │    │ │    │     │  ← Xử lý cuối cùng                │
-│   └─────────────────────────────┘                                    │
+│   └─────────────────────────────┘                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -311,22 +311,22 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    COMPUTE ENVIRONMENT                               │
-│                                                                       │
-│   = Compute resources để chạy jobs                                   │
-│   = Tương tự ECS Cluster                                             │
-│                                                                       │
-│   2 LOẠI CHÍNH:                                                      │
-│                                                                       │
+│                    COMPUTE ENVIRONMENT                              │
+│                                                                     │
+│   = Compute resources để chạy jobs                                  │
+│   = Tương tự ECS Cluster                                            │
+│                                                                     │
+│   2 LOẠI CHÍNH:                                                     │
+│                                                                     │
 │   ┌───────────────────────────┐  ┌───────────────────────────┐      │
-│   │    MANAGED (AWS quản lý) │  │  UNMANAGED (Bạn quản lý)  │      │
+│   │    MANAGED (AWS quản lý)  │  │  UNMANAGED (Bạn quản lý)  │      │
 │   │                           │  │                           │      │
 │   │  AWS tự động:             │  │  Bạn phải:                │      │
 │   │  - Provision EC2/Fargate  │  │  - Tự tạo ECS cluster     │      │
 │   │  - Scale lên/xuống        │  │  - Tự scale instances     │      │
 │   │  - Patch instances        │  │  - Tự manage lifecycle    │      │
 │   │                           │  │                           │      │
-│   │  ✅ Recommended           │  │  ⚠️ Advanced use cases    │      │
+│   │  ✅ Recommended           │  │  ⚠️ Advanced use cases     │      │
 │   └───────────────────────────┘  └───────────────────────────┘      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -374,24 +374,24 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    EC2 vs FARGATE for BATCH                          │
-│                                                                       │
+│                    EC2 vs FARGATE for BATCH                         │
+│                                                                     │
 │  ┌──────────────────────────────┐  ┌──────────────────────────────┐ │
-│  │           EC2                │  │          FARGATE              │ │
+│  │           EC2                │  │          FARGATE             │ │
 │  │                              │  │                              │ │
 │  │  ✅ GPU support              │  │  ✅ Serverless, no servers   │ │
-│  │  ✅ Spot instances (rẻ)     │  │  ✅ Faster startup            │ │
-│  │  ✅ Custom AMIs              │  │  ✅ Simple pricing            │ │
+│  │  ✅ Spot instances (rẻ)      │  │  ✅ Faster startup           │ │
+│  │  ✅ Custom AMIs              │  │  ✅ Simple pricing           │ │
 │  │  ✅ Large instance types     │  │  ✅ No capacity planning     │ │
 │  │                              │  │                              │ │
-│  │  ❌ Slower cold start       │  │  ❌ No GPU support            │ │
-│  │  ❌ More config needed      │  │  ❌ Max 4 vCPU, 30GB RAM     │ │
+│  │  ❌ Slower cold start        │  │  ❌ No GPU support           │ │
+│  │  ❌ More config needed       │  │  ❌ Max 4 vCPU, 30GB RAM     │ │
 │  │                              │  │  ❌ No Spot pricing          │ │
 │  │                              │  │                              │ │
 │  │  Best for:                   │  │  Best for:                   │ │
-│  │  - GPU workloads            │  │  - Quick, small jobs         │ │
-│  │  - Large memory jobs        │  │  - Variable workloads        │ │
-│  │  - Cost optimization (Spot) │  │  - Simple batch processing   │ │
+│  │  - GPU workloads             │  │  - Quick, small jobs         │ │
+│  │  - Large memory jobs         │  │  - Variable workloads        │ │
+│  │  - Cost optimization (Spot)  │  │  - Simple batch processing   │ │
 │  └──────────────────────────────┘  └──────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -410,28 +410,28 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      JOB DEPENDENCIES                                │
-│                                                                       │
+│                      JOB DEPENDENCIES                               │
+│                                                                     │
 │   AWS Batch hỗ trợ chạy jobs theo thứ tự dependencies               │
-│                                                                       │
-│   Ví dụ: ETL Pipeline                                                │
-│                                                                       │
-│   ┌─────────────┐                                                    │
+│                                                                     │
+│   Ví dụ: ETL Pipeline                                               │
+│                                                                     │
+│   ┌─────────────┐                                                   │
 │   │   Extract   │ Job A: Download data từ S3                        │
-│   │   Job A     │                                                    │
-│   └──────┬──────┘                                                    │
-│          │ depends on                                                │
-│          ▼                                                           │
-│   ┌─────────────┐                                                    │
+│   │   Job A     │                                                   │
+│   └──────┬──────┘                                                   │
+│          │ depends on                                               │
+│          ▼                                                          │
+│   ┌─────────────┐                                                   │
 │   │  Transform  │ Job B: Process và transform data                  │
-│   │   Job B     │                                                    │
-│   └──────┬──────┘                                                    │
-│          │ depends on                                                │
-│          ▼                                                           │
-│   ┌─────────────┐                                                    │
+│   │   Job B     │                                                   │
+│   └──────┬──────┘                                                   │
+│          │ depends on                                               │
+│          ▼                                                          │
+│   ┌─────────────┐                                                   │
 │   │    Load     │ Job C: Load vào database                          │
-│   │   Job C     │                                                    │
-│   └─────────────┘                                                    │
+│   │   Job C     │                                                   │
+│   └─────────────┘                                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -458,28 +458,28 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AWS BATCH PRICING                             │
-│                                                                       │
-│   AWS Batch = FREE! 🎉                                               │
-│                                                                       │
-│   Bạn chỉ trả tiền cho:                                              │
+│                        AWS BATCH PRICING                            │
+│                                                                     │
+│   AWS Batch = FREE! 🎉                                              │
+│                                                                     │
+│   Bạn chỉ trả tiền cho:                                             │
 │   ├── EC2 instances (hoặc Fargate)                                  │
-│   ├── Data transfer                                                  │
+│   ├── Data transfer                                                 │
 │   └── Các AWS services khác (S3, ECR, etc.)                         │
-│                                                                       │
-│   TIẾT KIỆM CHI PHÍ:                                                 │
-│                                                                       │
+│                                                                     │
+│   TIẾT KIỆM CHI PHÍ:                                                │
+│                                                                     │
 │   1. Dùng SPOT INSTANCES (tiết kiệm đến 90%)                        │
-│      ┌──────────────────────────────────────┐                        │
-│      │  On-Demand: $0.096/hour              │                        │
-│      │  Spot:      $0.029/hour (70% off!)   │                        │
-│      └──────────────────────────────────────┘                        │
-│                                                                       │
+│      ┌──────────────────────────────────────┐                       │
+│      │  On-Demand: $0.096/hour              │                       │
+│      │  Spot:      $0.029/hour (70% off!)   │                       │
+│      └──────────────────────────────────────┘                       │
+│                                                                     │
 │   2. Set minvCpus = 0 (scale to zero khi idle)                      │
-│                                                                       │
-│   3. Right-size job resources                                        │
+│                                                                     │
+│   3. Right-size job resources                                       │
 │      Đừng request 8 vCPU nếu chỉ cần 2 vCPU                         │
-│                                                                       │
+│                                                                     │
 │   4. Dùng Savings Plans cho predictable workloads                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -492,23 +492,23 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    AWS BATCH vs LAMBDA                               │
-│                                                                       │
+│                    AWS BATCH vs LAMBDA                              │
+│                                                                     │
 │  ┌──────────────────────────────┐  ┌──────────────────────────────┐ │
 │  │         AWS BATCH            │  │          LAMBDA              │ │
 │  │                              │  │                              │ │
-│  │  Duration: Minutes → Hours   │  │  Duration: Max 15 minutes   │ │
-│  │  Memory: Up to TBs          │  │  Memory: Max 10 GB           │ │
-│  │  CPU: Up to 100s vCPUs      │  │  CPU: Max 6 vCPUs            │ │
+│  │  Duration: Minutes → Hours   │  │  Duration: Max 15 minutes    │ │
+│  │  Memory: Up to TBs           │  │  Memory: Max 10 GB           │ │
+│  │  CPU: Up to 100s vCPUs       │  │  CPU: Max 6 vCPUs            │ │
 │  │  GPU: ✅ Yes                 │  │  GPU: ❌ No                  │ │
-│  │  Custom runtime: ✅ Docker   │  │  Custom: Limited runtimes   │ │
-│  │  Cold start: Slower         │  │  Cold start: Faster          │ │
+│  │  Custom runtime: ✅ Docker   │  │  Custom: Limited runtimes    │ │
+│  │  Cold start: Slower          │  │  Cold start: Faster          │ │
 │  │                              │  │                              │ │
 │  │  Best for:                   │  │  Best for:                   │ │
-│  │  - Long-running jobs        │  │  - Quick tasks (<15 min)     │ │
-│  │  - Batch processing         │  │  - Event-driven              │ │
-│  │  - HPC, ML training         │  │  - API backends              │ │
-│  │  - GPU workloads            │  │  - Real-time processing      │ │
+│  │  - Long-running jobs         │  │  - Quick tasks (<15 min)     │ │
+│  │  - Batch processing          │  │  - Event-driven              │ │
+│  │  - HPC, ML training          │  │  - API backends              │ │
+│  │  - GPU workloads             │  │  - Real-time processing      │ │
 │  └──────────────────────────────┘  └──────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -517,27 +517,27 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     AWS BATCH vs ECS                                 │
-│                                                                       │
-│  AWS Batch = Built ON TOP of ECS                                     │
-│                                                                       │
+│                     AWS BATCH vs ECS                                │
+│                                                                     │
+│  AWS Batch = Built ON TOP of ECS                                    │
+│                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                       AWS BATCH                               │   │
-│  │   + Job queuing                                               │   │
-│  │   + Job scheduling                                            │   │
-│  │   + Automatic scaling based on job queue                      │   │
-│  │   + Job dependencies                                          │   │
-│  │   + Retry policies                                            │   │
+│  │                       AWS BATCH                              │   │
+│  │   + Job queuing                                              │   │
+│  │   + Job scheduling                                           │   │
+│  │   + Automatic scaling based on job queue                     │   │
+│  │   + Job dependencies                                         │   │
+│  │   + Retry policies                                           │   │
 │  │   ┌──────────────────────────────────────────────────────┐   │   │
-│  │   │                     ECS                               │   │   │
-│  │   │   Container orchestration                             │   │   │
+│  │   │                     ECS                               │  │   │
+│  │   │   Container orchestration                             │  │   │
 │  │   └──────────────────────────────────────────────────────┘   │   │
 │  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  Chọn ECS khi:                  Chọn Batch khi:                      │
-│  - Long-running services        - Batch/job workloads                │
-│  - Web APIs, microservices      - Scheduled processing               │
-│  - Always-on applications       - Run-to-completion jobs             │
+│                                                                     │
+│  Chọn ECS khi:                  Chọn Batch khi:                     │
+│  - Long-running services        - Batch/job workloads               │
+│  - Web APIs, microservices      - Scheduled processing              │
+│  - Always-on applications       - Run-to-completion jobs            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -559,33 +559,33 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│              VIDEO PROCESSING PIPELINE với AWS BATCH                 │
-│                                                                       │
+│              VIDEO PROCESSING PIPELINE với AWS BATCH                │
+│                                                                     │
 │   User uploads video → S3 → Lambda → AWS Batch Jobs                 │
-│                                                                       │
+│                                                                     │
 │   ┌────────┐    ┌────────┐    ┌─────────────────────────────────┐   │
-│   │  User  │ → │   S3   │ → │         EventBridge              │   │
+│   │  User  │ →  │   S3   │ →  │         EventBridge             │   │
 │   │        │    │(Upload)│    └─────────────┬───────────────────┘   │
-│   └────────┘    └────────┘                  │                        │
-│                                              ▼                        │
+│   └────────┘    └────────┘                 │                        │
+│                                              ▼                      │
 │                               ┌─────────────────────────────────┐   │
 │                               │      Submit to AWS Batch        │   │
 │                               └─────────────────────────────────┘   │
-│                                              │                        │
-│                                              ▼                        │
+│                                            │                        │
+│                                              ▼                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                      JOB QUEUE                               │   │
+│   │                      JOB QUEUE                              │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│                                              │                        │
-│             ┌────────────────────────────────┼────────────────┐      │
-│             ▼                                ▼                ▼      │
+│                                            │                        │
+│             ┌────────────────────────────────┼────────────────┐     │
+│             ▼                                ▼                ▼     │
 │   ┌─────────────────┐            ┌─────────────────┐ ┌─────────────┐│
 │   │ Job 1: Extract  │            │ Job 2: Transcode│ │Job 3: Upload││
 │   │ - Download      │ depends →  │ - 1080p         │ │ - S3 output ││
 │   │ - Validate      │            │ - 720p          │ │ - Notify    ││
 │   └─────────────────┘            │ - 480p          │ └─────────────┘│
-│                                  └─────────────────┘                 │
-│                                                                       │
+│             └─────────────────────────────────────────────────┘     │
+│                                                                     │
 │   Compute Environment: EC2 với GPU instances (g4dn.xlarge)          │
 │   Spot Instances để tiết kiệm 70% chi phí                           │
 └─────────────────────────────────────────────────────────────────────┘
@@ -638,33 +638,33 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  AWS BATCH INTEGRATIONS                              │
-│                                                                       │
-│   ┌───────────────┐  Submit jobs                                     │
-│   │  EventBridge  │ ──────────────────┐                              │
-│   │  (Scheduler)  │                   │                              │
-│   └───────────────┘                   ▼                              │
-│                               ┌───────────────┐                      │
-│   ┌───────────────┐           │               │                      │
-│   │  Step         │ ────────► │   AWS BATCH   │                      │
-│   │  Functions    │           │               │                      │
-│   └───────────────┘           └───────┬───────┘                      │
-│                                       │                              │
+│                  AWS BATCH INTEGRATIONS                             │
+│                                                                     │
+│   ┌───────────────┐  Submit jobs                                    │
+│   │  EventBridge  │ ──────────────────┐                             │
+│   │  (Scheduler)  │                  │                              │
+│   └───────────────┘                   ▼                             │
+│                               ┌───────────────┐                     │
+│   ┌───────────────┐           │              │                      │
+│   │  Step         │ ────────► │   AWS BATCH  │                      │
+│   │  Functions    │           │              │                      │
+│   └───────────────┘           └───────┬───────┘                     │
+│                                      │                              │
 │   ┌───────────────┐                   │ Jobs read/write             │
-│   │    Lambda     │ ────────────────► │                              │
-│   │  (Trigger)    │                   ▼                              │
-│   └───────────────┘           ┌───────────────┐                      │
-│                               │     S3        │                      │
-│   ┌───────────────┐           │   (Data)      │                      │
-│   │     ECR       │ ◄─────────┤               │                      │
-│   │ (Container    │           └───────────────┘                      │
-│   │  Images)      │                                                  │
-│   └───────────────┘           ┌───────────────┐                      │
-│                               │  CloudWatch   │                      │
-│   ┌───────────────┐           │  (Logs &      │                      │
-│   │   Secrets     │           │   Metrics)    │                      │
-│   │   Manager     │           └───────────────┘                      │
-│   └───────────────┘                                                  │
+│   │    Lambda     │ ────────────────►│                              │
+│                               │  (Trigger)    │                   ▼ │
+│   └───────────────┘           ┌───────────────┐                     │
+│                               │     S3        │                     │
+│   ┌───────────────┐           │   (Data)     │                      │
+│   │     ECR       │ ◄─────────┤              │                      │
+│   │ (Container    │           └───────────────┘                     │
+│                               │  Images)      │                     │
+│   └───────────────┘           ┌───────────────┐                     │
+│                               │  CloudWatch   │                     │
+│   ┌───────────────┐           │  (Logs &     │                      │
+│   │   Secrets     │           │   Metrics)   │                      │
+│   │   Manager     │           └───────────────┘                     │
+│                               └───────────────┘                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -762,19 +762,19 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUDWATCH METRICS                                │
-│                                                                       │
-│   Job Queue Metrics:                                                 │
-│   ├── JobsSubmitted                                                  │
-│   ├── JobsPending                                                    │
-│   ├── JobsRunning                                                    │
-│   ├── JobsSucceeded                                                  │
-│   └── JobsFailed                                                     │
-│                                                                       │
-│   Compute Environment Metrics:                                       │
-│   ├── DesiredvCpus                                                   │
-│   ├── ActualvCpus                                                    │
-│   └── RunningJobs                                                    │
+│                    CLOUDWATCH METRICS                               │
+│                                                                     │
+│   Job Queue Metrics:                                                │
+│   ├── JobsSubmitted                                                 │
+│   ├── JobsPending                                                   │
+│   ├── JobsRunning                                                   │
+│   ├── JobsSucceeded                                                 │
+│   └── JobsFailed                                                    │
+│                                                                     │
+│   Compute Environment Metrics:                                      │
+│   ├── DesiredvCpus                                                  │
+│   ├── ActualvCpus                                                   │
+│   └── RunningJobs                                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -802,29 +802,29 @@ aws batch submit-job \
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     AWS BATCH SUMMARY                                │
-│                                                                       │
-│   WHAT: Managed batch computing service                              │
-│                                                                       │
-│   COMPONENTS:                                                        │
+│                     AWS BATCH SUMMARY                               │
+│                                                                     │
+│   WHAT: Managed batch computing service                             │
+│                                                                     │
+│   COMPONENTS:                                                       │
 │   ├── Job Definition: Blueprint cho jobs                            │
 │   ├── Job: Unit of work thực thi                                    │
 │   ├── Job Queue: Hàng đợi với priority                              │
 │   └── Compute Environment: EC2 hoặc Fargate                         │
-│                                                                       │
-│   WHEN TO USE:                                                       │
+│                                                                     │
+│   WHEN TO USE:                                                      │
 │   ├── Long-running batch jobs (>15 minutes)                         │
 │   ├── GPU workloads (ML training, video encoding)                   │
-│   ├── Massively parallel processing                                  │
-│   └── Scheduled data processing                                      │
-│                                                                       │
-│   KEY FEATURES:                                                      │
+│   ├── Massively parallel processing                                 │
+│   └── Scheduled data processing                                     │
+│                                                                     │
+│   KEY FEATURES:                                                     │
 │   ├── Auto-scaling compute resources                                │
 │   ├── Job dependencies và orchestration                             │
 │   ├── Spot instance support (cost savings)                          │
-│   ├── Fair share scheduling                                          │
+│   ├── Fair share scheduling                                         │
 │   └── Integration với Step Functions, EventBridge                   │
-│                                                                       │
+│                                                                     │
 │   PRICING: Free! Chỉ trả cho underlying compute (EC2/Fargate)       │
 └─────────────────────────────────────────────────────────────────────┘
 ```

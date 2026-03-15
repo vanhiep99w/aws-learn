@@ -188,7 +188,7 @@ graph TB
 │  📊 CLOUDWATCH KEY POINTS                                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ⚠️ EC2 Default Metrics:                                                    │
+│  ⚠️ EC2 Default Metrics:                                                     │
 │  ├── ✅ CÓ sẵn: CPU, Network, Disk I/O, Status Checks                       │
 │  ├── ❌ KHÔNG có: Memory, Disk space (cần CloudWatch Agent)                 │
 │  └── Default period: 5 phút (Detailed: 1 phút, có phí)                      │
