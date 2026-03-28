@@ -2,6 +2,7 @@ import { source } from '@/lib/source';
 import { DocsPage, DocsBody, DocsTitle, DocsDescription } from 'fumadocs-ui/page';
 import { notFound } from 'next/navigation';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
+import { MermaidDiagram } from '@/components/mermaid';
 import type { Metadata } from 'next';
 
 export default async function Page({
@@ -19,7 +20,7 @@ export default async function Page({
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDX components={defaultMdxComponents} />
+        <MDX components={{ ...defaultMdxComponents, MermaidDiagram }} />
       </DocsBody>
     </DocsPage>
   );
