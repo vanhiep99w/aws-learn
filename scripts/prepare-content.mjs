@@ -160,4 +160,36 @@ for (const [sectionName, dir] of Object.entries(SECTION_TO_DIR)) {
   }
 }
 
+// ── Step 5: Write root meta.json to define sidebar category order ──────────────
+
+const CATEGORY_ORDER = [
+  'fundamentals',
+  'compute',
+  'storage',
+  'database',
+  'networking',
+  'security',
+  'monitoring-management',
+  'messaging-streaming',
+  'data-integration',
+  'analytics',
+  'migration',
+  'iac',
+  'developer-tools',
+  'account-management',
+  'cost-management',
+  'ai-ml',
+  'application-integration',
+  'global-architecture',
+  'end-user-computing',
+  'partner-marketplace',
+  'support',
+];
+
+writeFileSync(
+  join(docsBase, 'meta.json'),
+  JSON.stringify({ pages: CATEGORY_ORDER }, null, 2),
+  'utf8'
+);
+
 console.log(`\nDone! Files written to content/docs/`);
