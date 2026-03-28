@@ -123,40 +123,26 @@ body{
 /* ══ HERO ══ */
 .hero{
   position:relative;z-index:2;
-  max-width:1400px;margin:0 auto;
-  display:grid;grid-template-columns:1fr 1fr;align-items:center;
-  padding:20px 48px 0;min-height:540px;
+  max-width:860px;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:80px 48px 0;
 }
-.hero-left{
-  position:relative;height:520px;
-  animation:fadeIn .9s ease both;
-}
-.robot-frame{
-  position:absolute;inset:-20px;overflow:hidden;
-  -webkit-mask-image:radial-gradient(ellipse 85% 80% at 50% 48%,black 20%,transparent 64%);
-  mask-image:radial-gradient(ellipse 85% 80% at 50% 48%,black 20%,transparent 64%);
-}
-.robot-frame iframe{
-  width:100%;height:calc(100% + 80px);border:none;display:block;margin-bottom:-80px;
-}
-
-.hero-right{padding:0 0 0 24px}
-.hero-right .overline{
+.hero .overline{
   font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:500;
   color:#a78bfa;letter-spacing:.12em;text-transform:uppercase;
-  margin-bottom:20px;display:flex;align-items:center;gap:8px;
+  margin-bottom:28px;display:flex;align-items:center;gap:8px;
   animation:fadeUp .5s .1s ease both;
 }
-.hero-right .overline::before{
+.hero .overline::before{
   content:'';width:24px;height:2px;background:linear-gradient(90deg,#a78bfa,#ec4899);border-radius:2px;
 }
-.hero-right h1{
+.hero h1{
   font-family:'Bricolage Grotesque',sans-serif;
-  font-size:clamp(3rem,5.5vw,5rem);font-weight:800;
-  line-height:.95;margin-bottom:24px;letter-spacing:-.03em;
+  font-size:clamp(3.2rem,7vw,6.5rem);font-weight:800;
+  line-height:.92;margin-bottom:28px;letter-spacing:-.04em;
   animation:fadeUp .5s .2s ease both;
 }
-.hero-right h1 .color{
+.hero h1 .color{
   display:block;
   background:linear-gradient(135deg,#c084fc 0%,#f472b6 25%,#fb923c 50%,#fbbf24 70%,#22d3ee 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -165,14 +151,14 @@ body{
 }
 @keyframes hue{0%{background-position:0% 50%}100%{background-position:100% 50%}}
 
-.hero-right p{
-  font-size:1.1rem;line-height:1.8;color:rgba(240,238,246,.5);
-  max-width:440px;margin-bottom:36px;font-weight:300;
+.hero p{
+  font-size:1.15rem;line-height:1.8;color:rgba(240,238,246,.5);
+  max-width:520px;margin-bottom:40px;font-weight:300;
   animation:fadeUp .5s .3s ease both;
 }
 
 .btns{
-  display:flex;gap:14px;flex-wrap:wrap;
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
   animation:fadeUp .5s .4s ease both;
 }
 .b{
@@ -326,13 +312,8 @@ footer a:hover{color:#a78bfa}
 @media(max-width:1024px){.tg{grid-template-columns:repeat(3,1fr)}.tc.featured{grid-column:span 1;padding:24px}}
 @media(max-width:768px){
   .nav{padding:16px 24px}
-  .hero{grid-template-columns:1fr;padding:10px 24px 0;min-height:auto}
-  .hero-left{height:320px}
-  .hero-right{padding:0;text-align:center}
-  .hero-right .overline{justify-content:center}
-  .hero-right h1{font-size:2.6rem}
-  .hero-right p{margin:0 auto 28px}
-  .btns{justify-content:center}
+  .hero{padding:60px 24px 0}
+  .hero h1{font-size:2.8rem}
   .stats{grid-template-columns:repeat(3,1fr);gap:10px;padding:0 24px;margin-top:32px}
   .stat-card{padding:24px 12px}
   .stat-n{font-size:2rem}
@@ -340,7 +321,7 @@ footer a:hover{color:#a78bfa}
   .tg{grid-template-columns:1fr 1fr}
 }
 @media(max-width:480px){
-  .hero-right h1{font-size:2.2rem}
+  .hero h1{font-size:2.2rem}
   .stats{grid-template-columns:1fr;gap:8px}
   .tg{grid-template-columns:1fr}
 }
@@ -374,26 +355,15 @@ footer a:hover{color:#a78bfa}
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero-left">
-          <div className="robot-frame">
-            <iframe
-              src="https://my.spline.design/robotfollowcursorforlandingpage-2ZUEhWrgZHesgpg3Gjv8SoCB/"
-              loading="lazy"
-              title="3D Robot assistant"
-            />
-          </div>
-        </div>
-        <div className="hero-right">
-          <div className="overline"><span>Open-source & miễn phí</span></div>
-          <h1>
-            Học AWS{' '}
-            <span className="color">có hệ thống</span>
-          </h1>
-          <p>Tài liệu chi tiết về 116 dịch vụ AWS, tổ chức theo 21 chủ đề, từ cơ bản đến nâng cao. Hoàn toàn bằng tiếng Việt.</p>
-          <div className="btns">
-            <a href="/fundamentals/aws-overview/" className="b b-glow">Bắt đầu học <span className="arr">→</span></a>
-            <a href="/beads/" className="b b-glass">Practice Q&A <span className="arr">→</span></a>
-          </div>
+        <div className="overline"><span>Open-source & miễn phí</span></div>
+        <h1>
+          Học AWS{' '}
+          <span className="color">có hệ thống</span>
+        </h1>
+        <p>Tài liệu chi tiết về 116 dịch vụ AWS, tổ chức theo 21 chủ đề, từ cơ bản đến nâng cao. Hoàn toàn bằng tiếng Việt.</p>
+        <div className="btns">
+          <a href="/fundamentals/aws-overview/" className="b b-glow">Bắt đầu học <span className="arr">→</span></a>
+          <a href="/beads/" className="b b-glass">Practice Q&A <span className="arr">→</span></a>
         </div>
       </section>
 
