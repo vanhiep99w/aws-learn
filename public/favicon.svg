@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7b7"/>
-      <stop offset="100%" stop-color="#a78bfa"/>
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
     </linearGradient>
   </defs>
   <rect width="32" height="32" rx="7" fill="#0c0e14"/>
-  <text x="16" y="23" text-anchor="middle" font-family="monospace" font-weight="700" font-size="18" fill="url(#g)">A</text>
+  <!-- cloud shape -->
+  <path d="M7 20a3.5 3.5 0 003.5 3.5h11A4.5 4.5 0 0025 15a4.5 4.5 0 00-4.18 2.84A4 4 0 007 20z" fill="url(#g)"/>
 </svg>
