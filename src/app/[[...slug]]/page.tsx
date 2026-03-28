@@ -1,6 +1,6 @@
 import { source } from '@/lib/source';
 import { DocsPage, DocsBody, DocsTitle, DocsDescription } from 'fumadocs-ui/page';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { MermaidDiagram } from '@/components/mermaid';
 import type { Metadata } from 'next';
@@ -11,6 +11,7 @@ export default async function Page({
   params: Promise<{ slug?: string[] }>;
 }) {
   const { slug } = await params;
+  if (!slug) redirect('/fundamentals/aws-overview/');
   const page = source.getPage(slug);
   if (!page) notFound();
 
@@ -27,7 +28,7 @@ export default async function Page({
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  return [{ slug: [] as string[] }, ...source.generateParams()];
 }
 
 export async function generateMetadata({
