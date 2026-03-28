@@ -6,6 +6,11 @@
   --fd-font-mono: 'JetBrains Mono', monospace;
 }
 
+/* Wider content area */
+#nd-page article {
+  max-width: none;
+}
+
 /* Vietnamese text readability */
 .prose {
   line-height: 1.8;
