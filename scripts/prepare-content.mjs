@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * Prepare AWS Learning markdown files for Astro Starlight.
+ * Prepare AWS Learning markdown files for Fumadocs.
  *
  * 1. Parse README.md → extract file-to-category/title/description/order mapping
  * 2. For each .md file: add YAML frontmatter, strip manual TOC, rewrite cross-doc links
- * 3. Copy files into src/content/docs/{category}/
+ * 3. Copy files into content/docs/{category}/
+ * 4. Write meta.json per category for Fumadocs sidebar labels
  */
 
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
@@ -93,7 +94,8 @@ for (const [filename, meta] of fileMap) {
 
 // ── Step 2–3: Process each file ────────────────────────────────────────────────
 
-const docsBase = join(ROOT, 'src', 'content', 'docs');
+// Output to content/docs/ (Fumadocs convention)
+const docsBase = join(ROOT, 'content', 'docs');
 
 for (const [filename, meta] of fileMap) {
   const srcPath = join(ROOT, filename);
@@ -126,13 +128,11 @@ for (const [filename, meta] of fileMap) {
     }
   );
 
-  // 2d. Build frontmatter
+  // 2d. Build frontmatter (Fumadocs uses title + description natively)
   const frontmatter = [
     '---',
     `title: "${title.replace(/"/g, '\\"')}"`,
     `description: "${meta.description.replace(/"/g, '\\"')}"`,
-    'sidebar:',
-    `  order: ${meta.order}`,
     '---',
   ].join('\n');
 
@@ -150,4 +150,14 @@ for (const [filename, meta] of fileMap) {
   console.log(`  ✓ ${filename} → ${meta.dir}/`);
 }
 
-console.log(`\nDone! Files written to src/content/docs/`);
+// ── Step 4: Write meta.json per category for Fumadocs sidebar labels ──────────
+
+for (const [sectionName, dir] of Object.entries(SECTION_TO_DIR)) {
+  const categoryDir = join(docsBase, dir);
+  if (existsSync(categoryDir)) {
+    const metaPath = join(categoryDir, 'meta.json');
+    writeFileSync(metaPath, JSON.stringify({ title: sectionName }, null, 2), 'utf8');
+  }
+}
+
+console.log(`\nDone! Files written to content/docs/`);

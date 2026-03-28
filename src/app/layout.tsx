@@ -1,0 +1,18 @@
+import type { ReactNode } from 'react';
+import { RootProvider } from 'fumadocs-ui/provider';
+import './globals.css';
+
+export const metadata = {
+  title: 'AWS Learning',
+  description: 'Tài liệu học AWS tiếng Việt — 116 dịch vụ, 21 chủ đề',
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="vi" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <RootProvider>{children}</RootProvider>
+      </body>
+    </html>
+  );
+}
