@@ -364,7 +364,7 @@ body{
 </div>
 
 <script>
-const API = 'https://www.dolthub.com/api/v1alpha1/vanhiep99w/aws-learn';
+const API = '/api/questions';
 const POLL_MS = 5000;
 
 let issues = [];
@@ -381,37 +381,31 @@ let loadedCount = 0;
 let hasMore = true;
 let loadingMore = false;
 
-async function query(sql) {
-  const res = await fetch(`${API}?q=${encodeURIComponent(sql)}`);
-  if (!res.ok) throw new Error(`API ${res.status}`);
-  return res.json();
-}
-
 async function fetchData() {
   const limit = Math.max(loadedCount, PAGE_SIZE);
-  const [issuesRes, labelsRes] = await Promise.all([
-    query(`SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at FROM issues WHERE status = 'open' ORDER BY updated_at DESC LIMIT ${limit}`),
-    query('SELECT issue_id, label FROM labels'),
-  ]);
+  const res = await fetch(`${API}?limit=${limit}&offset=0`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  const data = await res.json();
+
   labelsMap = {};
-  for (const r of labelsRes.rows) (labelsMap[r.issue_id] ||= []).push(r.label);
+  for (const r of data.labels) (labelsMap[r.issue_id] ||= []).push(r.label);
 
   const changedIds = new Set();
   const newMap = {};
-  for (const r of issuesRes.rows) {
+  for (const r of data.rows) {
     newMap[r.id] = r.updated_at;
     if (prevUpdatedMap[r.id] && prevUpdatedMap[r.id] !== r.updated_at) changedIds.add(r.id);
     if (!prevUpdatedMap[r.id] && Object.keys(prevUpdatedMap).length > 0) changedIds.add(r.id);
   }
   prevUpdatedMap = newMap;
 
-  issues = issuesRes.rows.map(r => {
+  issues = data.rows.map(r => {
     let meta = {};
     try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
     return { ...r, meta, labels: labelsMap[r.id] || [] };
   });
   loadedCount = issues.length;
-  hasMore = issuesRes.rows.length >= limit;
+  hasMore = data.rows.length >= limit;
 
   populateFilters();
   renderList(changedIds);
@@ -426,17 +420,19 @@ async function loadMore() {
   if (loadingMore || !hasMore) return;
   loadingMore = true;
   try {
-    const res = await query(`SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at FROM issues WHERE status = 'open' ORDER BY updated_at DESC LIMIT ${PAGE_SIZE} OFFSET ${loadedCount}`);
-    if (res.rows.length === 0) { hasMore = false; return; }
-    if (res.rows.length < PAGE_SIZE) hasMore = false;
-    const newIssues = res.rows.map(r => {
+    const res = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${loadedCount}`);
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    if (data.rows.length === 0) { hasMore = false; return; }
+    if (data.rows.length < PAGE_SIZE) hasMore = false;
+    const newIssues = data.rows.map(r => {
       let meta = {};
       try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
       return { ...r, meta, labels: labelsMap[r.id] || [] };
     });
     issues.push(...newIssues);
     loadedCount = issues.length;
-    for (const r of res.rows) prevUpdatedMap[r.id] = r.updated_at;
+    for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
     populateFilters();
     renderList();
   } finally { loadingMore = false; }

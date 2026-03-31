@@ -1,2 +1,7 @@
 name = "aws-learn"
 pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "aws-question"
+database_id = "cd6aa10d-f25d-40fe-9f29-8e7513066603"
