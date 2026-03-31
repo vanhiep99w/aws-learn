@@ -5,6 +5,7 @@ import './globals.css';
 export const metadata = {
   title: 'AWS Learning',
   description: 'Tài liệu học AWS tiếng Việt — 116 dịch vụ, 21 chủ đề',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
