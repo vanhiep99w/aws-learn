@@ -200,15 +200,12 @@ api_key = os.environ.get('AWS_LEARN_API_KEY', '')
 result = subprocess.run(
     ['curl', '-s', '-X', 'POST', 'https://aws-learn.pages.dev/api/questions',
      '-H', 'Content-Type: application/json',
-     '-H', f'X-API-Key: {api_key}',
      '-d', payload],
     capture_output=True, text=True
 )
 print(result.stdout)
 "
 ```
-
-**Biến môi trường cần thiết**: `AWS_LEARN_API_KEY` — API key để ghi vào D1.
 
 ### Yêu cầu chất lượng
 

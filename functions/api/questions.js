@@ -1,7 +1,7 @@
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
+  'Access-Control-Allow-Headers': 'Content-Type',
 };
 
 function json(data, status = 200) {
@@ -57,11 +57,6 @@ export async function onRequest({ request, env }) {
 
   // POST /api/questions — create new question
   if (request.method === 'POST') {
-    const apiKey = request.headers.get('X-API-Key');
-    if (!env.QUESTIONS_API_KEY || apiKey !== env.QUESTIONS_API_KEY) {
-      return json({ error: 'Unauthorized' }, 401);
-    }
-
     let body;
     try {
       body = await request.json();
