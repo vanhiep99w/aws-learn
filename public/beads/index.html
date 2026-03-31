@@ -11,7 +11,45 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-:root{
+:root,
+[data-theme="light"]{
+  --bg:#f5f7fa;
+  --surface:#ffffff;
+  --surface2:#f0f2f5;
+  --surface3:#e4e8ee;
+  --border:#dce0e8;
+  --border-hi:#c4cbd6;
+  --text:#1a1d26;
+  --text2:#5a6175;
+  --text3:#8891a5;
+  --accent:#059669;
+  --accent-dim:rgba(5,150,105,.07);
+  --accent-border:rgba(5,150,105,.25);
+  --purple:#7c3aed;
+  --purple-dim:rgba(124,58,237,.07);
+  --rose:#e11d48;
+  --rose-dim:rgba(225,29,72,.06);
+  --teal:#0d9488;
+  --teal-dim:rgba(13,148,136,.07);
+  --correct:#059669;
+  --correct-dim:rgba(5,150,105,.08);
+  --correct-border:rgba(5,150,105,.3);
+  --wrong:#dc2626;
+  --wrong-dim:rgba(220,38,38,.05);
+  --wrong-border:rgba(220,38,38,.2);
+  --cite-bg:rgba(124,58,237,.04);
+  --cite-border:rgba(124,58,237,.25);
+  --shadow:rgba(0,0,0,.06);
+  --logo-glow:rgba(5,150,105,.35);
+  --live-glow:rgba(5,150,105,.4);
+  --toggle-on-bg:rgba(5,150,105,.15);
+  --opt-correct-bg:rgba(5,150,105,.12);
+  --opt-wrong-bg:rgba(220,38,38,.1);
+  --opt-selected-bg:rgba(5,150,105,.12);
+  --submit-hover-bg:rgba(5,150,105,.12);
+}
+
+[data-theme="dark"]{
   --bg:#0c0e14;
   --surface:#13161f;
   --surface2:#1a1e2b;
@@ -38,6 +76,14 @@
   --wrong-border:rgba(248,113,113,.18);
   --cite-bg:rgba(167,139,250,.05);
   --cite-border:rgba(167,139,250,.2);
+  --shadow:rgba(0,0,0,.25);
+  --logo-glow:rgba(110,231,183,.4);
+  --live-glow:rgba(110,231,183,.5);
+  --toggle-on-bg:rgba(110,231,183,.2);
+  --opt-correct-bg:rgba(52,211,153,.15);
+  --opt-wrong-bg:rgba(248,113,113,.12);
+  --opt-selected-bg:rgba(110,231,183,.15);
+  --submit-hover-bg:rgba(110,231,183,.15);
 }
 
 html{font-size:16px}
@@ -57,14 +103,16 @@ body{
   padding:0 24px;height:56px;
   background:var(--surface);
   border-bottom:1px solid var(--border);
+  box-shadow:0 1px 3px var(--shadow);
   flex-shrink:0;
   display:flex;align-items:center;
+  z-index:10;
 }
 .header-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;width:100%}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
 .logo-dot{
   width:8px;height:8px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 10px rgba(110,231,183,.4);
+  box-shadow:0 0 10px var(--logo-glow);
 }
 .header h1{
   font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;
@@ -92,7 +140,7 @@ body{
 .refresh-info{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3)}
 .live-dot{
   width:7px;height:7px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 8px rgba(110,231,183,.5);animation:pulse-dot 2s ease-in-out infinite;
+  box-shadow:0 0 8px var(--live-glow);animation:pulse-dot 2s ease-in-out infinite;
 }
 .live-dot.off{background:var(--text3);box-shadow:none;animation:none}
 @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
@@ -103,7 +151,7 @@ body{
   width:32px;height:16px;background:var(--surface3);border-radius:8px;
   position:relative;cursor:pointer;transition:background .25s;
 }
-.toggle.on{background:rgba(110,231,183,.2)}
+.toggle.on{background:var(--toggle-on-bg)}
 .toggle::after{
   content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;
   background:var(--text3);border-radius:50%;transition:transform .25s,background .25s;
@@ -180,16 +228,31 @@ body{
 
 /* ── Mode toggle ── */
 .mode-toggle{
-  display:inline-flex;border-radius:8px;overflow:hidden;
-  border:1px solid var(--border);background:var(--surface);font-family:'JetBrains Mono',monospace;
+  display:inline-flex;font-family:'Space Grotesk',sans-serif;
 }
 .mode-btn{
-  padding:5px 14px;font-size:.7rem;font-weight:600;letter-spacing:.04em;
-  cursor:pointer;border:none;background:transparent;color:var(--text3);
-  transition:all .15s;text-transform:uppercase;
+  padding:6px 16px;font-size:.8rem;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text3);
+  transition:all .2s;font-family:'Space Grotesk',sans-serif;
+  margin-left:-1px;position:relative;
 }
-.mode-btn.active{background:var(--accent-dim);color:var(--accent)}
-.mode-btn:hover:not(.active){color:var(--text2)}
+.mode-btn:first-child{border-radius:6px 0 0 6px;margin-left:0}
+.mode-btn:last-child{border-radius:0 6px 6px 0}
+.mode-btn.active{
+  background:var(--accent-dim);color:var(--accent);
+  border-color:var(--accent-border);font-weight:600;z-index:1;
+}
+.mode-btn:hover:not(.active){color:var(--text2);border-color:var(--border-hi);z-index:1}
+
+/* ── Theme toggle ── */
+.theme-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text2);cursor:pointer;
+  font-size:1rem;transition:all .2s;flex-shrink:0;
+}
+.theme-btn:hover{border-color:var(--border-hi);color:var(--text)}
 
 /* ── Question options ── */
 .q-stem{font-size:1rem;line-height:1.75;margin-bottom:16px;color:var(--text)}
@@ -210,15 +273,15 @@ body{
   transition:all .2s;
 }
 .q-opt.correct{border-color:var(--correct-border);background:var(--correct-dim)}
-.q-opt.correct .opt-id{background:rgba(52,211,153,.15);color:var(--correct)}
+.q-opt.correct .opt-id{background:var(--opt-correct-bg);color:var(--correct)}
 .q-opt.wrong{border-color:var(--wrong-border);background:var(--wrong-dim);opacity:.65}
-.q-opt.wrong .opt-id{background:rgba(248,113,113,.12);color:var(--wrong)}
+.q-opt.wrong .opt-id{background:var(--opt-wrong-bg);color:var(--wrong)}
 
 /* ── Practice mode ── */
 .q-opt.selectable{cursor:pointer}
 .q-opt.selectable:hover{border-color:var(--border-hi);background:var(--surface2)}
 .q-opt.selected{border-color:var(--accent-border);background:var(--accent-dim)}
-.q-opt.selected .opt-id{background:rgba(110,231,183,.15);color:var(--accent)}
+.q-opt.selected .opt-id{background:var(--opt-selected-bg);color:var(--accent)}
 
 .submit-row{display:flex;align-items:center;gap:14px;margin-top:14px;margin-bottom:8px}
 .submit-btn{
@@ -227,7 +290,7 @@ body{
   background:var(--accent-dim);color:var(--accent);cursor:pointer;
   transition:all .15s;letter-spacing:.03em;text-transform:uppercase;
 }
-.submit-btn:hover{background:rgba(110,231,183,.15);border-color:var(--accent)}
+.submit-btn:hover{background:var(--submit-hover-bg);border-color:var(--accent)}
 .submit-btn:disabled{opacity:.35;cursor:not-allowed}
 .submit-result{
   font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;
@@ -299,7 +362,7 @@ body{
 /* ── Scrollbar ── */
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--border-hi)}
 
 /* ── Responsive ── */
@@ -333,6 +396,7 @@ body{
       <button class="mode-btn" data-mode="review">Review</button>
     </div>
     <span class="spacer"></span>
+    <button class="theme-btn" id="theme-toggle" title="Toggle theme">☀️</button>
     <div class="refresh-info">
       <div class="live-dot on" id="live-dot"></div>
       <span class="live-label" id="live-label">LIVE</span>
@@ -752,6 +816,29 @@ fetchData().catch(err => {
   document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
 });
 startPoll();
+
+// ── Theme toggle ──
+function getPreferredTheme() {
+  const saved = localStorage.getItem('beads-theme');
+  if (saved) return saved;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle');
+  btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+}
+applyTheme(getPreferredTheme());
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('beads-theme', next);
+  applyTheme(next);
+});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (!localStorage.getItem('beads-theme')) applyTheme(e.matches ? 'dark' : 'light');
+});
 </script>
 </body>
 </html>
