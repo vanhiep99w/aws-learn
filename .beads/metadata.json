@@ -1,7 +1,0 @@
-{
-  "database": "dolt",
-  "backend": "dolt",
-  "dolt_mode": "server",
-  "dolt_database": "aws_learn",
-  "project_id": "e16cf011-0a80-43ce-9a2f-71f6b411aba8"
-}

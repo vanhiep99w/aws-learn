@@ -4,9 +4,9 @@
 
 Interactive AWS practice questions — deployed on Cloudflare Pages (push to `main` auto-deploys).
 
-- **Live**: [aws-learn.pages.dev/beads/](https://aws-learn.pages.dev/beads/)
-- **Source**: [`public/beads/index.html`](public/beads/index.html)
-- **Data**: [DoltHub — vanhiep99w/aws-learn](https://www.dolthub.com/repositories/vanhiep99w/aws-learn)
+- **Live**: [aws-learn.pages.dev/practice/](https://aws-learn.pages.dev/practice/)
+- **Source**: [`public/practice/index.html`](public/practice/index.html)
+- **Data**: Cloudflare D1 (`questions`, `question_labels`)
 
 Two modes:
 - **Practice** — chọn đáp án rồi submit mới hiện kết quả và giải thích
