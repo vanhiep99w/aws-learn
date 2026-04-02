@@ -1712,9 +1712,54 @@ Automatic election khi Primary fail
 - **ReplicaLag**: Độ trễ replication (replicas)
 
 ### Enhanced Monitoring:
-- Metrics ở OS level (processes, threads)
-- Granularity: 1-60 seconds
-- Lưu trong CloudWatch Logs
+- Metrics ở **OS level**, lấy từ **agent trên DB instance** nên chi tiết hơn CloudWatch metric chuẩn
+- Granularity: **1-60 giây**
+- Lưu trong **CloudWatch Logs** (`RDSOSMetrics`)
+- Hữu ích khi cần xem **process/thread nào đang ăn CPU hoặc memory**
+
+**Các nhóm metrics chính trong Enhanced Monitoring:**
+
+- **CPU**
+  - `CPU User`, `CPU System`, `CPU Idle`, `CPU Wait`, `CPU Total`
+  - Dùng để phân biệt CPU bận do user process, kernel hay đang chờ I/O
+- **Memory**
+  - `Free Memory`, `Active Memory`, `Inactive Memory`, `Cached Memory`, `Buffered Memory`, `Total Memory`
+  - Hữu ích khi nghi ngờ thiếu RAM hoặc memory pressure
+- **Load average**
+  - `Load Avg 1 min`, `Load Avg 5 min`, `Load Avg 15 min`
+  - Giúp nhìn nhanh mức độ tranh chấp CPU theo thời gian
+- **Disk I/O**
+  - `Read IO/s`, `Write IO/s`, `Read Kb/s`, `Write Kb/s`, `Disk I/O Await`, `Disk I/O Util`, `TPS`
+  - Dùng để phát hiện nghẽn I/O hoặc queue time tăng cao
+- **File system**
+  - `Total Filesystem`, `Used Filesystem`, `Used%`, `Max Inodes`, `Used Inodes`
+  - Theo dõi dung lượng và inode usage ở filesystem
+- **Network**
+  - `RX`, `TX`
+  - Cho biết lưu lượng network nhận/gửi ở mức OS
+- **Swap**
+  - `Swap`, `Free Swap`, `Swaps in`, `Swaps out`
+  - Quan trọng khi DB instance bắt đầu swap do thiếu memory
+- **Tasks / process state**
+  - `Tasks Running`, `Tasks Sleeping`, `Tasks Blocked`, `Tasks Zombie`, `Tasks Total`
+  - Hữu ích để thấy số task bị block hoặc hệ thống đang quá tải
+- **Process list**
+  - `CPU %`, `MEM%`, `RES`, `VIRT`
+  - Có thể xem theo 3 nhóm:
+    - **RDS child processes**: tiến trình DB engine chính, ví dụ `mysqld`
+    - **RDS processes**: RDS agent, diagnostics, các AWS support processes
+    - **OS processes**: kernel và system processes
+
+**Phân biệt nhanh với CloudWatch Metrics:**
+
+- **CloudWatch Metrics**: `CPUUtilization`, `DatabaseConnections`, `FreeableMemory`, `ReplicaLag`
+- **Enhanced Monitoring**: đi sâu vào **CPU breakdown**, **memory breakdown**, **disk/file system**, **task state**, **process list**
+
+**Nguồn AWS chính thức:**
+
+- [Monitoring OS metrics with Enhanced Monitoring](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html)
+- [OS metrics in Enhanced Monitoring](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring-Available-OS-Metrics.html)
+- [Viewing OS metrics in the RDS console](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.Viewing.html)
 
 ### Performance Insights:
 - Phân tích database load
