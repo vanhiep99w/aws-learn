@@ -10,6 +10,7 @@
 - [Subnet là gì?](#subnet-là-gì)
 - [Tác dụng của Subnet](#tác-dụng-của-subnet)
 - [Public Subnet vs Private Subnet](#public-subnet-vs-private-subnet)
+- [VPC Sharing](#vpc-sharing)
 - [Các thành phần trong VPC Dashboard](#các-thành-phần-trong-vpc-dashboard)
 - [Khi nào tạo VPC mới?](#khi-nào-tạo-vpc-mới)
 - [Khi nào tạo Subnet mới?](#khi-nào-tạo-subnet-mới)
@@ -399,6 +400,95 @@ Nhiều người nhầm lẫn các components trong VPC. Đây là tóm tắt:
 > - **Internet Gateway** chỉ là "đường đi", không quyết định ai được vào
 
 ---
+
+## VPC Sharing
+
+**VPC Sharing** là tính năng cho phép **nhiều AWS accounts trong cùng AWS Organizations** cùng sử dụng một **VPC được quản lý tập trung**.
+
+> **Điểm quan trọng:** Theo tài liệu AWS, account owner của VPC sẽ **share one or more subnets** cho các account khác (`participants`).
+>
+> Vì vậy:
+> - **Shared VPC** = cách gọi mô hình tổng thể
+> - **Shared subnets** = thứ được chia sẻ trên thực tế
+
+### Cách hoạt động
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          AWS Organizations                                   │
+│                                                                              │
+│  ┌──────────────────────────┐        shares subnets         ┌──────────────┐ │
+│  │ Account A (VPC Owner)    │ ───────────────────────────►  │ Account B    │ │
+│  │                          │                               │ Participant   │ │
+│  │  VPC 10.0.0.0/16         │                               └──────────────┘ │
+│  │  ├─ Subnet 10.0.1.0/24   │ ───────────────────────────►  ┌──────────────┐ │
+│  │  ├─ Subnet 10.0.2.0/24   │                               │ Account C    │ │
+│  │  └─ Route tables, NACLs  │                               │ Participant   │ │
+│  └──────────────────────────┘                               └──────────────┘ │
+│                                                                              │
+│  Account B/C có thể tạo EC2, RDS, Lambda... trong shared subnets            │
+│  nhưng VPC và subnet nền tảng vẫn do Account A quản lý                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### AWS mô tả như thế nào?
+
+AWS nêu rõ:
+
+> "VPC subnet sharing allows multiple AWS accounts to create their application resources ... into shared, centrally-managed virtual private clouds (VPCs)."
+
+> "The account that owns the VPC (owner) shares one or more subnets with other accounts (participants) that belong to the same organization from AWS Organizations."
+
+### Lợi ích chính
+
+| Lợi ích | Ý nghĩa |
+|---------|--------|
+| **Quản lý mạng tập trung** | Team networking giữ quyền quản lý VPC, route tables, NACLs, CIDR |
+| **Tách biệt trách nhiệm** | Các department/app teams vẫn dùng account riêng để quản lý workload |
+| **Interconnectivity cao** | Workloads ở các account khác nhau nhưng nằm trong cùng VPC nên tận dụng được routing nội bộ |
+| **Giảm số lượng VPC** | Không cần tạo quá nhiều VPC rồi peering/transit giữa chúng |
+| **Tối ưu IPv4** | Dùng chung không gian địa chỉ thay vì chia nhỏ nhiều VPC độc lập |
+
+### Ai quản lý cái gì?
+
+| Thành phần | VPC Owner | Participant Account |
+|------------|-----------|---------------------|
+| VPC, CIDR, route tables, NACL | ✅ | ❌ |
+| Share/unshare subnet | ✅ | ❌ |
+| Tạo EC2/RDS/Lambda trong shared subnet | ❌ | ✅ |
+| Quản lý tài nguyên do chính account tạo | ❌ | ✅ |
+
+> **Lưu ý:** Participant **không nhìn thấy** hoặc quản lý tài nguyên của participant khác hay của owner account, dù cùng dùng chung VPC.
+
+### Khi nào nên dùng?
+
+- Nhiều account trong cùng organization cần dùng chung network trung tâm
+- Ứng dụng cần **mức độ kết nối cao** giữa các workloads ở nhiều account
+- Muốn tách **network governance** khỏi **application ownership**
+- Muốn tránh kiến trúc quá nhiều VPC riêng rồi phải nối bằng peering hoặc Transit Gateway
+
+### So sánh nhanh: VPC Sharing vs VPC Peering
+
+| Tiêu chí | VPC Sharing | VPC Peering |
+|----------|-------------|-------------|
+| Bản chất | Nhiều account dùng chung subnet trong **cùng một VPC** | Kết nối **hai VPC riêng biệt** |
+| Có share subnet không? | ✅ Có | ❌ Không |
+| Quản lý mạng | Tập trung | Phân tán theo từng VPC |
+| Phù hợp khi | Multi-account cùng trust boundary | Hai VPC độc lập cần kết nối riêng tư |
+
+### Exam Tip
+
+> Nếu đề nói **AWS Organizations + shared centrally-managed VPCs + high interconnectivity**, đáp án thường là **VPC Sharing**.
+>
+> Nếu options có cả:
+> - `share a VPC`
+> - `share one or more subnets`
+>
+> thì chọn phương án nói về **share subnets**, vì đó là wording chính xác hơn theo tài liệu AWS.
+
+### Nguồn
+
+- AWS Documentation: Share your VPC subnets with other accounts — https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html
 
 ## Các thành phần trong VPC Dashboard
 
