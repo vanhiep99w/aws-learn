@@ -1056,7 +1056,9 @@ function showDetail(issue, scrollToTop = false) {
 
   // Bind option selection in practice mode
   if (isPractice && !state.submitted) {
-    panel.querySelectorAll('.q-opt.selectable').forEach(opt => {
+    const allOpts = panel.querySelectorAll('.q-opt.selectable');
+    const submitBtn = document.getElementById('submit-answer');
+    allOpts.forEach(opt => {
       opt.addEventListener('click', () => {
         const optId = opt.dataset.optId;
         if (!submittedAnswers[issue.id]) submittedAnswers[issue.id] = { selected: new Set(), submitted: false };
@@ -1066,11 +1068,12 @@ function showDetail(issue, scrollToTop = false) {
         } else {
           st.selected.clear();
           st.selected.add(optId);
+          allOpts.forEach(o => o.classList.remove('selected'));
         }
-        showDetail(issue, false);
+        opt.classList.toggle('selected', st.selected.has(optId));
+        if (submitBtn) submitBtn.disabled = st.selected.size === 0;
       });
     });
-    const submitBtn = document.getElementById('submit-answer');
     if (submitBtn) {
       submitBtn.addEventListener('click', () => {
         if (!submittedAnswers[issue.id]) return;
