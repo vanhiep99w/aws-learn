@@ -96,7 +96,9 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 **#X — <option>**
 <Giải thích chi tiết nhiều đoạn. Bám sát nguồn AWS.
 - Nêu rõ lý do kỹ thuật vì sao đây là đáp án đúng
-- Trích dẫn nguyên văn (quote block) từ tài liệu AWS
+- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, ngay bên dưới mỗi quote thêm dòng dịch tiếng Việt theo ngữ cảnh câu hỏi:
+  > "With Provisioned Throughput, you specify a level of throughput..."
+  > *→ Với Provisioned Throughput, bạn chỉ định mức throughput cụ thể mà file system cần đạt được, phù hợp khi biết trước nhu cầu hiệu năng.*
 - Nếu có quy trình hoạt động → liệt kê numbered steps
 - Bold key terms quan trọng
 - Đây là nội dung sẽ được copy nguyên văn vào D1 notes>

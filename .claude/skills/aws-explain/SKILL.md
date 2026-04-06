@@ -3,7 +3,7 @@ name: aws-explain
 description: >
   Phân tích câu hỏi AWS dạng tự luận hoặc trắc nghiệm (single-choice hoặc multi-select),
   xác minh bằng tài liệu AWS chính thức, chọn đáp án đúng theo chứng cứ,
-  rồi tự động lưu Q&A vào beads database.
+  rồi tự động lưu Q&A vào Cloudflare D1.
   Use when cần kiểm tra đáp án AWS, phản biện đáp án đã được đánh dấu sẵn,
   so sánh các phương án, xác minh chi tiết kỹ thuật AWS,
   đối chiếu tài liệu trong repo, và lưu trữ kiến thức AWS đã học.
@@ -19,7 +19,13 @@ description: >
 - Chọn đáp án đúng theo chứng cứ, giải thích chi tiết từng phương án.
 - Giữ nguyên thứ tự và vị trí đáp án gốc (`#1`, `#4`).
 - Đối chiếu tài liệu markdown trong repo hiện tại.
-- **Tự động lưu mọi Q&A vào beads** để xây dựng knowledge base.
+- **Tự động lưu mọi Q&A vào Cloudflare D1** để xây dựng knowledge base.
+
+## Quy tắc ngôn ngữ (QUAN TRỌNG)
+
+- **Câu hỏi và đáp án**: Luôn viết bằng **tiếng Anh** — giữ nguyên ngôn ngữ gốc, KHÔNG dịch sang tiếng Việt.
+- **Giải thích**: Viết bằng **tiếng Việt** — toàn bộ phần phân tích, lý do đúng/sai, kiến thức cốt lõi.
+- Trích dẫn từ tài liệu AWS giữ nguyên tiếng Anh, diễn giải/phân tích bằng tiếng Việt.
 
 ## Quy trình bắt buộc
 
@@ -56,34 +62,34 @@ description: >
 - `Suy luận hợp lý` — suy ra rõ ràng từ nội dung chính thức.
 - `Chưa xác minh được` — chưa đủ chứng cứ từ tài liệu AWS.
 
-### Bước 5: Lưu vào beads
+### Bước 5: Lưu vào D1
 
-Sau khi hoàn tất phân tích, **bắt buộc** lưu Q&A vào beads database. Xem chi tiết tại [Quy trình lưu beads](#quy-trình-lưu-beads).
+Sau khi hoàn tất phân tích, **bắt buộc** lưu Q&A vào Cloudflare D1. Xem chi tiết tại [Quy trình lưu D1](#quy-trình-lưu-d1).
 
 ## Mẫu đầu ra
 
-Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung section `🔍 GIẢI THÍCH CHI TIẾT` sẽ được **copy nguyên văn** vào beads notes, nên phải viết đầy đủ chi tiết ngay từ đầu.
+Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung section `🔍 GIẢI THÍCH CHI TIẾT` sẽ được **copy nguyên văn** vào D1 notes, nên phải viết đầy đủ chi tiết ngay từ đầu.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 CÂU HỎI
+📋 QUESTION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<Viết lại rõ ngữ cảnh + yêu cầu>
+<Restate the question clearly in English — keep original language, do NOT translate>
 
-- Loại: <single-choice | multi-select (chọn N)>
-- Phương án:
-  #1 — <Option 1>
-  #2 — <Option 2>
-  #3 — <Option 3>
-  #4 — <Option 4>
+- Type: <single-choice | multi-select (select N)>
+- Options:
+  #1 — <Option 1 in English>
+  #2 — <Option 2 in English>
+  #3 — <Option 3 in English>
+  #4 — <Option 4 in English>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ ĐÁP ÁN
+✅ ANSWER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**#X — <nội dung option đúng>**
-<nếu multi-select, liệt kê thêm>
+**#X — <correct option content in English>**
+<if multi-select, list all correct options in English>
 
 Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh được>
 
@@ -93,36 +99,38 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 
 ### Vì sao đúng
 
-**#X — <option>**
-<Giải thích chi tiết nhiều đoạn. Bám sát nguồn AWS.
+**#X — <option in English>**
+<Giải thích chi tiết nhiều đoạn bằng tiếng Việt. Bám sát nguồn AWS.
 - Nêu rõ lý do kỹ thuật vì sao đây là đáp án đúng
-- Trích dẫn nguyên văn (quote block) từ tài liệu AWS
+- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, ngay bên dưới mỗi quote thêm dòng dịch tiếng Việt theo ngữ cảnh câu hỏi:
+  > "With Provisioned Throughput, you specify a level of throughput..."
+  > *→ Với Provisioned Throughput, bạn chỉ định mức throughput cụ thể mà file system cần đạt được, phù hợp khi biết trước nhu cầu hiệu năng.*
 - Nếu có quy trình hoạt động → liệt kê numbered steps
 - Bold key terms quan trọng
-- Đây là nội dung sẽ được copy nguyên văn vào beads notes>
+- Đây là nội dung sẽ được copy nguyên văn vào D1 notes>
 
 ### Vì sao các đáp án khác sai
 
-**#Y — <option>**
-❌ <Giải thích chi tiết vì sao sai. Nêu rõ misconception/lý do kỹ thuật.
+**#Y — <option in English>**
+❌ <Giải thích chi tiết bằng tiếng Việt vì sao sai. Nêu rõ misconception/lý do kỹ thuật.
 Viết 3-5 câu mỗi option, không viết ngắn gọn 1 câu.
 Trích dẫn tài liệu AWS nếu cần để chứng minh option sai.>
 
-**#Z — <option>**
-❌ <Tương tự — giải thích đầy đủ, không rút gọn.>
+**#Z — <option in English>**
+❌ <Tương tự — giải thích đầy đủ bằng tiếng Việt, không rút gọn.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 💡 KIẾN THỨC CỐT LÕI
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 <2-4 bullet points tổng kết kiến thức quan trọng rút ra từ câu hỏi này.
-Viết dạng ghi nhớ, dễ ôn tập lại.>
+Viết dạng ghi nhớ, dễ ôn tập lại. Bằng tiếng Việt.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 NGUỒN THAM KHẢO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-- <Tiêu đề tài liệu> — <URL>
+- <Document title> — <URL>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📂 ĐỐI CHIẾU REPO
@@ -140,48 +148,30 @@ Viết dạng ghi nhớ, dễ ôn tập lại.>
 - Chi tiết: <giải thích khác biệt nếu có>
 ```
 
-## Quy trình lưu beads
+## Quy trình lưu D1
 
-Sau khi phân tích xong, lưu Q&A bằng **đúng 1 lệnh `bd create`** (bao gồm cả description và notes).
+Sau khi phân tích xong, lưu Q&A vào **Cloudflare D1** bằng 1 lệnh Python.
 
-**Quan trọng — format newline**: Dùng **blank line** (double newline) giữa mỗi option và mỗi section. BD UI không tôn trọng single newline.
+**Quan trọng — format newline**: Dùng **blank line** (double newline) giữa mỗi option và mỗi section. UI không tôn trọng single newline.
 
 ### Quy tắc nội dung notes — PHẢI GIỐNG HỆT câu trả lời đã hiển thị
 
-**Quan trọng**: Nội dung trong `--notes` phải là **bản sao nguyên văn** của các section "Vì sao đúng" và "Vì sao các đáp án khác sai" từ phần `🔍 GIẢI THÍCH CHI TIẾT` đã hiển thị cho user. KHÔNG được tóm tắt hay rút gọn. Copy nguyên xi nội dung đã viết.
+**Quan trọng**: Nội dung trong `notes` phải là **bản sao nguyên văn** của các section "Vì sao đúng" và "Vì sao các đáp án khác sai" từ phần `🔍 GIẢI THÍCH CHI TIẾT` đã hiển thị cho user. KHÔNG được tóm tắt hay rút gọn. Copy nguyên xi nội dung đã viết.
 
-### Lệnh tạo bead (1 lệnh duy nhất)
+**Quy tắc ngôn ngữ trong D1**:
+- `description` (Q, Options, Answer): viết bằng **tiếng Anh**
+- `notes` (giải thích, lý do): viết bằng **tiếng Việt**
+- `title` (~60 ký tự): viết bằng **tiếng Anh**
 
-Dùng `--stdin` cho description + `--notes` cho giải thích chi tiết, tất cả trong cùng 1 lệnh:
+### Lệnh lưu vào D1 (dùng Python để build JSON an toàn)
 
 ```bash
-bd create "<Tóm tắt câu hỏi (~60 ký tự)>" \
-  -t decision -p 3 \
-  -l "aws,<service>,<domain>" \
-  --metadata '{"type":"aws-qa","service":"<service>","answer":"#X","verification":"direct","question_type":"single","domain":"<domain>"}' \
-  --notes "$(cat <<'NOTES_EOF'
-## Vì sao đúng
+python3 -c "
+import json, subprocess, os
 
-<COPY NGUYÊN VĂN toàn bộ nội dung từ section "Vì sao đúng" trong phần 🔍 GIẢI THÍCH CHI TIẾT đã hiển thị cho user.
-Bao gồm: tên option, giải thích nhiều đoạn, tất cả trích dẫn AWS, numbered steps nếu có.
-KHÔNG tóm tắt. KHÔNG rút gọn. Giữ nguyên mọi quote block và bold text.>
+title = '<Summary of question in English (~60 chars)>'
 
-## Vì sao các đáp án khác sai
-
-<COPY NGUYÊN VĂN toàn bộ nội dung từ section "Vì sao các đáp án khác sai" trong phần 🔍 GIẢI THÍCH CHI TIẾT.
-Mỗi option sai giữ nguyên heading riêng, blank line trước #ID, toàn bộ giải thích chi tiết.>
-
-## Kiến thức cốt lõi
-
-<COPY NGUYÊN VĂN từ section 💡 KIẾN THỨC CỐT LÕI đã hiển thị>
-
-## Nguồn
-
-<COPY NGUYÊN VĂN từ section 📚 NGUỒN THAM KHẢO đã hiển thị>
-NOTES_EOF
-)" \
-  --stdin <<'BEAD_EOF'
-Q: <Câu hỏi đầy đủ>
+description = '''Q: <Full question text in English>
 
 Options:
 
@@ -193,38 +183,76 @@ Options:
 
 #4 — <option 4>
 
-Answer: #X — <nội dung đáp án đúng>
-BEAD_EOF
+Answer: #X — <correct option content in English>'''
+
+notes = '''## Vì sao đúng
+
+<COPY NGUYÊN VĂN toàn bộ nội dung từ section \"Vì sao đúng\" trong phần 🔍 GIẢI THÍCH CHI TIẾT đã hiển thị cho user.
+Bao gồm: tên option (tiếng Anh), giải thích nhiều đoạn tiếng Việt, tất cả trích dẫn AWS, numbered steps nếu có.
+KHÔNG tóm tắt. KHÔNG rút gọn. Giữ nguyên mọi quote block và bold text.>
+
+## Vì sao các đáp án khác sai
+
+<COPY NGUYÊN VĂN toàn bộ nội dung từ section \"Vì sao các đáp án khác sai\" trong phần 🔍 GIẢI THÍCH CHI TIẾT.
+Mỗi option sai giữ nguyên heading riêng (tên option tiếng Anh), blank line trước #ID, toàn bộ giải thích chi tiết tiếng Việt.>
+
+## Kiến thức cốt lõi
+
+<COPY NGUYÊN VĂN từ section 💡 KIẾN THỨC CỐT LÕI đã hiển thị>
+
+## Nguồn
+
+<COPY NGUYÊN VĂN từ section 📚 NGUỒN THAM KHẢO đã hiển thị>'''
+
+payload = json.dumps({
+    'title': title,
+    'description': description,
+    'notes': notes,
+    'metadata': {
+        'type': 'aws-qa',
+        'service': '<service>',
+        'answer': '#X',
+        'verification': 'direct',
+        'question_type': 'single',
+        'domain': '<domain>'
+    },
+    'labels': ['aws', '<service>', '<domain>']
+})
+
+api_key = os.environ.get('AWS_LEARN_API_KEY', '')
+result = subprocess.run(
+    ['curl', '-s', '-X', 'POST', 'https://aws-learn.pages.dev/api/questions',
+     '-H', 'Content-Type: application/json',
+     '-H', f'X-API-Key: {api_key}',
+     '-d', payload],
+    capture_output=True, text=True
+)
+print(result.stdout)
+"
 ```
 
 ### Yêu cầu chất lượng notes
 
-- **Notes = bản sao nguyên văn** của câu trả lời đã hiển thị, KHÔNG phải bản tóm tắt
+- **notes = bản sao nguyên văn** của câu trả lời đã hiển thị, KHÔNG phải bản tóm tắt
 - Mỗi option sai: heading riêng, blank line trước `#ID`, giải thích đầy đủ (không rút gọn)
 - Tất cả trích dẫn tài liệu AWS phải có mặt trong notes
 - Kiến thức cốt lõi viết dạng rule/pattern ôn tập
 - Nếu câu trả lời có numbered steps, bold text, multiple paragraphs → notes cũng phải có
 
-### Tham số bead
+### Tham số
 
-- **title**: Tóm tắt câu hỏi (~60 ký tự)
-- **type**: `decision`
-- **priority**: `3`
-- **labels**: `aws,<service>,<domain>` — service: `s3`, `ec2`, `lambda`... domain: `security`, `networking`, `compute`, `storage`, `database`, `serverless`, `monitoring`
+- **title**: Tóm tắt câu hỏi bằng tiếng Anh (~60 ký tự)
+- **description**: Q + Options + Answer — tiếng Anh, blank line giữa mỗi option
+- **notes**: Giải thích chi tiết — tiếng Việt, copy nguyên văn từ output đã hiển thị
+- **labels**: `["aws", "<service>", "<domain>"]` — service: `s3`, `ec2`, `lambda`, `rds`... domain: `security`, `networking`, `compute`, `storage`, `database`, `serverless`, `monitoring`
 - **metadata**: `{"type":"aws-qa","service":"...","answer":"#X","verification":"direct|inferred|unverified","question_type":"single|multi-select","domain":"..."}`
 
-### Sau khi tạo bead
+### Sau khi lưu
 
-Push dolt lên DoltHub (bd dolt push bị lỗi PermissionDenied qua SQL server, dùng dolt CLI trực tiếp):
-
-```bash
-(cd /home/hieptran/Desktop/aws-learn/.beads/dolt/aws_learn && dolt push origin main)
-```
-
-Sau đó hiển thị:
+API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 
 ```
-📝 Đã lưu → <bead-id> | Labels: aws, <service> | bd show <bead-id>
+📝 Đã lưu → <id> | Labels: aws, <service> | https://aws-learn.pages.dev/questions/
 ```
 
 ## Quy tắc chất lượng
@@ -239,14 +267,13 @@ Sau đó hiển thị:
 - **Section "Kiến thức cốt lõi"** phải có giá trị ôn tập: viết dạng rule/pattern, không lặp lại đề bài.
 - Khi trích dẫn tài liệu, ghi rõ đoạn nào là quote gốc vs diễn giải.
 
-## Query beads đã lưu
+## Query Q&A đã lưu
 
-Các lệnh hữu ích để tra cứu Q&A đã lưu:
+Xem câu hỏi đã lưu tại: https://aws-learn.pages.dev/questions/
+
+Query trực tiếp D1:
 
 ```bash
-bd list -l "aws"                        # Tất cả Q&A AWS
-bd list -l "aws,s3"                     # Q&A về S3
-bd list -l "aws,security"              # Q&A về security
-bd list -t decision -l "aws"           # Tất cả decisions AWS
-bd show <bead-id>                       # Xem chi tiết một Q&A
+npx wrangler d1 execute aws-question --remote \
+  --command "SELECT id, title, updated_at FROM questions ORDER BY updated_at DESC LIMIT 10"
 ```
