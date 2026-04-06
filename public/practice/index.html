@@ -366,8 +366,14 @@ body::before{
 /* ── Card status indicators ── */
 .card .card-status{
   position:absolute;top:10px;right:10px;
-  font-size:.7rem;
+  font-size:.72rem;font-weight:700;
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
 }
+.card.card-correct{border-left:3px solid var(--correct);background:var(--correct-soft)}
+.card.card-correct .card-status{background:var(--correct);color:#fff}
+.card.card-wrong{border-left:3px solid var(--wrong);background:var(--wrong-soft)}
+.card.card-wrong .card-status{background:var(--wrong);color:#fff}
 
 /* ── Detail panel ── */
 .detail-panel{flex:1;overflow:hidden;background:var(--bg);min-width:0;position:relative;display:flex;flex-direction:column}
@@ -888,8 +894,9 @@ function renderList(changedIds = new Set()) {
     const dom = i.meta.domain ? `<span class="badge domain">${i.meta.domain}</span>` : '';
     const qt = i.meta.question_type ? `<span class="badge qtype">${i.meta.question_type}</span>` : '';
     const status = getCardStatus(i.id);
-    const statusHTML = status ? `<span class="card-status" style="color:${status === '✓' ? 'var(--correct)' : 'var(--wrong)'}">${status}</span>` : '';
-    return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}" data-id="${i.id}">
+    const statusCls = status === '✓' ? ' card-correct' : status === '✗' ? ' card-wrong' : '';
+    const statusHTML = status ? `<span class="card-status">${status}</span>` : '';
+    return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}${statusCls}" data-id="${i.id}">
         ${statusHTML}
         <div class="card-title">${esc(i.title)}</div>
         <div class="card-badges">${svc}${dom}${qt}</div>
