@@ -96,8 +96,9 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 **#X — <option>**
 <Giải thích chi tiết nhiều đoạn. Bám sát nguồn AWS.
 - Nêu rõ lý do kỹ thuật vì sao đây là đáp án đúng
-- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, ngay bên dưới mỗi quote thêm dòng dịch tiếng Việt **sát nghĩa** — dịch đúng nội dung câu gốc, không thêm diễn giải hay context ngoài những gì câu gốc nói:
+- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote, không nối vào cuối quote):
   > "With Provisioned Throughput, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance."
+  >
   > *→ Với Provisioned Throughput, bạn chỉ định mức throughput mà file system có thể duy trì, độc lập với dung lượng lưu trữ hay burst credit balance.*
 - Nếu có quy trình hoạt động → liệt kê numbered steps
 - Bold key terms quan trọng
