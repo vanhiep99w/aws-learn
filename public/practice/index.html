@@ -733,6 +733,7 @@ let viewMode = 'practice'; // 'practice' or 'review'
 let submittedAnswers = {}; // { issueId: { selected: Set, submitted: bool } }
 const PAGE_SIZE = 20;
 let loadedCount = 0;
+let totalQuestions = 0;
 let hasMore = true;
 let loadingMore = false;
 
@@ -782,6 +783,7 @@ async function fetchData() {
     return { ...r, meta, labels: labelsMap[r.id] || [] };
   });
   loadedCount = issues.length;
+  if (data.total != null) totalQuestions = data.total;
   hasMore = data.rows.length >= limit;
 
   populateFilters();
@@ -861,7 +863,7 @@ function renderList(changedIds = new Set()) {
   const filtered = getFiltered();
   const el = document.getElementById('list-scroll');
   const prevScroll = el.scrollTop;
-  document.getElementById('list-count').textContent = filtered.length;
+  document.getElementById('list-count').textContent = totalQuestions || filtered.length;
   if (filtered.length === 0) { el.innerHTML = '<div class="empty">No questions found</div>'; return; }
   el.innerHTML = filtered.map(i => {
     const svc = i.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('');

@@ -58,7 +58,7 @@ export async function onRequest({ request, env }) {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
     const offset = parseInt(url.searchParams.get('offset') || '0');
 
-    const [questionsResult, labelsResult] = await Promise.all([
+    const [questionsResult, labelsResult, countResult] = await Promise.all([
       env.DB.prepare(
         `SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
          FROM questions
@@ -69,11 +69,15 @@ export async function onRequest({ request, env }) {
       env.DB.prepare(
         'SELECT question_id AS issue_id, label FROM question_labels'
       ).all(),
+      env.DB.prepare(
+        `SELECT COUNT(*) AS total FROM questions WHERE status = 'open'`
+      ).first(),
     ]);
 
     return json({
       rows: questionsResult.results,
       labels: labelsResult.results,
+      total: countResult.total,
     });
   }
 
