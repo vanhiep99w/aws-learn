@@ -483,10 +483,19 @@ body::before{
   box-shadow:0 0 0 1px var(--correct-border);
 }
 .q-opt.wrong{
-  border-color:var(--wrong-border);background:var(--wrong-soft);opacity:.6;
+  border-color:var(--wrong-border);background:var(--wrong-soft);opacity:.55;
+}
+.q-opt.wrong.user-picked{
+  opacity:1;
+  border-color:var(--wrong);
+  background:rgba(239,68,68,.12);
+  box-shadow:0 0 0 1px var(--wrong-border);
 }
 .q-opt.wrong .opt-id{
   background:var(--opt-wrong-bg);color:var(--wrong);
+}
+.q-opt.wrong.user-picked .opt-id{
+  background:var(--wrong);color:#fff;
 }
 
 /* ── Practice mode ── */
@@ -995,8 +1004,9 @@ function showDetail(issue, scrollToTop = false) {
       questionHTML += '<div class="q-options">' + q.options.map(o => {
         const cls = o.correct ? ' correct' : o.wrong ? ' wrong' : '';
         const userPicked = state.selected.has(o.id);
+        const pickedCls = userPicked ? ' user-picked' : '';
         const marker = userPicked ? (o.correct ? ' ✓' : ' ✗') : '';
-        return `<div class="q-opt${cls}"><span class="opt-id">${o.id}</span><span>${esc(o.text)}${marker}</span></div>`;
+        return `<div class="q-opt${cls}${pickedCls}"><span class="opt-id">${o.id}</span><span>${esc(o.text)}${marker}</span></div>`;
       }).join('') + '</div>';
       const allCorrect = q.options.filter(o => o.correct).every(o => state.selected.has(o.id))
         && q.options.filter(o => o.wrong).every(o => !state.selected.has(o.id));
