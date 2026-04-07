@@ -90,40 +90,32 @@ COLUMNAR STORAGE (OLAP - Redshift):
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                        Redshift Cluster                                                           │
+│                              Redshift Cluster                                                     │
 │                                                                                                   │
-│   ┌─────────────────────────────────────────────────────────────┐                                 │
-│   │                      LEADER NODE                                                          │   │
-│   │                                                                                           │   │
-│   │  - Nhận query từ client                                                                   │   │
-│   │  - Parse và optimize query                                                                │   │
-│   │  - Tạo execution plan                                                                     │   │
-│   │  - Phân phối task đến compute nodes                                                       │   │
-│   │  - Aggregate kết quả                                                                      │   │
-│   │  - Trả về kết quả cho client                                                              │   │
-│   └─────────────────────────────────────────────────────────────┘                                 │
-│                                                           │                                       │
-│              ┌───────────────┼───────────────┐                                                    │
-│              │               │                                             │                      │
-│              ▼               ▼               ▼                                                    │
-│   ┌───────────────┐ ┌───────────────┐ ┌───────────────┐                                           │
-│   │ COMPUTE NODE 1│ │ COMPUTE NODE 2│ │ COMPUTE NODE 3                               │            │
-│   │               │ │               │ │                                              │            │
-│   │ ┌───────────┐ │ │ ┌───────────┐ │ │ ┌───────────┐                                │            │
-│   │ │  Slice 1  │ │ │ │  Slice 1  │ │ │ │  Slice 1  │                                │            │
-│   │ │  Slice 2  │ │ │ │  Slice 2  │ │ │ │  Slice 2  │                                │            │
-│   │ └───────────┘ │ │ └───────────┘ │ │ └───────────┘                                │            │
-│   │               │ │               │ │                                              │            │
-│   │  Store data   │ │  Store data   │ │  Store data                                  │            │
-│   │  Execute      │ │  Execute      │ │  Execute                                     │            │
-│   │  queries      │ │  queries      │ │  queries                                     │            │
-│   └───────────────┘ └───────────────┘ └───────────────┘                                           │
+│         ┌───────────────────────────────────────────────────────────────────────┐                 │
+│         │                         LEADER NODE                                   │                 │
+│         │  - Nhận query từ client                                               │                 │
+│         │  - Parse và optimize query plan                                       │                 │
+│         │  - Phân phối task đến compute nodes                                   │                 │
+│         │  - Aggregate kết quả và trả về client                                 │                 │
+│         └───────────────────────────────────────────────────────────────────────┘                 │
+│                          │                                                                        │
+│              ┌───────────┼───────────┐                                                            │
+│              ▼           ▼           ▼                                                            │
+│   ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                                     │
+│   │  COMPUTE NODE 1 │ │  COMPUTE NODE 2 │ │  COMPUTE NODE 3 │                                     │
+│   │  ┌───────────┐  │ │  ┌───────────┐  │ │  ┌───────────┐  │                                     │
+│   │  │  Slice 1  │  │ │  │  Slice 1  │  │ │  │  Slice 1  │  │                                     │
+│   │  │  Slice 2  │  │ │  │  Slice 2  │  │ │  │  Slice 2  │  │                                     │
+│   │  └───────────┘  │ │  └───────────┘  │ │  └───────────┘  │                                     │
+│   │  Store data     │ │  Store data     │ │  Store data     │                                     │
+│   │  Execute query  │ │  Execute query  │ │  Execute query  │                                     │
+│   └─────────────────┘ └─────────────────┘ └─────────────────┘                                     │
 │                                                                                                   │
-│                    Redshift Managed Storage (RMS)                                                 │
-│              ┌───────────────────────────────┐                                                    │
-│              │                         Amazon S3                           │                      │
-│              │              (Durable storage cho RA3 nodes)                │                      │
-│              └───────────────────────────────┘                                                    │
+│         ┌───────────────────────────────────────────────────────────────────────┐                 │
+│         │              Redshift Managed Storage (RMS)                           │                 │
+│         │        Amazon S3 — Durable storage cho RA3 nodes                      │                 │
+│         └───────────────────────────────────────────────────────────────────────┘                 │
 └───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -245,8 +237,8 @@ COLUMNAR STORAGE (OLAP - Redshift):
 │   │ DC2 Node                                    │               │
 │   │                                             │               │
 │   │  ┌─────────────────────────────────────┐    │               │
-│   │  │        Local NVMe SSD                │   │               │
-│   │  │        (Fixed storage per node)      │   │               │
+│   │  │        Local NVMe SSD               │    │               │
+│   │  │        (Fixed storage per node)     │    │               │
 │   │  └─────────────────────────────────────┘    │               │
 │   └─────────────────────────────────────────────┘               │
 │                                                                 │
@@ -369,13 +361,13 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 │   │               │   spectrum_schema.s3_table                  │
 │   │               │   WHERE date > '2024-01-01'                 │
 │   └───────┬───────┘                                             │
-│          │                                                      │
+│           │                                                     │
 │           ▼                                                     │
 │   ┌───────────────────────────────────────────────┐             │
 │   │            Spectrum Layer                     │             │
 │   │  (Thousands of nodes for parallel processing) │             │
 │   └───────────────────────────────────────────────┘             │
-│          │                                                      │
+│           │                                                     │
 │           ▼                                                     │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │                      Amazon S3                          │   │
@@ -419,19 +411,19 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 │                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
 │   │               │         Replication       │               │ │
-│   │    Aurora     │ ══════════════════════════►│   Redshift   │ │
+│   │    Aurora     │ ═════════════════════════►│   Redshift    │ │
 │   │   MySQL       │                           │               │ │
 │   │   PostgreSQL  │   - No ETL code needed    │   Analytics   │ │
 │   │               │   - Near real-time        │   & BI        │ │
 │   └───────────────┘   - Incremental sync      └───────────────┘ │
 │                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
-│   │    RDS for    │ ══════════════════════════►│   Redshift   │ │
+│   │    RDS for    │ ═════════════════════════►│   Redshift    │ │
 │   │    MySQL      │                           │               │ │
 │   └───────────────┘                           └───────────────┘ │
 │                                                                 │
 │   ┌───────────────┐         Automatic         ┌───────────────┐ │
-│   │   DynamoDB    │ ══════════════════════════►│   Redshift   │ │
+│   │   DynamoDB    │ ═════════════════════════►│   Redshift    │ │
 │   │               │                           │               │ │
 │   └───────────────┘                           └───────────────┘ │
 │                                                                 │
@@ -473,7 +465,7 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 │   │             │◄── 50 queries ───►                    │       │
 │   │             │    Auto offload   │ Temporary cluster │       │
 │   └─────────────┘         │ (scale out)                 │       │
-│                                     └─────────────────────┘     │
+│                           └─────────────────────────────┘       │
 │                                                                 │
 │   ✅ Tự động, không cần cấu hình                                │
 │   ✅ 1 giờ miễn phí/ngày cho hầu hết clusters                   │
@@ -499,7 +491,7 @@ Cách Redshift phân phối data giữa các nodes quyết định performance c
 │   │                 │   Datashare    │  BI Cluster     │        │
 │   │   Production    │ ──────────────►│  (Read-only)    │        │
 │   │   Warehouse     │                └─────────────────┘        │
-│   │                │                                            │
+│   │                 │                                           │
 │   │   "Main data"   │                ┌─────────────────┐        │
 │   │                 │   Datashare    │  Data Science   │        │
 │   │                 │ ──────────────►│  Cluster        │        │
@@ -564,15 +556,15 @@ WHERE predict_churn(...) = 1;
 │   ┌─────────────────────────────────────────────┐               │
 │   │                    VPC                      │               │
 │   │  ┌─────────────────────────────────────┐    │               │
-│   │  │          Private Subnet              │   │               │
+│   │  │          Private Subnet             │    │               │
 │   │  │  ┌─────────────────────────────┐    │    │               │
-│   │  │  │    Redshift Cluster          │    │   │               │
-│   │  │  │    (No public access)        │    │   │               │
+│   │  │  │    Redshift Cluster         │    │    │               │
+│   │  │  │    (No public access)       │    │    │               │
 │   │  │  └─────────────────────────────┘    │    │               │
-│   │  │              │                       │   │               │
-│   │  │              ▼                       │   │               │
-│   │  │       Security Group                 │   │               │
-│   │  │    (Port 5439 from app)              │   │               │
+│   │  │              │                      │    │               │
+│   │  │              ▼                      │    │               │
+│   │  │       Security Group                │    │               │
+│   │  │    (Port 5439 from app)             │    │               │
 │   │  └─────────────────────────────────────┘    │               │
 │   └─────────────────────────────────────────────┘               │
 │                                                                 │

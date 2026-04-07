@@ -520,12 +520,12 @@ Có thể **mua/bán** Reserved Instances chưa sử dụng hết trên marketpl
 │  ├─────────────────────────────────────────────────────────────────────┤     │
 │  │                                                                     │     │
 │  │  Request ──▶ Running ──▶ Interrupted (khi AWS cần capacity)         │     │
-│  │                 │                    │                               │    │
-│  │                 │         ┌──────────┴──────────┐                    │    │
-│  │                 │         ▼                     ▼                    │    │
-│  │                 │    Terminate            Hibernate/Stop             │    │
-│  │                 │                                                    │    │
-│  │                 └──▶ User Terminate                                  │    │
+│  │                 │                    │                              │     │
+│  │                 │         ┌──────────┴──────────┐                   │     │
+│  │                 │         ▼                     ▼                   │     │
+│  │                 │    Terminate            Hibernate/Stop            │     │
+│  │                 │                                                   │     │
+│  │                 └──▶ User Terminate                                 │     │
 │  │                                                                     │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
@@ -674,13 +674,13 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 │  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │  Host ID: h-0abc123def456789                                        │     │
 │  │  Instance Family: m5                                                │     │
-│  │  Sockets: 2  │  Cores: 48  │  Available Instances: varies            │    │
+│  │  Sockets: 2  │  Cores: 48  │  Available Instances: varies           │     │
 │  │                                                                     │     │
-│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │    │
-│  │  │ m5.lg   │ │ m5.lg   │ │ m5.xl   │ │ m5.2xl  │ │ (empty) │         │    │
-│  │  │ Your    │ │ Your    │ │ Your    │ │ Your    │ │         │         │    │
-│  │  │ Instance│ │ Instance│ │ Instance│ │ Instance│ │         │         │    │
-│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘         │    │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐        │     │
+│  │  │ m5.lg   │ │ m5.lg   │ │ m5.xl   │ │ m5.2xl  │ │ (empty) │        │     │
+│  │  │ Your    │ │ Your    │ │ Your    │ │ Your    │ │         │        │     │
+│  │  │ Instance│ │ Instance│ │ Instance│ │ Instance│ │         │        │     │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘        │     │
 │  │                                                                     │     │
 │  │  ⚠️ Bạn control: Physical server có bao nhiêu instances chạy        │     │
 │  └─────────────────────────────────────────────────────────────────────┘     │
@@ -982,32 +982,32 @@ AWS cung cấp Free Tier cho người dùng mới:
 │                                                                             │
 │  Workload có thể bị interrupt?                                              │
 │ │                                                                           │
-│  ├── Có → SPOT INSTANCES (giảm 90%)                                         │
-│  │        • Batch processing, CI/CD, analytics                              │
+│ ├── Có → SPOT INSTANCES (giảm 90%)                                         │
+│ │        • Batch processing, CI/CD, analytics                              │
 │ │                                                                           │
-│  └── Không ↓                                                                │
+│ └── Không ↓                                                                │
 │                                                                             │
 │  Biết trước nhu cầu 1-3 năm?                                                │
 │ │                                                                           │
-│  ├── Có → SAVINGS PLANS hoặc RESERVED INSTANCES (giảm 72%)                  │
-│  │       │                                                                  │
-│  │        ├── Cần flexibility → Savings Plans                               │
-│  │       │                                                                  │
-│  │        └── Cần bán lại RI → Reserved Instances (Standard)                │
+│ ├── Có → SAVINGS PLANS hoặc RESERVED INSTANCES (giảm 72%)                  │
+│ │       │                                                                  │
+│ │       ├── Cần flexibility → Savings Plans                               │
+│ │       │                                                                  │
+│ │       └── Cần bán lại RI → Reserved Instances (Standard)                │
 │ │                                                                           │
-│  └── Không ↓                                                                │
+│ └── Không ↓                                                                │
 │                                                                             │
 │  Cần hardware riêng?                                                        │
 │ │                                                                           │
-│  ├── Có + Cần BYOL → DEDICATED HOSTS                                        │
+│ ├── Có + Cần BYOL → DEDICATED HOSTS                                        │
 │ │                                                                           │
-│  ├── Có + Không cần BYOL → DEDICATED INSTANCES                              │
+│ ├── Có + Không cần BYOL → DEDICATED INSTANCES                              │
 │ │                                                                           │
-│  └── Không → ON-DEMAND                                                      │
+│ └── Không → ON-DEMAND                                                      │
 │                                                                             │
 │  Cần đảm bảo capacity?                                                      │
 │ │                                                                           │
-│  └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)     │
+│ └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1043,21 +1043,21 @@ AWS cung cấp Free Tier cho người dùng mới:
 │                        PLACEMENT GROUPS                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                         │
-│  1. CLUSTER                    2. SPREAD                 3. PARTITION                   │
-│  ─────────────                 ─────────────             ─────────────                  │
+│  1. CLUSTER               2. SPREAD                  3. PARTITION                      │
+│  ─────────────            ─────────────              ─────────────                     │
 │                                                                                         │
-│  ┌─────────────┐               ┌─────────────┐           ┌─────────────┐                │
-│  │  Same Rack  │               │ Rack1 Rack2 │           │ Part1 Part2             │    │
-│  │ ┌───┐ ┌───┐ │               │ ┌───┐ ┌───┐ │           │ ┌───┐ ┌───┐             │    │
-│  │ │EC2│ │EC2│ │               │ │EC2│ │EC2│ │           │ │EC2│ │EC2│             │    │
-│  │ └───┘ └───┘ │               │ └───┘ └───┘ │           │ │EC2│ │EC2│             │    │
-│  │ ┌───┐ ┌───┐ │               │ Rack3 Rack4 │           │ └───┘ └───┘             │    │
-│  │ │EC2│ │EC2│ │               │             ┌───────────┐ ┌───┐ │   │ (cùng (cùng │    │
-│  │ └───┘ └───┘ │               │             │EC2        │ │EC2│ │   │  rack) rack)│    │
-│  └─────────────┘               │ └───┘ └───┘ │           └─────────────┘                │
-│                                └─────────────┘                                          │
-│  Low latency                   High availability         Distributed                    │
-│  High throughput               Isolated failures         Big Data                       │
+│  ┌───────────────┐        ┌────────────────────┐     ┌────────────────────┐             │
+│  │   Same Rack   │        │  Rack1  │  Rack2   │     │  Part1  │  Part2   │             │
+│  │  ┌───┐  ┌───┐ │        │  ┌───┐  │  ┌───┐  │     │ (RackA) │ (RackB)  │             │
+│  │  │EC2│  │EC2│ │        │  │EC2│  │  │EC2│  │     │  ┌───┐  │  ┌───┐  │             │
+│  │  └───┘  └───┘ │        │  └───┘  │  └───┘  │     │  │EC2│  │  │EC2│  │             │
+│  │  ┌───┐  ┌───┐ │        │  Rack3  │  Rack4   │     │  │EC2│  │  │EC2│  │             │
+│  │  │EC2│  │EC2│ │        │  ┌───┐  │  ┌───┐  │     │  └───┘  │  └───┘  │             │
+│  │  └───┘  └───┘ │        │  │EC2│  │  │EC2│  │     └────────────────────┘             │
+│  └───────────────┘        │  └───┘  │  └───┘  │                                        │
+│                           └────────────────────┘                                       │
+│  Low latency              High availability          Distributed                        │
+│  High throughput          Isolated failures          Big Data                           │
 │                                                                                         │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
