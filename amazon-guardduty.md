@@ -131,10 +131,10 @@ GuardDuty phân tích nhiều nguồn dữ liệu để phát hiện threats:
                                    │
         ┌──────────────────────────┼──────────────────────────┐
         ▼              ▼           ▼           ▼              ▼
-  ┌──────────┐  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-  │EventBridge│  │ Security │ │ CloudWatch│ │  Lambda  │ │   SNS    │
-  │(Automate)│  │   Hub    │ │ (Metrics)│ │(Remediate)│ │ (Alert)  │
-  └──────────┘  └──────────┘ └──────────┘ └──────────┘ └──────────┘
+  ┌───────────┐  ┌──────────┐ ┌───────────┐ ┌───────────┐ ┌──────────┐
+  │EventBridge│  │ Security │ │ CloudWatch│ │  Lambda   │ │   SNS    │
+  │(Automate) │  │   Hub    │ │ (Metrics) │ │(Remediate)│ │ (Alert)  │
+  └───────────┘  └──────────┘ └───────────┘ └───────────┘ └──────────┘
 ```
 
 ---
@@ -255,7 +255,7 @@ Phát hiện suspicious login attempts vào Amazon RDS databases.
 │  Tự động scan objects mới upload lên S3:                        │
 │                                                                 │
 │  Upload ─────► GuardDuty Scan ─────► Tag Object                 │
-│                     │                   │                       │
+│                     │                    │                      │
 │                     ▼                    ▼                      │
 │              ┌──────────┐         ┌──────────────┐              │
 │              │ Finding  │         │ CLEAN hoặc   │              │
@@ -369,7 +369,7 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 │                  │  Account            │                        │
 │                  │  (Central View)     │                        │
 │                  └──────────┬──────────┘                        │
-│                            │                                    │
+│                             │                                   │
 │        ┌────────────────────┼────────────────────┐              │
 │        │                    │                    │              │
 │        ▼                    ▼                    ▼              │
@@ -397,10 +397,10 @@ GuardDuty sử dụng nhiều nguồn threat intelligence:
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  GuardDuty                                                      │
-│     │                                                           │
+│      │                                                          │
 │      ▼                                                          │
 │  EventBridge Rule ───► Match: severity >= 7                     │
-│     │                                                           │
+│      │                                                          │
 │      │   ┌──────────────────────────────────────────┐           │
 │      ├──►│ Lambda: Isolate EC2 (modify SG)          │           │
 │      │   └──────────────────────────────────────────┘           │

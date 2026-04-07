@@ -365,7 +365,7 @@ Inspector re-scan → Finding closed
 │     • ECR container images                                                  │
 │     • Lambda functions                                                      │
 │                                                                             │
-│  ⚡ KEY FEATURES:                                                           │
+│  ⚡ KEY FEATURES:                                                            │
 │     • Continuous scanning (không cần schedule)                              │
 │     • Context-aware scoring (Inspector Score)                               │
 │     • Multi-account với Organizations                                       │

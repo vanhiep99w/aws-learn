@@ -126,13 +126,13 @@ CÓ Cognito:
 │  User                    Cognito                  Your App   │
 │    │                     User Pool                    │      │
 │    │                        │                         │      │
-│    │  1. Sign up/Sign in   │                          │      │
+│    │  1. Sign up/Sign in    │                         │      │
 │    │───────────────────────►│                         │      │
 │    │                        │                         │      │
-│    │  2. Verify (email/MFA)│                          │      │
+│    │  2. Verify (email/MFA) │                         │      │
 │    │◄──────────────────────►│                         │      │
 │    │                        │                         │      │
-│    │  3. JWT Tokens        │                          │      │
+│    │  3. JWT Tokens         │                         │      │
 │    │◄───────────────────────│                         │      │
 │    │                        │                         │      │
 │    │  4. Call API with token                          │      │
@@ -141,7 +141,7 @@ CÓ Cognito:
 │    │                        │  5. Verify token        │      │
 │    │                        │◄────────────────────────│      │
 │    │                        │                         │      │
-│    │  6. Response          │                          │      │
+│    │  6. Response           │                         │      │
 │    │◄─────────────────────────────────────────────────│      │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
@@ -170,19 +170,19 @@ CÓ Cognito:
 │                                                              │
 │  1. User authenticates với User Pool (hoặc external IdP)     │
 │                                        │                     │
-│                                         ▼                    │
+│                                        ▼                     │
 │  2. Get JWT Token                                            │
 │                                        │                     │
-│                                         ▼                    │
+│                                        ▼                     │
 │  3. Exchange token với Identity Pool                         │
 │                                        │                     │
-│                                         ▼                    │
+│                                        ▼                     │
 │  4. Identity Pool gọi STS AssumeRoleWithWebIdentity          │
 │                                        │                     │
-│                                         ▼                    │
+│                                        ▼                     │
 │  5. Nhận AWS credentials tạm thời (Access Key, Secret Key)   │
 │                                        │                     │
-│                                         ▼                    │
+│                                        ▼                     │
 │  6. Access AWS services (S3, DynamoDB, API Gateway...)       │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
@@ -266,11 +266,11 @@ Identity Pool có 2 loại IAM Roles:
 │  Mobile/Web ──► Cognito ──► JWT Token                        │
 │     App         User Pool                                    │
 │     │                                                        │
-│      │ JWT Token in Authorization header                     │
-│      ▼                                                       │
+│     │ JWT Token in Authorization header                      │
+│     ▼                                                        │
 │  API Gateway ──► Lambda ──► DynamoDB                         │
 │     │                                                        │
-│      └── Cognito Authorizer validates JWT                    │
+│     └── Cognito Authorizer validates JWT                     │
 │                                                              │
 │  Benefits: Serverless, scalable, secure                      │
 │                                                              │
@@ -286,7 +286,7 @@ Identity Pool có 2 loại IAM Roles:
 │                                                              │
 │  Mobile ──► Cognito ──► JWT ──► Cognito ──► AWS Credentials  │
 │   App       User Pool          Identity Pool                 │
-│   │                                                          │
+│    │                                                         │
 │    │ AWS SDK with credentials                                │
 │    ▼                                                         │
 │   S3 (upload photos to user's folder)                        │
