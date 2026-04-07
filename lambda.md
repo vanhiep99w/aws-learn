@@ -356,18 +356,18 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │           LAMBDA VS EC2: KHI NÀO CHỌN CÁI NÀO?                      │
 │                                                                     │
 │              Requests/second                                        │
-│                  │                                                  │
+│                   │                                                 │
 │   Lambda rẻ hơn   │             EC2 rẻ hơn                          │
 │         ◀─────────┼─────────────▶                                   │
-│                  │                                                  │
+│                   │                                                 │
 │    ┌───────────────┼────────────────────────────────────────────┐   │
-│    │               │                                           │    │
-│    │   LAMBDA      │          EC2/ECS                          │    │
-│    │   ✓ Sporadic  │          ✓ Constant load                  │    │
-│    │   ✓ Variable  │          ✓ High traffic                   │    │
-│    │   ✓ Bursty    │          ✓ Long-running                   │    │
-│    │   ✓ < 15min   │          ✓ > 15min jobs                   │    │
-│    │               │                                           │    │
+│    │               │                                            │   │
+│    │   LAMBDA      │          EC2/ECS                           │   │
+│    │   ✓ Sporadic  │          ✓ Constant load                   │   │
+│    │   ✓ Variable  │          ✓ High traffic                    │   │
+│    │   ✓ Bursty    │          ✓ Long-running                    │   │
+│    │   ✓ < 15min   │          ✓ > 15min jobs                    │   │
+│    │               │                                            │   │
 │    └───────────────┴────────────────────────────────────────────┘   │
 │                  │                                                  │
 │              Break-even point                                       │
@@ -470,32 +470,32 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │   MODE 1: Default (No VPC)                                           │
 │   ┌─────────────────────────────────────────────────────────────┐    │
 │   │                         Internet                            │    │
-│   │                            │                                 │   │
-│   │                     ┌──────▼──────┐                          │   │
-│   │                     │   Lambda    │ ← Có Internet access     │   │
-│   │                     │   Function  │ ← Gọi được AWS APIs      │   │
-│   │                     └─────────────┘ ← KHÔNG access VPC       │   │
+│   │                            │                                │    │
+│   │                     ┌──────▼──────┐                         │    │
+│   │                     │   Lambda    │ ← Có Internet access    │    │
+│   │                     │   Function  │ ← Gọi được AWS APIs     │    │
+│   │                     └─────────────┘ ← KHÔNG access VPC      │    │
 │   │                                       resources             │    │
 │   └─────────────────────────────────────────────────────────────┘    │
 │                                                                      │
 │   MODE 2: VPC-enabled Lambda                                         │
 │   ┌─────────────────────────────────────────────────────────────┐    │
 │   │                           VPC                               │    │
-│   │   ┌─────────────────────────────────────────────────────┐    │   │
-│   │   │  Private Subnet                                      │   │   │
-│   │   │  ┌───────────┐        ┌───────────┐                 │    │   │
-│   │   │  │  Lambda   │───────▶│    RDS    │                 │    │   │
-│   │   │  │  (ENI)    │        │ (Private) │                 │    │   │
-│   │   │  └───────────┘        └───────────┘                 │    │   │
-│   │   │       │                                              │   │   │
-│   │   │       │ Cần NAT Gateway                              │   │   │
-│   │   │       │ để access Internet                           │   │   │
-│   │   │       ▼                                              │   │   │
-│   │   │  ┌───────────┐     ┌───────────┐                    │    │   │
-│   │   │  │    NAT    │────▶│  Internet │                    │    │   │
-│   │   │  │  Gateway  │     │  Gateway  │────▶ Internet      │    │   │
-│   │   │  └───────────┘     └───────────┘                    │    │   │
-│   │   └─────────────────────────────────────────────────────┘    │   │
+│   │   ┌─────────────────────────────────────────────────────┐   │    │
+│   │   │  Private Subnet                                     │   │    │
+│   │   │  ┌───────────┐        ┌───────────┐                 │   │    │
+│   │   │  │  Lambda   │───────▶│    RDS    │                 │   │    │
+│   │   │  │  (ENI)    │        │ (Private) │                 │   │    │
+│   │   │  └───────────┘        └───────────┘                 │   │    │
+│   │   │       │                                             │   │    │
+│   │   │       │ Cần NAT Gateway                             │   │    │
+│   │   │       │ để access Internet                          │   │    │
+│   │   │       ▼                                             │   │    │
+│   │   │  ┌───────────┐     ┌───────────┐                    │   │    │
+│   │   │  │    NAT    │────▶│  Internet │                    │   │    │
+│   │   │  │  Gateway  │     │  Gateway  │────▶ Internet      │   │    │
+│   │   │  └───────────┘     └───────────┘                    │   │    │
+│   │   └─────────────────────────────────────────────────────┘   │    │
 │   └─────────────────────────────────────────────────────────────┘    │
 │                                                                      │
 │   ⚠️ VPC Lambda trước đây có cold start lâu (~10s) do phải tạo ENI   │
@@ -834,8 +834,8 @@ def process_item(item):
 │  │ GET   │  │ POST  │    │DELETE │                                  │
 │  │/users │  │/users │    │/users │                                  │
 │  └───┬───┘  └───┬───┘    └───┬───┘                                  │
-│      │          │           │                                       │
-│      └──────────┼──────────────┘                                    │
+│      │          │            │                                      │
+│      └──────────┼────────────┘                                      │
 │                 ▼                                                   │
 │         ┌─────────────┐                                             │
 │         │  DynamoDB   │ ← NoSQL database                            │
@@ -861,13 +861,13 @@ def process_item(item):
 │   │  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘         │   │
 │   │       │            │            │            │              │   │
 │   └───────┼────────────┼────────────┼────────────┼──────────────┘   │
-│           │            │            │           │                   │
+│           │            │            │            │                  │
 │           └────────────┴─────┬──────┴────────────┘                  │
 │                              ▼                                      │
 │                    ┌──────────────────┐                             │
 │                    │   EventBridge    │ ← Central event bus         │
 │                    └────────┬─────────┘                             │
-│                            │                                        │
+│                             │                                       │
 │              ┌──────────────┼──────────────┐                        │
 │              ▼              ▼              ▼                        │
 │         ┌────────┐    ┌────────┐    ┌────────┐                      │
@@ -892,11 +892,11 @@ def process_item(item):
 │   │                    EventBridge Scheduler                    │   │
 │   │                                                             │   │
 │   │    ┌────────────────────────────────────────────────────┐   │   │
-│   │    │  Schedule Expression:                               │  │   │
-│   │    │  • rate(5 minutes)     → Mỗi 5 phút               │    │   │
-│   │    │  • rate(1 hour)        → Mỗi giờ                  │    │   │
-│   │    │  • cron(0 9 * * ? *)   → Mỗi ngày 9AM UTC         │    │   │
-│   │    │  • cron(0 0 1 * ? *)   → Ngày 1 mỗi tháng         │    │   │
+│   │    │  Schedule Expression:                              │   │   │
+│   │    │  • rate(5 minutes)     → Mỗi 5 phút                │   │   │
+│   │    │  • rate(1 hour)        → Mỗi giờ                   │   │   │
+│   │    │  • cron(0 9 * * ? *)   → Mỗi ngày 9AM UTC          │   │   │
+│   │    │  • cron(0 0 1 * ? *)   → Ngày 1 mỗi tháng          │   │   │
 │   │    └────────────────────────────────────────────────────┘   │   │
 │   └─────────────────────────────────┬───────────────────────────┘   │
 │                                    │                                │
@@ -905,7 +905,7 @@ def process_item(item):
 │                            │   Lambda     │                         │
 │                            │              │                         │
 │                            └──────┬───────┘                         │
-│                                  │                                  │
+│                                   │                                 │
 │              ┌────────────────────┼────────────────────┐            │
 │              ▼                    ▼                    ▼            │
 │        ┌──────────┐        ┌──────────┐        ┌──────────┐         │
@@ -987,7 +987,7 @@ def process_item(item):
 │              ┌──────────────┴──────────────┐                        │
 │              ▼                             ▼                        │
 │    Runs < 15 minutes?              Runs longer?                     │
-│              │                            │                         │
+│              │                             │                        │
 │       ┌──────┴──────┐              ┌───────┴───────┐                │
 │       ▼             ▼              ▼               ▼                │
 │   Event-driven? Always running?  Need K8s?    Just containers?      │
@@ -1759,19 +1759,19 @@ def lambda_handler(event, context):
 │   │                                                             │   │
 │   │  TRƯỚC ĐÂY (EC2 Launch Type):                               │   │
 │   │  ┌─────────────────────────────────────────────────────┐    │   │
-│   │  │  Bạn phải quản lý:                                   │   │   │
-│   │  │  • Provision EC2 instances                           │   │   │
-│   │  │  • Scale EC2 cluster                                 │   │   │
-│   │  │  • Patch/update AMIs                                 │   │   │
-│   │  │  • Monitor instance health                           │   │   │
+│   │  │  Bạn phải quản lý:                                  │    │   │
+│   │  │  • Provision EC2 instances                          │    │   │
+│   │  │  • Scale EC2 cluster                                │    │   │
+│   │  │  • Patch/update AMIs                                │    │   │
+│   │  │  • Monitor instance health                          │    │   │
 │   │  └─────────────────────────────────────────────────────┘    │   │
 │   │                                                             │   │
 │   │  VỚI FARGATE:                                               │   │
 │   │  ┌─────────────────────────────────────────────────────┐    │   │
-│   │  │  Bạn chỉ cần:                                        │   │   │
-│   │  │  • Define CPU & Memory cho task                      │   │   │
-│   │  │  • Deploy container                                  │   │   │
-│   │  │  → AWS lo phần còn lại!                              │   │   │
+│   │  │  Bạn chỉ cần:                                       │    │   │
+│   │  │  • Define CPU & Memory cho task                     │    │   │
+│   │  │  • Deploy container                                 │    │   │
+│   │  │  → AWS lo phần còn lại!                             │    │   │
 │   │  └─────────────────────────────────────────────────────┘    │   │
 │   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
@@ -1864,7 +1864,7 @@ def lambda_handler(event, context):
 │   │                                                             │   │
 │   │  AURORA SERVERLESS V2:                                      │   │
 │   │                                                             │   │
-│   │  ┌─────────────────────────────────────────────────────┐    │   │
+│   │  ┌──────────────────────────────────────────────────────┐   │   │
 │   │  │                                                      │   │   │
 │   │  │   Capacity                                           │   │   │
 │   │  │      ▲                                               │   │   │
@@ -1875,12 +1875,12 @@ def lambda_handler(event, context):
 │   │  │      │  /                         \__                │   │   │
 │   │  │      └────────────────────────────────▶ Time         │   │   │
 │   │  │                                                      │   │   │
-│   │  │   Auto-scales dựa trên workload thực tế            │     │   │
-│   │  │   • Min: 0.5 ACU (có thể pause = $0)               │     │   │
-│   │  │   • Max: 128 ACUs                                   │    │   │
-│   │  │   • Scale trong vài giây                            │    │   │
+│   │  │   Auto-scales dựa trên workload thực tế              │   │   │
+│   │  │   • Min: 0.5 ACU (có thể pause = $0)                 │   │   │
+│   │  │   • Max: 128 ACUs                                    │   │   │
+│   │  │   • Scale trong vài giây                             │   │   │
 │   │  │                                                      │   │   │
-│   │  └─────────────────────────────────────────────────────┘    │   │
+│   │  └──────────────────────────────────────────────────────┘   │   │
 │   │                                                             │   │
 │   │  AURORA SERVERLESS vs RDS:                                  │   │
 │   │  ┌────────────────────────┬────────────────────────────┐    │   │
@@ -1919,11 +1919,11 @@ def lambda_handler(event, context):
 │   │                                                             │   │
 │   │   1. USER POOLS (Authentication - "Who are you?")           │   │
 │   │   ┌─────────────────────────────────────────────────────┐   │   │
-│   │   │                                                      │  │   │
+│   │   │                                                     │   │   │
 │   │   │   User ──▶ Sign up/Sign in ──▶ User Pool ──▶ JWT    │   │   │
-│   │   │                                    │                 │  │   │
-│   │   │   Features:                        │                 │  │   │
-│   │   │   • Username/password              ▼                 │  │   │
+│   │   │                                    │                │   │   │
+│   │   │   Features:                        │                │   │   │
+│   │   │   • Username/password              ▼                │   │   │
 │   │   │   • Social login (Google, FB)   ┌──────────┐        │   │   │
 │   │   │   • MFA                         │ ID Token │        │   │   │
 │   │   │   • Email/Phone verification    │ Access   │        │   │   │
@@ -1933,10 +1933,10 @@ def lambda_handler(event, context):
 │   │                                                             │   │
 │   │   2. IDENTITY POOLS (Authorization - "What can you do?")    │   │
 │   │   ┌─────────────────────────────────────────────────────┐   │   │
-│   │   │                                                      │  │   │
-│   │   │   JWT ──▶ Identity Pool ──▶ AWS Credentials          │  │   │
-│   │   │   from                        │                      │  │   │
-│   │   │   User Pool                   ▼                      │  │   │
+│   │   │                                                     │   │   │
+│   │   │   JWT ──▶ Identity Pool ──▶ AWS Credentials         │   │   │
+│   │   │   from                        │                     │   │   │
+│   │   │   User Pool                   ▼                     │   │   │
 │   │   │                         ┌───────────────┐           │   │   │
 │   │   │   Federated             │ Temporary AWS │           │   │   │
 │   │   │   identities:           │ credentials   │           │   │   │
@@ -1945,7 +1945,7 @@ def lambda_handler(event, context):
 │   │   │   • SAML, OIDC                  │                   │   │   │
 │   │   │                                 ▼                   │   │   │
 │   │   │                          Access S3, DynamoDB...     │   │   │
-│   │   │                                                      │  │   │
+│   │   │                                                     │   │   │
 │   │   └─────────────────────────────────────────────────────┘   │   │
 │   │                                                             │   │
 │   └─────────────────────────────────────────────────────────────┘   │
