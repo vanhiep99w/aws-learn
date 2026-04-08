@@ -26,6 +26,7 @@ Two modes:
 ## Compute
 
 - [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
+- [x] [Spot Instances](spot-instances.md) - Spot request, interruption, persistent request, Spot Fleet, best practices
 - [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
 - [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
 - [x] [ASG](asg.md) - Auto Scaling Group, Scaling Policies, Lifecycle Hooks

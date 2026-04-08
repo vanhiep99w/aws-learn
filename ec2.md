@@ -10,6 +10,7 @@
 - [Cách truy cập EC2](#cách-truy-cập-ec2)
 - [Các dịch vụ liên quan](#các-dịch-vụ-liên-quan)
 - [EC2 Hibernate](#ec2-hibernate)
+- [Sub Pages](#sub-pages)
 - [Best Practices](#best-practices)
 - [Tham khảo thêm](#tham-khảo-thêm)
 
@@ -1571,13 +1572,19 @@ Centralized backup cho EC2 instances và EBS volumes.
 
 ```
 ⚠️ CHÚ Ý:
-├── Hibernate KHÔNG hỗ trợ cho Spot Instances (chỉ On-Demand)
+├── Hibernate có thể dùng cho Spot Instances nếu thỏa điều kiện hỗ trợ
 ├── Khi hibernate, KHÔNG tính tiền EC2 (vẫn tính tiền EBS và EIP)
 ├── EBS root volume PHẢI được encrypt (bắt buộc!)
 └── Hibernate > 60 ngày → AWS sẽ tự động stop instance
 ```
 
 > 💡 **Exam tip:** Hibernate = Lưu RAM vào EBS → Resume nhanh, giữ nguyên state!
+
+---
+
+## Sub Pages
+
+- [Spot Instances](./spot-instances.md) - Spot request, interruption, Spot Fleet, persistent request, best practices
 
 ---
 
@@ -1598,3 +1605,4 @@ Centralized backup cho EC2 instances và EBS volumes.
 - [EC2 Instance Types Guide](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html)
 - [EC2 Cost and Capacity Optimization](https://aws.amazon.com/ec2/cost-and-capacity/)
 - [Getting Started with EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html)
+- [Spot Instances chi tiết](./spot-instances.md)
