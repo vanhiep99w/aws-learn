@@ -924,19 +924,33 @@ function parseQuestion(desc, meta) {
   const options = [];
   let answerLine = '';
   let inOptions = false;
+  let inAnswer = false;
   let currentOpt = null;
   for (const line of lines) {
+    if (line.trim() === 'Options:') {
+      inOptions = true;
+      inAnswer = false;
+      continue;
+    }
     const optMatch = line.match(/^#(\d+)\s*[—–-]\s*(.+)/);
     const ansMatch = line.match(/^Answer:\s*(.+)/i);
-    if (ansMatch) { answerLine = ansMatch[1].trim(); continue; }
-    if (optMatch) {
-      inOptions = true;
+    if (ansMatch) {
+      if (currentOpt) {
+        options.push(currentOpt);
+        currentOpt = null;
+      }
+      answerLine = ansMatch[1].trim();
+      inOptions = false;
+      inAnswer = true;
+      continue;
+    }
+    if (optMatch && inOptions && !inAnswer) {
       if (currentOpt) options.push(currentOpt);
       currentOpt = { id: optMatch[1], text: optMatch[2].trim() };
     } else if (inOptions && currentOpt && line.trim()) {
       currentOpt.text += ' ' + line.trim();
-    } else if (!inOptions) {
-      if (line.trim() !== 'Options:') stemLines.push(line);
+    } else if (!inOptions && !inAnswer) {
+      stemLines.push(line);
     }
   }
   if (currentOpt) options.push(currentOpt);
