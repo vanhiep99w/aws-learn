@@ -1316,6 +1316,95 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 
 > **Nguồn**: [DynamoDB Best Practices](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
 
+### 10.6 Backup & Recovery
+
+Backup & Recovery trong DynamoDB xoay quanh 2 cơ chế cốt lõi:
+- **Point-in-Time Recovery (PITR)**: continuous backup, restore theo **mốc thời gian bất kỳ**
+- **On-demand Backup**: snapshot theo **thời điểm bạn chủ động tạo backup**
+
+Cả hai đều là **non-disruptive** đối với workload đang chạy và được dùng để bảo vệ dữ liệu trước accidental delete, accidental write, operational mistakes, hoặc yêu cầu lưu trữ/tuân thủ.
+
+#### 10.6.1 Point-in-Time Recovery (PITR)
+
+**PITR** là cơ chế backup liên tục của DynamoDB. Khi bật PITR, DynamoDB tự động giữ recovery points trong khoảng thời gian cấu hình được, với độ chi tiết theo **từng giây**.
+
+**Đặc điểm chính:**
+- Restore về **bất kỳ thời điểm nào** trong recovery window
+- Recovery window tối đa **35 ngày**
+- Phù hợp cho tình huống cần quay lại trạng thái **ngay trước khi sự cố xảy ra**
+- Không ảnh hưởng performance hoặc API latency của bảng đang hoạt động
+
+**Khi nào dùng PITR?**
+- Lỡ xóa dữ liệu nhầm
+- Ứng dụng ghi sai/corrupted data
+- Muốn rollback về một thời điểm rất cụ thể
+- Cần giảm `RPO` cho lỗi vận hành
+
+#### 10.6.2 On-demand Backup
+
+**On-demand Backup** là snapshot toàn bảng tại một thời điểm xác định. Bạn chủ động tạo backup khi cần, hoặc điều phối qua **AWS Backup** cho các policy backup tập trung.
+
+**Đặc điểm chính:**
+- Restore về **đúng trạng thái tại thời điểm backup được tạo**
+- Phù hợp cho lưu trữ dài hạn, audit, compliance, hoặc backup trước thay đổi lớn
+- Không linh hoạt bằng PITR nếu bạn cần quay lại một mốc rất sát trước thời điểm lỗi
+
+**Khi nào dùng On-demand Backup?**
+- Trước khi migration hoặc release lớn
+- Trước khi chạy batch job rủi ro cao
+- Yêu cầu giữ snapshot theo policy nội bộ/compliance
+- Muốn lưu backup lâu hơn logic continuous rollback thông thường
+
+#### 10.6.3 Restore hoạt động như thế nào?
+
+Khi restore từ **PITR** hoặc **On-demand Backup**, DynamoDB sẽ tạo ra **một bảng mới** thay vì overwrite trực tiếp bảng cũ.
+
+**Điều này có nghĩa là:**
+1. Bạn restore ra một **destination table** mới
+2. Kiểm tra dữ liệu của bảng đã restore
+3. Thực hiện cutover ứng dụng sang bảng mới nếu cần
+
+**Những thứ thường cần cấu hình lại sau restore:**
+- Auto Scaling policies
+- IAM policies liên quan
+- CloudWatch metrics/alarms
+- Tags
+- Stream settings
+- TTL settings
+- PITR settings cho bảng mới
+
+#### 10.6.4 AWS Backup và DynamoDB
+
+Ngoài cơ chế native của DynamoDB, bạn có thể dùng **AWS Backup** để:
+- tạo và quản lý **on-demand backup** theo policy tập trung
+- quản lý retention
+- sao chép backup cross-account hoặc cross-Region
+- áp dụng governance/backup compliance trên nhiều resource AWS
+
+AWS Backup hữu ích khi tổ chức muốn quản lý backup tập trung cho nhiều account hoặc nhiều dịch vụ, thay vì vận hành backup từng bảng rời rạc.
+
+#### 10.6.5 So sánh nhanh các lựa chọn liên quan
+
+| Tính năng | Mục đích chính | Điểm mạnh | Không nên nhầm với |
+|-----------|----------------|-----------|---------------------|
+| **PITR** | Restore về **một thời điểm cụ thể** | Per-second granularity, rollback linh hoạt | Snapshot cố định |
+| **On-demand Backup** | Snapshot tại **một mốc xác định** | Tốt cho compliance, change freeze, pre-release backup | Continuous rollback |
+| **DynamoDB Streams** | Ghi nhận thay đổi dữ liệu | Event-driven processing, CDC, audit | Backup/restore native |
+| **Global Tables** | Multi-Region active-active replication | HA, low-latency global writes/reads | Cơ chế rollback dữ liệu |
+
+#### 10.6.6 Rule nhớ nhanh
+
+- Cần restore về **ngay trước khi lỗi xảy ra** → **PITR**
+- Cần backup tại **một thời điểm cố định** → **On-demand Backup**
+- Cần **capture thay đổi dữ liệu** để trigger xử lý → **Streams**
+- Cần **multi-Region active-active** → **Global Tables**
+
+> **Nguồn**:
+> - [Backup and restore for DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup-and-Restore.html)
+> - [Using on-demand DynamoDB backup and restore](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/backuprestore_HowItWorks.html)
+> - [Restore a table in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/pointintimerecovery_restores.html)
+> - [Backup and recovery for DynamoDB](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/dynamodb.html)
+
 ---
 
 ## 11. Pricing
