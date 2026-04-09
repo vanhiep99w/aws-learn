@@ -62,6 +62,78 @@ Mỗi file documentation (trừ `README.md` và `AGENTS.md`) cần có **mục l
 
 - Khi viết tài liệu, **phải kèm link nguồn AWS chính thức** (AWS Documentation, What's New, Blog, Pricing) cho các điểm quan trọng
 
+## Cloudflare D1 Questions API
+
+API base: `https://aws-learn.pages.dev/api/questions` — không cần auth key.
+
+### Lấy câu hỏi
+
+```bash
+# Theo ID
+curl "https://aws-learn.pages.dev/api/questions?id=aws-learn-XXXXXXXX"
+
+# Danh sách (mặc định 50)
+curl "https://aws-learn.pages.dev/api/questions?limit=20&offset=0"
+```
+
+### Tạo câu hỏi mới (POST)
+
+```bash
+curl -X POST https://aws-learn.pages.dev/api/questions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "...",
+    "description": "Q: ...\n\nOptions:\n\n#1 — ...\n\nAnswer: #X — ...",
+    "notes": "## Giải thích câu hỏi\n\n...\n\n## Vì sao đúng\n\n...",
+    "metadata": {"type":"aws-qa","service":"s3","answer":"#3","verification":"direct","question_type":"single","domain":"networking"},
+    "labels": ["aws","s3","networking"]
+  }'
+```
+
+### Update câu hỏi (PATCH)
+
+```bash
+curl -X PATCH "https://aws-learn.pages.dev/api/questions?id=aws-learn-XXXXXXXX" \
+  -H "Content-Type: application/json" \
+  -d '{"notes": "nội dung mới"}'
+```
+
+- Chỉ cần truyền fields muốn thay đổi — các field còn lại giữ nguyên.
+- Có thể update: `title`, `description`, `notes`, `metadata`, `labels`, `status`.
+
+### Cấu trúc `notes`
+
+Notes dùng `## heading` để chia section, UI tự parse và render từng section riêng:
+
+```
+## Giải thích câu hỏi        ← màu amber, hiển thị đầu tiên
+## Vì sao đúng               ← màu xanh lá
+## Vì sao các đáp án khác sai ← màu đỏ
+## Kiến thức cốt lõi         ← màu tím
+## Nguồn                     ← màu teal
+```
+
+### Update notes giữ nguyên các section khác (Python)
+
+```python
+import json, subprocess, re
+
+r = subprocess.run(['curl','-s','https://aws-learn.pages.dev/api/questions?id=aws-learn-XXXXXXXX'], capture_output=True, text=True)
+existing_notes = json.loads(r.stdout)['row']['notes']
+
+# Thay thế section cụ thể, giữ nguyên phần còn lại
+new_explain = "## Giải thích câu hỏi\n\n<nội dung mới>\n\n"
+stripped = re.sub(r'^.*?(## Vì sao đúng)', r'\1', existing_notes, flags=re.DOTALL)
+new_notes = new_explain + stripped
+
+payload = json.dumps({'notes': new_notes})
+result = subprocess.run(
+    ['curl','-s','-X','PATCH','https://aws-learn.pages.dev/api/questions?id=aws-learn-XXXXXXXX',
+     '-H','Content-Type: application/json','-d', payload],
+    capture_output=True, text=True)
+print(result.stdout)
+```
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
