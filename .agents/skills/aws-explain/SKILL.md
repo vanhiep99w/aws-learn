@@ -91,6 +91,15 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 🔍 GIẢI THÍCH CHI TIẾT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+### Giải thích câu hỏi
+
+<Giải thích rõ câu hỏi bằng tiếng Việt dễ hiểu. Bao gồm:
+- **Câu hỏi đang hỏi gì**: Diễn đạt lại yêu cầu bằng ngôn ngữ đơn giản, tránh jargon kỹ thuật.
+- **Ngữ cảnh/Tình huống**: Mô tả bối cảnh đặt ra trong đề (nếu có scenario/use case cụ thể).
+- **Điểm cần chú ý**: Liệt kê các từ khóa quan trọng, constraint, hoặc điều kiện dễ bỏ qua trong câu hỏi.
+- **Phạm vi đang xét**: Service/feature/concept nào đang được kiểm tra.
+Viết ngắn gọn 3-6 gạch đầu dòng, đủ để người đọc hiểu rõ yêu cầu trước khi xem đáp án.>
+
 ### Vì sao đúng
 
 **#X — <option>**
@@ -174,7 +183,11 @@ Options:
 
 Answer: #X — <nội dung đáp án đúng>'''
 
-notes = '''## Vì sao đúng
+notes = '''## Giải thích câu hỏi
+
+<COPY NGUYÊN VĂN từ section Giải thích câu hỏi>
+
+## Vì sao đúng
 
 <COPY NGUYÊN VĂN từ section Vì sao đúng>
 

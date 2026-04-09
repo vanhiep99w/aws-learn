@@ -596,6 +596,8 @@ body::before{
 .section-body{overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
 .section-body.collapsed{max-height:0 !important;padding-top:0}
 
+.detail-card.explain-section{border-left:3px solid var(--amber)}
+.detail-card.explain-section h3{color:var(--amber)}
 .detail-card.correct-section{border-left:3px solid var(--correct)}
 .detail-card.correct-section h3{color:var(--correct)}
 .detail-card.wrong-section{border-left:3px solid var(--wrong)}
@@ -984,6 +986,8 @@ function parseNotes(notes) {
 
 function sectionMeta(title) {
   const t = title.toLowerCase();
+  if (t.includes('giải thích câu hỏi') || t.includes('phân tích câu hỏi') || t.includes('question analysis'))
+    return { cls: 'explain-section', defaultOpen: true };
   if (t.includes('vì sao đúng') || t.includes('why correct'))
     return { cls: 'correct-section', defaultOpen: true };
   if (t.includes('đáp án khác sai') || t.includes('sao sai') || t.includes('why wrong'))
