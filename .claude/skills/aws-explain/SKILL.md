@@ -99,12 +99,14 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 
 ### Giải thích câu hỏi
 
-<Giải thích rõ câu hỏi bằng tiếng Việt dễ hiểu. Bao gồm:
-- **Câu hỏi đang hỏi gì**: Diễn đạt lại yêu cầu bằng ngôn ngữ đơn giản, tránh jargon kỹ thuật.
-- **Ngữ cảnh/Tình huống**: Mô tả bối cảnh đặt ra trong đề (nếu có scenario/use case cụ thể).
-- **Điểm cần chú ý**: Liệt kê các từ khóa quan trọng, constraint, hoặc điều kiện dễ bỏ qua trong câu hỏi.
-- **Phạm vi đang xét**: Service/feature/concept nào đang được kiểm tra.
-Viết ngắn gọn 3-6 gạch đầu dòng, đủ để người đọc hiểu rõ yêu cầu trước khi xem đáp án.>
+<Giải thích rõ câu hỏi bằng tiếng Việt dễ hiểu. Mục tiêu: người đọc hiểu được *tại sao* đây là bài toán thú vị TRƯỚC khi nhìn vào đáp án. Bao gồm:
+
+- **Câu hỏi đang hỏi gì**: 1-2 câu ngắn gọn, súc tích. Nêu rõ bài toán cốt lõi. Tránh diễn đạt lại đề nguyên xi — hãy distill ra câu hỏi thực sự.
+- **Ngữ cảnh/Tình huống**: Mô tả bối cảnh và *tại sao* nó tạo ra bài toán (không chỉ mô tả lại scenario). Ví dụ: nếu đề nói "huge volume of data → NAT gateway" thì nêu rõ *tại sao điều đó tốn tiền* (NAT tính phí per-GB data processed).
+- **Điểm cần chú ý**: Liệt kê các từ khóa/constraint dễ bỏ qua. Với mỗi điểm, nêu rõ *hệ quả loại trừ* của nó — ví dụ "IPv4 → loại egress-only IGW", "same region → gateway endpoint khả thi", "cost-optimal → ưu tiên option miễn phí".
+- **Phạm vi đang xét**: Nêu các concept/service đang được so sánh, và nếu có thể, gợi ý chiều phân biệt quan trọng nhất (ví dụ: "gateway endpoint = miễn phí, interface endpoint = có phí").
+
+Viết 4-6 gạch đầu dòng. Không cần đầy đủ mọi mục nếu không liên quan — ưu tiên những gì thực sự giúp người đọc hiểu bài toán nhanh hơn.>
 
 ### Vì sao đúng
 
