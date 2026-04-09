@@ -9,6 +9,7 @@
 - [Placement Groups](#placement-groups)
 - [Cách truy cập EC2](#cách-truy-cập-ec2)
 - [Các dịch vụ liên quan](#các-dịch-vụ-liên-quan)
+- [Automatic Recovery](#automatic-recovery)
 - [EC2 Hibernate](#ec2-hibernate)
 - [Sub Pages](#sub-pages)
 - [Best Practices](#best-practices)
@@ -662,7 +663,57 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ---
 
-### 5. Dedicated Hosts
+### 5. Instance Tenancy
+
+**Instance Tenancy** xác định EC2 instance của bạn chạy trên loại hardware nào — shared hay dedicated. Đây là thuộc tính cấu hình khi launch instance (hoặc trong Launch Template).
+
+| Tenancy Value | Tên | Mô tả |
+|---------------|-----|-------|
+| `default` | Shared | Chạy trên hardware dùng chung với các AWS account khác (multi-tenant). Mặc định |
+| `dedicated` | Dedicated Instance | Hardware dành riêng cho account của bạn, AWS tự manage placement |
+| `host` | Dedicated Host | Physical server riêng, bạn control hoàn toàn placement |
+
+```
+Shared (default):
+┌─────────────────────────────────────────┐
+│         Physical Server (AWS)           │
+│  ┌────┐  ┌────┐  ┌────┐  ┌────┐         │
+│  │AccA│  │AccB│  │AccA│  │AccC│  ...    │  ← Nhiều account dùng chung
+│  └────┘  └────┘  └────┘  └────┘         │
+└─────────────────────────────────────────┘
+
+Dedicated Instance (dedicated):
+┌─────────────────────────────────────────┐
+│         Physical Server (AWS)           │
+│  ┌────┐  ┌────┐  ┌────┐  ┌────┐         │
+│  │AccA│  │AccA│  │AccA│  │    │         │  ← Chỉ account A, AWS tự chọn server
+│  └────┘  └────┘  └────┘  └────┘         │
+└─────────────────────────────────────────┘
+
+Dedicated Host (host):
+┌─────────────────────────────────────────┐
+│     Physical Server (h-0abc123def)      │
+│  ┌────┐  ┌────┐  ┌────┐  ┌────┐         │
+│  │AccA│  │AccA│  │AccA│  │    │         │  ← AccA control placement, biết socket/core
+│  └────┘  └────┘  └────┘  └────┘         │
+└─────────────────────────────────────────┘
+```
+
+**Khi nào chọn tenancy nào?**
+
+| Tình huống | Tenancy |
+|------------|---------|
+| Ứng dụng thông thường | `default` |
+| Compliance cần isolated hardware (không cần BYOL) | `dedicated` |
+| BYOL (Windows Server, SQL Server), cần biết socket/core | `host` |
+
+> **Lưu ý:** Tenancy của VPC cũng ảnh hưởng — nếu VPC tenancy là `dedicated`, tất cả instances trong VPC đó mặc định là `dedicated` dù không chỉ định.
+
+> **Nguồn**: [Instance tenancy](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html)
+
+---
+
+### 6. Dedicated Hosts
 
 **Physical server EC2 hoàn toàn dành riêng cho bạn**. Bạn có thể control placement của instances trên physical server đó.
 
@@ -689,7 +740,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 5.1 Đặc điểm
+#### 6.1 Đặc điểm
 
 | Feature | Mô tả |
 |---------|-------|
@@ -699,7 +750,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 | **BYOL support** | Sử dụng existing licenses (Windows Server, SQL Server, SUSE, etc.) |
 | **Compliance** | Đáp ứng các yêu cầu regulatory |
 
-#### 5.2 Instance Placement Control là gì?
+#### 6.2 Instance Placement Control là gì?
 
 **Placement** nghĩa là bạn có thể **chọn chính xác physical server nào** để launch EC2 instances lên đó.
 
@@ -759,7 +810,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-#### 5.3 Pricing Options
+#### 6.3 Pricing Options
 
 | Option | Mô tả | Discount |
 |--------|-------|----------|
@@ -767,7 +818,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 | **Reservation** | Cam kết 1-3 năm | Lên đến 70% |
 | **Savings Plans** | Có thể áp dụng | Lên đến 72% |
 
-#### 5.4 Use Cases
+#### 6.4 Use Cases
 
 - 📜 **Bring Your Own License (BYOL)** - sử dụng licenses theo socket/core
 - 🔒 **Compliance requirements** - PCI DSS, HIPAA yêu cầu dedicated hardware
@@ -778,7 +829,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 
 ---
 
-### 6. Dedicated Instances
+### 7. Dedicated Instances
 
 **Instances chạy trên hardware dành riêng cho account của bạn**, nhưng có thể chia sẻ hardware với instances khác trong **cùng account**.
 
@@ -806,7 +857,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 6.1 Pricing
+#### 7.1 Pricing
 
 - **Dedicated Instance fee**: $2/giờ/region (trả 1 lần cho toàn region, không phải per-instance)
 - **Instance price**: Giá On-Demand của instance type
@@ -822,7 +873,7 @@ Khi AWS cần capacity, Spot Instance sẽ nhận **2-minute warning** qua:
   - Instance price: $0.096 × 10 = $0.96
   - **Total: $2.96/giờ**
 
-#### 6.2 Use Cases
+#### 7.2 Use Cases
 
 - 🔒 **Hardware isolation** - không muốn share với account khác
 - 📜 **Compliance** - nhưng không cần BYOL
@@ -1483,6 +1534,164 @@ Centralized backup cho EC2 instances và EBS volumes.
 - **Backup Plans**: Định nghĩa schedule, retention, lifecycle
 - **Cross-region/Cross-account**: Copy backups đến regions/accounts khác
 - **Point-in-time recovery**: Restore đến thời điểm cụ thể
+
+---
+
+## Automatic Recovery
+
+### Automatic recovery là gì?
+
+**Automatic instance recovery** là cơ chế AWS tự động **khôi phục khả dụng của một EC2 instance**
+khi host vật lý bên dưới gặp sự cố phần cứng hoặc phần mềm.
+
+Thay vì tạo một instance logic mới cho bạn, AWS sẽ cố gắng **di chuyển instance sang host khác**.
+Nếu quá trình thành công, từ bên trong hệ điều hành nó thường trông giống như một lần
+**unplanned reboot**.
+
+> **Nguồn AWS**: [Automatic instance recovery](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    AUTOMATIC RECOVERY - Ý TƯỞNG CHÍNH                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Host vật lý hiện tại bị lỗi                                                │
+│            │                                                                │
+│            ▼                                                                │
+│  AWS phát hiện System Status Check fail                                     │
+│            │                                                                │
+│            ▼                                                                │
+│  AWS tự chuyển EC2 instance sang host khác                                  │
+│            │                                                                │
+│            ▼                                                                │
+│  Instance hoạt động lại với cùng identity/network chính                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Khi nào automatic recovery xảy ra?
+
+Automatic recovery xảy ra khi **AWS phát hiện system status check fail**,
+tức là lỗi nằm ở **hạ tầng bên dưới instance**, không phải bên trong OS/application.
+
+**Ví dụ các lỗi AWS nêu rõ có thể kích hoạt recovery:**
+- Mất kết nối mạng ở physical host
+- Mất nguồn điện ở host
+- Lỗi phần mềm trên physical host
+- Lỗi phần cứng trên host làm ảnh hưởng network reachability
+
+**Quan trọng:**
+- ✅ **Có thể xảy ra** khi **system status check** fail
+- ❌ **Không áp dụng** nếu chỉ **instance status check** fail
+- ❌ **Không phải** cơ chế sửa lỗi application crash, disk full, config sai, hoặc process treo
+
+> AWS nói rõ automatic recovery xử lý vấn đề của **host hardware/software**, không phải vấn đề bên trong instance.
+
+### Automatic recovery khác gì với reboot và stop/start?
+
+| Cơ chế | Khi nào dùng | Chạy trên host nào | Public IPv4 | RAM | Mục đích chính |
+|-------|--------------|--------------------|-------------|-----|----------------|
+| **Reboot** | OS/app có vấn đề nhẹ, cần khởi động lại | Thường cùng host | Giữ nguyên | **Mất** | Restart hệ điều hành |
+| **Stop/Start** | Chủ động dừng rồi chạy lại | Có thể host mới | Có thể đổi nếu không gắn EIP | **Mất** | Tắt/bật lại instance |
+| **Automatic Recovery** | Host AWS bị lỗi, system status check fail | **Host mới nếu recovery thành công** | **Giữ nguyên** | **Mất** | Tự phục hồi availability khi host hỏng |
+
+**Điểm dễ nhầm nhất trong exam:**
+- `Stop/Start` có thể làm **đổi public IPv4**
+- `Automatic recovery` thì AWS nêu rõ **giữ lại public IPv4 address**
+
+### Những gì được giữ lại và bị mất sau recovery
+
+#### Được giữ lại
+
+Theo tài liệu AWS, recovered instance vẫn giữ:
+- **Instance ID**
+- **Public IP, private IP, Elastic IP**
+- **Instance metadata**
+- **Placement group**
+- **Attached EBS volumes**
+- **Availability Zone**
+
+#### Bị mất
+
+Sau automatic recovery, các phần sau **không còn giữ nguyên**:
+- **Data trong RAM (volatile memory)**
+- **Operating system uptime** sẽ reset về 0
+- **Data trên instance store volumes**
+  - Áp dụng với **CloudWatch action based recovery**
+
+> 💡 **Rule rất hay để nhớ**:
+> **Giữ identity và network metadata, mất volatile state.**
+
+### Có những loại automatic recovery nào?
+
+AWS hiện mô tả 2 cơ chế:
+
+#### 1. Simplified automatic recovery
+
+- Được **enabled by default** trên các instance type được hỗ trợ
+- AWS quản lý hành vi recovery
+- Notification cơ bản qua **AWS Health Dashboard**
+- Không cần bạn tự tạo CloudWatch alarm
+
+#### 2. CloudWatch action based recovery
+
+- Bạn **tự cấu hình** recovery bằng CloudWatch alarm
+- Dùng metric **`StatusCheckFailed_System`**
+- Có thể kết hợp **SNS notifications**
+- Cho phép kiểm soát chi tiết hơn và phản ứng nhanh hơn
+
+Ví dụ ý tưởng cấu hình:
+
+```yaml
+MetricName: StatusCheckFailed_System
+Namespace: AWS/EC2
+Threshold: 1
+AlarmActions:
+  - arn:aws:automate:region:ec2:recover
+```
+
+### Điều kiện để CloudWatch action based recovery hoạt động
+
+CloudWatch action based recovery chỉ hoạt động khi:
+- Instance đang ở trạng thái **running**
+- Không có **service event** đang diễn ra trong AWS Health Dashboard
+- AWS có **available capacity** cho instance type đó
+- Instance type của bạn **hỗ trợ auto recovery**
+
+Một số trường hợp không hỗ trợ hoặc dễ fail:
+- Instance nằm trong **Auto Scaling group**
+- Dùng **Dedicated Host**
+- Đang có **scheduled maintenance event**
+- Thiếu capacity để chuyển sang host khác
+
+### Khi nào nên dùng?
+
+Automatic recovery phù hợp khi:
+- Bạn chạy **single instance quan trọng** nhưng vẫn muốn tăng resilience
+- Muốn tự phục hồi khi lỗi nằm ở **AWS host layer**
+- Muốn giữ nguyên **instance identity** và **network identity**
+
+Tuy nhiên, AWS cũng nhấn mạnh đây chỉ là cơ chế cho **individual instances**.
+Nếu cần hệ thống chịu lỗi tốt hơn ở mức ứng dụng, nên kết hợp:
+- **Elastic Load Balancing**
+- **Auto Scaling**
+- **Multi-AZ architecture**
+
+### Cách ghi nhớ nhanh
+
+```
+Automatic recovery = Host AWS bị lỗi
+                  → System status check fail
+                  → AWS tự chuyển instance sang host khác
+                  → Giữ ID/IP chính
+                  → Mất RAM
+```
+
+### Nguồn tham khảo
+
+- [Automatic instance recovery](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html)
+- [Configure CloudWatch action based recovery on an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cloudwatch-recovery.html)
+- [Create alarms that stop, terminate, reboot, or recover an instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingAlarmActions.html)
 
 ---
 

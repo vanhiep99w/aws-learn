@@ -85,6 +85,40 @@ Ví dụ: Min=2, Desired=3, Max=5
 
 ## Launch Template vs Launch Configuration
 
+### Launch Template là gì?
+
+**Launch Template** là một bản cấu hình định nghĩa các tham số để khởi tạo EC2 instance. Khi ASG cần tạo instance mới, nó dùng Launch Template như một "công thức".
+
+```
+Launch Template chứa:
+┌───────────────────────────────────────────────────────┐
+│  AMI ID           │ ami-0abcdef1234567890             │
+│  Instance Type    │ t3.medium                         │
+│  Key Pair         │ my-keypair                        │
+│  Security Groups  │ sg-0123456789abcdef0              │
+│  IAM Role         │ arn:aws:iam::123:instance-profile │
+│  User Data        │ #!/bin/bash\napt update...        │
+│  EBS Volumes      │ /dev/xvda: 20GB gp3               │
+│  Network          │ subnet, public IP, etc.           │
+│  Tags             │ Name=web-server, Env=prod         │
+│  Tenancy          │ default / dedicated / host        │
+└───────────────────────────────────────────────────────┘
+```
+
+**Versioning** — điểm mạnh của Launch Template:
+
+```
+Launch Template: lt-0abc123
+  ├── Version 1 (default) — t3.medium, AMI cũ
+  ├── Version 2           — t3.large, AMI mới
+  └── Version 3 (latest)  — t3.large, AMI mới + thêm EBS
+
+ASG có thể chỉ định: dùng version $Latest, $Default, hoặc version cụ thể
+→ Dễ dàng rollback về version cũ nếu có vấn đề
+```
+
+### So sánh Launch Template vs Launch Configuration
+
 | Tiêu chí | Launch Template | Launch Configuration |
 |----------|-----------------|----------------------|
 | **Trạng thái** | Recommended | Legacy (deprecated) |

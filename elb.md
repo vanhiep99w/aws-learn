@@ -175,11 +175,12 @@ OSI Model:
 ├─────────────────────────────┤
 │ Layer 5 - Session           │
 ├─────────────────────────────┤
-│ Layer 4 - Transport (TCP/UDP)│ ← NLB hoạt động ở đây
+│ Layer 4 - Transport(TCP/UDP)│ ← NLB hoạt động ở đây
 ├─────────────────────────────┤
 │ Layer 3 - Network (IP)      │
 ├─────────────────────────────┤
 │ Layer 2 - Data Link         │
+
 ├─────────────────────────────┤
 │ Layer 1 - Physical          │
 └─────────────────────────────┘
@@ -192,6 +193,28 @@ OSI Model:
 - **Static IP** per AZ (hoặc Elastic IP)
 - **Preserve source IP** của client
 - Phù hợp: gaming, IoT, real-time apps, databases
+
+### Target Types
+
+| Target Type | Mô tả | Use Case |
+|-------------|-------|----------|
+| **Instance** | EC2 instance ID | Ứng dụng chạy trực tiếp trên EC2 |
+| **IP** | Private IP address (IPv4/IPv6) | On-premises qua VPN/Direct Connect, containers dùng `awsvpc` network mode |
+| **ALB** | ARN của Application Load Balancer | Kết hợp NLB (static IP) + ALB (L7 routing) |
+
+**Lưu ý quan trọng:**
+- Target type **IP**: chỉ chấp nhận IP thuộc các CIDR blocks hợp lệ (VPC, on-premises qua Direct Connect/VPN)
+- Target type **ALB**: cho phép dùng NLB để có Static IP/Elastic IP ở ngoài, trong khi ALB xử lý routing L7 bên trong
+- ECS với `awsvpc` network mode **bắt buộc** dùng target type `ip` (không dùng được `instance`)
+
+```
+Ví dụ NLB → ALB chaining:
+Internet → NLB (Static IP, TCP:443) → ALB (HTTP routing) → Target Group
+           └── Firewall whitelist IP cố định
+                                      └── Route theo path/host
+```
+
+> **Nguồn:** [Target groups for NLB](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html)
 
 ### Tại sao NLB nhanh hơn ALB?
 
