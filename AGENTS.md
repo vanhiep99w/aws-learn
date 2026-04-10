@@ -51,11 +51,21 @@ Mỗi file documentation (trừ `README.md` và `AGENTS.md`) cần có **mục l
 
 ## Accuracy & Sources (AWS)
 
-- Khi trả lời câu hỏi về AWS hoặc tạo/cập nhật tài liệu AWS, **phải xác minh thông tin bằng các MCP tools của `aws-knowledge` trước khi kết luận**:
-  - `aws___search_documentation` - tìm trang AWS chính thức liên quan
-  - `aws___read_documentation` - đọc nội dung gốc (giới hạn, pricing, quotas, API fields, v.v.)
-  - `aws___get_regional_availability` - kiểm tra tính khả dụng theo region
-  - `aws___recommend` - tìm tài liệu liên quan
+- Khi trả lời câu hỏi về AWS hoặc tạo/cập nhật tài liệu AWS, **phải xác minh thông tin bằng MCP trước khi kết luận**.
+- Thứ tự ưu tiên:
+  - Ưu tiên `aws-knowledge` khi khả dụng, đặc biệt cho:
+    - `aws___search_documentation` - tìm trang AWS chính thức liên quan
+    - `aws___read_documentation` - đọc nội dung gốc (giới hạn, pricing, quotas, API fields, v.v.)
+    - `aws___get_regional_availability` - kiểm tra tính khả dụng theo region
+    - `aws___recommend` - tìm tài liệu liên quan
+  - Nếu `aws-knowledge` bị rate limit, unavailable, hoặc lỗi transport, dùng `aws-documentation-mcp-server` làm fallback cho các tác vụ docs-first:
+    - `search_documentation`
+    - `read_documentation`
+    - `read_sections`
+    - `recommend`
+  - Với câu hỏi về region support/availability:
+    - Ưu tiên `aws___get_regional_availability`
+    - Nếu fallback MCP không có dữ liệu tương đương, tra trực tiếp AWS Documentation/What's New/Regional Services và ghi rõ cách xác minh
 
 - **Không suy đoán** hoặc dựa vào "kiến thức nhớ" cho các chi tiết dễ sai (tên API, giới hạn, hành vi mặc định, region support, ngày ra mắt).
   - Nếu không thể xác minh, ghi rõ: "Chưa xác minh được từ tài liệu AWS tại thời điểm viết"

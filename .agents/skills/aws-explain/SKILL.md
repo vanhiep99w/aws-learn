@@ -14,7 +14,7 @@ description: >
 ## Mục tiêu
 
 - Xử lý câu hỏi AWS có hoặc không có danh sách đáp án.
-- Luôn kiểm chứng bằng MCP `aws-knowledge` trước khi kết luận.
+- Luôn kiểm chứng bằng MCP trước khi kết luận; ưu tiên `aws-knowledge`, fallback sang `aws-documentation-mcp-server` khi cần.
 - Nếu input có đáp án được đánh dấu, coi đó là giả thuyết cần thẩm định lại.
 - Chọn đáp án đúng theo chứng cứ, giải thích chi tiết từng phương án.
 - Giữ nguyên thứ tự và vị trí đáp án gốc (`#1`, `#4`).
@@ -33,14 +33,23 @@ description: >
 
 ### Bước 2: Xác minh bằng tài liệu AWS
 
-- Gọi `aws___search_documentation` với topic phù hợp:
+- Mặc định ưu tiên `aws-knowledge`.
+- Nếu `aws-knowledge` bị rate limit, unavailable, hoặc lỗi transport, chuyển sang `aws-documentation-mcp-server` cho các thao tác docs-first.
+- Với `aws-knowledge`, gọi `aws___search_documentation` với topic phù hợp:
   - `reference_documentation` — API/CLI/SDK, tham số, hành vi kỹ thuật.
   - `troubleshooting` — lỗi, tình huống "không hoạt động".
   - `current_awareness` — tính năng mới, ngày ra mắt, trạng thái hỗ trợ.
   - `general` — kiến trúc, best practices.
 - Đọc tài liệu gốc bằng `aws___read_documentation` cho kết quả chính — không kết luận chỉ từ snippet.
 - Dùng `aws___recommend` nếu cần mở rộng nguồn hoặc có mâu thuẫn.
-- Câu hỏi liên quan region → dùng `aws___get_regional_availability`.
+- Fallback tool mapping với `aws-documentation-mcp-server`:
+  - `aws___search_documentation` -> `search_documentation`
+  - `aws___read_documentation` -> `read_documentation`
+  - `aws___recommend` -> `recommend`
+  - Khi cần đọc section cụ thể -> `read_sections`
+- Câu hỏi liên quan region:
+  - Ưu tiên `aws___get_regional_availability`
+  - Nếu fallback MCP không có dữ liệu tương đương, tra trực tiếp AWS Documentation, What's New, hoặc Regional Services List và ghi rõ đây là fallback ngoài MCP
 
 ### Bước 3: Chọn đáp án
 
@@ -252,6 +261,7 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - Không suy đoán tên API, default behavior, quota, hoặc region support.
 - Không dựa vào trí nhớ khi chưa có chứng cứ từ tài liệu AWS chính thức.
 - Ưu tiên nguồn: AWS Documentation > AWS What's New > AWS Blog > AWS Pricing.
+- Ưu tiên công cụ: `aws-knowledge` > `aws-documentation-mcp-server` > tra trực tiếp AWS official docs.
 - Luôn kèm link nguồn cho kết luận quan trọng.
 - Nếu dùng mốc thời gian tương đối → đổi sang ngày cụ thể.
 - Tài liệu repo chỉ để đối chiếu, không thay thế xác minh AWS chính thức.

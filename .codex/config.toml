@@ -2,3 +2,11 @@ model_reasoning_effort = "medium"
 
 [mcp_servers.aws-knowledge]
 url = "https://knowledge-mcp.global.api.aws"
+
+[mcp_servers.aws-documentation-mcp-server]
+command = "uvx"
+args = ["awslabs.aws-documentation-mcp-server@latest"]
+
+[mcp_servers.aws-documentation-mcp-server.env]
+FASTMCP_LOG_LEVEL = "ERROR"
+AWS_DOCUMENTATION_PARTITION = "aws"
