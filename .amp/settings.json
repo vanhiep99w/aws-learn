@@ -1,7 +1,8 @@
 {
   "amp.mcpServers": {
     "aws-knowledge": {
-      "url": "https://knowledge-mcp.global.api.aws"
+      "command": "uvx",
+      "args": ["fastmcp", "run", "https://knowledge-mcp.global.api.aws"]
     }
   }
 }

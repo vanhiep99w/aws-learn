@@ -425,12 +425,12 @@ aws application-autoscaling put-scaling-policy \
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │                    ECS SERVICE                      │    │
 │  │                                                     │    │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐           │    │
-│  │  │  TASK    │  │  TASK    │  │  TASK    │           │    │
-│  │  │┌────────┐│  │┌────────┐│  │┌────────┐│           │    │
+│  │  ┌───────────┐  ┌───────────┐  ┌───────────┐        │    │
+│  │  │  TASK     │  │  TASK     │  │  TASK     │        │    │
+│  │  │┌─────────┐│  │┌─────────┐│  │┌─────────┐│        │    │
 │  │  ││Container││  ││Container││  ││Container││        │    │
-│  │  │└────────┘│  │└────────┘│  │└────────┘│           │    │
-│  │  └──────────┘  └──────────┘  └──────────┘           │    │
+│  │  │└─────────┘│  │└─────────┘│  │└─────────┘│        │    │
+│  │  └───────────┘  └───────────┘  └───────────┘        │    │
 │  └─────────────────────────────────────────────────────┘    │
 │                                                             │
 │  ┌───────────────────────┐  ┌───────────────────────┐       │
@@ -632,21 +632,21 @@ TRƯỜNG HỢP 2: 1 Task = NHIỀU Containers (sidecar pattern)
 │   = EC2 instance đã đăng ký với ECS cluster                          │
 │   = Máy chủ thật chạy containers                                     │
 │                                                                      │
-│   ┌─────────────────────────────────────────────────────────────┐    │
-│   │                   EC2 Instance                              │    │
+│   ┌──────────────────────────────────────────────────────────────┐   │
+│   │                   EC2 Instance                               │   │
 │   │  ┌──────────────────────────────────────────────────────┐    │   │
 │   │  │  ECS Agent (chạy sẵn trong ECS-optimized AMI)        │    │   │
 │   │  │  - Giao tiếp với ECS control plane                   │    │   │
 │   │  │  - Nhận lệnh start/stop containers                   │    │   │
 │   │  │  - Báo cáo resource usage                            │    │   │
 │   │  └──────────────────────────────────────────────────────┘    │   │
-│   │                                                             │    │
+│   │                                                              │   │
 │   │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐             │   │
 │   │  │ Container 1 │ │ Container 2 │ │ Container 3 │             │   │
 │   │  └─────────────┘ └─────────────┘ └─────────────┘             │   │
-│   │                                                             │    │
-│   │  Docker daemon, OS, etc.                                    │    │
-│   └─────────────────────────────────────────────────────────────┘    │
+│   │                                                              │   │
+│   │  Docker daemon, OS, etc.                                     │   │
+│   └──────────────────────────────────────────────────────────────┘   │
 │                                                                      │
 │   ⚠️ Fargate KHÔNG có Container Instance - AWS quản lý hết!          │
 └──────────────────────────────────────────────────────────────────────┘
@@ -797,25 +797,32 @@ Thợ: "Ai order? Bao nhiêu cái? Loại gì?"
 ### So sánh tổng quan
 
 ```
-┌──────────────────────────────────────┐  ┌──────────────────────────────────────┐
-│           EC2 LAUNCH TYPE             │  │         FARGATE LAUNCH TYPE           │
-│         "Thuê nhà riêng"              │  │          "Ở khách sạn"                │
-│                                        │  │                                        │
-│  ┌────────────────────────────────┐   │  │  ┌────────────────────────────────┐   │
-│  │      BẠN QUẢN LÝ                │   │  │      AWS QUẢN LÝ                  │   │
-│  │  ┌──────────────────────────┐  │   │  │  ┌──────────────────────────┐    │   │
-│  │  │ EC2 Instances            │  │   │  │  │ Compute Resources        │    │   │
-│  │  │ - Provisioning           │  │   │  │  │ (Serverless containers)  │    │   │
-│  │  │ - Scaling                │  │   │  │  └──────────────────────────┘    │   │
-│  │  │ - Patching               │  │   │  └────────────────────────────────┘   │
-│  │  │ - AMI updates            │  │   │                                        │
-│  │  └──────────────────────────┘  │   │  ┌────────────────────────────────┐   │
-│  └────────────────────────────────┘   │  │      BẠN QUẢN LÝ                │   │
-│                                        │  │  - Task Definitions              │   │
-│  Bạn: Trả tiền EC2 + quản lý servers  │  │  - Container images              │   │
-│                                        │  │  - Application code              │   │
-│                                        │  └────────────────────────────────┘   │
-└──────────────────────────────────────┘  └──────────────────────────────────────┘
+                    ECS (bộ não điều phối — không có CPU/RAM thật)
+                              │
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+  ┌─────────────────────────┐     ┌─────────────────────────┐
+  │     EC2 LAUNCH TYPE     │     │   FARGATE LAUNCH TYPE   │
+  │      "Thuê nhà riêng"   │     │      "Ở khách sạn"      │
+  ├─────────────────────────┤     ├─────────────────────────┤
+  │  AWS quản lý:           │     │  AWS quản lý:           │
+  │  ✅ Physical hardware   │     │  ✅ Physical hardware   │
+  │  ✅ Hypervisor          │     │  ✅ Hypervisor          │
+  ├─────────────────────────┤     │  ✅ EC2 instances       │
+  │  Bạn quản lý:           │     │  ✅ OS patching         │
+  │  ❗ EC2 provisioning    │     │  ✅ Capacity planning   │
+  │  ❗ OS patching         │     ├─────────────────────────┤
+  │  ❗ AMI updates         │     │  Bạn quản lý:           │
+  │  ❗ Capacity planning   │     │  ✅ Task Definitions    │
+  ├─────────────────────────┤     │  ✅ Container images    │
+  │  Cả hai đều lo:         │     │  ✅ App code            │
+  │  • Task Definitions     │     └─────────────────────────┘
+  │  • Container images     │
+  │  • App code             │
+  └─────────────────────────┘
+
+  EC2 Launch Type: trả tiền EC2 instances (24/7 dù idle)
+  Fargate:         trả theo vCPU + Memory × thời gian chạy thực tế
 ```
 
 ### So sánh chi tiết
@@ -916,13 +923,13 @@ AWS Fargate: "OK! Tôi tự tìm compute và chạy ngay!" ✅
 │                                                              │
 │  ┌─────────────────────────────────────────────────────┐     │
 │  │              EC2 Instance (docker0 bridge)          │     │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐      │    │
-│  │  │ Container 1│  │ Container 2│  │ Container 3│      │    │
-│  │  │  Port 8080 │  │  Port 8081 │  │  Port 8082 │      │    │
-│  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘      │    │
-│  │        └───────────────┼───────────────┘             │    │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐     │     │
+│  │  │ Container 1│  │ Container 2│  │ Container 3│     │     │
+│  │  │  Port 8080 │  │  Port 8081 │  │  Port 8082 │     │     │
+│  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘     │     │
+│  │        └───────────────┼───────────────┘            │     │
 │  │                   Docker Bridge                     │     │
-│  │                        │                             │    │
+│  │                        │                            │     │
 │  │              EC2 ENI: 10.0.1.5                      │     │
 │  └─────────────────────────────────────────────────────┘     │
 │                                                              │
@@ -1745,19 +1752,26 @@ Chạy 24/7 trong 1 tháng: $0.0247 × 24 × 30 = ~$17.8/container
 ### So sánh các Container Services
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                   AWS CONTAINER SERVICES                       │
-│                                                                │
-│  ┌────────────┐  ┌────────────┐  ┌────────────────────────┐    │
-│  │    ECS     │  │    EKS     │  │       FARGATE          │    │
-│  │            │  │            │  │   (Serverless Compute) │    │
-│  │  AWS-native│  │ Kubernetes │  │                        │    │
-│  │ orchestrator│  │  managed   │  │  Works with ECS or EKS│    │
-│  └────────────┘  └────────────┘  └────────────────────────┘    │
-│                                                                │
-│  Fargate = Launch Type, không phải orchestrator                │
-│  Có thể dùng Fargate với cả ECS và EKS                         │
-└────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                     3 LAYER KHI CHẠY CONTAINER                      │
+├─────────────────────────────────────────────────────────────────────┤
+│  LAYER 3 │  App Runner         │  Lo tất: LB, HTTPS, CI/CD, scaling │
+│  Platform│  Elastic Beanstalk  │  Lo tất: LB, EC2, ASG              │
+│          │  (ECS/EKS tự lo)    │  ← Bạn phải tự setup ALB, v.v.     │
+├─────────────────────────────────────────────────────────────────────┤
+│  LAYER 2 │  ECS                │  AWS-native (Task/Service)         │
+│  Orches- │  EKS                │  Kubernetes (Pod/Deployment)       │
+│  tration │                     │  Cả hai đều là "não" — không CPU   │
+├─────────────────────────────────────────────────────────────────────┤
+│  LAYER 1 │  EC2                │  Bạn quản lý servers               │
+│  Compute │  Fargate            │  AWS quản lý (serverless)          │
+└─────────────────────────────────────────────────────────────────────┘
+
+Combo phổ biến:
+  ECS + EC2      →  bạn lo orchestration + servers
+  ECS + Fargate  →  bạn chỉ lo orchestration, AWS lo servers  ✅ phổ biến nhất
+  EKS + Fargate  →  Kubernetes, AWS lo servers
+  App Runner     →  AWS lo tất cả, bạn chỉ đưa code/image
 ```
 
 | Tiêu chí | ECS | EKS |

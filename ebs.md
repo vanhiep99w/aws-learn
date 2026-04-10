@@ -44,10 +44,10 @@ Amazon Elastic Block Store (EBS) là dịch vụ **block storage** có hiệu su
 │           EC2 Instance                  │
 │         (Web Application)               │
 ├─────────────────────────────────────────┤
-│  EBS Volume 1 (gp3, 8GB)               │  ← Root volume (OS: Ubuntu)
+│  EBS Volume 1 (gp3, 8GB)                │  ← Root volume (OS: Ubuntu)
 │  /dev/xvda                              │
 ├─────────────────────────────────────────┤
-│  EBS Volume 2 (gp3, 100GB)             │  ← Data volume (MySQL data)
+│  EBS Volume 2 (gp3, 100GB)              │  ← Data volume (MySQL data)
 │  /dev/xvdb → mount /data                │
 └─────────────────────────────────────────┘
 ```

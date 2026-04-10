@@ -37,6 +37,9 @@ Two modes:
 - [x] [AWS AppSync](aws-appsync.md) - GraphQL APIs, Real-time Subscriptions, Offline Sync, Multiple Data Sources
 - [x] [AWS Step Functions](aws-step-functions.md) - Serverless Workflow Orchestration, State Machines, Standard/Express, 200+ AWS Integrations
 - [x] [ECS](ecs.md) - Elastic Container Service, Task Definitions, Services, Fargate
+- [x] [AWS Fargate](aws-fargate.md) - Serverless Containers, Task Sizing, Fargate Spot, ECS/EKS on Fargate
+- [x] [AWS App Runner](aws-app-runner.md) - Fully Managed Web Apps & APIs, GitHub CI/CD, VPC Connector, Zero-config Deploy
+- [x] [AWS Compute Comparison](aws-compute-comparison.md) - So sánh ECS vs Fargate vs App Runner vs Lambda vs EC2, Decision Tree chọn dịch vụ
 - [x] [EKS](eks.md) - Elastic Kubernetes Service, K8s Core Concepts, Node Types
 - [x] [AWS Batch](aws-batch.md) - Batch Computing, Job Definitions, Compute Environments
 - [x] [Lightsail](lightsail.md) - Simple Virtual Private Server (VPS), Pre-configured Stacks (WordPress, LAMP)
