@@ -113,12 +113,12 @@ Mỗi IAM Role có **2 phần policy** (cả 2 đều cần thiết):
          ┌──────────────┴──────────────┐
          │                             │
          ▼                             ▼
-┌─────────────────┐          ┌─────────────────┐
+┌─────────────────┐          ┌──────────────────┐
 │  Trust Policy   │          │Permissions Policy│
-│  (Ai được       │          │  (Làm được gì   │
-│   assume?)      │          │   sau khi       │
-│                 │          │   assume?)      │
-└─────────────────┘          └─────────────────┘
+│  (Ai được       │          │  (Làm được gì    │
+│   assume?)      │          │   sau khi        │
+│                 │          │   assume?)       │
+└─────────────────┘          └──────────────────┘
 ```
 
 ### Trust Policy
@@ -885,21 +885,21 @@ Nhưng task hôm nay chỉ cần đọc S3 thôi!
 **Session Policy** là policy được pass khi assume role để **giới hạn thêm** permissions.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   Role Permissions          Session Policy         Kết quả      │
-│   (Role có gì)              (Giới hạn thêm)        (Được gì)    │
-│                                                                 │
-│   ┌─────────────┐          ┌─────────────┐       ┌─────────────┐│
-│   │ s3:*        │          │ s3:GetObject│       │ s3:GetObject││
-│   │ ec2:*       │    ∩     │ s3:ListBucket│  =   │ s3:ListBucket│
-│   │ lambda:*    │          │             │       │             ││
-│   │ dynamodb:*  │          │             │       │             ││
-│   └─────────────┘          └─────────────┘       └─────────────┘│
-│                                                                 │
-│   (Rất nhiều quyền)        (Chỉ cho S3 read)     (Chỉ S3 read)  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│   Role Permissions          Session Policy         Kết quả       │
+│   (Role có gì)              (Giới hạn thêm)        (Được gì)     │
+│                                                                  │
+│   ┌─────────────┐          ┌──────────────┐       ┌─────────────┐│
+│   │ s3:*        │          │ s3:GetObject │       │s3:GetObject ││
+│   │ ec2:*       │    ∩     │ s3:ListBucket│  =    │s3:ListBucket││
+│   │ lambda:*    │          │              │       │             ││
+│   │ dynamodb:*  │          │              │       │             ││
+│   └─────────────┘          └──────────────┘       └─────────────┘│
+│                                                                  │
+│   (Rất nhiều quyền)        (Chỉ cho S3 read)     (Chỉ S3 read)   │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 
 → Session Policy lấy GIAO (intersection) với Role permissions
 → Kết quả luôn ≤ Role permissions (không thể thêm quyền mới)

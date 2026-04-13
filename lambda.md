@@ -104,18 +104,18 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │                        LAMBDA ARCHITECTURE                            │
 │                                                                       │
 │   TRIGGER/EVENT SOURCE           LAMBDA FUNCTION         DESTINATION  │
-│   ┌─────────────────┐           ┌─────────────────┐    ┌──────────┐   │
-│   │ • API Gateway   │           │                 │    │ • S3     │   │
-│   │ • S3 Events     │──────────▶│   Your Code     │───▶│ • DynamoDB │ │
-│   │ • DynamoDB Strm │           │   (Handler)     │    │ • SNS    │   │
-│   │ • SNS/SQS       │           │                 │    │ • SQS    │   │
-│   │ • CloudWatch    │           └─────────────────┘    │ • other  │   │
-│   │ • EventBridge   │                   │              └──────────┘   │
-│   │ • Kinesis       │                     │                           │
-│   │ • ALB           │           ┌───────▼───────┐                     │
-│   └─────────────────┘           │ Execution Role│                     │
-│                                 │ (IAM Permissions)│                  │
-│                                 └─────────────────┘                   │
+│   ┌─────────────────┐           ┌─────────────────┐    ┌───────────┐  │
+│   │ • API Gateway   │           │                 │    │ • S3      │  │
+│   │ • S3 Events     │──────────▶│   Your Code     │───▶│ • DynamoDB│  │
+│   │ • DynamoDB Strm │           │   (Handler)     │    │ • SNS     │  │
+│   │ • SNS/SQS       │           │                 │    │ • SQS     │  │
+│   │ • CloudWatch    │           └─────────────────┘    │ • other   │  │
+│   │ • EventBridge   │                   │              └───────────┘  │
+│   │ • Kinesis       │                   │                             │
+│   │ • ALB           │           ┌───────▼───────────┐                 │
+│   └─────────────────┘           │ Execution Role    │                 │
+│                                 │ (IAM Permissions) │                 │
+│                                 └───────────────────┘                 │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -255,7 +255,7 @@ HIỂU ĐÚNG VỀ SERVERLESS:
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │  ┌─────────────┐    ┌──────────┐    ┌────────────┐          │   │
 │   │  │ S3 Events   │───▶│  Queue   │───▶│   Lambda   │          │   │
-│   │  │ SNS         │    │ (internal)│    │            │         │   │
+│   │  │ SNS         │    │(internal)│    │            │          │   │
 │   │  │ EventBridge │    └──────────┘    └────────────┘          │   │
 │   │  └─────────────┘                                            │   │
 │   │                                                             │   │
@@ -1443,9 +1443,9 @@ def lambda_handler(event, context):
 │   │                   │          │      │      │      │         │   │
 │   │                   └──────────┘      │      │      │         │   │
 │   │                                     ▼      ▼      ▼         │   │
-│   │                                  ┌─────┐ ┌─────┐ ┌─────┐    │   │
+│   │                                  ┌──────┐ ┌─────┐ ┌─────┐   │   │
 │   │                                  │Lambda│ │ SQS │ │Email│   │   │
-│   │                                  └─────┘ └─────┘ └─────┘    │   │
+│   │                                  └──────┘ └─────┘ └─────┘   │   │
 │   │                                                             │   │
 │   │   Supported Subscribers:                                    │   │
 │   │   • Lambda functions                                        │   │
@@ -1500,7 +1500,7 @@ def lambda_handler(event, context):
 │   │   Producer           Queue              Consumer            │   │
 │   │                                                             │   │
 │   │  ┌───────┐      ┌───────────────┐      ┌───────────┐        │   │
-│   │  │ App A │─────▶│ ■ ■ ■ ■ ■ ■ │─────▶│ Lambda/   │          │   │
+│   │  │ App A │─────▶│ ■ ■ ■ ■ ■ ■   │─────▶│ Lambda/   │        │   │
 │   │  └───────┘      │ (messages)    │      │ Worker    │        │   │
 │   │                 └───────────────┘      └───────────┘        │   │
 │   │                                                             │   │
@@ -1572,12 +1572,12 @@ def lambda_handler(event, context):
 │   │  └───────────┘        │             │     └───────────┘     │   │
 │   │                       │   DEFAULT   │                       │   │
 │   │  ┌───────────┐        │    BUS      │     ┌───────────┐     │   │
-│   │  │ Custom    │──────▶│             │────▶│  SQS/SNS  │      │   │
+│   │  │ Custom    │──────▶ │             │────▶│  SQS/SNS  │     │   │
 │   │  │ Events    │        │    Rules    │     └───────────┘     │   │
 │   │  └───────────┘        │   filter    │                       │   │
 │   │                       │   & route   │     ┌───────────┐     │   │
 │   │  ┌───────────┐        │             │────▶│Step Funcs │     │   │
-│   │  │ SaaS Apps │──────▶│             │     └───────────┘      │   │
+│   │  │ SaaS Apps │──────▶ │             │     └───────────┘     │   │
 │   │  │Shopify etc│        └─────────────┘                       │   │
 │   │  └───────────┘                                              │   │
 │   │                                                             │   │

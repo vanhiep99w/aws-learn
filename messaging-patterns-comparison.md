@@ -96,16 +96,16 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   DJ phát tin (Publisher)                               │   │
 │   │        ↓                                                │   │
-│   │   ┌───────────────────────┐                              │  │
-│   │   │     📻 TOPIC          │  ← SNS Topic                 │  │
-│   │   │   "breaking-news"     │                              │  │
-│   │   └───────────────────────┘                              │  │
-│   │        │ PUSH (chủ động gửi đến subscribers)             │  │
+│   │   ┌───────────────────────┐                             │   │
+│   │   │     📻 TOPIC          │  ← SNS Topic                │   │
+│   │   │   "breaking-news"     │                             │   │
+│   │   └───────────────────────┘                             │   │
+│   │        │ PUSH (chủ động gửi đến subscribers)            │   │
 │   │        ↓                                                │   │
-│   │   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐         │  │
-│   │   │Người 1 │  │Người 2 │  │Người 3 │  │Người 4 │         │  │
-│   │   │ "Tin!" │  │ "Tin!" │  │ "Tin!" │  │ "Tin!" │         │  │
-│   │   └────────┘  └────────┘  └────────┘  └────────┘         │  │
+│   │   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐        │   │
+│   │   │Người 1 │  │Người 2 │  │Người 3 │  │Người 4 │        │   │
+│   │   │ "Tin!" │  │ "Tin!" │  │ "Tin!" │  │ "Tin!" │        │   │
+│   │   └────────┘  └────────┘  └────────┘  └────────┘        │   │
 │   │                                                         │   │
 │   │   → TẤT CẢ subscribers đều nhận CÙNG message            │   │
 │   │   → Gửi xong → Message BIẾN MẤT (không lưu)             │   │
@@ -144,15 +144,15 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │    │
 │   │   Camera quay liên tục (Producers)                      │    │
 │   │        ↓                                                │    │
-│   │   ┌───────────────────────────────────────────────────┐   │  │
-│   │   │  STREAM (lưu video 1-365 ngày)                    │   │  │
-│   │   │  ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐     │    │  │
-│   │   │  │ 9am │10am │11am │12pm │ 1pm │ 2pm │ 3pm │     │    │  │
-│   │   │  └─────┴─────┴─────┴─────┴─────┴─────┴─────┘     │    │  │
-│   │   │         ↑                           ↑             │   │  │
-│   │   │    Consumer A              Consumer B             │   │  │
-│   │   │   (xem từ 10am)          (xem live 3pm)           │   │  │
-│   │   └───────────────────────────────────────────────────┘   │  │
+│   │   ┌───────────────────────────────────────────────────┐ │    │
+│   │   │  STREAM (lưu video 1-365 ngày)                    │ │    │
+│   │   │  ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐      │ │    │
+│   │   │  │ 9am │10am │11am │12pm │ 1pm │ 2pm │ 3pm │      │ │    │
+│   │   │  └─────┴─────┴─────┴─────┴─────┴─────┴─────┘      │ │    │
+│   │   │         ↑                           ↑             │ │    │
+│   │   │    Consumer A              Consumer B             │ │    │
+│   │   │   (xem từ 10am)          (xem live 3pm)           │ │    │
+│   │   └───────────────────────────────────────────────────┘ │    │
 │   │                                                         │    │
 │   │   → Data được LƯU LẠI (như video YouTube)               │    │
 │   │   → REPLAY: tua lại xem từ bất kỳ thời điểm nào         │    │
@@ -188,15 +188,15 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │                                                                  │
 │   🚏 Ví dụ thực tế: TRUNG TÂM ĐIỀU PHỐI / BƯU ĐIỆN               │
 │                                                                  │
-│   ┌─────────────────────────────────────────────────────────┐    │
-│   │                                                         │    │
-│   │   Events arrive (từ nhiều nguồn)                        │    │
+│   ┌───────────────────────────────────────────────────────────┐  │
+│   │                                                           │  │
+│   │   Events arrive (từ nhiều nguồn)                          │  │
 │   │   ┌──────────┐ ┌──────────┐ ┌──────────┐                  │  │
 │   │   │ Order    │ │ S3 Event │ │ Partner  │                  │  │
 │   │   │ Service  │ │          │ │ (Stripe) │                  │  │
 │   │   └────┬─────┘ └────┬─────┘ └────┬─────┘                  │  │
 │   │        │            │            │                        │  │
-│   │        ↓            ↓            ↓                      │    │
+│   │        ↓            ↓            ↓                        │  │
 │   │   ┌─────────────────────────────────────────────────┐     │  │
 │   │   │              🚌 EVENT BUS                       │     │  │
 │   │   │                                                 │     │  │
@@ -208,24 +208,24 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   │  IF source = "s3"                               │     │  │
 │   │   │     → Route to Step Functions                   │     │  │
 │   │   │                                                 │     │  │
-│   │   └──────┬──────────────────┬──────────────┬───────┘      │  │
-│   │          ↓                  ↓              ↓            │    │
+│   │   └──────┬──────────────────┬──────────────┬────────┘     │  │
+│   │          ↓                  ↓              ↓              │  │
 │   │      ┌───────┐         ┌────────┐    ┌─────────┐          │  │
 │   │      │Lambda │         │  SQS   │    │ Step    │          │  │
 │   │      │       │         │        │    │Functions│          │  │
 │   │      └───────┘         └────────┘    └─────────┘          │  │
-│   │                                                         │    │
-│   └─────────────────────────────────────────────────────────┘    │
+│   │                                                           │  │
+│   └───────────────────────────────────────────────────────────┘  │
 │                                                                  │
 │   ĐẶC ĐIỂM:                                                      │
-│   ┌─────────────────────────────────────────────────────────┐    │
-│   │  ✅ Smart routing: 100+ rules với advanced filtering    │    │
+│   ┌──────────────────────────────────────────────────────────┐   │
+│   │  ✅ Smart routing: 100+ rules với advanced filtering     │   │
 │   │  ✅ Event transformation: Chuyển đổi format trước khi gửi│   │
-│   │  ✅ Schema Registry: Quản lý event schemas              │    │
-│   │  ✅ Archive & Replay: Lưu và replay events              │    │
-│   │  ✅ Third-party: Tích hợp SaaS (Stripe, Zendesk...)     │    │
-│   │  ✅ Serverless: Fully managed, no provisioning          │    │
-│   └─────────────────────────────────────────────────────────┘    │
+│   │  ✅ Schema Registry: Quản lý event schemas               │   │
+│   │  ✅ Archive & Replay: Lưu và replay events               │   │
+│   │  ✅ Third-party: Tích hợp SaaS (Stripe, Zendesk...)      │   │
+│   │  ✅ Serverless: Fully managed, no provisioning           │   │
+│   └──────────────────────────────────────────────────────────┘   │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -472,7 +472,7 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │  Message: [A]                                           │   │
 │   │              ├→ Subscriber 1 gets [A]                   │   │
 │   │              ├→ Subscriber 2 gets [A]                   │   │
-│   │              └→ Subscriber 3 gets [A]                    │  │
+│   │              └→ Subscriber 3 gets [A]                   │   │
 │   │                                                         │   │
 │   │  → TẤT CẢ subscribers nhận CÙNG message                 │   │
 │   └─────────────────────────────────────────────────────────┘   │
@@ -480,16 +480,16 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   Kinesis/Kafka (Consumer Groups):                              │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │  Stream: [A] [B] [C] [D] [E] [F]                        │   │
-│   │              │                                           │  │
-│   │         ┌────┴────┐                                      │  │
+│   │              │                                          │   │
+│   │         ┌────┴────┐                                     │   │
 │   │         ↓         ↓                                     │   │
-│   │   ┌──────────┐ ┌──────────┐                              │  │
-│   │   │Group A   │ │Group B   │   ← 2 consumer groups        │  │
-│   │   │(Order)   │ │(Analytics)                              │  │
-│   │   │C1→[A][B] │ │C1→ALL    │                              │  │
-│   │   │C2→[C][D] │ │          │                              │  │
-│   │   │C3→[E][F] │ │          │                              │  │
-│   │   └──────────┘ └──────────┘                              │  │
+│   │   ┌──────────┐ ┌──────────┐                             │   │
+│   │   │Group A   │ │Group B   │   ← 2 consumer groups       │   │
+│   │   │(Order)   │ │(Analytics)                             │   │
+│   │   │C1→[A][B] │ │C1→ALL    │                             │   │
+│   │   │C2→[C][D] │ │          │                             │   │
+│   │   │C3→[E][F] │ │          │                             │   │
+│   │   └──────────┘ └──────────┘                             │   │
 │   │                                                         │   │
 │   │  → TRONG 1 group: chia nhau (như SQS)                   │   │
 │   │  → GIỮA các groups: tất cả nhận ALL (như SNS)           │   │
@@ -499,8 +499,8 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   EventBridge (Rule-based):                                     │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │  Event: {"type": "order", "amount": 150}                │   │
-│   │              │                                           │  │
-│   │         ┌────┴────┐                                      │  │
+│   │              │                                          │   │
+│   │         ┌────┴────┐                                     │   │
 │   │         ↓         ↓                                     │   │
 │   │   Rule 1:     Rule 2:                                   │   │
 │   │   amount>100  type=order                                │   │
@@ -565,15 +565,15 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │        ↓                                                │   │
 │   │   [API Gateway] → Return "Order received!" ngay         │   │
 │   │        ↓                                                │   │
-│   │   ┌────────────────────────────────────────────┐         │  │
-│   │   │  SQS Queue: order-processing               │         │  │
-│   │   │  [Order1] [Order2] [Order3] ... [Order10K] │         │  │
-│   │   └────────────────────────────────────────────┘         │  │
+│   │   ┌────────────────────────────────────────────┐        │   │
+│   │   │  SQS Queue: order-processing               │        │   │
+│   │   │  [Order1] [Order2] [Order3] ... [Order10K] │        │   │
+│   │   └────────────────────────────────────────────┘        │   │
 │   │        ↓ (pull by workers)                              │   │
-│   │   ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐           │  │
-│   │   │EC2-1 │ │EC2-2 │ │EC2-3 │ │EC2-4 │ │EC2-5 │           │  │
-│   │   │ [O1] │ │ [O2] │ │ [O3] │ │ [O4] │ │ [O5] │           │  │
-│   │   └──────┘ └──────┘ └──────┘ └──────┘ └──────┘           │  │
+│   │   ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐          │   │
+│   │   │EC2-1 │ │EC2-2 │ │EC2-3 │ │EC2-4 │ │EC2-5 │          │   │
+│   │   │ [O1] │ │ [O2] │ │ [O3] │ │ [O4] │ │ [O5] │          │   │
+│   │   └──────┘ └──────┘ └──────┘ └──────┘ └──────┘          │   │
 │   │        ↓                                                │   │
 │   │   • Check inventory, reserve stock                      │   │
 │   │   • Calculate shipping                                  │   │
@@ -611,10 +611,10 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │        ↓                                                │   │
 │   │   Lambda trigger → Push message to SQS                  │   │
 │   │        ↓                                                │   │
-│   │   ┌────────────────────────────────────────────┐         │  │
-│   │   │  SQS Queue: video-transcoding              │         │  │
-│   │   │  [Video1-1080p] [Video1-720p] [Video2...]  │         │  │
-│   │   └────────────────────────────────────────────┘         │  │
+│   │   ┌────────────────────────────────────────────┐        │   │
+│   │   │  SQS Queue: video-transcoding              │        │   │
+│   │   │  [Video1-1080p] [Video1-720p] [Video2...]  │        │   │
+│   │   └────────────────────────────────────────────┘        │   │
 │   │        ↓                                                │   │
 │   │   EC2 GPU instances (hoặc MediaConvert)                 │   │
 │   │        ↓                                                │   │
@@ -652,10 +652,10 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │        ↓                                                │   │
 │   │   Batch push 1M messages to SQS                         │   │
 │   │        ↓                                                │   │
-│   │   ┌────────────────────────────────────────────┐         │  │
-│   │   │  SQS Queue: email-sending                  │         │  │
-│   │   │  [Email1] [Email2] [Email3] ... [Email1M]  │         │  │
-│   │   └────────────────────────────────────────────┘         │  │
+│   │   ┌────────────────────────────────────────────┐        │   │
+│   │   │  SQS Queue: email-sending                  │        │   │
+│   │   │  [Email1] [Email2] [Email3] ... [Email1M]  │        │   │
+│   │   └────────────────────────────────────────────┘        │   │
 │   │        ↓                                                │   │
 │   │   Lambda concurrency = 100 (parallel processing)        │   │
 │   │        ↓                                                │   │
@@ -717,19 +717,19 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   Order completed                                       │   │
 │   │        ↓                                                │   │
-│   │   ┌───────────────────────────────────┐                  │  │
-│   │   │  SNS Topic: order-completed       │                  │  │
-│   │   │  {orderId, customerId, amount}    │                  │  │
-│   │   └───────────────────────────────────┘                  │  │
-│   │        │ PUSH to ALL subscribers (fan-out)               │  │
+│   │   ┌───────────────────────────────────┐                 │   │
+│   │   │  SNS Topic: order-completed       │                 │   │
+│   │   │  {orderId, customerId, amount}    │                 │   │
+│   │   └───────────────────────────────────┘                 │   │
+│   │        │ PUSH to ALL subscribers (fan-out)              │   │
 │   │        ↓                                                │   │
-│   │   ┌──────────┬──────────┬──────────┬──────────┐          │  │
-│   │   │          │          │          │          │          │  │
+│   │   ┌──────────┬──────────┬──────────┬──────────┐         │   │
+│   │   │          │          │          │          │         │   │
 │   │   ↓          ↓          ↓          ↓          ↓         │   │
-│   │ ┌────┐   ┌────┐   ┌────┐   ┌────┐   ┌────────┐           │  │
-│   │ │SQS │   │SQS │   │SQS │   │Lambda  │Email   │           │  │
-│   │ │Inv │   │Bill│   │Ship│   │Analytics│Customer│          │  │
-│   │ └────┘   └────┘   └────┘   └────────┘└────────┘          │  │
+│   │ ┌────┐   ┌────┐   ┌────┐   ┌─────────┐   ┌────────┐     │   │
+│   │ │SQS │   │SQS │   │SQS │   │Lambda   │   │Email   │     │   │
+│   │ │Inv │   │Bill│   │Ship│   │Analytics│   │Customer│     │   │
+│   │ └────┘   └────┘   └────┘   └─────────┘   └────────┘     │   │
 │   │   ↓         ↓         ↓         ↓         ↓             │   │
 │   │ Update   Create    Print     Track    "Thank you        │   │
 │   │ stock    invoice   label     metrics   for order!"      │   │
@@ -762,19 +762,19 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   CloudWatch Alarm: CPU > 90%                           │   │
 │   │        ↓ trigger                                        │   │
-│   │   ┌───────────────────────────────────┐                  │  │
-│   │   │  SNS Topic: critical-alerts       │                  │  │
-│   │   │  {alarmName, state, reason}       │                  │  │
-│   │   └───────────────────────────────────┘                  │  │
-│   │        │ PUSH simultaneously                             │  │
+│   │   ┌───────────────────────────────────┐                 │   │
+│   │   │  SNS Topic: critical-alerts       │                 │   │
+│   │   │  {alarmName, state, reason}       │                 │   │
+│   │   └───────────────────────────────────┘                 │   │
+│   │        │ PUSH simultaneously                            │   │
 │   │        ↓                                                │   │
-│   │   ┌──────────┬──────────┬──────────┬──────────┐          │  │
-│   │   │          │          │          │          │          │  │
+│   │   ┌──────────┬──────────┬──────────┬──────────┐         │   │
+│   │   │          │          │          │          │         │   │
 │   │   ↓          ↓          ↓          ↓          ↓         │   │
-│   │ ┌──────┐ ┌──────┐ ┌──────┐ ┌────────┐ ┌──────────┐       │  │
-│   │ │Email │ │ SMS  │ │Lambda│ │PagerDuty │Slack Bot │       │  │
-│   │ │Team  │ │On-call│ │Logger│ │HTTPS    │ │HTTPS    │      │  │
-│   │ └──────┘ └──────┘ └──────┘ └────────┘ └──────────┘       │  │
+│   │ ┌──────┐ ┌───────┐ ┌──────┐ ┌─────────┐ ┌──────────┐    │   │
+│   │ │Email │ │ SMS   │ │Lambda│ │PagerDuty│ │Slack Bot │    │   │
+│   │ │Team  │ │On-call│ │Logger│ │HTTPS    │ │HTTPS     │    │   │
+│   │ └──────┘ └───────┘ └──────┘ └─────────┘ └──────────┘    │   │
 │   │                                                         │   │
 │   │   → Tất cả nhận CÙNG LÚC trong vài giây                 │   │
 │   │                                                         │   │
@@ -808,12 +808,12 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   Auth Service: User created                            │   │
 │   │        ↓ publish                                        │   │
-│   │   ┌───────────────────────────────────┐                  │  │
-│   │   │  SNS Topic: user-created          │                  │  │
-│   │   │  {userId, email, name, plan}      │                  │  │
-│   │   └───────────────────────────────────┘                  │  │
-│   │        │                                                 │  │
-│   │   ┌────┴────┬──────────┬──────────┬──────────┐           │  │
+│   │   ┌───────────────────────────────────┐                 │   │
+│   │   │  SNS Topic: user-created          │                 │   │
+│   │   │  {userId, email, name, plan}      │                 │   │
+│   │   └───────────────────────────────────┘                 │   │
+│   │        │                                                │   │
+│   │   ┌────┴────┬──────────┬──────────┬──────────┐          │   │
 │   │   ↓         ↓          ↓          ↓          ↓          │   │
 │   │ Marketing Analytics  Billing  Notification Audit        │   │
 │   │ Service   Service   Service    Service    Service       │   │
@@ -880,13 +880,13 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   10,000 Sensors (temperature, pressure, vibration)     │   │
 │   │        ↓ (data mỗi giây)                                │   │
-│   │   ┌──────────────────────────────────────────────────┐   │  │
-│   │   │  Kinesis Data Stream: factory-sensors            │   │  │
-│   │   │  [t:10:00] [t:10:01] [t:10:02] ... [t:10:59]     │   │  │
-│   │   │  Retention: 7 days | Shards: 20                  │   │  │
-│   │   └──────────────────────────────────────────────────┘   │  │
-│   │        │                                                 │  │
-│   │   ┌────┴────┬────────────┬────────────┬───────────┐      │  │
+│   │   ┌──────────────────────────────────────────────────┐  │   │
+│   │   │  Kinesis Data Stream: factory-sensors            │  │   │
+│   │   │  [t:10:00] [t:10:01] [t:10:02] ... [t:10:59]     │  │   │
+│   │   │  Retention: 7 days | Shards: 20                  │  │   │
+│   │   └──────────────────────────────────────────────────┘  │   │
+│   │        │                                                │   │
+│   │   ┌────┴────┬────────────┬────────────┬───────────┐     │   │
 │   │   ↓         ↓            ↓            ↓           ↓     │   │
 │   │ Lambda   Kinesis      Kinesis       ML Model   Firehose │   │
 │   │ (Alert)  Analytics   (Dashboard)   (Anomaly)   (→S3)    │   │
@@ -926,13 +926,13 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   Website/App (millions of events)                      │   │
 │   │   - page_view, add_to_cart, checkout, click             │   │
 │   │        ↓                                                │   │
-│   │   ┌──────────────────────────────────────────────────┐   │  │
-│   │   │  Kinesis Data Stream: clickstream                │   │  │
-│   │   │  Partition by: userId (ordering per user)        │   │  │
-│   │   │  Retention: 24 hours                             │   │  │
-│   │   └──────────────────────────────────────────────────┘   │  │
-│   │        │                                                 │  │
-│   │   ┌────┴────┬────────────┬────────────┐                  │  │
+│   │   ┌──────────────────────────────────────────────────┐  │   │
+│   │   │  Kinesis Data Stream: clickstream                │  │   │
+│   │   │  Partition by: userId (ordering per user)        │  │   │
+│   │   │  Retention: 24 hours                             │  │   │
+│   │   └──────────────────────────────────────────────────┘  │   │
+│   │        │                                                │   │
+│   │   ┌────┴────┬────────────┬────────────┐                 │   │
 │   │   ↓         ↓            ↓            ↓                 │   │
 │   │ Kinesis   Lambda       Firehose    Lambda               │   │
 │   │ Analytics (real-time)  (→S3→Athena)(personalization)    │   │
@@ -973,13 +973,13 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   50 Microservices (containers/EC2/Lambda)              │   │
 │   │   - CloudWatch Agent / Fluent Bit / SDK                 │   │
 │   │        ↓                                                │   │
-│   │   ┌──────────────────────────────────────────────────┐   │  │
-│   │   │  Kinesis Data Stream: application-logs           │   │  │
-│   │   │  Partition by: serviceName                       │   │  │
-│   │   │  Retention: 7 days (for replay during incidents) │   │  │
-│   │   └──────────────────────────────────────────────────┘   │  │
-│   │        │                                                 │  │
-│   │   ┌────┴────┬────────────┬────────────┐                  │  │
+│   │   ┌──────────────────────────────────────────────────┐  │   │
+│   │   │  Kinesis Data Stream: application-logs           │  │   │
+│   │   │  Partition by: serviceName                       │  │   │
+│   │   │  Retention: 7 days (for replay during incidents) │  │   │
+│   │   └──────────────────────────────────────────────────┘  │   │
+│   │        │                                                │   │
+│   │   ┌────┴────┬────────────┬────────────┐                 │   │
 │   │   ↓         ↓            ↓            ↓                 │   │
 │   │ Lambda   Firehose    Firehose    ElasticSearch          │   │
 │   │ (Alert)  (→S3 raw)   (→S3 parquet) (real-time search)   │   │
@@ -1048,27 +1048,27 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                                         │   │
 │   │   Stripe (payment.succeeded, refund.created, etc.)      │   │
 │   │        ↓ (Partner Event Source)                         │   │
-│   │   ┌──────────────────────────────────────────────────┐   │  │
-│   │   │  EventBridge: Partner Event Bus (Stripe)         │   │  │
-│   │   │                                                  │   │  │
-│   │   │  RULES:                                          │   │  │
-│   │   │  ┌─────────────────────────────────────────────┐│    │  │
-│   │   │  │Rule 1: source = "stripe"                    ││    │  │
-│   │   │  │        AND detail.type = "payment.succeeded"││    │  │
-│   │   │  │        AND detail.amount > 50000 (>$500)    ││    │  │
-│   │   │  │        → Lambda: send-vip-notification      ││    │  │
-│   │   │  │        → Transform: {orderId, amount, email}││    │  │
-│   │   │  └─────────────────────────────────────────────┘│    │  │
-│   │   │  ┌─────────────────────────────────────────────┐│    │  │
-│   │   │  │Rule 2: detail.type = "refund.created"       ││    │  │
-│   │   │  │        → SQS: refund-processing-queue       ││    │  │
-│   │   │  └─────────────────────────────────────────────┘│    │  │
-│   │   │  ┌─────────────────────────────────────────────┐│    │  │
-│   │   │  │Rule 3: detail.type = "charge.dispute.**"    ││    │  │
-│   │   │  │        → SNS: urgent-disputes               ││    │  │
-│   │   │  │        → Step Functions: dispute-workflow   ││    │  │
-│   │   │  └─────────────────────────────────────────────┘│    │  │
-│   │   └──────────────────────────────────────────────────┘   │  │
+│   │   ┌──────────────────────────────────────────────────┐  │   │
+│   │   │  EventBridge: Partner Event Bus (Stripe)         │  │   │
+│   │   │                                                  │  │   │
+│   │   │  RULES:                                          │  │   │
+│   │   │  ┌─────────────────────────────────────────────┐ │  │   │
+│   │   │  │Rule 1: source = "stripe"                    │ │  │   │
+│   │   │  │        AND detail.type = "payment.succeeded"│ │  │   │
+│   │   │  │        AND detail.amount > 50000 (>$500)    │ │  │   │
+│   │   │  │        → Lambda: send-vip-notification      │ │  │   │
+│   │   │  │        → Transform: {orderId, amount, email}│ │  │   │
+│   │   │  └─────────────────────────────────────────────┘ │  │   │
+│   │   │  ┌─────────────────────────────────────────────┐ │  │   │
+│   │   │  │Rule 2: detail.type = "refund.created"       │ │  │   │
+│   │   │  │        → SQS: refund-processing-queue       │ │  │   │
+│   │   │  └─────────────────────────────────────────────┘ │  │   │
+│   │   │  ┌─────────────────────────────────────────────┐ │  │   │
+│   │   │  │Rule 3: detail.type = "charge.dispute.**"    │ │  │   │
+│   │   │  │        → SNS: urgent-disputes               │ │  │   │
+│   │   │  │        → Step Functions: dispute-workflow   │ │  │   │
+│   │   │  └─────────────────────────────────────────────┘ │  │   │
+│   │   └──────────────────────────────────────────────────┘  │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
@@ -1096,14 +1096,14 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   • Không muốn tạo complex IAM cross-account roles              │
 │                                                                 │
 │   SOLUTION với EventBridge:                                     │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                         │   │
-│   │   Account A (Dev)        Account B (Prod)               │   │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                                                          │  │
+│   │   Account A (Dev)        Account B (Prod)                │  │
 │   │   ┌─────────────┐       ┌─────────────┐                  │  │
 │   │   │ GuardDuty   │       │ GuardDuty   │                  │  │
 │   │   │ CloudTrail  │       │ CloudTrail  │                  │  │
 │   │   └──────┬──────┘       └──────┬──────┘                  │  │
-│   │          ↓                     ↓                        │   │
+│   │          ↓                     ↓                         │  │
 │   │   ┌─────────────┐       ┌─────────────┐                  │  │
 │   │   │EventBridge  │       │EventBridge  │                  │  │
 │   │   │Rule: forward│       │Rule: forward│                  │  │
@@ -1111,7 +1111,7 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   └──────┬──────┘       └──────┬──────┘                  │  │
 │   │          │                     │                         │  │
 │   │          └──────────┬──────────┘                         │  │
-│   │                     ↓                                   │   │
+│   │                     ↓                                    │  │
 │   │   ┌─────────────────────────────────────────────────┐    │  │
 │   │   │  Central Security Account                       │    │  │
 │   │   │  EventBridge: security-events-bus               │    │  │
@@ -1124,8 +1124,8 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   │        → S3: security-logs (via Firehose)       │    │  │
 │   │   │        → SIEM: Splunk                           │    │  │
 │   │   └─────────────────────────────────────────────────┘    │  │
-│   │                                                         │   │
-│   └─────────────────────────────────────────────────────────┘   │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │   TẠI SAO EVENTBRIDGE?                                          │
 │   ✅ Native cross-account: ko cần manage IAM roles              │
@@ -1151,22 +1151,22 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   • Không muốn chạy EC2 24/7 chỉ để run cron                    │
 │                                                                 │
 │   SOLUTION với EventBridge Scheduler:                           │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                         │   │
-│   │   EventBridge Scheduler                                 │   │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                                                          │  │
+│   │   EventBridge Scheduler                                  │  │
 │   │   ┌─────────────────────────────────────────────────┐    │  │
 │   │   │                                                 │    │  │
-│   │   │ Schedule 1: cron(0 2 * * ? *)  "2AM daily"     │     │  │
-│   │   │   → Step Functions: daily-data-export          │     │  │
+│   │   │ Schedule 1: cron(0 2 * * ? *)  "2AM daily"      │    │  │
+│   │   │   → Step Functions: daily-data-export           │    │  │
 │   │   │   Workflow:                                     │    │  │
 │   │   │     1. Query RDS → export to S3                 │    │  │
 │   │   │     2. Run Glue job → transform data            │    │  │
 │   │   │     3. Notify Slack → "Export complete"         │    │  │
 │   │   │                                                 │    │  │
 │   │   │ Schedule 2: cron(0 3 ? * SUN *)  "3AM Sunday"   │    │  │
-│   │   │   → Lambda: cleanup-old-logs                   │     │  │
+│   │   │   → Lambda: cleanup-old-logs                    │    │  │
 │   │   │                                                 │    │  │
-│   │   │ Schedule 3: cron(0 6 1 * ? *)  "First of month"│     │  │
+│   │   │ Schedule 3: cron(0 6 1 * ? *)  "First of month" │    │  │
 │   │   │   → Step Functions: monthly-billing-report      │    │  │
 │   │   │   Workflow:                                     │    │  │
 │   │   │     1. Query Cost Explorer                      │    │  │
@@ -1177,8 +1177,8 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │   │   → Lambda: health-check-all-services           │    │  │
 │   │   │                                                 │    │  │
 │   │   └─────────────────────────────────────────────────┘    │  │
-│   │                                                         │   │
-│   └─────────────────────────────────────────────────────────┘   │
+│   │                                                          │  │
+│   └──────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │   TẠI SAO EVENTBRIDGE?                                          │
 │   ✅ Serverless cron: no EC2 to manage                          │
@@ -1201,34 +1201,34 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 ├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │   START: Bạn cần gì?                                             │
-│         │                                                        │
-│        ↓                                                         │
-│   ┌───────────────────┐                                          │
+│             │                                                    │
+│             ↓                                                    │
+│   ┌────────────────────┐                                         │
 │   │ Cần replay messages│                                         │
-│   │ hoặc multiple     │                                          │
-│   │ consumer groups?  │                                          │
-│   └─────────┬─────────┘                                          │
+│   │ hoặc multiple      │                                         │
+│   │ consumer groups?   │                                         │
+│   └─────────┬──────────┘                                         │
 │         YES │ NO                                                 │
 │         ↓   └──────────────────────────────────────┐             │
-│   ┌───────────────┐                                 │            │
-│   │   KINESIS     │                                 │            │
+│   ┌───────────────┐                                │             │
+│   │   KINESIS     │                                │             │
 │   │ (or Kafka/MSK)│                                ↓             │
 │   └───────────────┘                     ┌───────────────────┐    │
-│                                         │ Cần fan-out        │   │
-│                                         │ (1 msg → nhiều     │   │
-│                                         │ consumers)?        │   │
+│                                         │ Cần fan-out       │    │
+│                                         │ (1 msg → nhiều    │    │
+│                                         │ consumers)?       │    │
 │                                         └─────────┬─────────┘    │
 │                                               YES │ NO           │
-│                               ┌───────────────────┘   │          │
-│                               ↓                      ↓           │
-│   ┌───────────────┐                     ┌───────────────────┐    │
-│   │ Cần complex   │                     │     SQS           │    │
-│   │ routing/filtering?│                     │ (simple queue) │   │
-│   └─────────┬─────┘                     └───────────────────┘    │
-│                          YES │ NO                                │
-│                          ↓   │                                   │
-│                ┌─────────────┘                                   │
-│                ↓             ↓                                   │
+│            ┌───────────────────────────────────┘    │            │
+│            ↓                                        ↓            │
+│   ┌───────────────────┐                     ┌───────────────────┐│
+│   │ Cần complex       │                     │     SQS           ││
+│   │ routing/filtering?│                     │ (simple queue)    ││
+│   └─────────┬─────────┘                     └───────────────────┘│
+│         YES │ NO                                                 │
+│          │    │                                                  │
+│          │    └────────────┐                                     │
+│          ↓                 ↓                                     │
 │   ┌─────────────────┐  ┌─────────────┐                           │
 │   │   EVENTBRIDGE   │  │ SNS + SQS   │                           │
 │   │ (advanced rules)│  │ (fan-out)   │                           │
@@ -1309,10 +1309,10 @@ Tài liệu này so sánh **4 messaging patterns chính** trong AWS và giúp b�
 │   │                                      │                      │
 │   └────┬─────────────┬──────────────┬────┘                      │
 │        ↓             ↓              ↓                           │
-│   ┌────────┐   ┌────────┐    ┌────────────┐                     │
-│   │SQS VIP │   │SQS Std │    │SQS Analytics                     │
-│   │Orders  │   │Orders  │    │            │                     │
-│   └────────┘   └────────┘    └────────────┘                     │
+│   ┌────────┐   ┌────────┐    ┌─────────────┐                    │
+│   │SQS VIP │   │SQS Std │    │SQS Analytics│                    │
+│   │Orders  │   │Orders  │    │             │                    │
+│   └────────┘   └────────┘    └─────────────┘                    │
 │                                                                 │
 │   ✅ Smart routing based on content                             │
 │   ✅ Persistence in SQS                                         │

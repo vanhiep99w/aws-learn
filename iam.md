@@ -139,7 +139,7 @@ IAM User     =  Nhân viên (Employee)
 │   │ Account A│  (riêng lẻ)          │       AWS Organizations         │     │
 │   │ Bill: $$ │                      │                                 │     │
 │   └──────────┘                      │   ┌──────────┐                  │     │
-│   │          │Management            │                                 │     │
+│                                     │   │Management│                  │     │
 │   ┌──────────┐                      │   │ Account  │                  │     │
 │   │ Account B│  (riêng lẻ)          │   └────┬─────┘                  │     │
 │   │ Bill: $$ │                      │        │                        │     │
@@ -1064,13 +1064,13 @@ Phổ biến nhất, sử dụng app trên smartphone.
 │                    │   └──────────┘   │                         │
 │                    │       USB        │                         │
 │                    └────────┬─────────┘                         │
-│                            │                                    │
+│                             │                                   │
 │                             ▼                                   │
 │                    Cắm vào USB port                             │
-│                            │                                    │
+│                             │                                   │
 │                             ▼                                   │
 │                    Chạm key khi được yêu cầu                    │
-│                            │                                    │
+│                             │                                   │
 │                             ▼                                   │
 │                    ✅ Authenticated                             │
 │                                                                 │
