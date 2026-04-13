@@ -175,26 +175,7 @@ S3 Security dựa trên nguyên tắc **Defense in Depth** - nhiều lớp bảo
 
 ### S3 Access Points
 
-Simplify access management cho shared datasets - tạo **nhiều "cổng vào" riêng** cho cùng 1 bucket.
-
-### Vấn đề: 1 Bucket Policy cho nhiều teams
-
-Khi nhiều teams cùng dùng 1 bucket, bạn phải viết **1 bucket policy rất dài và phức tạp**:
-
-```json
-// Bucket policy KHỔNG LỒ - khó maintain, giới hạn 20KB!
-{
-  "Statement": [
-    { "Sid": "DataScienceRead", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
-    { "Sid": "DataScienceWrite", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
-    { "Sid": "AnalyticsRead", "Principal": {"AWS": "role/analytics"}, "Resource": ".../analytics/*" },
-    { "Sid": "MarketingRead", "Principal": {"AWS": "role/marketing"}, "Resource": ".../mkt/*" }
-    // ... 50 statements nữa cho các team khác
-  ]
-}
-```
-
-### Giải pháp: Mỗi team có Access Point riêng
+**Access Points** = Named network endpoints gắn vào bucket, mỗi endpoint có **policy riêng**, **network control riêng**, giúp quản lý quyền truy cập ở quy mô lớn.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -209,18 +190,54 @@ Khi nhiều teams cùng dùng 1 bucket, bạn phải viết **1 bucket policy r�
 │                                                                 │
 │  Có Access Points:                                              │
 │  ═════════════════                                              │
-│    Team A ──► [ Cửa A + policy A ] ──┐                          │
-│    Team B ──► [ Cửa B + policy B ] ──┼──► Bucket                │
-│    Team C ──► [ Cửa C + policy C ] ──┘                          │
+│    Team A ──► [ AP-A + policy A ] ──┐                           │
+│    Team B ──► [ AP-B + policy B ] ──┼──► Bucket                 │
+│    Team C ──► [ AP-C + policy C ] ──┘                           │
+│                    ▲                                            │
+│              Mỗi AP có thể lock vào VPC riêng                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Ví dụ cụ thể
+#### Vấn đề khi không có Access Points
 
-Bucket `company-data` chứa 3 folders: `/ml/`, `/analytics/`, `/mkt/`
+Khi nhiều teams cùng dùng 1 bucket → phải nhồi hết vào **1 bucket policy**:
 
-**Access Point cho team Data Science** - chỉ được đọc/ghi `/ml/`:
+```json
+// Bucket policy KHỔNG LỒ - khó maintain, giới hạn 20KB!
+{
+  "Statement": [
+    { "Sid": "DataScienceRead", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
+    { "Sid": "DataScienceWrite", "Principal": {"AWS": "role/data-science"}, "Resource": ".../ml/*" },
+    { "Sid": "AnalyticsRead", "Principal": {"AWS": "role/analytics"}, "Resource": ".../analytics/*" },
+    { "Sid": "MarketingRead", "Principal": {"AWS": "role/marketing"}, "Resource": ".../mkt/*" }
+    // ... 50 statements nữa → vượt 20KB limit!
+  ]
+}
+```
+
+#### Tạo Access Point
+
+```bash
+# Tạo access point cho team Data Science
+aws s3control create-access-point \
+  --account-id 123456789012 \
+  --name data-science-ap \
+  --bucket company-data
+
+# Tạo access point chỉ truy cập từ VPC
+aws s3control create-access-point \
+  --account-id 123456789012 \
+  --name finance-vpc-ap \
+  --bucket company-data \
+  --vpc-configuration VpcId=vpc-1a2b3c
+```
+
+#### Access Point Policy
+
+Mỗi access point có policy riêng, **chỉ áp dụng cho request qua access point đó**:
+
+**AP cho team Data Science** — chỉ được đọc/ghi `/ml/`:
 
 ```json
 {
@@ -229,12 +246,12 @@ Bucket `company-data` chứa 3 folders: `/ml/`, `/analytics/`, `/mkt/`
     "Effect": "Allow",
     "Principal": {"AWS": "arn:aws:iam::123456789012:role/data-science"},
     "Action": ["s3:GetObject", "s3:PutObject"],
-    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/data-science/object/ml/*"
+    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/data-science-ap/object/ml/*"
   }]
 }
 ```
 
-**Access Point cho team Marketing** - chỉ được đọc `/mkt/`:
+**AP cho team Marketing** — chỉ được đọc `/mkt/`:
 
 ```json
 {
@@ -243,36 +260,219 @@ Bucket `company-data` chứa 3 folders: `/ml/`, `/analytics/`, `/mkt/`
     "Effect": "Allow",
     "Principal": {"AWS": "arn:aws:iam::123456789012:role/marketing"},
     "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/marketing/object/mkt/*"
+    "Resource": "arn:aws:s3:us-east-1:123456789012:accesspoint/marketing-ap/object/mkt/*"
   }]
 }
 ```
 
-### Cách team sử dụng
+#### Delegate Access Control từ Bucket → Access Points
 
-Mỗi team gọi qua access point của mình thay vì bucket trực tiếp:
+Thay vì duplicate policy ở cả bucket và access point, **delegate toàn bộ** cho access points:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "AWS": "*" },
+    "Action": "*",
+    "Resource": [
+      "arn:aws:s3:::company-data",
+      "arn:aws:s3:::company-data/*"
+    ],
+    "Condition": {
+      "StringEquals": {
+        "s3:DataAccessPointAccount": "123456789012"
+      }
+    }
+  }]
+}
+```
+
+> ⚡ **Bucket policy trên nói:** "Cho phép mọi request đến từ access point thuộc account `123456789012`" → Toàn bộ access control do access point policy quyết định.
+
+#### VPC Restriction
+
+Lock access point chỉ nhận request từ VPC cụ thể — request từ internet bị reject:
+
+```bash
+aws s3control create-access-point \
+  --account-id 123456789012 \
+  --name internal-only-ap \
+  --bucket company-data \
+  --vpc-configuration VpcId=vpc-1a2b3c
+```
+
+> ⚠️ **Quan trọng:** Sau khi tạo, **không thể thay đổi VPC configuration**. Muốn đổi phải xóa rồi tạo lại.
+
+Khi dùng VPC access point, **VPC Endpoint policy cũng phải cho phép** cả access point lẫn bucket:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Principal": "*",
+    "Action": ["s3:GetObject"],
+    "Effect": "Allow",
+    "Resource": [
+      "arn:aws:s3:::company-data/*",
+      "arn:aws:s3:us-east-1:123456789012:accesspoint/internal-only-ap/object/*"
+    ]
+  }]
+}
+```
+
+#### Cross-Account Access
+
+Account B muốn truy cập bucket của Account A qua access point:
+
+```
+Account B                                Account A
+┌──────────────┐                         ┌───────────────────┐
+│ App / Role   │──► cross-account AP ──► │ Bucket            │
+│              │    (Account B tạo)      │ (Account A sở hữu)│
+└──────────────┘                         └───────────────────┘
+```
+
+1. **Account B** tạo access point trỏ đến bucket của Account A
+2. **Account A** phải update bucket policy cho phép:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "AWS": "*" },
+    "Action": ["s3:GetObject", "s3:ListBucket"],
+    "Resource": [
+      "arn:aws:s3:::account-a-bucket",
+      "arn:aws:s3:::account-a-bucket/*"
+    ],
+    "Condition": {
+      "StringEquals": {
+        "s3:DataAccessPointAccount": "Account-B-ID"
+      }
+    }
+  }]
+}
+```
+
+> Bucket owner **luôn giữ quyền kiểm soát cuối cùng** — cross-account access point không tự động có quyền.
+
+#### SCP: Bắt buộc tạo Access Point qua VPC
+
+Dùng **Service Control Policy** để ngăn tạo access point accessible từ internet:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Deny",
+    "Action": "s3:CreateAccessPoint",
+    "Resource": "*",
+    "Condition": {
+      "StringNotEquals": {
+        "s3:AccessPointNetworkOrigin": "VPC"
+      }
+    }
+  }]
+}
+```
+
+#### S3 Object Lambda Access Point
+
+Transform data **on-the-fly** khi app đọc object — không cần lưu bản copy đã xử lý:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              S3 OBJECT LAMBDA ACCESS POINT                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│App ──► Object Lambda AP ──► Lambda Function ──► S3 AP ──► Bucket│
+│               │                     │                           │
+│          (entry point)        (transform data)    (raw data)    │
+│                                                                 │
+│  Use cases:                                                     │
+│  • Redact PII (che thông tin nhạy cảm)                          │
+│  • Resize ảnh theo device                                       │
+│  • Convert format (XML → JSON)                                  │
+│  • Thêm watermark                                               │
+│  • Nén/giải nén data                                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+App gọi Object Lambda AP → Lambda tự động invoke → lấy raw data từ S3 → transform → trả về cho app. **Không cần lưu nhiều bản copy** cho các use case khác nhau.
+
+#### Cách team sử dụng
 
 ```bash
 # Trước: tất cả team dùng chung endpoint
 aws s3 cp s3://company-data/ml/model.pkl .
 
-# Sau: mỗi team dùng access point riêng
-aws s3 cp s3://arn:aws:s3:us-east-1:123456789012:accesspoint/data-science/ml/model.pkl .
+# Sau: mỗi team dùng access point riêng (alias hoặc ARN)
+aws s3 cp s3://arn:aws:s3:us-east-1:123456789012:accesspoint/data-science-ap/ml/model.pkl .
 ```
 
 **Endpoint format:** `https://<access-point-name>-<account-id>.s3-accesspoint.<region>.amazonaws.com`
 
-### So sánh có và không có Access Points
+#### Naming Rules & Giới hạn
+
+| Rule | Chi tiết |
+|------|---------|
+| **Naming** | 3–50 ký tự, lowercase + số + hyphen, DNS-compliant |
+| **Max per account/region** | 10,000 access points (có thể request tăng) |
+| **Access point policy size** | Tối đa 20 KB |
+| **VPC config** | Không thể thay đổi sau khi tạo |
+| **Block Public Access** | Không thể thay đổi sau khi tạo |
+| **Replication** | Không thể dùng AP làm destination cho S3 Replication |
+| **Protocol** | Chỉ HTTPS, không hỗ trợ anonymous access |
+| **Cross-account AP management** | API `PutAccessPoint`, `GetAccessPointPolicy` không hỗ trợ cross-account calls |
+
+#### So sánh có và không có Access Points
 
 | Không có Access Points | Có Access Points |
 |----------------------|-----------------|
-| 1 bucket policy cho tất cả | Mỗi team có policy riêng |
-| Policy dài, phức tạp | Mỗi policy ngắn, đơn giản |
-| Giới hạn 20KB | Không lo giới hạn |
-| Thay đổi ảnh hưởng tất cả | Thay đổi chỉ ảnh hưởng 1 team |
+| 1 bucket policy cho tất cả | Mỗi team/app có policy riêng |
+| Policy dài, phức tạp, giới hạn 20KB | Mỗi policy ngắn, đơn giản |
+| Không giới hạn network per-team | Mỗi AP có thể lock vào VPC riêng |
+| Thay đổi ảnh hưởng tất cả team | Thay đổi chỉ ảnh hưởng 1 team |
 | Khó debug khi có lỗi | Dễ xác định lỗi ở team nào |
+| Cross-account phải sửa bucket policy | Cross-account qua AP, bucket owner delegate |
 
 > 💡 **Hiểu đơn giản:** Access Point giống như tạo **nhiều "cổng vào" cho cùng 1 kho hàng**, mỗi cổng có bảo vệ riêng, quy định riêng về ai được vào và lấy gì.
+
+#### Access Point vs VPC Endpoint
+
+Hai khái niệm **khác mục đích**, thường bị nhầm lẫn:
+
+| | **S3 Access Point** | **VPC Endpoint (Gateway)** |
+|---|---|---|
+| **Là gì** | "Cổng vào" bucket với policy riêng | "Đường hầm" từ VPC đến S3 không qua internet |
+| **Giải quyết** | **Ai được truy cập gì** trong bucket | **Traffic đi đường nào** đến S3 |
+| **Scope** | Per-bucket, per-team/app | Per-VPC |
+| **Policy** | Access point policy (per-team) | VPC Endpoint policy (per-VPC) |
+| **Network** | Có thể lock vào VPC hoặc Internet | Luôn nằm trong VPC |
+
+```
+Chỉ VPC Endpoint (network security, chưa phân quyền per-team):
+═══════════════════════════════════════════════════════════════
+  EC2 (Team A) ──┐
+                 ├──► VPC Endpoint ─── private path ──► S3 Bucket
+  EC2 (Team B) ──┘    (không qua internet)
+
+Kết hợp cả hai (network security + phân quyền per-team):
+═══════════════════════════════════════════════════════════════
+  EC2 (Team A) ──► Access Point A ──┐
+                   (chỉ /data-a/*)  │
+                                    ├──► VPC Endpoint ──► S3 Bucket
+  EC2 (Team B) ──► Access Point B ──┘    (private path)
+                   (chỉ /data-b/*)
+```
+
+- **VPC Endpoint** = đảm bảo traffic **không ra internet** (network level)
+- **Access Point** = đảm bảo mỗi team **chỉ thấy data của mình** (permission level)
+- Hai cái **bổ trợ nhau**, không thay thế nhau
 
 ---
 
@@ -559,18 +759,18 @@ Website (myapp.com)  →  Backend (myapp.com/api)  →  S3
 │  1. Browser gửi Preflight request (OPTIONS)                     │
 │     Origin: https://myapp.com                                   │
 │         │                                                       │
-│          ▼                                                      │
+│         ▼                                                       │
 │  2. S3 check CORS config → có allow myapp.com?                  │
 │         │                                                       │
-│          ▼                                                      │
+│         ▼                                                       │
 │  3. S3 trả về CORS headers                                      │
 │     Access-Control-Allow-Origin: https://myapp.com              │
 │     Access-Control-Allow-Methods: GET, PUT                      │
 │         │                                                       │
-│          ▼                                                      │
+│         ▼                                                       │
 │  4. Browser nhận → OK, cho phép request thật                    │
 │         │                                                       │
-│          ▼                                                      │
+│         ▼                                                       │
 │  5. Browser gửi actual request (GET/PUT...)                     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -793,8 +993,8 @@ Tạo temporary URLs để grant access **không cần AWS credentials**:
 │  │  User  │ ─────────► │ Backend│ ──────────► │   S3   │        │
 │  └────────┘            └───┬────┘             └────────┘        │
 │       ▲                    │                       ▲            │
-│       │    pre-signed URL  │                      │             │
-│       └────────────────────┘         download     │             │
+│       │    pre-signed URL  │                       │            │
+│       └────────────────────┘         download      │            │
 │       │────────────────────────────────────────────┘            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -898,7 +1098,7 @@ Truy cập S3 qua **private network** thay vì internet:
 │  │ (my-data)    │                    │ (my-data-logs)       │   │
 │  └──────────────┘                    └──────────────────────┘   │
 │                                           │                     │
-│                                            ▼                    │
+│                                           ▼                     │
 │                               2024-01-15-00-45-32-ABC123.log    │
 │                               2024-01-15-01-12-45-DEF456.log    │
 │                               ...                               │

@@ -1078,11 +1078,174 @@ echo '/dev/xvdb /data ext4 defaults,nofail 0 2' | sudo tee -a /etc/fstab
 
 ## Data Lifecycle Manager (DLM)
 
-Automate việc tạo, retention, và deletion của EBS snapshots:
+**Amazon Data Lifecycle Manager** tự động hóa việc tạo, lưu giữ và xóa **EBS snapshots** và **EBS-backed AMIs** — không tốn thêm phí dịch vụ.
 
-- Tạo backup policies dựa trên schedule
-- Cross-region copy
-- Retention rules (giữ X snapshots gần nhất)
+```
+┌──────────────────────────────────────────────────────────────┐
+│                DATA LIFECYCLE MANAGER (DLM)                   │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Bạn định nghĩa:                DLM tự động:                │
+│  ─────────────────               ──────────────              │
+│  Target tags                     Tạo snapshot/AMI theo lịch  │
+│  Schedule (daily/weekly/...)     Xóa bản cũ khi hết hạn     │
+│  Retention (giữ bao lâu)        Copy cross-region           │
+│  Cross-region copy rules         Share cross-account         │
+│                                                              │
+│  Volume ──► [DLM Policy] ──► Snap₁ → Snap₂ → Snap₃ → ...   │
+│  (tag: backup=true)              ▲         xóa ◄── retention │
+│                                  │                           │
+│                             tạo mới mỗi 12h                 │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Policy Types
+
+| Loại | Target | Tạo ra | Ghi chú |
+|------|--------|--------|---------|
+| **EBS Snapshot Policy** | Volumes hoặc Instances | Snapshots | Phổ biến nhất |
+| **EBS-backed AMI Policy** | Instances | AMIs | Bao gồm tất cả EBS volumes của instance |
+| **Cross-account Copy Event Policy** | Shared snapshots | Snapshot copies | Tự copy snapshot được share từ account khác |
+
+### Default Policy vs Custom Policy
+
+| Feature | Default Policy | Custom Policy |
+|---------|---------------|---------------|
+| **Target** | Tất cả volumes/instances trong Region | Chỉ resources có **specific tags** |
+| **Schedule** | Mỗi 1–7 ngày | Daily, weekly, monthly, yearly, hoặc **cron expression** |
+| **Retention** | 2–14 ngày (age-based) | Tối đa 1000 snapshots (count) hoặc 100 năm (age) |
+| **Số schedules** | 1 | Tối đa **4 schedules** per policy |
+| **Fast Snapshot Restore** | ❌ | ✅ |
+| **Snapshot Archiving** | ❌ | ✅ |
+| **Cross-Region Copy** | ✅ (default settings) | ✅ (custom settings) |
+| **Cross-Account Share** | ❌ | ✅ |
+| **Pre/Post Scripts** | ❌ | ✅ (application-consistent snapshots) |
+| **Giới hạn** | 1 per resource type per Region | 100 policies per Region |
+
+### Cách hoạt động — Target Tags
+
+Custom policy dùng **tags** để xác định resources cần backup:
+
+```
+Volume A (tag: backup=daily)  ──► DLM Policy "daily-backup"
+Volume B (tag: backup=daily)  ──►   (target tag: backup=daily)
+Volume C (tag: backup=weekly) ──► DLM Policy "weekly-backup"
+Volume D (không có tag)       ──► Không được backup
+```
+
+> ⚠️ DLM **chỉ quản lý** snapshots/AMIs do chính nó tạo ra. Snapshots tạo thủ công hoặc bằng cách khác sẽ không bị DLM xóa.
+
+### Ví dụ: Tạo Custom Snapshot Policy (CLI)
+
+**Scenario:** Backup hàng ngày lúc 3:00 UTC, giữ 7 bản gần nhất, copy sang `eu-west-1`:
+
+```bash
+aws dlm create-lifecycle-policy \
+  --description "Daily backup with cross-region copy" \
+  --state ENABLED \
+  --execution-role-arn arn:aws:iam::123456789012:role/AWSDataLifecycleManagerDefaultRole \
+  --policy-details '{
+    "PolicyType": "EBS_SNAPSHOT_MANAGEMENT",
+    "ResourceTypes": ["VOLUME"],
+    "TargetTags": [{"Key": "backup", "Value": "daily"}],
+    "Schedules": [{
+      "Name": "DailySnapshots",
+      "CreateRule": {
+        "Interval": 24,
+        "IntervalUnit": "HOURS",
+        "Times": ["03:00"]
+      },
+      "RetainRule": {
+        "Count": 7
+      },
+      "CopyTags": true,
+      "CrossRegionCopyRules": [{
+        "TargetRegion": "eu-west-1",
+        "Encrypted": true,
+        "RetainRule": { "IntervalUnit": "DAYS", "Interval": 7 }
+      }]
+    }]
+  }'
+```
+
+### Retention Types
+
+```
+Count-based (giữ N bản gần nhất):
+══════════════════════════════════
+Snap₁  Snap₂  Snap₃  Snap₄  Snap₅  Snap₆  Snap₇  Snap₈(mới)
+ xóa ◄──────────────────────────────────────────────  giữ 7 bản
+
+Age-based (giữ theo thời gian):
+══════════════════════════════════
+|◄── 30 ngày ──►|
+Snap cũ hơn 30 ngày → xóa
+Snap trong 30 ngày   → giữ
+```
+
+### Multiple Schedules
+
+Một policy có thể có **tối đa 4 schedules** — ví dụ daily + weekly + monthly:
+
+```
+Policy "production-backup":
+├── Schedule 1: Daily   — mỗi 24h, giữ 7 bản
+├── Schedule 2: Weekly  — mỗi thứ 2, giữ 4 bản
+└── Schedule 3: Monthly — ngày 1 hàng tháng, giữ 12 bản
+
+Nếu 2 schedules chạy cùng lúc (VD: thứ 2 đầu tháng):
+→ DLM chỉ tạo 1 snapshot
+→ Áp dụng retention dài nhất (monthly = 12 tháng)
+→ Gắn tags của cả 2 schedules
+```
+
+### Cross-Region & Cross-Account
+
+```
+Cross-Region Copy:
+══════════════════
+us-east-1               eu-west-1
+┌──────────┐    copy    ┌──────────┐
+│ Snapshot  │──────────►│ Copy     │
+│ (source)  │           │ (DR)     │
+└──────────┘            └──────────┘
+  Retention: 7 ngày       Retention: riêng (có thể khác)
+  Encryption: tuỳ         Encryption: có thể re-encrypt
+
+Cross-Account Copy (Event Policy):
+═══════════════════════════════════
+Account A                Account B
+┌──────────┐   share     ┌──────────────────┐
+│ Snapshot  │───────────►│ Event Policy      │
+│ + DLM     │            │ (tự copy khi     │
+│           │            │  nhận được share) │
+└──────────┘             └──────────────────┘
+```
+
+### DLM Tags tự động gắn
+
+DLM tự gắn system tags lên mỗi snapshot/AMI:
+
+| Tag | Mô tả |
+|-----|-------|
+| `aws:dlm:lifecycle-policy-id` | ID của policy tạo ra snapshot |
+| `aws:dlm:lifecycle-schedule-name` | Tên schedule đã trigger |
+| `aws:dlm:expirationTime` | Thời điểm xóa (age-based) |
+| `dlm:managed` | Đánh dấu snapshot do DLM quản lý |
+
+### Quotas
+
+| Resource | Giới hạn |
+|----------|---------|
+| Custom policies per Region | 100 |
+| Default policy for snapshots per Region | 1 |
+| Default policy for AMIs per Region | 1 |
+| Schedules per custom policy | 4 |
+| Tags per resource | 45 |
+| Cross-Region copy destinations | Tối đa 3 Regions |
+
+> 📖 **Nguồn:** [Amazon Data Lifecycle Manager](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html) · [Default vs Custom Policies](https://docs.aws.amazon.com/ebs/latest/userguide/policy-differences.html) · [Custom Snapshot Policy](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html)
 
 ---
 

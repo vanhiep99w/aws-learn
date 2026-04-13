@@ -28,7 +28,7 @@
 │                    DYNAMODB ARCHITECTURE                                │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   ┌─────────────────────────────────────────────────────────────┐       │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
 │   │                    DYNAMODB TABLE                               │   │
 │   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │   │
 │   │  │   Item 1    │  │   Item 2    │  │   Item 3    │              │   │
@@ -42,9 +42,9 @@
 │   │  Primary Key (PK): Partition Key hoặc (Partition Key + Sort Key)│   │
 │   │  Item: Collection of attributes được identify bởi Primary Key   │   │
 │   │  Attribute: Fundamental data element (giống columns trong SQL)  │   │
-│   └─────────────────────────────────────────────────────────────┘       │
+│   └─────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
-│   ┌─────────────────────────────────────────────────────────────┐       │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
 │   │                    DYNAMODB FEATURES                            │   │
 │   │  • Serverless - Không quản lý infrastructure                    │   │
 │   │  • Auto-scaling - Tự động mở rộng capacity                      │   │
@@ -54,7 +54,7 @@
 │   │  • DAX - In-memory caching (microsecond latency)                │   │
 │   │  • ACID Transactions - Multi-item transactions                  │   │
 │   │  • TTL - Automatic item expiration                              │   │
-│   └─────────────────────────────────────────────────────────────┘       │
+│   └─────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -208,7 +208,7 @@ Operational Overhead:
 │                                                                            │
 │  Giống như đường cao tốc:                                                  │
 │                                                                            │
-│  ┌───────────────────────────────────────────────────────────────┐         │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
 │  │     RCU = Số làn đường (capacity/lane)                               │  │
 │  │                                                                      │  │
 │  │  5 RCU = Đường 5 làn ───────────────────────────────►                │  │
@@ -217,7 +217,7 @@ Operational Overhead:
 │  │  100 RCU = Đường 100 làn ──────────────────────────►                 │  │
 │  │          Cho phép 100 xe đi song song mỗi giây                       │  │
 │  │          (đường cao tốc lớn, xử lý được traffic cao)                 │  │
-│  └───────────────────────────────────────────────────────────────┘         │
+│  └──────────────────────────────────────────────────────────────────────┘  │
 │                                                                            │
 ├────────────────────────────────────────────────────────────────────────────┤
 │                                                                            │
@@ -311,11 +311,11 @@ Operational Overhead:
 │  │                                                               │    │
 │  │  Timeline: Write vừa xong (T+0)                               │    │
 │  │                                                               │    │
-│  │  AZ-1: "New Data" ✓      AZ-2: "Old Data" ◐      AZ-3: "Old" ◐│    │
-│  │       (có new data)       (chưa replicate)      (chưa replicate)│  │
+│  │  AZ-1: "New Data" ✓      AZ-2: "Old Data" ◐     AZ-3: "Old" ◐ │    │
+│  │       (có new data)       (chưa replicate)    (chưa replicate)│    │
 │  │                                                               │    │
 │  │  App Read ──► DynamoDB chọn AZ-2 (gần nhất)                   │    │
-│  │               │                                                 │  │
+│  │               │                                               │    │
 │  │               ▼                                               │    │
 │  │          Return "Old Data" ⚠️                                 │    │
 │  │                                                               │    │
@@ -490,23 +490,23 @@ Operational Overhead:
 │  └───────────────────────────────────────────────────────────────┘   │
 │                                                                      │
 │  Items:                                                              │
-│  ┌──────────────┬──────────────┬──────────────┐                   │  │
-│  │   UserID     │   Email      │   Name       │                   │  │
-│  ├──────────────┼──────────────┼──────────────┤                   │  │
-│  │ "user_123"   │"a@email.com" │  "Alice"     │                   │  │
-│  │ "user_456"   │"b@email.com" │  "Bob"       │                   │  │
-│  │ "user_789"   │"c@email.com" │  "Charlie"   │                   │  │
-│  └──────────────┴──────────────┴──────────────┘                   │  │
+│  ┌──────────────┬──────────────┬──────────────┐                      │
+│  │   UserID     │   Email      │   Name       │                      │
+│  ├──────────────┼──────────────┼──────────────┤                      │
+│  │ "user_123"   │"a@email.com" │  "Alice"     │                      │
+│  │ "user_456"   │"b@email.com" │  "Bob"       │                      │
+│  │ "user_789"   │"c@email.com" │  "Charlie"   │                      │
+│  └──────────────┴──────────────┴──────────────┘                      │
 │                                                                      │
-│  ✓ Mỗi item được identify duy nhất bởi UserID                     │  │
-│  ✓ UserID phải unique trong table                                 │  │
-│  ✓ Query/GetItem chỉ cần UserID                                   │  │
-│                                                                   │  │
-│  ⚠️ CONSTRAINTS:                                                  │  │
-│  ✗ Partition Key KHÔNG được NULL (required)                       │  │
-│  ✗ Partition Key KHÔNG được empty với Binary type                 │  │
-│  ✓ String type có thể empty "" nhưng KHÔNG được null              │  │
-│  → Insert item thiếu PK sẽ lỗi ValidationException                │  │
+│  ✓ Mỗi item được identify duy nhất bởi UserID                        │
+│  ✓ UserID phải unique trong table                                    │
+│  ✓ Query/GetItem chỉ cần UserID                                      │
+│                                                                      │
+│  ⚠️ CONSTRAINTS:                                                     │
+│  ✗ Partition Key KHÔNG được NULL (required)                          │
+│  ✗ Partition Key KHÔNG được empty với Binary type                    │
+│  ✓ String type có thể empty "" nhưng KHÔNG được null                 │
+│  → Insert item thiếu PK sẽ lỗi ValidationException                   │
 │                                                                      │
 └──────────────────────────────────────────────────────────────────────┘
 ```
@@ -766,11 +766,11 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  PK: MovieID, SK: ReleaseYear                                       │
 │                                                                     │
 │  ┌────────────┬────────────┬────────────┬────────────┐              │
-│  │ MovieID    │ ReleaseYear│ Title      │ Genre       │             │
+│  │ MovieID    │ ReleaseYear│ Title      │ Genre      │              │
 │  ├────────────┼────────────┼────────────┼────────────┤              │
-│  │ mov_001    │ 2024       │ "Action X" │ "Action"    │             │
-│  │ mov_002    │ 2023       │ "Comedy Y" │ "Comedy"    │             │
-│  │ mov_003    │ 2024       │ "Drama Z"  │ "Drama"     │             │
+│  │ mov_001    │ 2024       │ "Action X" │ "Action"   │              │
+│  │ mov_002    │ 2023       │ "Comedy Y" │ "Comedy"   │              │
+│  │ mov_003    │ 2024       │ "Drama Z"  │ "Drama"    │              │
 │  └────────────┴────────────┴────────────┴────────────┘              │
 │                                                                     │
 │  GSI: GenreIndex                                                    │
@@ -804,11 +804,11 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  PK: CustomerID, SK: OrderTimestamp                                 │
 │                                                                     │
 │  ┌────────────┬────────────┬────────────┬────────────┐              │
-│  │ CustomerID │ OrderTime  │ OrderID    │ Status      │             │
+│  │ CustomerID │ OrderTime  │ OrderID    │ Status     │              │
 │  ├────────────┼────────────┼────────────┼────────────┤              │
-│  │ cust_001   │ 1704067200 │ ord_1001   │ "pending"   │             │
-│  │ cust_001   │ 1704153600 │ ord_1002   │ "shipped"   │             │
-│  │ cust_002   │ 1704067200 │ ord_2001   │ "pending"   │             │
+│  │ cust_001   │ 1704067200 │ ord_1001   │ "pending"  │              │
+│  │ cust_001   │ 1704153600 │ ord_1002   │ "shipped"  │              │
+│  │ cust_002   │ 1704067200 │ ord_2001   │ "pending"  │              │
 │  └────────────┴────────────┴────────────┴────────────┘              │
 │                                                                     │
 │  LSI: CustomerStatusIndex                                           │
@@ -905,10 +905,10 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  ✅ CÓ Global Tables:                                               │
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │                                                             │    │
-│  │  ┌──────────┐   auto-sync (<1s)   ┌──────────┐               │   │
-│  │  │ US DDB   │◄──────────────────►│ EU DDB   │                │   │
-│  │  └────▲─────┘                     └────▲─────┘               │   │
-│  │       │ ~5ms                           │ ~5ms                │   │
+│  │  ┌──────────┐   auto-sync (<1s)   ┌──────────┐              │    │
+│  │  │ US DDB   │◄──────────────────► │ EU DDB   │              │    │
+│  │  └────▲─────┘                     └────▲─────┘              │    │
+│  │       │ ~5ms                           │ ~5ms               │    │
 │  │    US User                          EU User                 │    │
 │  │                                                             │    │
 │  │  → Mỗi user access local region → LOW LATENCY!              │    │
@@ -964,10 +964,10 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │                                                             │    │
 │  │  Order Created ──► Stream Record ──► Lambda ──► Send Email  │    │
-│  │                         │                                    │   │
+│  │                         │                                   │    │
 │  │                         ├──► Lambda ──► Update Inventory    │    │
-│  │                         │                                    │   │
-│  │                         └──► Kinesis ──► Audit Log           │   │
+│  │                         │                                   │    │
+│  │                         └──► Kinesis ──► Audit Log          │    │
 │  │                                                             │    │
 │  │  → Real-time, không cần polling, event-driven!              │    │
 │  └─────────────────────────────────────────────────────────────┘    │
@@ -1015,21 +1015,21 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  ❌ KHÔNG CÓ DAX:                                                   │
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │  1M users ──► DynamoDB                                      │    │
-│  │              │                                               │   │
-│  │              └─ 1M requests × 1 RCU = 1M RCU/giây            │   │
-│  │              └─ Latency: ~5-10ms mỗi request                 │   │
-│  │              └─ THROTTLING! (vượt quá capacity)              │   │
+│  │              │                                              │    │
+│  │              └─ 1M requests × 1 RCU = 1M RCU/giây           │    │
+│  │              └─ Latency: ~5-10ms mỗi request                │    │
+│  │              └─ THROTTLING! (vượt quá capacity)             │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │                                                                     │
 │  ✅ CÓ DAX:                                                         │
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │                                                             │    │
 │  │  1M users ──► DAX (cache) ──► DynamoDB                      │    │
-│  │              │                   │                           │   │
-│  │              │ Cache HIT         │ Cache MISS (chỉ 1 lần)    │   │
-│  │              │ ~0.001ms          │ ~5ms                      │   │
-│  │              │ Không tốn RCU!    │                           │   │
-│  │              │                                               │   │
+│  │              │                   │                          │    │
+│  │              │ Cache HIT         │ Cache MISS (chỉ 1 lần)   │    │
+│  │              │ ~0.001ms          │ ~5ms                     │    │
+│  │              │ Không tốn RCU!    │                          │    │
+│  │              │                                              │    │
 │  │  → 1M requests nhưng chỉ tốn ~1 RCU (cache refresh)         │    │
 │  │  → Latency: MICROSECONDS thay vì milliseconds               │    │
 │  └─────────────────────────────────────────────────────────────┘    │
@@ -1085,13 +1085,13 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  │                                                             │    │
 │  │  Transfer $100 from Account A to Account B:                 │    │
 │  │                                                             │    │
-│  │  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐   │   │
-│  │  │ Account A   │      │ Account B   │      │ Audit Log   │   │   │
-│  │  │ -$100       │──────│ +$100       │──────│ Created     │   │   │
-│  │  │             │      │             │      │             │   │   │
-│  │  └─────────────┘      └─────────────┘      └─────────────┘   │   │
+│  │  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐  │    │
+│  │  │ Account A   │      │ Account B   │      │ Audit Log   │  │    │
+│  │  │ -$100       │──────│ +$100       │──────│ Created     │  │    │
+│  │  │             │      │             │      │             │  │    │
+│  │  └─────────────┘      └─────────────┘      └─────────────┘  │    │
 │  │         ▲                                           ▲       │    │
-│  │         └───────────────────────────────────────────┘        │   │
+│  │         └───────────────────────────────────────────┘       │    │
 │  │                                                             │    │
 │  │  Atomic: Tất cả operations thành công hoặc tất cả fail      │    │
 │  │  Consistent: Mọi reader thấy kết quả transaction            │    │
@@ -1162,49 +1162,49 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │                                                                     │
 │   COMPARISON OPERATORS (Filter & Condition Expressions):            │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  Operator          │ Mô tả                    │ Ví dụ        │  │
+│   │  Operator          │ Mô tả                    │ Ví dụ       │   │
 │   │  ──────────────────┼──────────────────────────┼──────────── │   │
-│   │  =                 │ Bằng                     │ age = 30     │  │
-│   │  <>                │ Khác                     │ status <> X  │  │
-│   │  <                 │ Nhỏ hơn                  │ price < 100  │  │
-│   │  <=                │ Nhỏ hơn hoặc bằng       │ qty <= 10     │  │
-│   │  >                 │ Lớn hơn                  │ score > 90   │  │
-│   │  >=                │ Lớn hơn hoặc bằng       │ rating >= 4   │  │
-│   │  BETWEEN           │ Trong khoảng             │ BETWEEN 1-10 │  │
-│   │  IN                │ Trong danh sách          │ IN (a, b, c) │  │
+│   │  =                 │ Bằng                     │ age = 30    │   │
+│   │  <>                │ Khác                     │ status <> X │   │
+│   │  <                 │ Nhỏ hơn                  │ price < 100 │   │
+│   │  <=                │ Nhỏ hơn hoặc bằng        │ qty <= 10   │   │
+│   │  >                 │ Lớn hơn                  │ score > 90  │   │
+│   │  >=                │ Lớn hơn hoặc bằng        │ rating >= 4 │   │
+│   │  BETWEEN           │ Trong khoảng             │ BETWEEN 1-10│   │
+│   │  IN                │ Trong danh sách          │ IN (a, b, c)│   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │   LOGICAL OPERATORS:                                                │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  AND               │ Tất cả conditions true   │ a=1 AND b=2  │  │
-│   │  OR                │ Ít nhất 1 condition true │ a=1 OR b=2   │  │
-│   │  NOT               │ Phủ định condition       │ NOT a=1      │  │
+│   │  AND               │ Tất cả conditions true   │ a=1 AND b=2 │   │
+│   │  OR                │ Ít nhất 1 condition true │ a=1 OR b=2  │   │
+│   │  NOT               │ Phủ định condition       │ NOT a=1     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │   FUNCTION OPERATORS:                                               │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  attribute_exists(path)     │ Attribute tồn tại              │  │
-│   │  attribute_not_exists(path) │ Attribute không tồn tại        │  │
-│   │  attribute_type(path, type) │ Check type (S, N, B, SS...)    │  │
-│   │  begins_with(path, substr)  │ String bắt đầu bằng            │  │
-│   │  contains(path, operand)    │ String/Set chứa value          │  │
-│   │  size(path)                 │ Kích thước attribute           │  │
+│   │  attribute_exists(path)     │ Attribute tồn tại             │   │
+│   │  attribute_not_exists(path) │ Attribute không tồn tại       │   │
+│   │  attribute_type(path, type) │ Check type (S, N, B, SS...)   │   │
+│   │  begins_with(path, substr)  │ String bắt đầu bằng           │   │
+│   │  contains(path, operand)    │ String/Set chứa value         │   │
+│   │  size(path)                 │ Kích thước attribute          │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │   KEY CONDITION OPERATORS (chỉ cho Query trên Sort Key):            │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  =                         │ Exact match                     │  │
-│   │  <, <=, >, >=              │ Range comparison                │  │
-│   │  BETWEEN                   │ Range (inclusive)               │  │
-│   │  begins_with               │ Prefix match (String only)      │  │
+│   │  =                         │ Exact match                    │   │
+│   │  <, <=, >, >=              │ Range comparison               │   │
+│   │  BETWEEN                   │ Range (inclusive)              │   │
+│   │  begins_with               │ Prefix match (String only)     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │   UPDATE EXPRESSION OPERATORS:                                      │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │  SET                       │ Add/modify attributes           │  │
-│   │  REMOVE                    │ Delete attributes               │  │
-│   │  ADD                       │ Add to Number/Set               │  │
-│   │  DELETE                    │ Remove from Set                 │  │
+│   │  SET                       │ Add/modify attributes          │   │
+│   │  REMOVE                    │ Delete attributes              │   │
+│   │  ADD                       │ Add to Number/Set              │   │
+│   │  DELETE                    │ Remove from Set                │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -1233,11 +1233,11 @@ DynamoDB cung cấp **hai capacity modes** để xử lý read và write through
 │  │  }                                                          │     │
 │  │                                                             │     │
 │  │  Timeline:                                                  │     │
-│  │  │                                                            │   │
+│  │  │                                                          │     │
 │  │  ├─ T+0: Item created, ExpireAt = current_time + 24h        │     │
 │  │  ├─ T+12h: Item still exists ✓                              │     │
 │  │  ├─ T+24h: Item automatically deleted 🗑️                    │     │
-│  │  └─ T+48h: No trace of item                                   │   │
+│  │  └─ T+48h: No trace of item                                 │     │
 │  └─────────────────────────────────────────────────────────────┘     │
 │                                                                      │
 │  ✓ Zero-cost deletion - Không tính WCU cho delete operations         │

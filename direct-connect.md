@@ -1,4 +1,4 @@
-   # AWS Direct Connect
+# AWS Direct Connect
 
 ## Mục lục
 - [Giới thiệu](#giới-thiệu)

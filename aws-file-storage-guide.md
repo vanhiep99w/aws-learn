@@ -16,6 +16,7 @@
 - [FSx for NetApp ONTAP và OpenZFS](#fsx-for-netapp-ontap-và-openzfs)
 - [Bảng so sánh tổng hợp](#bảng-so-sánh-tổng-hợp)
 - [Bản đồ toàn cảnh AWS File Storage](#bản-đồ-toàn-cảnh-aws-file-storage)
+- [Bức tranh toàn cảnh: 5 nhóm Storage trong AWS](#bức-tranh-toàn-cảnh-5-nhóm-storage-trong-aws)
 - [Cheat Sheet cho thi](#cheat-sheet-cho-thi)
 - [Mẹo phân biệt nhanh khi làm bài](#mẹo-phân-biệt-nhanh-khi-làm-bài)
 - [Tài liệu tham khảo](#tài-liệu-tham-khảo)
@@ -510,6 +511,85 @@ Ngoài Windows và Lustre, FSx còn 2 loại nữa thỉnh thoảng xuất hiệ
 
 ---
 
+## Bức tranh toàn cảnh: 5 nhóm Storage trong AWS
+
+File storage không đứng một mình — nó nằm trong hệ sinh thái rộng hơn gồm **5 nhóm** dịch vụ. Hiểu toàn cảnh giúp tránh nhầm lẫn giữa các service.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  1. CORE STORAGE — Nơi dữ liệu thực sự nằm                                  │
+│                                                                             │
+│  Block Storage        File Storage (Shared)         Object Storage          │
+│  ┌──────────────┐     ┌──────────────────────┐     ┌──────────────┐         │
+│  │ EBS          │     │ EFS (NFS · Linux)    │     │ S3           │         │
+│  │ Instance     │     │ FSx Windows (SMB·AD) │     │ S3 Glacier   │         │
+│  │   Store      │     │ FSx Lustre (HPC)     │     │              │         │
+│  │              │     │ FSx ONTAP (NFS+SMB   │     │              │         │
+│  │              │     │   +iSCSI)            │     │              │         │
+│  │              │     │ FSx OpenZFS (NFS)    │     │              │         │
+│  └──────────────┘     └──────────────────────┘     └──────────────┘         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  2. HYBRID — Kết nối On-Premises ↔ AWS                                      │
+│                                                                             │
+│  Storage Gateway                                                            │
+│  ┌────────────────────────────────────────────────────────────┐             │
+│  │ S3 File Gateway      → App on-prem truy cập S3 qua NFS/SMB │             │
+│  │ FSx File Gateway     → Cache local cho FSx Windows         │             │
+│  │ Volume Gateway       → Block storage → EBS Snapshots       │             │
+│  │ Tape Gateway         → Giả lập băng từ → S3 Glacier        │             │
+│  └────────────────────────────────────────────────────────────┘             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  3. DATA TRANSFER — Di chuyển dữ liệu vào/ra AWS                            │
+│                                                                             │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌───────────────────────────┐  │
+│  │ Transfer Family  │  │ DataSync         │  │ Snow Family               │  │
+│  │ SFTP·FTPS·FTP·AS2│  │ Sync nhanh       │  │ Snowcone·Snowball·        │  │
+│  │ → upload vào     │  │ on-prem ↔ AWS    │  │ Snowmobile                │  │
+│  │   S3 hoặc EFS    │  │ hoặc AWS ↔ AWS   │  │ Chuyển vật lý TB → EB     │  │
+│  └──────────────────┘  └──────────────────┘  └───────────────────────────┘  │
+│                                                                             │
+│  ┌──────────────────┐                                                       │
+│  │ S3 Transfer      │                                                       │
+│  │ Acceleration     │                                                       │
+│  │ Upload nhanh     │                                                       │
+│  │ qua Edge         │                                                       │
+│  └──────────────────┘                                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  4. ACCESS & DELIVERY — Cách truy cập dữ liệu                               │
+│                                                                             │
+│  ┌──────────────┐  ┌────────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │ CloudFront   │  │ S3 Access      │  │ VPC Endpoints│  │ Direct       │   │
+│  │ CDN · cache  │  │ Points         │  │ Truy cập S3/ │  │ Connect      │   │
+│  │ S3 gần user  │  │ Điểm truy cập  │  │ EFS không qua│  │ Kết nối      │   │
+│  │              │  │ riêng per app  │  │ Internet     │  │ chuyên dụng  │   │
+│  └──────────────┘  └────────────────┘  └──────────────┘  └──────────────┘   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  5. MANAGEMENT — Quản lý & bảo vệ                                           │
+│                                                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │ AWS Backup   │  │ S3 Lifecycle │  │ S3           │  │ S3 Storage   │     │
+│  │ Backup tập   │  │ Tự chuyển    │  │ Replication  │  │ Lens         │     │
+│  │ trung EBS/   │  │ class:       │  │ CRR · SRR    │  │ Phân tích    │     │
+│  │ EFS/FSx/S3   │  │ Std→IA→Glac  │  │ Cross/Same   │  │ usage &      │     │
+│  │              │  │              │  │ Region       │  │ dashboard    │     │
+│  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘     │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Tóm tắt nhanh:**
+
+| Nhóm | Câu hỏi trả lời | Services chính |
+|------|-----------------|----------------|
+| **Core Storage** | "Lưu ở đâu?" | EBS, EFS, FSx (4 loại), S3, Glacier |
+| **Hybrid** | "On-prem kết nối AWS thế nào?" | Storage Gateway (4 loại) |
+| **Data Transfer** | "Di chuyển data vào/ra AWS bằng gì?" | Transfer Family, DataSync, Snow Family, S3 Transfer Acceleration |
+| **Access & Delivery** | "Truy cập data nhanh/an toàn thế nào?" | CloudFront, S3 Access Points, VPC Endpoints, Direct Connect |
+| **Management** | "Bảo vệ & tối ưu data thế nào?" | AWS Backup, S3 Lifecycle, S3 Replication, Storage Lens |
+
+> **Lưu ý:** AWS Transfer Family (SFTP/FTPS/FTP/AS2) là **cổng upload** — nó không lưu trữ data mà chuyển file từ bên ngoài vào S3 hoặc EFS. Đừng nhầm với File Storage.
+
+---
+
 ## Cheat Sheet cho thi
 
 ### Keyword → Chọn dịch vụ nào
@@ -523,6 +603,10 @@ Ngoài Windows và Lustre, FSx còn 2 loại nữa thỉnh thoảng xuất hiệ
 | NAS migration, multi-protocol (NFS + SMB + iSCSI) | **FSx for NetApp ONTAP** |
 | ZFS, Linux file server migration | **FSx for OpenZFS** |
 | Ổ cứng gắn 1 EC2, block storage, boot volume | **EBS** |
+| SFTP, FTPS, FTP, AS2, managed file transfer | **AWS Transfer Family** |
+| Sync data on-prem ↔ AWS nhanh, scheduled transfer | **AWS DataSync** |
+| Petabytes, physical transfer, offline migration | **Snow Family** |
+| Upload S3 nhanh từ xa, global users upload | **S3 Transfer Acceleration** |
 
 ---
 
@@ -564,4 +648,8 @@ Ngoài Windows và Lustre, FSx còn 2 loại nữa thỉnh thoảng xuất hiệ
 - [Amazon FSx](fsx.md) — Chi tiết 4 loại FSx
 - [AWS Storage Gateway](aws-storage-gateway.md) — Chi tiết 4 loại Gateway
 - [AWS Storage Deep Dive](aws-storage-deep-dive.md) — So sánh tất cả loại storage
+- [AWS Transfer Family](aws-transfer-family.md) — SFTP/FTPS/FTP/AS2 managed file transfer
+- [AWS DataSync](aws-datasync.md) — Sync data on-prem ↔ AWS
+- [Snow Family](snow-family.md) — Physical data transfer
+- [S3 Transfer Acceleration](s3-transfer-acceleration.md) — Upload S3 nhanh qua Edge
 - [EBS](ebs.md) — Block Storage chi tiết
