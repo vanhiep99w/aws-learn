@@ -338,15 +338,15 @@ AWS Storage Gateway có **4 loại chính**:
 │   │   Server    │                   │   Gateway    │                         │
 │   └─────────────┘                   │              │                         │
 │         │                           │  ┌────────┐  │    ┌───────────────┐    │
-│         │ Sees as                   │  │ Cache  │  │───►│      S3        │   │
-│         │ local disk                │  │(hot    │  │    │   (Primary     │   │
-│         ▼                           │  │ data)  │  │    │    storage)    │   │
+│         │ Sees as                   │  │ Cache  │  │───►│      S3       │    │
+│         │ local disk                │  │(hot    │  │    │   (Primary    │    │
+│         ▼                           │  │ data)  │  │    │    storage)   │    │
 │   ┌─────────────┐                   │  └────────┘  │    └───────────────┘    │
 │   │   /dev/sdb  │                   └──────────────┘            │            │
-│   │   500GB     │                                              ▼             │
+│   │   500GB     │                                               ▼            │
 │   └─────────────┘                                    ┌───────────────────┐   │
-│                                                      │   EBS Snapshots    │  │
-│   📍 Cache size: small (SSD)                         │   (for backup)     │  │
+│                                                      │   EBS Snapshots   │   │
+│   📍 Cache size: small (SSD)                         │   (for backup)    │   │
 │   📍 Primary data: on S3                             └───────────────────┘   │
 │   📍 Volume size: up to 32 TB per volume                                     │
 │                                                                              │

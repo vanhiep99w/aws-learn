@@ -192,13 +192,13 @@
 │                                                                                     │
 │  DÙNG WAVELENGTH (nhanh - không ra Internet):                                       │
 │                                                                                     │
-│  📱 Phone → 📡 Tower → 🏢 Telecom DC ──┐                                            │
-│                              │         │                                            │
-│                              ▼         │                                            │
-│                        ┌─────────┐     │                                            │
+│  📱 Phone → 📡 Tower → 🏢 Telecom DC ───┐                                           │
+│                              │          │                                           │
+│                              ▼          │                                           │
+│                        ┌──────────┐     │                                           │
 │                        │WAVELENGTH│◄────┘  (xử lý NGAY TẠI ĐÂY, không đi đâu cả!)   │
-│                        │  ZONE  │                                                   │
-│                        └─────────┘                                                  │
+│                        │  ZONE    │                                                 │
+│                        └──────────┘                                                 │
 │                                                                                     │
 │  Latency: < 10ms                                                                    │
 │                                                                                     │
@@ -239,7 +239,7 @@
 │                                                                             │
 │   Player A (NYC)                    Player B (LA)                           │
 │      📱                                📱                                   │
-│       │                                │                                    │
+│       │                                 │                                   │
 │       ▼                                 ▼                                   │
 │   ┌─────────────┐                  ┌─────────────┐                          │
 │   │ Wavelength  │                  │ Wavelength  │                          │
@@ -251,7 +251,7 @@
 │          │                                │               │ Database │      │
 │          └────────────────────────────────┼──────────────►│ Analytics│      │
 │                                           │               └──────────┘      │
-│                                          │                                  │
+│                                           │                                 │
 │   Local processing = < 10ms latency per player                              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -342,8 +342,8 @@
 │   │            │                              │                         │   │
 │   │            ▼                              ▼                         │   │
 │   │   ┌────────────────┐            ┌─────────────────┐                 │   │
-│   │   │ Carrier Gateway│            │ Internet Gateway │                │   │
-│   │   │ (for 5G traffic)            │ (for Internet)   │                │   │
+│   │   │ Carrier Gateway│            │ Internet Gateway│                 │   │
+│   │   │ (for 5G traffic)            │ (for Internet)  │                 │   │
 │   │   └────────┬───────┘            └────────┬────────┘                 │   │
 │   └────────────┼─────────────────────────────┼──────────────────────────┘   │
 │                │                             │                              │
@@ -375,9 +375,9 @@
 │  │    Edge         │  │    Center       │  │                             │  │
 │  ├─────────────────┤  ├─────────────────┤  ├─────────────────────────────┤  │
 │  │ 🎯 Mobile 5G    │  │ 🎯 Hybrid cloud │  │ 🎯 City users low latency   │  │
-│  │    apps         │  │    Data residency│  │                            │  │
+│  │    apps         │  │   Data residency│  │                             │  │
 │  ├─────────────────┤  ├─────────────────┤  ├─────────────────────────────┤  │
-│  │ ⚡ < 10ms       │  │ ⚡ Depends on   │  │ ⚡ < 10ms                   │  │
+│  │ ⚡ < 10ms        │  │ ⚡ Depends on    │  │ ⚡ < 10ms                    │  │
 │  │    (5G traffic) │  │    your setup   │  │    (specific cities)        │  │
 │  ├─────────────────┤  ├─────────────────┤  ├─────────────────────────────┤  │
 │  │ 💻 EC2, EBS,    │  │ 💻 Full AWS     │  │ 💻 EC2, EBS, ELB, RDS...    │  │

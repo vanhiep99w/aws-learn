@@ -56,9 +56,9 @@
 │                             ▼                                               │
 │         ┌───────────────────────────────────────┐                           │
 │         │         AWS Glue Data Catalog         │                           │
-│         │  ┌─────────────────────────────────┐   │                          │
+│         │  ┌─────────────────────────────────┐  │                           │
 │         │  │  Databases  │  Tables  │ Schema │  │  ← Central Metadata       │
-│         │  └─────────────────────────────────┘   │                          │
+│         │  └─────────────────────────────────┘  │                           │
 │         └───────────────────┬───────────────────┘                           │
 │                             │                                               │
 │                             ▼                                               │
@@ -155,37 +155,37 @@ Metadata trong Glue Data Catalog giúp:
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  ┌─────────────┐                                                    │
-│  │  S3 Bucket      │                                                │
-│  │  ───────────    │                                                │
-│  │  /raw/          │                                                │
-│  │   ├─ 2024/  │ ──────┐                                            │
+│  │  S3 Bucket  │                                                    │
+│  │  ───────────│                                                    │
+│  │  /raw/      │                                                    │
+│  │   ├─ 2024/  │  ─────────┐                                        │
 │  │   │  ├─ jan/│           │                                        │
 │  │   │  └─ feb/│           │                                        │
 │  │   └─ 2025/  │           │                                        │
 │  └─────────────┘           │                                        │
-│                        ▼                                            │
-│  ┌─────────────┐                                                    │
-│  │    Crawler      │                                                │
-│  │ ─────────────── │                                                │
-│  │ 1. Connect      │                                                │
-│  │ 2. Classify │ ← Xác định format (CSV, JSON..                     │
-│  │ 3. Infer Schema │ ← Tự động detect columns                       │
-│  │ 4. Write to     │                                                │
-│  │    Catalog      │                                                │
-│  └────────┬────┘                                                    │
-│                           │                                         │
-│                       ▼                                             │
+│                            ▼                                        │
+│                 ┌─────────────────┐                                 │
+│                 │    Crawler      │                                 │
+│                 │ ─────────────── │                                 │
+│                 │ 1. Connect      │                                 │
+│                 │ 2. Classify     │ ← Xác định format (CSV, JSON..) │
+│                 │ 3. Infer Schema │ ← Tự động detect columns        │
+│                 │ 4. Write to     │                                 │
+│                 │    Catalog      │                                 │
+│                 └────────┬────────┘                                 │
+│                          │                                          │
+│                          ▼                                          │
 │              ┌─────────────────┐                                    │
-│              │  Data Catalog       │                                │
-│              │ ───────────────     │                                │
-│              │ Table: raw_data     │                                │
-│              │ Columns:            │                                │
-│              │  - id: bigint       │                                │
-│              │  - name: string     │                                │
-│              │  - date: date       │                                │
-│              │ Partitions:         │                                │
-│              │  - year             │                                │
-│              │  - month            │                                │
+│              │  Data Catalog   │                                    │
+│              │ ─────────────── │                                    │
+│              │ Table: raw_data │                                    │
+│              │ Columns:        │                                    │
+│              │  - id: bigint   │                                    │
+│              │  - name: string │                                    │
+│              │  - date: date   │                                    │
+│              │ Partitions:     │                                    │
+│              │  - year         │                                    │
+│              │  - month        │                                    │
 │              └─────────────────┘                                    │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -362,7 +362,7 @@ Metadata trong Glue Data Catalog giúp:
 │                                                                  │
 │  Job Chaining:                                                   │
 │  ┌─────────────────────────────────────────────────────────┐     │
-│  │  Job A (Extract) ───► Job B (Transform) ───► Job C (Load)│    │
+│  │ Job A (Extract) ───► Job B (Transform) ───► Job C (Load)│     │
 │  │       SUCCEEDED            SUCCEEDED                    │     │
 │  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
@@ -584,7 +584,7 @@ Metadata trong Glue Data Catalog giúp:
 │                                                                 │
 │  Day 2: Second Run (new files added)                            │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  S3: file1.csv, file2.csv, file3.csv, file4.csv, file5.csv   │
+│  │S3: file1.csv, file2.csv, file3.csv, file4.csv, file5.csv│    │
 │  │       (skip)      (skip)     (skip)      ↓          ↓   │    │
 │  │                                                         │    │
 │  │  [Process Only New] ───► file4 + file5 ───► Output      │    │

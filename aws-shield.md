@@ -22,7 +22,7 @@
 │                                                                              │
 │   🌐 INTERNET                                                                │
 │        │                                                                     │
-│        │  ⚡ DDoS Attack                                                     │
+│        │  ⚡ DDoS Attack                                                      │
 │        │  • Volumetric attacks                                               │
 │        │  • Protocol attacks                                                 │
 │        │  • Application layer attacks                                        │
@@ -30,12 +30,12 @@
 │   ┌─────────────────────────────────────────────────────────────────────┐    │
 │   │                      🛡️ AWS Shield                                  │    │
 │   │                                                                     │    │
-│   │   Standard (FREE)           │    Advanced ($3,000/mo)                │   │
-│   │   ─────────────────         │    ─────────────────                   │   │
-│   │   • Layer 3/4 protection    │    • Layer 3/4/7 protection            │   │
-│   │   • Always-on detection     │    • 24/7 DRT access                   │   │
-│   │   • Automatic mitigation    │    • Cost protection                   │   │
-│   │                             │    • Real-time visibility              │   │
+│   │   Standard (FREE)           │    Advanced ($3,000/mo)               │    │
+│   │   ─────────────────         │    ─────────────────                  │    │
+│   │   • Layer 3/4 protection    │    • Layer 3/4/7 protection           │    │
+│   │   • Always-on detection     │    • 24/7 DRT access                  │    │
+│   │   • Automatic mitigation    │    • Cost protection                  │    │
+│   │                             │    • Real-time visibility             │    │
 │   └─────────────────────────────────────────────────────────────────────┘    │
 │        │                                                                     │
 │        ▼                                                                     │

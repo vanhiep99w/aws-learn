@@ -39,7 +39,7 @@
 │   │   ┌────────────┐  ┌───────────┐  ┌───────────┐                      │   │
 │   │   │   COST     │  │PERFORMANCE│  │ SECURITY  │                      │   │
 │   │   │Optimization│  │           │  │           │                      │   │
-│   │   │    💰      │  │    ⚡      │  │    🔐     │                     │   │
+│   │   │    💰      │  │    ⚡      │  │    🔐     │                      │   │
 │   │   └────────────┘  └───────────┘  └───────────┘                      │   │
 │   │                                                                     │   │
 │   │   ┌────────────┐  ┌───────────┐                                     │   │
@@ -343,7 +343,7 @@ Dành cho **Enterprise Support** - AWS Technical Account Manager (TAM) sẽ:
 │                                                                             │
 │  📊 5 CATEGORIES:                                                           │
 │     💰 Cost Optimization - Tìm cách tiết kiệm                               │
-│     ⚡ Performance - Cải thiện hiệu suất                                    │
+│     ⚡ Performance - Cải thiện hiệu suất                                     │
 │     🔐 Security - Phát hiện lỗ hổng                                         │
 │     🔄 Fault Tolerance - Tăng availability                                  │
 │     📊 Service Limits - Check quotas                                        │

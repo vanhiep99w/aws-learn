@@ -477,11 +477,11 @@ Step Functions tích hợp với **200+ AWS services** qua 9,000+ API actions.
 │   └─────────┘     └──────────┘                  └────────┘          │
 │                                                                     │
 │   3️⃣  WAIT FOR CALLBACK (.waitForTaskToken) - Standard only         │
-│   ┌────────┐     ┌──────────┐                  ┌────────┐           │
-│   │  Step  │────▶│  SQS/    │  ⏳ đợi external │ Next   │           │
-│   │Functions│     │ Lambda   │  process gọi     │ State │           │
-│   │ (pause)│     │ + token  │  SendTaskSuccess └────────┘           │
-│   └────────┘     └──────────┘                                       │
+│   ┌─────────┐     ┌──────────┐                  ┌────────┐          │
+│   │  Step   │────▶│  SQS/    │  ⏳ đợi external │ Next   │          │
+│   │Functions│     │ Lambda   │  process gọi     │ State  │          │
+│   │ (pause) │     │ + token  │  SendTaskSuccess └────────┘          │
+│   └─────────┘     └──────────┘                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -745,26 +745,26 @@ Workflow có 4 states, chạy 100,000 lần/tháng:
 
 ```
 ┌──────────────────┬──────────────────┬──────────────────┬──────────────────┐
-│                  │  Step Functions   │  EventBridge      │  SQS + Lambda  │
-│                  │                  │  (Event-driven)    │  (Queue-based) │
+│                  │  Step Functions  │  EventBridge     │  SQS + Lambda    │
+│                  │                  │  (Event-driven)  │  (Queue-based)   │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Pattern          │ Orchestration     │ Choreography      │ Point-to-point │
-│                  │ (central control) │ (event routing)   │ (decoupled)    │
+│ Pattern          │ Orchestration    │ Choreography     │ Point-to-point   │
+│                  │ (central control)│ (event routing)  │ (decoupled)      │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ State            │ ✅ Managed by    │ ❌ Stateless       │ ❌ Stateless   │
-│ Management       │ Step Functions    │                 │                  │
+│ State            │ ✅ Managed by    │ ❌ Stateless     │ ❌ Stateless     │
+│ Management       │ Step Functions   │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Visual           │ ✅ Workflow      │ ❌                 │ ❌             │
+│ Visual           │ ✅ Workflow      │ ❌               │ ❌               │
 │ Debugging        │ Studio           │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Error Handling   │ ✅ Built-in      │ ⚠️ DLQ + retry     │ ⚠️ DLQ + retry │
+│ Error Handling   │ ✅ Built-in      │ ⚠️ DLQ + retry   │ ⚠️ DLQ + retry   │
 │                  │ Retry/Catch      │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Human Approval   │ ✅ Callback      │ ❌                 │ ❌             │
+│ Human Approval   │ ✅ Callback      │ ❌               │ ❌               │
 │                  │ pattern          │                  │                  │
 ├──────────────────┼──────────────────┼──────────────────┼──────────────────┤
-│ Best for         │ Complex,         │ Event routing,     │ Simple async   │
-│                  │ multi-step       │ many consumers     │ processing     │
+│ Best for         │ Complex,         │ Event routing,   │ Simple async     │
+│                  │ multi-step       │ many consumers   │ processing       │
 │                  │ workflows        │                  │                  │
 └──────────────────┴──────────────────┴──────────────────┴──────────────────┘
 ```

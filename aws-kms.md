@@ -30,8 +30,8 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   KMS Key ──────► Encrypt Data ──────► Encrypted Data           │
-│      │                                      │                   │
-│      │                                      │                   │
+│      │                                       │                  │
+│      │                                       │                  │
 │      └─────────► Decrypt Data ◄──────────────┘                  │
 │                                                                 │
 │   Integrates with 100+ AWS services:                            │
@@ -275,7 +275,7 @@ Key Policies contrrol ai có thể dùng KMS key:
 │    │  (primary)  │  replicate  │  (replica)  │                  │
 │    └─────────────┘             └─────────────┘                  │
 │          │                          │                           │
-│          ▼                           ▼                          │
+│          ▼                          ▼                           │
 │    Encrypt data              Decrypt same data                  │
 │    in Region A               in Region B                        │
 │                                                                 │
