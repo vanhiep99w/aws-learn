@@ -239,24 +239,24 @@ Hiểu rõ ai chịu trách nhiệm gì:
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║                    CUSTOMER RESPONSIBILITY                             ║│
-│   ║                    (Security IN the Cloud)                             ║│
+│   ║                    CUSTOMER RESPONSIBILITY                            ║ │
+│   ║                    (Security IN the Cloud)                            ║ │
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Customer Data                                                       ║│
-│   ║  • Platform, Applications, IAM                                         ║│
+│   ║  • Customer Data                                                      ║ │
+│   ║  • Platform, Applications, IAM                                        ║ │
 │   ║  • Operating System, Network, Firewall Configuration                  ║ │
-│   ║  • Client-side Encryption                                              ║│
-│   ║  • Tuân thủ Acceptable Use Policy                                      ║│
+│   ║  • Client-side Encryption                                             ║ │
+│   ║  • Tuân thủ Acceptable Use Policy                                     ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
 │   ╔═══════════════════════════════════════════════════════════════════════╗ │
-│   ║                    AWS RESPONSIBILITY                                  ║│
-│   ║                    (Security OF the Cloud)                             ║│
+│   ║                    AWS RESPONSIBILITY                                 ║ │
+│   ║                    (Security OF the Cloud)                            ║ │
 │   ╠═══════════════════════════════════════════════════════════════════════╣ │
-│   ║  • Hardware/AWS Global Infrastructure                                  ║│
+│   ║  • Hardware/AWS Global Infrastructure                                 ║ │
 │   ║  • Regions, Availability Zones, Edge Locations                        ║ │
 │   ║  • Compute, Storage, Database, Networking (Hardware)                  ║ │
-│   ║  • Physical security of data centers                                   ║│
+│   ║  • Physical security of data centers                                  ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════╝ │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
