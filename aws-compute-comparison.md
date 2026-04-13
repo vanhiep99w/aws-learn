@@ -21,7 +21,7 @@
 │  Load balancer, HTTPS, CI/CD, custom domain, scaling policy  │
 ├──────────────────────────────────────────────────────────────┤
 │  LAYER 2: ORCHESTRATION                                      │
-│  Điều phối container: chạy ở đâu, bao nhiêu cái,            │
+│  Điều phối container: chạy ở đâu, bao nhiêu cái,             │
 │  restart khi chết, rolling deploy...                         │
 ├──────────────────────────────────────────────────────────────┤
 │  LAYER 1: COMPUTE                                            │
@@ -44,7 +44,7 @@
 │  │  dưới tự động             │   │                              │   │
 │  └───────────────────────────┘   └──────────────────────────────┘   │
 │                                                                     │
-│  ⚠️ ECS/EKS KHÔNG lo layer này — bạn phải tự setup ALB,            │
+│  ⚠️ ECS/EKS KHÔNG lo layer này — bạn phải tự setup ALB,             │
 │     target group, listener rules                                    │
 ├─────────────────────────────────────────────────────────────────────┤
 │  LAYER 2: ORCHESTRATION                                             │
@@ -55,7 +55,7 @@
 │  │  Task/Service    │   │  Pod/Deployment  │                        │
 │  └──────────────────┘   └──────────────────┘                        │
 │                                                                     │
-│  ⚠️ ECS/EKS chỉ là "não điều khiển" — KHÔNG có CPU/RAM thật        │
+│  ⚠️ ECS/EKS chỉ là "não điều khiển" — KHÔNG có CPU/RAM thật         │
 ├─────────────────────────────────────────────────────────────────────┤
 │  LAYER 1: COMPUTE                                                   │
 │                                                                     │

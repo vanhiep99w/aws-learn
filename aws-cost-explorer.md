@@ -181,15 +181,15 @@ Cost Explorer cho phép lọc và nhóm dữ liệu theo nhiều dimensions:
 │           ▼                                                     │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │              Forecast Output                            │    │
-│  │  ┌─────────────────────────────────────────────────┐     │   │
-│  │  │  Upper Bound ─────────────────────              │     │   │
-│  │  │                                     \           │     │   │
-│  │  │  Mean Forecast ───────────────────── \          │     │   │
-│  │  │                                       \         │     │   │
-│  │  │  Lower Bound ──────────────────────────\        │     │   │
-│  │  │                                                 │     │   │
-│  │  │  ◄─────── 80% Prediction Interval ──────►       │     │   │
-│  │  └─────────────────────────────────────────────────┘     │   │
+│  │  ┌─────────────────────────────────────────────────┐    │    │
+│  │  │  Upper Bound ─────────────────────              │    │    │
+│  │  │                                     \           │    │    │
+│  │  │  Mean Forecast ───────────────────── \          │    │    │
+│  │  │                                       \         │    │    │
+│  │  │  Lower Bound ──────────────────────────\        │    │    │
+│  │  │                                                 │    │    │
+│  │  │  ◄─────── 80% Prediction Interval ──────►       │    │    │
+│  │  └─────────────────────────────────────────────────┘    │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -298,20 +298,20 @@ Cost Explorer cung cấp đề xuất tối ưu hóa cho EC2 instances:
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                 Underutilized EC2                       │    │
 │  │                                                         │    │
-│  │  Current: m5.2xlarge     │     Recommendation:           │   │
-│  │  vCPU: 8                 │     DOWNSIZE to m5.large      │   │
-│  │  Memory: 32 GB           │     vCPU: 2, Memory: 8 GB     │   │
-│  │  Avg CPU: 5%             │                               │   │
-│  │                          │     Savings: $120/month       │   │
+│  │  Current: m5.2xlarge     │     Recommendation:          │    │
+│  │  vCPU: 8                 │     DOWNSIZE to m5.large     │    │
+│  │  Memory: 32 GB           │     vCPU: 2, Memory: 8 GB    │    │
+│  │  Avg CPU: 5%             │                              │    │
+│  │                          │     Savings: $120/month      │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                    Idle EC2                             │    │
 │  │                                                         │    │
-│  │  Instance: i-0abc123     │     Recommendation:           │   │
-│  │  Running: 720 hours      │     TERMINATE instance        │   │
-│  │  Avg CPU: 0.5%           │                               │   │
-│  │  Network: Minimal        │     Savings: $85/month        │   │
+│  │  Instance: i-0abc123     │     Recommendation:          │    │
+│  │  Running: 720 hours      │     TERMINATE instance       │    │
+│  │  Avg CPU: 0.5%           │                              │    │
+│  │  Network: Minimal        │     Savings: $85/month       │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘

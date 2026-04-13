@@ -244,8 +244,8 @@ graph TB
 │  │ ✅ Database         │  ──backup──►   │                     │              │
 │  │ ✅ Storage          │                │ 📦 Chỉ lưu:         │              │
 │  └─────────────────────┘                │ • AMIs              │              │
-│                                         │ • DB Snapshots       │             │
-│  AWS Services dùng:                     │ • S3 backups         │             │
+│                                         │ • DB Snapshots      │              │
+│  AWS Services dùng:                     │ • S3 backups        │              │
 │  • S3 Cross-Region Replication          └─────────────────────┘              │
 │  • EBS Snapshot cross-region copy                                            │
 │  • RDS automated backups                                                     │
@@ -346,7 +346,7 @@ graph TB
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$                │
+│  ⚡ ACTIVE-ACTIVE              RPO: ~0 | RTO: ~0 | Cost: $$$$                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  REGION A (Active)                      REGION B (Active)                    │

@@ -34,7 +34,7 @@
 │    │  Agent  │                                                  │
 │    └─────────┘                                                  │
 │                                                                 │
-│  ⚡ Up to 10 Gbps transfer speed                                │
+│  ⚡ Up to 10 Gbps transfer speed                                 │
 │  🔄 Automatic retry, verification                               │
 │  📊 Bandwidth throttling                                        │
 │                                                                 │
@@ -62,9 +62,9 @@
 │     │  Hyper-V/   │  ← Download OVA/VHD từ AWS                  │
 │     │  KVM/EC2    │                                             │
 │     └──────┬──────┘                                             │
-│           │                                                     │
+│            │                                                    │
 │  2. Create Locations (Source + Destination)                     │
-│           │                                                     │
+│            │                                                    │
 │            ▼                                                    │
 │     ┌─────────────┐         ┌─────────────┐                     │
 │     │   Source    │ ──────► │ Destination │                     │
@@ -73,14 +73,14 @@
 │           │                                                     │
 │  3. Create Task (defines what/how to transfer)                  │
 │           │                                                     │
-│            ▼                                                    │
+│           ▼                                                     │
 │     ┌─────────────┐                                             │
 │     │    Task     │ ← Schedule, filters, options                │
 │     └──────┬──────┘                                             │
 │           │                                                     │
 │  4. Run Task (manual or scheduled)                              │
 │           │                                                     │
-│            ▼                                                    │
+│           ▼                                                     │
 │     ┌─────────────┐                                             │
 │     │  Transfer   │ ← Monitor progress in Console               │
 │     │  Execution  │                                             │

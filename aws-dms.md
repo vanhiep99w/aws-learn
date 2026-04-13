@@ -29,12 +29,12 @@
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                                                         │    │
 │  │  Source DB                     Target DB                │    │
-│  │  ┌──────────┐                  ┌──────────┐              │   │
-│  │  │ Oracle   │                  │ Aurora   │              │   │
-│  │  │ MySQL    │  ─────DMS─────►  │ RDS      │              │   │
-│  │  │ SQL Srv  │                  │ DynamoDB │              │   │
-│  │  │ PostgreSQL│                  │ Redshift │             │   │
-│  │  └──────────┘                  └──────────┘              │   │
+│  │  ┌──────────┐                  ┌──────────┐             │    │
+│  │  │ Oracle   │                  │ Aurora   │             │    │
+│  │  │ MySQL    │  ─────DMS─────►  │ RDS      │             │    │
+│  │  │ SQL Srv  │                  │ DynamoDB │             │    │
+│  │  │PostgreSQL│                  │ Redshift │             │    │
+│  │  └──────────┘                  └──────────┘             │    │
 │  │  On-prem/EC2/RDS                AWS                     │    │
 │  │                                                         │    │
 │  └─────────────────────────────────────────────────────────┘    │
@@ -69,28 +69,28 @@
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │                                                          │   │
 │  │  1. REHOST          "Lift and Shift"                     │   │
-│  │     └─ Chuyển nguyên xi, không thay đổi gì                │  │
-│  │     └─ VD: MySQL → MySQL trên EC2                         │  │
+│  │     └─ Chuyển nguyên xi, không thay đổi gì               │   │
+│  │     └─ VD: MySQL → MySQL trên EC2                        │   │
 │  │                                                          │   │
 │  │  2. REPLATFORM      "Lift and Reshape"                   │   │
-│  │     └─ Thay đổi một chút để tận dụng cloud                │  │
-│  │     └─ VD: MySQL → RDS MySQL (managed)                    │  │
+│  │     └─ Thay đổi một chút để tận dụng cloud               │   │
+│  │     └─ VD: MySQL → RDS MySQL (managed)                   │   │
 │  │                                                          │   │
 │  │  3. REPURCHASE      "Drop and Shop"                      │   │
-│  │     └─ Mua solution mới (SaaS)                            │  │
-│  │     └─ VD: CRM cũ → Salesforce                            │  │
+│  │     └─ Mua solution mới (SaaS)                           │   │
+│  │     └─ VD: CRM cũ → Salesforce                           │   │
 │  │                                                          │   │
 │  │  4. REFACTOR        "Re-architect"                       │   │
-│  │     └─ Viết lại code để cloud-native                      │  │
-│  │     └─ VD: Monolith → Microservices + Aurora Serverless   │  │
+│  │     └─ Viết lại code để cloud-native                     │   │
+│  │     └─ VD: Monolith → Microservices + Aurora Serverless  │   │
 │  │                                                          │   │
 │  │  5. RETIRE          "Tắt đi"                             │   │
-│  │     └─ Không dùng nữa, decommission                       │  │
-│  │     └─ VD: App cũ không còn users                         │  │
+│  │     └─ Không dùng nữa, decommission                      │   │
+│  │     └─ VD: App cũ không còn users                        │   │
 │  │                                                          │   │
 │  │  6. RETAIN          "Giữ lại"                            │   │
-│  │     └─ Giữ on-prem, không migrate                         │  │
-│  │     └─ VD: Legacy system quá phức tạp để migrate          │  │
+│  │     └─ Giữ on-prem, không migrate                        │   │
+│  │     └─ VD: Legacy system quá phức tạp để migrate         │   │
 │  │                                                          │   │
 │  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
@@ -157,13 +157,13 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌──────────┐      ┌──────────────────┐      ┌──────────┐       │
-│  │  Source  │      │  DMS Replication │      │  Target   │      │
-│  │ Database │─────►│     Instance     │─────►│ Database  │      │
-│  │          │      │                  │      │           │      │
+│  │  Source  │      │  DMS Replication │      │  Target  │       │
+│  │ Database │─────►│     Instance     │─────►│ Database │       │
+│  │          │      │                  │      │          │       │
 │  └──────────┘      │  ┌────────────┐  │      └──────────┘       │
-│                    │  │ Replication│   │                        │
-│                    │  │    Task    │   │                        │
-│                    │  └────────────┘   │                        │
+│                    │  │ Replication│  │                         │
+│                    │  │    Task    │  │                         │
+│                    │  └────────────┘  │                         │
 │                    └──────────────────┘                         │
 │                                                                 │
 │  Components:                                                    │
@@ -277,12 +277,12 @@
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                                                         │    │
 │  │  Oracle PL/SQL        SCT         Aurora PostgreSQL     │    │
-│  │  ┌──────────────┐    ─────►      ┌──────────────┐        │   │
-│  │  │ CREATE TABLE │               │ CREATE TABLE │         │   │
-│  │  │ VARCHAR2     │    Convert    │ VARCHAR      │         │   │
-│  │  │ NUMBER       │    ─────►     │ NUMERIC      │         │   │
-│  │  │ PROCEDURE    │               │ FUNCTION     │         │   │
-│  │  └──────────────┘               └──────────────┘         │   │
+│  │  ┌──────────────┐    ─────►     ┌──────────────┐        │    │
+│  │  │ CREATE TABLE │               │ CREATE TABLE │        │    │
+│  │  │ VARCHAR2     │    Convert    │ VARCHAR      │        │    │
+│  │  │ NUMBER       │    ─────►     │ NUMERIC      │        │    │
+│  │  │ PROCEDURE    │               │ FUNCTION     │        │    │
+│  │  └──────────────┘               └──────────────┘        │    │
 │  │                                                         │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
@@ -350,8 +350,8 @@
 ```
 Data Center                      AWS
 ┌──────────┐                     ┌──────────┐
-│ Oracle   │ ───DMS + SCT───►   │ Aurora   │
-│ Database │                     │ PostgreSQL│
+│ Oracle   │ ───DMS + SCT───►    │ Aurora   │
+│ Database │                     │PostgreSQL│
 └──────────┘                     └──────────┘
 ```
 
@@ -360,7 +360,7 @@ Data Center                      AWS
 ```
 Azure                            AWS
 ┌──────────┐                     ┌──────────┐
-│ Azure    │ ───────DMS───────► │ RDS      │
+│ Azure    │ ───────DMS───────►  │ RDS      │
 │ MySQL    │                     │ MySQL    │
 └──────────┘                     └──────────┘
 ```
@@ -368,13 +368,13 @@ Azure                            AWS
 ### 3. Consolidation
 
 ```
-Multiple DBs                     AWS
-┌────────────────────────────────────────────┐
+Multiple DBs AWS
+┌──────────┐
 │ MySQL    │ ─────┐
-└──────────┘                                 │
+└──────────┘      │
                   │               ┌──────────┐
-┌──────────┐      ├───DMS───────►│ Aurora    │
-│ PostgreSQL│─────┤               │ MySQL    │
+┌──────────┐      ├───DMS───────► │ Aurora   │
+│PostgreSQL│──────┤               │ MySQL    │
 └──────────┘      │               └──────────┘
                   │
 ┌──────────┐      │
