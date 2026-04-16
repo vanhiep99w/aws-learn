@@ -118,6 +118,7 @@ Two modes:
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
 - [x] [IAM Identity Center](iam-identity-center.md) - Single Sign-On (SSO), Multi-Account Access, Identity Providers, Permission Sets
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
+- [x] [AWS STS](aws-sts.md) - Temporary Credentials, AssumeRole, Web Identity, SAML, Session Policies
 - [x] [IAM JSON Policy Types](iam-json-policy-types.md) - Identity-based, Resource-based, Permissions Boundaries, SCPs, ACLs, Session Policies
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
