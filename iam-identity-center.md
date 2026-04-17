@@ -26,18 +26,6 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ---
 
-1. [Tổng Quan](#tổng-quan)
-2. [Kiến Trúc](#kiến-trúc)
-3. [Identity Sources](#identity-sources)
-4. [Permission Sets](#permission-sets)
-5. [Tích Hợp AWS Organizations](#tích-hợp-aws-organizations)
-6. [Security Features](#security-features)
-7. [So Sánh Với IAM Truyền Thống](#so-sánh-với-iam-truyền-thống)
-8. [Use Cases](#use-cases)
-9. [Best Practices](#best-practices)
-
----
-
 ## Tổng Quan
 
 ### IAM Identity Center Là Gì?

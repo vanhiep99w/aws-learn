@@ -104,6 +104,7 @@ Two modes:
 - [x] [DNS Deep Dive](how-dns-works.md) - Giải thích cơ chế DNS, phân biệt Registry/Registrar/Nameserver (quan trọng!)
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
 - [x] [Global Accelerator](global-accelerator.md) - Network Layer, Static Anycast IPs, TCP/UDP, Gaming/IoT
+- [x] [Networking Cheatsheet](aws-networking-cheatsheet.md) - Tổng hợp tất cả loại kết nối AWS, mẹo nhớ nhanh PING, so sánh Gateway/Interface/Peering/VPN/DX
 
 ## Account Management
 
