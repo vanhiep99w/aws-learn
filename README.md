@@ -82,6 +82,7 @@ Two modes:
 
 - [x] [Disaster Recovery & Migration Overview](aws-disaster-recovery-migration-overview.md) - Tổng quan DR Patterns, 6Rs, DMS, Snow Family, DataSync, Storage Gateway, Backup (Diagram)
 - [x] [AWS DMS](aws-dms.md) - Database Migration Service, SCT, 6Rs Migration Strategies, CDC
+- [x] [AWS Application Discovery Service](aws-application-discovery-service.md) - Agentless/Agent-based Discovery, Server Inventory, Migration Hub Integration
 
 ## Data Integration
 
@@ -105,6 +106,7 @@ Two modes:
 - [x] [CloudFront](cloudfront.md) - CDN, Edge Locations, Caching, Lambda@Edge, Security
 - [x] [Global Accelerator](global-accelerator.md) - Network Layer, Static Anycast IPs, TCP/UDP, Gaming/IoT
 - [x] [Networking Cheatsheet](aws-networking-cheatsheet.md) - Tổng hợp tất cả loại kết nối AWS, mẹo nhớ nhanh PING, so sánh Gateway/Interface/Peering/VPN/DX
+- [x] [VPC Cheatsheet](vpc-cheatsheet.md) - Toàn bộ thành phần VPC, cách chúng tương tác, setup phổ biến và best practices
 
 ## Account Management
 
@@ -154,6 +156,7 @@ Two modes:
 - [x] [AWS Trusted Advisor](aws-trusted-advisor.md) - Best Practices Recommendations (Cost, Performance, Security, Fault Tolerance, Limits)
 - [x] [AWS Compute Optimizer](aws-compute-optimizer.md) - ML-based Rightsizing Recommendations cho EC2, EBS, Lambda, ECS
 - [x] [AWS Config](aws-config.md) - Configuration Recording, Compliance Rules, Remediation, Multi-Account Aggregation
+- [x] [AWS Launch Wizard](aws-launch-wizard.md) - Guided Deployment of Enterprise Applications (SQL Server, SAP, Active Directory)
 
 ## Developer Tools
 

@@ -1,8 +1,3 @@
----
-title: "VPC Cheatsheet — Toàn bộ thành phần & Setup thực tế"
-description: "Tổng hợp tất cả thành phần VPC, cách chúng tương tác, setup phổ biến và best practices — dễ nhớ, dễ tra cứu"
----
-
 # VPC Cheatsheet — Toàn bộ thành phần & Setup thực tế
 
 ## Mục lục

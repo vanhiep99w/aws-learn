@@ -4,18 +4,38 @@
 AWS learning documentation repository - collection of Markdown files covering AWS services and concepts.
 
 ## Structure
-- `README.md` - Table of contents with links to all topics
+- `README.md` - Table of contents with links to all topics (**source of truth cho webapp**)
 - `*.md` - Individual documentation files for each AWS service/topic
+- `content/docs/` - Auto-generated bởi `scripts/prepare-content.mjs`, gitignored
+- `scripts/prepare-content.mjs` - Script build content từ README.md → content/docs/
 
 ## Commands
 No build/test commands - this is a documentation-only repository.
+
+## ⚠️ Thêm file doc mới — PHẢI update README.md
+
+Webapp Next.js (Fumadocs) **chỉ hiển thị các file có entry `- [x]` trong README.md**. Script `prepare-content.mjs` parse README.md để biết file nào thuộc category nào.
+
+**Khi tạo file `.md` mới, BẮT BUỘC phải:**
+
+1. Thêm entry vào đúng section trong `README.md` với format:
+   ```
+   - [x] [Tên Hiển Thị](ten-file.md) - Mô tả ngắn
+   ```
+2. File `.md` phải dùng `# Heading` làm title (KHÔNG dùng YAML frontmatter — script tự tạo)
+3. Đặt entry vào đúng section (`## Compute`, `## Storage`, `## Networking`, v.v.)
+
+**Nếu quên bước này → file sẽ KHÔNG hiển thị trên webapp.**
+
+Các section hợp lệ trong README.md:
+`Fundamentals` · `Compute` · `Storage` · `Database` · `Migration` · `Data Integration` · `Analytics` · `Networking` · `Account Management` · `Security` · `Partner & Marketplace` · `Monitoring & Management` · `Developer Tools` · `Infrastructure as Code` · `Messaging & Streaming` · `Global Applications Architecture` · `Cost Management` · `Support` · `AI/ML Services` · `End User Computing` · `Application Integration`
 
 ## Guidelines
 - All documentation in Markdown format (.md)
 - Use Vietnamese for content
 - Keep `README.md` updated when adding new topics
 - Organize files by AWS service category (Compute, Storage, Database, etc.)
-- Use checkboxes `- [ ]` in README.md to track learning progress
+- Use checkboxes `- [x]` in README.md to track learning progress
 - Include practical examples and diagrams where helpful
 - Link related topics between documents
 
