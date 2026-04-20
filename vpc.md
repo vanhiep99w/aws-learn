@@ -535,6 +535,7 @@ VPC Dashboard
 | 5 | [VPC Peering](#5-vpc-peering) | Nối 2 VPC | ✅ Free | ⭐ Khi cần |
 | 6 | [Transit Gateway](#6-transit-gateway) | Hub nhiều VPC | 💰 $36+/tháng | ⭐ Khi cần |
 | 7 | [VPN Connection (Site-to-Site VPN)](#7-vpn-connection-site-to-site-vpn) | Nối on-premise | 💰 $36+/tháng | ⭐ Khi cần |
+| 7.5 | [VPN CloudHub](#75-aws-vpn-cloudhub) | Nối nhiều site với nhau qua VGW | 💰 Theo VPN connection | ⭐ Multi-site |
 | 8 | [Client VPN](#8-aws-client-vpn) | VPN cá nhân | 💰 $0.05/giờ | ⭐ Khi cần |
 | 9 | [Security Group](#9-security-groups) | Firewall instance | ✅ Free | ⭐⭐⭐ Bắt buộc |
 | 10 | [Network ACL](#10-network-acls-nacls) | Firewall subnet | ✅ Free | ⭐ Tùy chọn |
@@ -1125,6 +1126,177 @@ Site-to-Site VPN **sử dụng kết nối Internet có sẵn** của công ty (
 > 💡 **So với Direct Connect:** Direct Connect dùng **đường cáp quang riêng** (dedicated fiber) từ on-premises đến AWS, **không đi qua Internet** → latency thấp, ổn định, nhưng setup 4-12 tuần và chi phí cao hơn.
 
 **Xem thêm:** [AWS Direct Connect](direct-connect.md) - Kết nối vật lý chuyên dụng, không qua Internet.
+
+---
+
+### 7.5. AWS VPN CloudHub
+
+**Tác dụng:** Cho phép **nhiều site** (chi nhánh, văn phòng) **giao tiếp với nhau** qua AWS, sử dụng mô hình **hub-and-spoke** — với **một Virtual Private Gateway duy nhất** làm hub và **nhiều Customer Gateway** làm spoke.
+
+> 💡 Điểm đặc biệt: các site không chỉ nói chuyện với resources trong VPC, mà còn **nói chuyện với nhau** thông qua VGW — kể cả khi bạn **không có VPC** (VPN CloudHub hoạt động có hoặc không có VPC).
+
+#### Khái niệm cơ bản — VGW, CGW, BGP, ASN
+
+Trước khi đi vào CloudHub, cần hiểu 4 thuật ngữ này vì tài liệu AWS dùng rất nhiều:
+
+**1. VGW — Virtual Private Gateway (Cổng ảo phía AWS)**
+
+```
+    On-Premises                            AWS
+   ┌───────────┐                      ┌───────────┐
+   │    🏢     │                      │    VPC    │
+   │   CGW ────┼── IPSec tunnel ──────┼─── VGW    │
+   │(cổng nhà) │                      │(cổng AWS) │
+   └───────────┘                      └───────────┘
+```
+
+- Là **"cổng VPN phía AWS"** — điểm đầu cuối tunnel ở phía AWS, gắn vào VPC.
+- AWS tự quản lý (managed): bạn chỉ cần attach vào VPC, không cần config phần cứng.
+- **Ví dụ đời thực**: VGW = cái **ổ cắm mạng ở trong nhà AWS**, bạn cắm dây từ công ty bạn vào đây.
+
+**2. CGW — Customer Gateway (Cổng ảo đại diện cho thiết bị phía khách hàng)**
+
+- Là **"cổng VPN phía bạn"** — trên AWS, CGW là một **object khai báo** cho AWS biết thiết bị router/firewall ở công ty bạn có **public IP là gì**, **BGP ASN bao nhiêu**.
+- Thiết bị thật (router Cisco, Fortinet, pfSense...) ở trụ sở bạn mới là phần cứng chạy IPSec — CGW chỉ là "hồ sơ" mô tả nó trên AWS.
+- **Ví dụ đời thực**: CGW = **tờ giấy khai báo** với AWS: "router ở văn phòng tôi có IP `203.0.113.10`, ASN `65001`".
+
+```
+Thiết bị thật (router ở HQ) ←→ được mô tả bởi ←→ CGW object trên AWS
+│                                                │
+├── Public IP: 203.0.113.10                      ├── CGW khai báo:
+├── Chạy IPSec                                   │   Public IP = 203.0.113.10
+└── Có BGP ASN = 65001                           │   ASN = 65001
+                                                 │   Routing type = dynamic (BGP)
+```
+
+**3. BGP — Border Gateway Protocol (Giao thức trao đổi đường đi giữa các mạng)**
+
+- BGP = **"ngôn ngữ chung"** để 2 mạng (router) nói cho nhau biết: *"tôi có thể đi đến các dải IP nào"*.
+- Khi VPN dùng **BGP (dynamic routing)**: nếu mạng phía on-prem có thêm subnet mới, router **tự động thông báo** cho AWS — không cần sửa route table thủ công.
+- Đối lập với **static routing**: bạn phải khai tay từng dải IP.
+
+```
+Không có BGP (static):                  Có BGP (dynamic):
+Bạn phải nói AWS:                       Router on-prem tự thông báo:
+"subnet 10.0.1.0/24 ở nhà tôi"          "này AWS, tôi vừa thêm 10.0.5.0/24"
+"subnet 10.0.2.0/24 ở nhà tôi"          → AWS tự cập nhật route table
+(Thêm subnet mới → phải sửa tay)        (Thêm subnet mới → auto lan truyền)
+```
+
+- **Ví dụ đời thực**: BGP = **cái bảng tin chung** — ai thêm/bớt đường đi thì dán lên, tất cả router khác tự đọc và cập nhật bản đồ đường đi.
+
+**4. ASN — Autonomous System Number (Số định danh mạng trong BGP)**
+
+- ASN = **"số nhà"** của mỗi mạng trong giao thức BGP. Mỗi "autonomous system" (một mạng độc lập — ví dụ công ty A, chi nhánh B) có 1 số ASN duy nhất.
+- Khi nhiều router nói chuyện BGP, chúng phân biệt nhau bằng **ASN**. Trùng ASN → BGP tưởng là cùng 1 mạng → loop, từ chối trao đổi route.
+- **Private ASN range**: `64512–65534` (dùng nội bộ, không đụng ASN public trên Internet).
+- **Ví dụ đời thực**: ASN = **số CMND** của mỗi văn phòng. Gặp nhau trao đổi thì xem CMND để biết "đây là ai".
+
+```
+🏢 Site A (ASN 65001) ──┐
+🏢 Site B (ASN 65002) ──┼──→ VGW (cũng có ASN, ví dụ 64512)
+🏢 Site C (ASN 65003) ──┘
+
+VGW nghe A, B, C và biết đây là 3 mạng khác nhau (khác ASN)
+→ VGW re-advertise route của A cho B và C, và ngược lại
+→ Đây chính là cách CloudHub cho các site nói chuyện với nhau
+```
+
+**Tóm tắt 4 thuật ngữ — bảng cheatsheet**
+
+| Viết tắt | Tên đầy đủ | Nghĩa đơn giản | Ai quản lý? |
+|----------|------------|----------------|-------------|
+| **VGW** | Virtual Private Gateway | Cổng VPN **phía AWS**, gắn vào VPC | AWS managed |
+| **CGW** | Customer Gateway | Object AWS mô tả **router bên bạn** (IP, ASN) | Bạn khai báo |
+| **BGP** | Border Gateway Protocol | Giao thức để các router **tự trao đổi route** động | Router 2 bên nói chuyện |
+| **ASN** | Autonomous System Number | **"Số nhà"** của mỗi mạng trong BGP (unique) | Bạn chọn (private 64512–65534) |
+
+> 💡 **Với CloudHub**: cần BGP để VGW **tự động re-advertise** route giữa các site. Không có BGP → các site không biết đường đến nhau. Mỗi CGW phải có ASN khác nhau → VGW mới phân biệt được ai nói gì.
+
+```
+                    ┌──────────────────────────┐
+                    │         AWS              │
+                    │   ┌──────────────────┐   │
+                    │   │ Virtual Private  │   │  ← HUB duy nhất
+                    │   │  Gateway (VGW)   │   │
+                    │   └────────┬─────────┘   │
+                    └────────────┼─────────────┘
+                                 │
+         ┌───────────────────────┼───────────────────────┐
+         │ IPSec + BGP           │ IPSec + BGP           │ IPSec + BGP
+         ▼                       ▼                       ▼
+  ┌────────────┐          ┌────────────┐          ┌────────────┐
+  │ 🏢 Site A  │          │ 🏢 Site B  │          │ 🏢 Site C  │
+  │ Customer   │          │ Customer   │          │ Customer   │
+  │  Gateway   │          │  Gateway   │          │  Gateway   │
+  │ ASN 65001  │          │ ASN 65002  │          │ ASN 65003  │
+  │10.0.1.0/24 │          │10.0.2.0/24 │          │10.0.3.0/24 │
+  └────────────┘          └────────────┘          └────────────┘
+         ▲                       ▲                       ▲
+         └───────────────────────┼───────────────────────┘
+                       Site ↔ Site qua VGW
+                   (VGW re-advertise BGP prefix)
+```
+
+#### Cách hoạt động
+
+1. Tạo **1 Virtual Private Gateway** duy nhất.
+2. Tạo **nhiều Customer Gateway** — mỗi cái có **BGP ASN riêng** (không trùng).
+3. Tạo **Site-to-Site VPN connection dynamic routing (BGP)** từ mỗi CGW về chung VGW.
+4. Mỗi site advertise prefix riêng (ví dụ `10.0.1.0/24`, `10.0.2.0/24`). VGW nhận và **re-advertise** cho các BGP peer khác → các site nhìn thấy nhau.
+5. Các site **không được chồng dải IP** (no overlapping).
+
+#### Yêu cầu bắt buộc
+
+| Yêu cầu | Chi tiết |
+|---------|----------|
+| **Routing** | **BGP dynamic routing** (bắt buộc) — static routing KHÔNG dùng được |
+| **BGP ASN** | Mỗi Customer Gateway có ASN riêng, unique |
+| **IP ranges** | Các site không được trùng CIDR |
+| **VGW** | Duy nhất 1 VGW làm hub |
+
+#### Có thể kết hợp với Direct Connect
+
+Site dùng Direct Connect cũng có thể tham gia CloudHub. Ví dụ: HQ ở New York dùng Direct Connect, chi nhánh LA và Miami dùng Site-to-Site VPN — cả 3 site đều nói chuyện với nhau qua cùng 1 VGW.
+
+```
+🏢 HQ (New York) ──Direct Connect──┐
+                                   ├──→ VGW ──→ (các site nói chuyện với nhau)
+🏢 LA          ──Site-to-Site VPN──┤
+🏢 Miami       ──Site-to-Site VPN──┘
+```
+
+#### Chi phí
+
+- Trả phí **Site-to-Site VPN theo giờ** cho **mỗi connection** gắn vào VGW.
+- Data **gửi lên VGW** → **miễn phí**.
+- Data **VGW relay xuống endpoint** → tính **AWS data transfer rate** chuẩn.
+- Ví dụ: 2 site (LA ↔ NY), mỗi VPN $0.05/giờ → tổng $0.10/giờ + data transfer.
+
+#### Khi nào dùng VPN CloudHub?
+
+| Use case | Có dùng CloudHub? |
+|----------|-------------------|
+| Công ty có **nhiều chi nhánh**, muốn kết nối qua AWS thay vì tự build mesh | ✅ Lý tưởng |
+| Cần **backup connectivity** giữa các site (primary đi đường riêng) | ✅ Phù hợp |
+| Tận dụng **Internet có sẵn** tại các chi nhánh, giảm chi phí MPLS | ✅ Phù hợp |
+| Yêu cầu bandwidth rất cao, latency ổn định | ❌ Dùng Direct Connect mesh hoặc SD-WAN |
+| >25 site, cần tối ưu bandwidth shared | ❌ Cân nhắc **Site-to-Site VPN Concentrator** (mới, chỉ với Transit Gateway) |
+
+#### So sánh với Transit Gateway
+
+| | VPN CloudHub | Transit Gateway |
+|---|---|---|
+| **Bản chất** | Hub-and-spoke cho **VPN connections** qua VGW | Hub-and-spoke cho **VPC + VPN + DX** |
+| **Đối tượng hub** | Các site on-prem | Các VPC + on-prem |
+| **Routing** | Bắt buộc BGP dynamic | Hỗ trợ cả static và dynamic |
+| **Có VPC?** | Tùy chọn (có thể dùng không cần VPC) | Bắt buộc có VPC |
+| **Chi phí** | Theo VPN connection | Hourly TGW + attachment + data |
+
+> 📚 **Nguồn AWS chính thức:**
+> - [Secure communication between AWS Site-to-Site VPN connections using VPN CloudHub](https://docs.aws.amazon.com/vpn/latest/s2svpn/VPN_CloudHub.html)
+> - [Site-to-Site VPN CloudHub — VPC Connectivity Options whitepaper](https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/aws-vpn-cloudhub.html)
+> - [AWS Site-to-Site VPN architectural scenarios](https://docs.aws.amazon.com/vpn/latest/s2svpn/site-site-architectures.html)
 
 ---
 

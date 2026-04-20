@@ -197,6 +197,51 @@ Site-to-Site VPN = nối CẢ MẠNG công ty ←→ AWS
 Client VPN       = nối TỪNG NGƯỜI (laptop) → AWS
 ```
 
+**VPN CloudHub** — hub-and-spoke cho nhiều site:
+
+> Xem chi tiết: [vpc.md#75-aws-vpn-cloudhub](vpc.md#75-aws-vpn-cloudhub)
+
+**4 thuật ngữ phải biết trước** (giải thích ngắn — chi tiết xem `vpc.md`):
+
+| Viết tắt | Là gì? | Ví dụ đời thực |
+|----------|--------|----------------|
+| **VGW** (Virtual Private Gateway) | Cổng VPN **phía AWS**, gắn vào VPC | Ổ cắm mạng trong nhà AWS |
+| **CGW** (Customer Gateway) | Object AWS **khai báo router của bạn** (public IP, ASN) | Tờ khai CMND của router nhà bạn |
+| **BGP** (Border Gateway Protocol) | Giao thức router **tự trao đổi route động** | Bảng tin chung — ai có route mới thì dán lên |
+| **ASN** (Autonomous System Number) | **"Số nhà"** của mỗi mạng trong BGP, mỗi CGW 1 số | Số CMND, không được trùng |
+
+```
+Bài toán: nhiều chi nhánh muốn NÓI CHUYỆN VỚI NHAU qua AWS
+          (không chỉ nói với VPC)
+
+            ┌─ VGW (hub duy nhất) ─┐
+            │                      │
+     ┌──────┼──────┬───────────────┤
+     │      │      │               │
+   🏢 A   🏢 B   🏢 C            🏢 DX-site
+  CGW#1  CGW#2  CGW#3           (Direct Connect
+  ASN    ASN    ASN              cũng join được)
+  65001  65002  65003
+
+Yêu cầu:
+• 1 VGW làm hub
+• Mỗi Customer Gateway có BGP ASN riêng (unique)
+• BGP dynamic routing (bắt buộc — KHÔNG dùng static)
+• Các site KHÔNG chồng CIDR
+
+Khi VGW nhận prefix từ Site A → re-advertise cho B, C
+→ Các site thấy nhau qua VGW
+```
+
+**Cách nhớ**: CloudHub = **H**ub-and-spoke cho VPN, **H**oạt động nhờ BGP, **H**ỗ trợ cả không có VPC.
+
+Phân biệt với Transit Gateway:
+
+```
+VPN CloudHub       → Hub cho nhiều SITE on-prem (qua VGW, bắt buộc BGP)
+Transit Gateway    → Hub cho nhiều VPC + on-prem (linh hoạt hơn)
+```
+
 ---
 
 ### ⑤ VPC → Internet
@@ -259,24 +304,24 @@ ENI = card mạng ảo trong AWS. Muốn có IP trong VPC → cần ENI.
 Mỗi ENI mang theo: **Private IP** (bắt buộc), MAC address, Security Groups, Public/Elastic IP (tùy chọn).
 
 ```
-┌─────────────── Subnet (10.0.1.0/24) ───────────────┐
-│                                                      │
-│   EC2 Instance                                       │
-│   ├── eth0 (Primary ENI) ← tự động tạo khi launch   │
-│   │   └── Private IP: 10.0.1.15                      │
-│   └── eth1 (Secondary ENI) ← gắn thêm nếu cần       │
+┌─────────────── Subnet (10.0.1.0/24) ──────────────────┐
+│                                                       │
+│   EC2 Instance                                        │
+│   ├── eth0 (Primary ENI) ← tự động tạo khi launch     │
+│   │   └── Private IP: 10.0.1.15                       │
+│   └── eth1 (Secondary ENI) ← gắn thêm nếu cần         │
 │       └── Private IP: 10.0.1.99                       │
 │                                                       │
 │   RDS Instance                                        │
-│   └── ENI (tự động) ← Private IP: 10.0.1.50          │
+│   └── ENI (tự động) ← Private IP: 10.0.1.50           │
 │                                                       │
 │   Lambda (trong VPC)                                  │
-│   └── ENI (tự động) ← Private IP: 10.0.1.72          │
+│   └── ENI (tự động) ← Private IP: 10.0.1.72           │
 │                                                       │
-│   Interface VPC Endpoint (ví dụ: SQS)                │
-│   └── ENI (tự động) ← Private IP: 10.0.1.88          │
+│   Interface VPC Endpoint (ví dụ: SQS)                 │
+│   └── ENI (tự động) ← Private IP: 10.0.1.88           │
 │                                                       │
-└──────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────┘
 ```
 
 **Quy tắc**: Nằm trong VPC = có ENI = có private IP. Nằm ngoài VPC = không có ENI.
@@ -340,9 +385,9 @@ Route Table của Private Subnet
 ```
 TRƯỚC KHI tạo Interface Endpoint:
 
-┌──────── VPC ────────┐
+┌──────── VPC ─────────┐
 │                      │          SQS (nằm ngoài VPC)
-│  EC2 (10.0.1.5)     │          (không có IP trong VPC)
+│  EC2 (10.0.1.5)      │          (không có IP trong VPC)
 │       │              │
 │       └──→ ❌ Phải ra internet mới tới được SQS
 │                      │
@@ -351,11 +396,11 @@ TRƯỚC KHI tạo Interface Endpoint:
 
 SAU KHI tạo Interface Endpoint cho SQS:
 
-┌──────── VPC ─────────────────────────────────┐
+┌──────── VPC ──────────────────────────────────┐
 │                                               │
-│  EC2 (10.0.1.5)      ENI (10.0.1.88)        │
+│  EC2 (10.0.1.5)      ENI (10.0.1.88)          │
 │       │                  │                    │
-│       │  gọi SQS         │  ← AWS tạo ENI    │
+│       │  gọi SQS         │  ← AWS tạo ENI     │
 │       └──────────────→───┘    này cho bạn     │
 │                          │                    │
 └──────────────────────────┼────────────────────┘
@@ -447,6 +492,7 @@ Gateway Endpoint = route trong route table
 | VPC ↔ VPC (ít) | VPC Peering | Data transfer | 1:1, không transitive |
 | VPC ↔ VPC (nhiều) | Transit Gateway | Hourly + data | Hub trung tâm |
 | On-prem ↔ AWS (rẻ) | Site-to-Site VPN | ~$0.05/hr | Qua internet, mã hóa |
+| Nhiều site ↔ nhau qua AWS | VPN CloudHub | Theo VPN connection | 1 VGW + nhiều CGW, BGP |
 | On-prem ↔ AWS (pro) | Direct Connect | Port + data | Đường riêng, ổn định |
 | Private → Internet | NAT Gateway | $0.045/hr + /GB | 1 chiều ra, IPv4 |
 | Public ↔ Internet | Internet Gateway | Miễn phí | 2 chiều |
@@ -471,6 +517,9 @@ Gateway Endpoint = route trong route table
 | "IPv6 outbound only" | Egress-only Internet Gateway |
 | "individual user VPN access" | Client VPN |
 | "expose service to another VPC without opening network" | PrivateLink |
+| "hub-and-spoke between multiple branch/remote sites" | VPN CloudHub |
+| "branch offices communicate with each other via AWS" | VPN CloudHub |
+| "multiple customer gateways, unique BGP ASN" | VPN CloudHub |
 
 ---
 
