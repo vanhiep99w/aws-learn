@@ -32,10 +32,10 @@ WITHOUT Transfer Acceleration:
 └─────────────┘                                           └─────────────┘
 
 WITH Transfer Acceleration:
-┌─────────────┐     ┌─────────────┐                       ┌─────────────┐
-│   User      │ ──► │ Edge Location│ ══ AWS Backbone ═══► │  S3 Bucket  │
-│  (Vietnam)  │     │  (Singapore) │    (optimized)       │  (us-east-1)│
-└─────────────┘     └─────────────┘                       └─────────────┘
+┌─────────────┐     ┌──────────────┐                       ┌─────────────┐
+│   User      │ ──► │ Edge Location│ ══ AWS Backbone ═══►  │  S3 Bucket  │
+│  (Vietnam)  │     │  (Singapore) │    (optimized)        │  (us-east-1)│
+└─────────────┘     └──────────────┘                       └─────────────┘
      ~20ms              Fast private network
 ```
 
@@ -127,10 +127,10 @@ Transfer Acceleration hoạt động cho **cả Upload VÀ Download**:
 
 ```
 DOWNLOAD với Transfer Acceleration:
-┌──────────┐     ┌───────────┐                    ┌──────────┐
-│  Client  │ ◄── │   Edge    │ ◄══ AWS Backbone ══│ S3 Bucket│
+┌──────────┐     ┌───────────┐                    ┌───────────┐
+│  Client  │ ◄── │   Edge    │ ◄══ AWS Backbone ══│ S3 Bucket │
 │ (Vietnam)│     │(Singapore)│     (optimized)    │(us-east-1)│
-└──────────┘     └───────────┘                    └──────────┘
+└──────────┘     └───────────┘                    └───────────┘
 ```
 
 ### Có nhanh hơn không?
@@ -231,12 +231,12 @@ const downloadUrl = await getSignedUrl(client, command, {
 >
 > ```
 > S3TA NHANH HƠN:           S3TA KHÔNG NHANH HƠN:
-> ┌──────────────────┐       ┌──────────────────┐
-> │ S3 Data IN: $0   │       │ S3 Data IN: $0   │
-> │ S3TA fee: $0.04/GB│      │ S3TA fee: $0     │ ← Waived!
-> │ ─────────────── │       │ ──────────────── │
-> │ TOTAL: $0.04/GB  │       │ TOTAL: $0.00     │
-> └──────────────────┘       └──────────────────┘
+> ┌───────────────────┐       ┌──────────────────┐
+> │ S3 Data IN: $0    │       │ S3 Data IN: $0   │
+> │ S3TA fee: $0.04/GB│       │ S3TA fee: $0     │ ← Waived!
+> │ ───────────────   │       │ ──────────────── │
+> │ TOTAL: $0.04/GB   │       │ TOTAL: $0.00     │
+> └───────────────────┘       └──────────────────┘
 > ```
 
 ### Bảng giá theo Region và Direction
