@@ -406,18 +406,29 @@ body::before{
 .detail-badges-row{display:flex;flex-wrap:wrap;gap:4px}
 .detail-meta{
   font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);
-  display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;
 }
 .question-id-wrap{
-  display:inline-flex;align-items:center;gap:6px;
+  display:inline-flex;align-items:center;
+}
+.question-card-meta{
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  color:var(--text3);
 }
 .copy-id-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   font-family:'Inter',sans-serif;
   border:1px solid var(--border);
   background:var(--surface2);
   color:var(--text2);
   border-radius:999px;
-  padding:3px 8px;
+  padding:4px 10px;
   font-size:.62rem;
   font-weight:600;
   cursor:pointer;
@@ -1119,15 +1130,13 @@ function showDetail(issue, scrollToTop = false) {
       <div class="detail-badges-row">${badges}</div>
       <div class="detail-meta">
         <span class="question-id-wrap">
-          <span>${issue.id}</span>
-          <button type="button" class="copy-id-btn" id="copy-question-id" data-question-id="${esc(issue.id)}">Copy</button>
+          <button type="button" class="copy-id-btn" id="copy-question-id" data-question-id="${esc(issue.id)}">${esc(issue.id)}</button>
         </span>
-        <span>${issue.created_at || '—'}</span>
       </div>
     </div>
     <div class="detail-columns">
       <div class="detail-question">
-        <div class="detail-card"><h3>Question</h3>${questionHTML}</div>
+        <div class="detail-card"><h3>Question</h3>${questionHTML}<div class="question-card-meta">Created: ${issue.created_at || '—'}</div></div>
       </div>
       <div id="notes-wrap" class="${notesWrapCls}">${notesHTML}</div>
     </div>
@@ -1185,14 +1194,14 @@ function showDetail(issue, scrollToTop = false) {
         copyBtn.textContent = 'Copied';
         copyBtn.classList.add('copied');
         copyFeedbackTimer = setTimeout(() => {
-          copyBtn.textContent = 'Copy';
+          copyBtn.textContent = questionId;
           copyBtn.classList.remove('copied');
         }, 1500);
       } catch (err) {
         copyBtn.textContent = 'Failed';
         copyBtn.classList.remove('copied');
         clearTimeout(copyFeedbackTimer);
-        copyFeedbackTimer = setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+        copyFeedbackTimer = setTimeout(() => { copyBtn.textContent = questionId; }, 1500);
         console.error(err);
       }
     });
