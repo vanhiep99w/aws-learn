@@ -113,6 +113,8 @@ Two modes:
 - [x] [AWS Organizations](aws-organizations.md) - Multi-Account Management, OUs, SCPs, Consolidated Billing
 - [x] [AWS Control Tower](aws-control-tower.md) - Landing Zone, Guardrails (Preventive/Detective/Proactive), Account Factory, Automated Governance
 - [x] [AWS Service Catalog](aws-service-catalog.md) - Self-Service Product Catalog, Portfolios, Launch Constraints, Governance
+- [x] [IAM Identity Center](iam-identity-center.md) - Single Sign-On (SSO), Multi-Account Access, Identity Providers, Permission Sets
+- [x] [AWS Account Management Cheatsheet](aws-account-management-cheatsheet.md) - Cheatsheet tổng hợp nhanh Organizations, Control Tower, IAM Identity Center, Service Catalog
 
 ## Security
 

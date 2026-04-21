@@ -25,19 +25,19 @@
                          🌐 Internet
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         VPC (10.0.0.0/16) — Regional Resource                   │
-│                                                                                 │
-│  ┌──────────────────────┐                                                       │
-│  │   Internet Gateway   │ ← 1 per VPC, FREE, cổng 2 chiều                       │
-│  └──────────┬───────────┘                                                       │
-│             │                                                                   │
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         VPC (10.0.0.0/16) — Regional Resource                    │
+│                                                                                  │
+│  ┌──────────────────────┐                                                        │
+│  │   Internet Gateway   │ ← 1 per VPC, FREE, cổng 2 chiều                        │
+│  └──────────┬───────────┘                                                        │
+│             │                                                                    │
 │  ┌──────────▼──────────────────────────────────────────────────────────────────┐ │
-│  │                   PUBLIC SUBNET (10.0.1.0/24) — AZ-a                       │ │
-│  │                                                                            │ │
-│  │  Route Table: 0.0.0.0/0 → IGW                                              │ │
-│  │  NACL: Stateless firewall (subnet level)                                   │ │
-│  │                                                                            │ │
+│  │                   PUBLIC SUBNET (10.0.1.0/24) — AZ-a                        │ │
+│  │                                                                             │ │
+│  │  Route Table: 0.0.0.0/0 → IGW                                               │ │
+│  │  NACL: Stateless firewall (subnet level)                                    │ │
+│  │                                                                             │ │
 │  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                    │ │
 │  │  │      ALB      │  │ NAT Gateway   │  │ Bastion Host  │                    │ │
 │  │  │  (có ENI+SG)  │  │ (có Elastic   │  │ (SSH jump)    │                    │ │
@@ -48,11 +48,11 @@
 │  └──────────┼──────────────────┼───────────────────────────────────────────────┘ │
 │             │                  │                                                 │
 │  ┌──────────▼──────────────────▼───────────────────────────────────────────────┐ │
-│  │                  PRIVATE SUBNET (10.0.2.0/24) — AZ-a                       │ │
-│  │                                                                            │ │
-│  │  Route Table: 0.0.0.0/0 → NAT, S3 prefix → GW Endpoint                    │ │
-│  │  NACL: Stateless firewall (subnet level)                                   │ │
-│  │                                                                            │ │
+│  │                  PRIVATE SUBNET (10.0.2.0/24) — AZ-a                        │ │
+│  │                                                                             │ │
+│  │  Route Table: 0.0.0.0/0 → NAT, S3 prefix → GW Endpoint                      │ │
+│  │  NACL: Stateless firewall (subnet level)                                    │ │
+│  │                                                                             │ │
 │  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                    │ │
 │  │  │   EC2 App     │  │    RDS DB     │  │  Interface    │                    │ │
 │  │  │  (có ENI+SG)  │  │  (có ENI+SG)  │  │  Endpoint     │                    │ │
@@ -60,15 +60,15 @@
 │  │  │  80 from ALB  │  │  3306 from    │  │   SSM, ECR)   │                    │ │
 │  │  │               │  │  sg-app       │  │               │                    │ │
 │  │  └───────────────┘  └───────────────┘  └───────────────┘                    │ │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                 │
-│  ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐             │
-│  │ Gateway Endpoint │   │  VPC Peering     │   │ Virtual Private  │             │
-│  │ (S3, DynamoDB)   │   │  (nối 2 VPC)     │   │ Gateway / TGW    │             │
-│  │ FREE, chỉ route  │   │  FREE            │   │ (VPN/DX to       │             │
-│  └──────────────────┘   └──────────────────┘   │  On-Premises)    │             │
-│                                                └──────────────────┘             │
-└─────────────────────────────────────────────────────────────────────────────────┘
+│  └─────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                  │
+│  ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐              │
+│  │ Gateway Endpoint │   │  VPC Peering     │   │ Virtual Private  │              │
+│  │ (S3, DynamoDB)   │   │  (nối 2 VPC)     │   │ Gateway / TGW    │              │
+│  │ FREE, chỉ route  │   │  FREE            │   │ (VPN/DX to       │              │
+│  └──────────────────┘   └──────────────────┘   │  On-Premises)    │              │
+│                                                └──────────────────┘              │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -245,11 +245,11 @@
                                ┌──────────────────────────────┐
                                │        YOUR VPC              │
                                │                              │
-① IGW ◄─────── Internet ──────►│ Public Subnet (2 chiều)      │
+① IGW ◄─────── Internet ─────►│ Public Subnet (2 chiều)      │
                                │                              │
-② NAT ◄─────── Internet ──────►│ Private Subnet (chỉ ra)      │
+② NAT ◄─────── Internet ─────►│ Private Subnet (chỉ ra)      │
                                │                              │
-③ GW Endpoint ◄── AWS Net ───►│ Private → S3/DynamoDB         │
+③ GW Endpoint ◄── AWS Net ───►│ Private → S3/DynamoDB        │
                                │                              │
 ④ IF Endpoint ◄── AWS Net ───►│ Private → SQS/SSM/ECR...     │
                                │                              │

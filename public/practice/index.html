@@ -408,6 +408,31 @@ body::before{
   font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);
   display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;
 }
+.question-id-wrap{
+  display:inline-flex;align-items:center;gap:6px;
+}
+.copy-id-btn{
+  font-family:'Inter',sans-serif;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text2);
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:.62rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+}
+.copy-id-btn:hover{
+  border-color:var(--accent-border);
+  background:var(--accent-soft);
+  color:var(--accent);
+}
+.copy-id-btn.copied{
+  background:var(--emerald-soft);
+  border-color:var(--emerald-border);
+  color:var(--emerald);
+}
 .detail-columns{
   flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;
 }
@@ -755,13 +780,26 @@ let autoRefresh = true;
 let pollTimer = null;
 let selectedId = null;
 let collapsedSections = {};
-let viewMode = 'practice'; // 'practice' or 'review'
+let viewMode = getSavedViewMode();
 let submittedAnswers = {}; // { issueId: { selected: Set, submitted: bool } }
 const PAGE_SIZE = 20;
 let loadedCount = 0;
 let totalQuestions = 0;
 let hasMore = true;
 let loadingMore = false;
+let copyFeedbackTimer = null;
+
+function getSavedViewMode() {
+  const saved = localStorage.getItem('practice-view-mode');
+  return saved === 'review' ? 'review' : 'practice';
+}
+
+function applyViewMode(mode) {
+  viewMode = mode === 'review' ? 'review' : 'practice';
+  localStorage.setItem('practice-view-mode', viewMode);
+  document.querySelectorAll('#mode-toggle .mode-btn')
+    .forEach(btn => btn.classList.toggle('active', btn.dataset.mode === viewMode));
+}
 
 function updateScoreBar() {
   const total = Object.keys(submittedAnswers).filter(k => submittedAnswers[k].submitted).length;
@@ -1079,7 +1117,13 @@ function showDetail(issue, scrollToTop = false) {
     <div class="detail-header">
       <h2>${esc(issue.title)}</h2>
       <div class="detail-badges-row">${badges}</div>
-      <div class="detail-meta"><span>${issue.id}</span><span>${issue.created_at || '—'}</span></div>
+      <div class="detail-meta">
+        <span class="question-id-wrap">
+          <span>${issue.id}</span>
+          <button type="button" class="copy-id-btn" id="copy-question-id" data-question-id="${esc(issue.id)}">Copy</button>
+        </span>
+        <span>${issue.created_at || '—'}</span>
+      </div>
     </div>
     <div class="detail-columns">
       <div class="detail-question">
@@ -1131,6 +1175,29 @@ function showDetail(issue, scrollToTop = false) {
     });
   }
 
+  const copyBtn = document.getElementById('copy-question-id');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const questionId = copyBtn.dataset.questionId || '';
+      try {
+        await navigator.clipboard.writeText(questionId);
+        clearTimeout(copyFeedbackTimer);
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        copyFeedbackTimer = setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      } catch (err) {
+        copyBtn.textContent = 'Failed';
+        copyBtn.classList.remove('copied');
+        clearTimeout(copyFeedbackTimer);
+        copyFeedbackTimer = setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+        console.error(err);
+      }
+    });
+  }
+
   panel.querySelectorAll('.section-toggle').forEach(tog => {
     tog.addEventListener('click', () => {
       const body = document.getElementById(tog.dataset.target);
@@ -1172,8 +1239,7 @@ document.querySelectorAll('#mode-toggle .mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
     if (mode === viewMode) return;
-    viewMode = mode;
-    document.querySelectorAll('#mode-toggle .mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    applyViewMode(mode);
     if (selectedId) {
       const issue = issues.find(i => i.id === selectedId);
       if (issue) showDetail(issue, false);
@@ -1198,6 +1264,7 @@ document.getElementById('auto-toggle-wrap').addEventListener('click', () => {
 function startPoll() { stopPoll(); pollTimer = setInterval(() => fetchData().catch(console.error), POLL_MS); }
 function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
+applyViewMode(viewMode);
 fetchData().catch(err => {
   document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
 });
