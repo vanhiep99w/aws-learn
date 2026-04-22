@@ -331,19 +331,19 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 │                                                                             │
 │  Nếu Susan mua REGIONAL RI (us-east-1):                                     │
 │ │                                                                           │
-│  │  Susan chạy ở: us-east-1a                                                │
-│  │  Bob chạy ở:   us-east-1b  ← KHÁC AZ                                     │
+│ │  Susan chạy ở: us-east-1a                                                 │
+│ │  Bob chạy ở:   us-east-1b  ← KHÁC AZ                                      │
 │ │                                                                           │
-│  │  → Bob VẪN được discount! (Regional RI flexible across AZs)              │
+│ │  → Bob VẪN được discount! (Regional RI flexible across AZs)               │
 │ │                                                                           │
 │  ─────────────────────────────────────────────────────────────────────────  │
 │                                                                             │
 │  Nếu Susan mua ZONAL RI (us-east-1a):                                       │
 │ │                                                                           │
-│  │  Susan chạy ở: us-east-1a ✅                                             │
-│  │  Bob chạy ở:   us-east-1b ❌ KHÔNG được discount!                        │
+│ │  Susan chạy ở: us-east-1a ✅                                              │
+│ │  Bob chạy ở:   us-east-1b ❌ KHÔNG được discount!                         │
 │ │                                                                           │
-│  │  → Bob phải chạy ở us-east-1a thì mới được discount                      │
+│ │  → Bob phải chạy ở us-east-1a thì mới được discount                       │
 │ │                                                                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1034,32 +1034,32 @@ AWS cung cấp Free Tier cho người dùng mới:
 │                                                                             │
 │  Workload có thể bị interrupt?                                              │
 │ │                                                                           │
-│ ├── Có → SPOT INSTANCES (giảm 90%)                                         │
-│ │        • Batch processing, CI/CD, analytics                              │
+│ ├── Có → SPOT INSTANCES (giảm 90%)                                          │
+│ │        • Batch processing, CI/CD, analytics                               │
 │ │                                                                           │
-│ └── Không ↓                                                                │
+│ └── Không ↓                                                                 │
 │                                                                             │
 │  Biết trước nhu cầu 1-3 năm?                                                │
 │ │                                                                           │
-│ ├── Có → SAVINGS PLANS hoặc RESERVED INSTANCES (giảm 72%)                  │
-│ │       │                                                                  │
-│ │       ├── Cần flexibility → Savings Plans                               │
-│ │       │                                                                  │
-│ │       └── Cần bán lại RI → Reserved Instances (Standard)                │
+│ ├── Có → SAVINGS PLANS hoặc RESERVED INSTANCES (giảm 72%)                   │
+│ │       │                                                                   │
+│ │       ├── Cần flexibility → Savings Plans                                 │
+│ │       │                                                                   │
+│ │       └── Cần bán lại RI → Reserved Instances (Standard)                  │
 │ │                                                                           │
-│ └── Không ↓                                                                │
+│ └── Không ↓                                                                 │
 │                                                                             │
 │  Cần hardware riêng?                                                        │
 │ │                                                                           │
-│ ├── Có + Cần BYOL → DEDICATED HOSTS                                        │
+│ ├── Có + Cần BYOL → DEDICATED HOSTS                                         │
 │ │                                                                           │
-│ ├── Có + Không cần BYOL → DEDICATED INSTANCES                              │
+│ ├── Có + Không cần BYOL → DEDICATED INSTANCES                               │
 │ │                                                                           │
-│ └── Không → ON-DEMAND                                                      │
+│ └── Không → ON-DEMAND                                                       │
 │                                                                             │
 │  Cần đảm bảo capacity?                                                      │
 │ │                                                                           │
-│ └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)     │
+│ └── Có → Thêm CAPACITY RESERVATIONS (kết hợp với RI/SP để có discount)      │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

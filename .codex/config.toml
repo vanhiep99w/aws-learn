@@ -1,7 +1,8 @@
 model_reasoning_effort = "medium"
 
 [mcp_servers.aws-knowledge]
-url = "https://knowledge-mcp.global.api.aws"
+command = "uvx"
+args = ["fastmcp", "run", "https://knowledge-mcp.global.api.aws"]
 
 [mcp_servers.aws-documentation-mcp-server]
 command = "uvx"

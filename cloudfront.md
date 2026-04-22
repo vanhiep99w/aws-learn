@@ -704,6 +704,178 @@ Nếu dùng S3 Website Endpoint → không có OAC → S3 phải public.
 
 ### 3. Signed URLs / Signed Cookies
 
+**CloudFront Signed URLs** và **Signed Cookies** là cơ chế để phân phối
+**private/restricted content** chỉ cho người dùng đã được ứng dụng của bạn cấp
+quyền.
+
+> 💡 **Câu hỏi cần nhớ:** đây là cơ chế **kiểm soát ai được xem content** ở
+> CloudFront edge, **không phải** chỉ là mã hóa đường truyền tới origin.
+
+**AWS nói gì?**
+
+- CloudFront Signed URLs và Signed Cookies "allow you to control who can access
+  your content"
+- **Signed URL** phù hợp khi muốn giới hạn truy cập tới **từng file riêng lẻ**
+- **Signed Cookie** phù hợp khi muốn truy cập **nhiều file restricted** như HLS
+  segments hoặc khu vực subscriber-only
+
+**Khi nào dùng cái nào?**
+
+| Trường hợp | Nên dùng |
+|-----------|----------|
+| Download 1 file private | **Signed URL** |
+| Video streaming gồm nhiều segments/files | **Signed Cookies** |
+| Client không hỗ trợ cookies | **Signed URL** |
+| Muốn giữ nguyên URL hiện tại | **Signed Cookies** |
+| Subscriber area với nhiều object | **Signed Cookies** |
+
+**Ví dụ dễ nhớ:**
+
+```text
+Case 1: User tải 1 file invoice.pdf
+→ Dùng Signed URL
+
+Case 2: User xem video HLS gồm playlist.m3u8 + hàng trăm .ts/.m4s segments
+→ Dùng Signed Cookies
+```
+
+**Diagram - cách hoạt động**
+
+```text
+CASE 1: CLOUDFRONT SIGNED URL
+"Dùng khi muốn cho phép truy cập 1 file cụ thể"
+
+User Browser
+    |
+    | 1) Login
+    v
+Your App / Backend
+    |
+    | 2) Xác thực user là subscriber
+    | 3) Tạo CloudFront signed URL
+    |    https://d123.cloudfront.net/private/movie.mp4?Signature=...
+    v
+User Browser
+    |
+    | 4) Gọi URL đã ký
+    v
+CloudFront
+    |
+    | 5) Kiểm tra:
+    |    - Signature đúng?
+    |    - Hết hạn chưa?
+    |    - Policy có hợp lệ?
+    |
+    |---- NO ---> 403 Forbidden
+    |
+    |---- YES --> Lấy file từ origin nếu cần
+    v
+S3 / Origin
+    |
+    v
+CloudFront
+    |
+    v
+User xem được movie.mp4
+```
+
+```text
+CASE 2: CLOUDFRONT SIGNED COOKIES
+"Dùng khi muốn cho phép truy cập nhiều file"
+
+User Browser
+    |
+    | 1) Login
+    v
+Your App / Backend
+    |
+    | 2) Xác thực user là subscriber
+    | 3) Set signed cookies vào browser
+    |    CloudFront-Policy=...
+    |    CloudFront-Signature=...
+    |    CloudFront-Key-Pair-Id=...
+    v
+User Browser
+    |
+    | 4) Request các URL bình thường:
+    |    /videos/lesson1/playlist.m3u8
+    |    /videos/lesson1/seg-001.ts
+    |    /videos/lesson1/seg-002.ts
+    |
+    |    Browser tự gửi cookie kèm theo
+    v
+CloudFront
+    |
+    | 5) Kiểm tra cookie:
+    |    - Signature đúng?
+    |    - Hết hạn chưa?
+    |    - Policy có cho path này không?
+    |
+    |---- NO ---> 403 Forbidden
+    |
+    |---- YES --> Cho truy cập tất cả file khớp policy
+    v
+S3 / Origin
+    |
+    v
+CloudFront
+    |
+    v
+User xem được nhiều file của video
+```
+
+**Signed URL vs Signed Cookie**
+
+| Tiêu chí | Signed URL | Signed Cookies |
+|---------|------------|----------------|
+| Phạm vi | 1 file / 1 request cụ thể | Nhiều file |
+| URL có thay đổi không | ✅ Có thêm tham số ký | ❌ Không cần đổi URL file |
+| Hợp với | Download riêng lẻ | Streaming, subscriber area |
+| Client không hỗ trợ cookies | ✅ Tốt | ❌ Không phù hợp |
+
+**CloudFront Signed URL có phải S3 presigned URL không?**
+
+**Không. Đây là 2 cơ chế khác nhau.**
+
+| So sánh | CloudFront Signed URL | S3 Presigned URL |
+|--------|------------------------|------------------|
+| Request đi tới đâu | **CloudFront distribution** | **Amazon S3** trực tiếp |
+| Ai verify chữ ký | **CloudFront** | **S3** |
+| Mục đích chính | Private content qua CDN | Truy cập tạm thời trực tiếp vào object S3 |
+| Có cache/CDN không | ✅ Có | ❌ Không |
+| Dùng cho upload trực tiếp | ❌ Thường không | ✅ Rất phổ biến |
+
+```text
+CloudFront Signed URL:
+https://d123.cloudfront.net/private/video.mp4?Expires=...&Signature=...&Key-Pair-Id=...
+
+S3 Presigned URL:
+https://my-bucket.s3.amazonaws.com/private/video.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Signature=...
+```
+
+```text
+KHÁC VỚI S3 PRESIGNED URL
+
+CloudFront Signed URL/Cookie:
+User -> CloudFront -> S3
+        ^
+        CloudFront kiểm tra quyền
+
+S3 Presigned URL:
+User -----------------> S3
+                        ^
+                        S3 kiểm tra quyền
+```
+
+Nếu origin là S3 và bạn muốn **bắt buộc user đi qua CloudFront**, hãy dùng:
+
+1. **CloudFront Signed URL** hoặc **Signed Cookies**
+2. **OAC** để chặn truy cập trực tiếp vào S3 bucket
+
+Khi đó:
+- User có quyền → truy cập qua CloudFront
+- User không thể bypass CloudFront để gọi thẳng S3 URL
+
 ```python
 # Tạo Signed URL bằng Python
 from datetime import datetime, timedelta
@@ -731,6 +903,13 @@ def generate_signed_url(url, expire_minutes=60):
 # Sử dụng
 url = generate_signed_url('https://d123.cloudfront.net/private/video.mp4')
 ```
+
+**Nguồn AWS chính thức:**
+
+- [Restrict access to files - Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-overview.html)
+- [Decide to use signed URLs or signed cookies - Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-choosing-signed-urls-cookies.html)
+- [Use signed URLs - Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-urls.html)
+- [Download and upload objects with presigned URLs - Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html)
 
 ### 4. Geo Restriction
 
@@ -1253,4 +1432,3 @@ Global Accelerator là **SERVICE RIÊNG** của AWS, không phải feature của
 - [Lambda](lambda.md) - Lambda@Edge source
 - [ALB/ELB](elb.md) - Dynamic content origin
 - [AWS ACM](aws-acm.md) - SSL certificates, tại sao cert cho CloudFront phải ở us-east-1
-
