@@ -5,6 +5,7 @@
 - [Tổng quan](#tổng-quan)
 - [6Rs Migration Strategies](#6rs-migration-strategies)
 - [Cách hoạt động](#cách-hoạt-động)
+- [AWS DMS Serverless](#aws-dms-serverless)
 - [Migration Types](#migration-types)
 - [Supported Databases](#supported-databases)
 - [AWS Schema Conversion Tool (SCT)](#aws-schema-conversion-tool-sct)
@@ -185,6 +186,116 @@
 
 ---
 
+## AWS DMS Serverless
+
+**AWS DMS Serverless** = mode DMS không cần tự chọn/sizing **replication instance**. AWS DMS tự tính toán, provision và scale replication resources dựa trên workload thực tế.
+
+Dùng khi câu hỏi nhấn mạnh:
+
+- **Full load + CDC** nhưng workload/throughput dao động
+- Không muốn quản lý replication instance
+- Muốn compute tự động scale theo migration/replication workload
+- Cần migrate/replicate database với operational burden thấp hơn DMS Standard
+
+> 📖 **Nguồn:** [Working with AWS DMS Serverless](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.html)
+
+### DMS Standard vs DMS Serverless
+
+| Tiêu chí | DMS Standard | DMS Serverless |
+|----------|--------------|----------------|
+| Compute | Chọn **replication instance** | Chọn **Min/Max DCU** |
+| Sizing | Bạn tự estimate instance size | DMS tự compute/provision capacity |
+| Scaling | Phải monitor và resize | Autoscaling trong giới hạn cấu hình |
+| Ops burden | Cao hơn | Thấp hơn |
+| Phù hợp | Workload ổn định, predictable | Workload dao động, muốn managed scaling |
+| Billing | Theo replication instance | Pay-for-use theo DCU đang dùng |
+
+### DMS Capacity Unit (DCU)
+
+Với DMS Serverless, bạn cấu hình **Compute Config** bằng:
+
+| Setting | Ý nghĩa |
+|---------|---------|
+| **MinCapacityUnits** | Số DCU tối thiểu DMS provision; cũng là mức scale-down thấp nhất |
+| **MaxCapacityUnits** | Số DCU tối đa DMS có thể provision; cũng là mức scale-up cao nhất |
+| **MultiAZ** | Tạo standby replica ở AZ khác để failover; AWS khuyến nghị bật nếu dùng CDC/ongoing replication |
+
+> AWS định nghĩa **1 DCU = 2 GB RAM**. DMS tính phí theo số DCU replication đang dùng.
+
+> 📖 **Nguồn:** [AWS DMS Serverless components - Compute Config](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html#CHAP_Serverless.computeconfig)
+
+### Replication phases trong DMS Serverless
+
+DMS Serverless vẫn hỗ trợ các kiểu replication quan trọng của DMS:
+
+| Phase / Type | Ý nghĩa | Khi nào dùng? |
+|--------------|---------|---------------|
+| **Full load** | Copy dữ liệu hiện có tại thời điểm bắt đầu replication | Initial migration |
+| **CDC initial** | Copy các thay đổi xảy ra trong lúc full load đang chạy | Bắt kịp source DB sau full load |
+| **CDC ongoing** | Tiếp tục replicate thay đổi khi chúng xảy ra | Near-zero downtime / continuous replication |
+| **Full load and CDC** | Migrate dữ liệu hiện có + thay đổi phát sinh trong quá trình replication | Pattern hay gặp nhất khi migrate DB đang chạy |
+
+```
+On-prem Oracle                        Amazon RDS for Oracle
+┌──────────────┐                      ┌──────────────┐
+│ Existing data│ ─── Full load ─────► │ Existing data│
+│ Transactions │ ─── CDC ongoing ───► │ New changes  │
+└──────────────┘                      └──────────────┘
+        │                                      ▲
+        └──── DMS Serverless tự scale DCU ────┘
+```
+
+### Autoscaling hoạt động thế nào?
+
+Sau khi replication ở trạng thái **RUNNING**, AWS DMS quản lý capacity của underlying resources để thích ứng với workload thay đổi.
+
+- Workload tăng vượt threshold → DMS có thể **scale up** replication resources
+- Workload giảm đủ lâu → DMS có thể **scale down** để tiết kiệm chi phí
+- Scaling bị giới hạn bởi **MinCapacityUnits** và **MaxCapacityUnits**
+- Serverless replication **không autoscale down trong khi full load đang chạy**
+
+> 📖 **Nguồn:** [Understanding autoscaling in AWS DMS Serverless](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html#CHAP_Serverless.autoscaling)
+
+### Supported endpoints
+
+DMS Serverless hỗ trợ nhiều source/target, bao gồm **Oracle** ở cả hai phía:
+
+| Vai trò | Ví dụ supported endpoints |
+|---------|----------------------------|
+| **Sources** | Oracle, SQL Server, PostgreSQL-compatible, MySQL-compatible, MariaDB, MongoDB, Amazon S3, IBM Db2 |
+| **Targets** | Oracle, SQL Server, PostgreSQL, MySQL-compatible, Amazon S3, Redshift, DynamoDB, Kinesis Data Streams, MSK, OpenSearch, Neptune |
+
+Ví dụ exam:
+
+```text
+On-premises Oracle → Amazon RDS for Oracle
+Existing data + continuous transactional changes
+Data volume fluctuates
+Wants automatic compute provisioning
+
+=> AWS DMS Serverless replication
+=> Replication type: Full load and CDC
+```
+
+### Khi nào chọn DMS Serverless?
+
+| Keyword trong đề | Đáp án nên nghĩ tới |
+|------------------|---------------------|
+| "automatically provision compute resources" | **DMS Serverless** |
+| "workload fluctuates" / "spikes in transaction volume" | **DMS Serverless autoscaling** |
+| "existing records and ongoing changes" | **Full load + CDC** |
+| "Oracle on-premises to RDS for Oracle" | **DMS homogeneous migration/replication** |
+| "reduce replication instance management" | **DMS Serverless** |
+
+### Lưu ý dễ sai
+
+- **DMS Serverless không phải Lambda**: Lambda không phải managed CDC engine cho database transaction logs.
+- **DMS Serverless không phải Glue**: Glue phù hợp ETL/batch/data integration, không phải lựa chọn chính cho transactional CDC migration.
+- **DMS Serverless không phải EC2 Auto Scaling**: bạn không tự deploy DMS replication instance trên EC2 rồi scale bằng script; DMS quản lý replication resources.
+- Nếu target là **cùng engine** như Oracle → RDS Oracle: thường **không cần SCT**, vì đây là homogeneous migration.
+
+---
+
 ## Migration Types
 
 ### 1. Homogeneous Migration (Cùng engine)
@@ -312,8 +423,8 @@
 | **Purpose** | **Migrate DATA** | **Convert SCHEMA** |
 | **When to use** | Mọi database migration | Chỉ khi heterogeneous migration |
 | **Output** | Data trong target DB | SQL scripts cho schema |
-| **Runs on** | AWS Cloud (Replication Instance) | Local machine (Desktop app) |
-| **Cost** | Pay for replication instance | **FREE** |
+| **Runs on** | AWS Cloud (Replication Instance hoặc Serverless Replication) | Local machine (Desktop app) |
+| **Cost** | Pay for replication instance hoặc DMS Serverless DCU | **FREE** |
 
 ### Khi nào dùng cái nào?
 
@@ -401,6 +512,7 @@ On-Premises (still running)      AWS (for analytics)
 | Component | Pricing |
 |-----------|---------|
 | **Replication Instance** | Per hour (like EC2) |
+| **DMS Serverless DCU** | Pay-for-use theo DMS Capacity Units đang dùng |
 | **Storage** | Per GB-month |
 | **Data Transfer** | Standard AWS data transfer rates |
 | **SCT** | **FREE** |
@@ -431,6 +543,8 @@ On-Premises (still running)      AWS (for analytics)
 | "Convert Oracle to Aurora" | **AWS SCT** (schema) + **DMS** (data) |
 | "Same engine migration" | **DMS only** |
 | "Different engine migration" | **SCT + DMS** |
+| "Automatically provision compute resources" | **DMS Serverless** |
+| "Data transfer volume fluctuates" | **DMS Serverless** |
 
 ### Key Points
 
@@ -440,6 +554,8 @@ On-Premises (still running)      AWS (for analytics)
 - **Heterogeneous** (different engine) = SCT + DMS
 - **Source DB không downtime** khi migration
 - **CDC** = Change Data Capture (continuous sync)
+- **DMS Serverless** = DMS tự provision/scale replication resources, không cần tự chọn replication instance
+- **Full load + CDC + workload dao động** = DMS Serverless
 
 ### Common Scenarios
 
@@ -448,6 +564,7 @@ On-Premises (still running)      AWS (for analytics)
 | "Migrate MySQL to RDS MySQL" | DMS only |
 | "Migrate Oracle to Aurora PostgreSQL" | SCT + DMS |
 | "Keep data synced during migration" | DMS with CDC |
+| "Existing data + ongoing changes + fluctuating volume" | DMS Serverless Full load + CDC |
 | "Migrate to data lake (S3)" | DMS to S3 |
 | "Migrate data warehouse to Redshift" | SCT (data extraction) + DMS |
 
@@ -459,3 +576,5 @@ On-Premises (still running)      AWS (for analytics)
 - [AWS SCT Documentation](https://docs.aws.amazon.com/SchemaConversionTool/)
 - [DMS Best Practices](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html)
 - [Supported Sources and Targets](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.html)
+- [Working with AWS DMS Serverless](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.html)
+- [AWS DMS Serverless Components](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html)
