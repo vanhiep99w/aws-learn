@@ -236,6 +236,27 @@ body::before{
 .header select:hover{border-color:var(--border-hi)}
 .header select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .header select option{background:var(--surface-solid);color:var(--text)}
+.id-jump-form{
+  display:flex;align-items:center;gap:4px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:3px;min-width:190px;
+  transition:all .2s;
+}
+.id-jump-form:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.id-jump-form.error{border-color:var(--wrong);box-shadow:0 0 0 3px var(--wrong-soft)}
+.id-jump-form input{
+  flex:1;min-width:0;border:none;outline:none;background:transparent;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  padding:4px 6px;
+}
+.id-jump-form input::placeholder{color:var(--text3);font-family:'Inter',sans-serif}
+.id-jump-form button{
+  border:none;border-radius:6px;background:var(--accent);color:#fff;
+  font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;
+  padding:4px 9px;cursor:pointer;transition:all .2s;
+}
+.id-jump-form button:hover{box-shadow:0 2px 8px var(--accent-glow)}
+.id-jump-form button:disabled{opacity:.55;cursor:wait;box-shadow:none}
 .spacer{flex:1}
 
 /* ── Live status ── */
@@ -714,6 +735,7 @@ body::before{
   .sep{display:none}
   .header-row{gap:6px}
   .header select{font-size:.72rem;padding:4px 22px 4px 8px}
+  .id-jump-form{min-width:150px}
   .refresh-info{display:none}
   .header{padding:0 12px}
   .detail-header{padding:12px 16px 10px}
@@ -739,6 +761,10 @@ body::before{
     <select id="filter-service"><option value="">All Services</option></select>
     <select id="filter-domain"><option value="">All Domains</option></select>
     <select id="filter-qtype"><option value="">All Types</option></select>
+    <form class="id-jump-form" id="id-jump-form" title="Jump to saved question ID">
+      <input id="id-jump-input" type="search" placeholder="Question ID…" autocomplete="off" spellcheck="false">
+      <button id="id-jump-btn" type="submit">Go</button>
+    </form>
     <span class="sep"></span>
     <div class="mode-toggle" id="mode-toggle">
       <button class="mode-btn active" data-mode="practice">Practice</button>
@@ -800,6 +826,19 @@ let hasMore = true;
 let loadingMore = false;
 let copyFeedbackTimer = null;
 
+function hasActiveFilters() {
+  return ['filter-service', 'filter-domain', 'filter-qtype']
+    .some(id => document.getElementById(id)?.value);
+}
+
+function normalizeIssue(row) {
+  let meta = {};
+  try { meta = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : (row.metadata || {}); } catch {}
+  const inferredLabels = ['aws', meta.service, meta.domain].filter(Boolean);
+  const labels = labelsMap[row.id] || row.labels || inferredLabels;
+  return { ...row, meta, labels };
+}
+
 function getSavedViewMode() {
   const saved = localStorage.getItem('practice-view-mode');
   return saved === 'review' ? 'review' : 'practice';
@@ -835,7 +874,8 @@ function updateScoreBar() {
 }
 
 async function fetchData() {
-  const limit = Math.max(loadedCount, PAGE_SIZE);
+  const filterMode = hasActiveFilters();
+  const limit = filterMode ? 500 : Math.max(loadedCount, PAGE_SIZE);
   const res = await fetch(`${API}?limit=${limit}&offset=0`);
   if (!res.ok) throw new Error(`API ${res.status}`);
   const data = await res.json();
@@ -852,14 +892,11 @@ async function fetchData() {
   }
   prevUpdatedMap = newMap;
 
-  issues = data.rows.map(r => {
-    let meta = {};
-    try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
-    return { ...r, meta, labels: labelsMap[r.id] || [] };
-  });
+  issues = data.rows.map(normalizeIssue);
   loadedCount = issues.length;
   if (data.total != null) totalQuestions = data.total;
-  hasMore = data.rows.length >= limit;
+  hasMore = data.total != null ? loadedCount < data.total : data.rows.length >= limit;
+  if (filterMode) hasMore = false;
 
   populateFilters();
   renderList(changedIds);
@@ -879,11 +916,7 @@ async function loadMore() {
     const data = await res.json();
     if (data.rows.length === 0) { hasMore = false; return; }
     if (data.rows.length < PAGE_SIZE) hasMore = false;
-    const newIssues = data.rows.map(r => {
-      let meta = {};
-      try { meta = typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}); } catch {}
-      return { ...r, meta, labels: labelsMap[r.id] || [] };
-    });
+    const newIssues = data.rows.map(normalizeIssue);
     issues.push(...newIssues);
     loadedCount = issues.length;
     for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
@@ -938,7 +971,7 @@ function renderList(changedIds = new Set()) {
   const filtered = getFiltered();
   const el = document.getElementById('list-scroll');
   const prevScroll = el.scrollTop;
-  document.getElementById('list-count').textContent = totalQuestions || filtered.length;
+  document.getElementById('list-count').textContent = hasActiveFilters() ? filtered.length : (totalQuestions || filtered.length);
   if (filtered.length === 0) { el.innerHTML = '<div class="empty">No questions found</div>'; return; }
   el.innerHTML = filtered.map(i => {
     const svc = i.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('');
@@ -1242,6 +1275,50 @@ function esc(s) {
     fetchData().catch(console.error);
   })
 );
+
+async function jumpToQuestionId(rawId) {
+  const id = (rawId || '').trim();
+  const form = document.getElementById('id-jump-form');
+  const input = document.getElementById('id-jump-input');
+  const btn = document.getElementById('id-jump-btn');
+  if (!id) return;
+  form.classList.remove('error');
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = '...';
+  try {
+    let issue = issues.find(i => i.id === id);
+    if (!issue) {
+      const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const data = await res.json();
+      const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
+      if (!row) throw new Error('Question not found');
+      issue = normalizeIssue(row);
+      const existingIdx = issues.findIndex(i => i.id === issue.id);
+      if (existingIdx >= 0) issues[existingIdx] = issue;
+      else issues.unshift(issue);
+      loadedCount = issues.length;
+    }
+    selectedId = issue.id;
+    input.value = issue.id;
+    renderList();
+    showDetail(issue, true);
+    const card = document.querySelector(`.card[data-id="${CSS.escape(issue.id)}"]`);
+    if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  } catch (err) {
+    form.classList.add('error');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+}
+
+document.getElementById('id-jump-form').addEventListener('submit', e => {
+  e.preventDefault();
+  jumpToQuestionId(document.getElementById('id-jump-input').value);
+});
 
 // Mode toggle
 document.querySelectorAll('#mode-toggle .mode-btn').forEach(btn => {
