@@ -184,11 +184,60 @@
 4. **Start Migration** - Full load + CDC (ongoing replication)
 5. **Cutover** - Switch app sang target DB (minimal downtime)
 
+### Replication Instance là gì?
+
+DMS không phải compute service để bạn chạy application như EC2/Lambda. Nhưng để migrate/replicate database, DMS vẫn cần một **compute worker** ở giữa source và target. Trong **DMS Standard**, worker đó gọi là **replication instance**.
+
+```text
+Source DB  ──►  DMS Replication Instance  ──►  Target DB
+              chạy replication engine
+              đọc source / transaction logs
+              buffer data
+              apply changes vào target
+```
+
+Replication instance dùng để:
+
+- Kết nối source database và target database
+- Chạy replication task: **full load**, **CDC**, hoặc **full load + CDC**
+- Đọc transaction logs/redo logs để capture `INSERT/UPDATE/DELETE`
+- Buffer/cache khi source nhanh hơn target hoặc network/target bị chậm
+- Apply changes sang target theo thứ tự phù hợp
+- Ghi metrics/logs/checkpoint để theo dõi và resume migration
+
+Vì vậy với DMS Standard, bạn phải chọn size cho replication instance, ví dụ:
+
+```text
+dms.t3.medium
+dms.r5.large
+dms.r5.xlarge
+```
+
+Nếu chọn quá nhỏ → full load chậm, CDC lag, thiếu memory, task có thể fail. Nếu chọn quá lớn → tốn chi phí khi workload thấp.
+
+> 📖 **Nguồn:** [Working with an AWS DMS replication instance](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html)
+
+### Replication trong DMS nghĩa là gì?
+
+Trong DMS, **replication** là quá trình DMS copy/sync dữ liệu từ source sang target. Nó không nhất thiết là native database replication như Oracle Data Guard.
+
+| Replication type | Ý nghĩa | Use case |
+|------------------|---------|----------|
+| **Full load** | Copy dữ liệu hiện có từ source sang target | Initial migration |
+| **CDC** | Capture thay đổi mới phát sinh từ transaction logs | Continuous sync |
+| **Full load + CDC** | Copy dữ liệu hiện có và đồng thời capture thay đổi mới | Minimal downtime migration |
+
+```text
+Oracle on-premises
+   ├── Existing records      ──► Full load ──► RDS Oracle
+   └── Transactional changes ──► CDC       ──► RDS Oracle
+```
+
 ---
 
 ## AWS DMS Serverless
 
-**AWS DMS Serverless** = mode DMS không cần tự chọn/sizing **replication instance**. AWS DMS tự tính toán, provision và scale replication resources dựa trên workload thực tế.
+**AWS DMS Serverless** = mode DMS không cần tự chọn/sizing **replication instance** như DMS Standard. AWS DMS ẩn phần compute worker bên dưới, tự tính toán, provision và scale replication resources dựa trên workload thực tế.
 
 Dùng khi câu hỏi nhấn mạnh:
 
@@ -203,8 +252,8 @@ Dùng khi câu hỏi nhấn mạnh:
 
 | Tiêu chí | DMS Standard | DMS Serverless |
 |----------|--------------|----------------|
-| Compute | Chọn **replication instance** | Chọn **Min/Max DCU** |
-| Sizing | Bạn tự estimate instance size | DMS tự compute/provision capacity |
+| Compute | Chọn **replication instance** chạy replication engine | Chọn **Min/Max DCU** |
+| Sizing | Bạn tự estimate instance size (`dms.r5.large`, `dms.r5.xlarge`, ...) | DMS tự compute/provision capacity |
 | Scaling | Phải monitor và resize | Autoscaling trong giới hạn cấu hình |
 | Ops burden | Cao hơn | Thấp hơn |
 | Phù hợp | Workload ổn định, predictable | Workload dao động, muốn managed scaling |
@@ -292,6 +341,7 @@ Wants automatic compute provisioning
 - **DMS Serverless không phải Lambda**: Lambda không phải managed CDC engine cho database transaction logs.
 - **DMS Serverless không phải Glue**: Glue phù hợp ETL/batch/data integration, không phải lựa chọn chính cho transactional CDC migration.
 - **DMS Serverless không phải EC2 Auto Scaling**: bạn không tự deploy DMS replication instance trên EC2 rồi scale bằng script; DMS quản lý replication resources.
+- **Replication instance không phải app server**: nó là worker managed bởi DMS để chạy replication engine, đọc source logs, buffer dữ liệu và ghi sang target.
 - Nếu target là **cùng engine** như Oracle → RDS Oracle: thường **không cần SCT**, vì đây là homogeneous migration.
 
 ---
@@ -576,5 +626,6 @@ On-Premises (still running)      AWS (for analytics)
 - [AWS SCT Documentation](https://docs.aws.amazon.com/SchemaConversionTool/)
 - [DMS Best Practices](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html)
 - [Supported Sources and Targets](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.html)
+- [Working with an AWS DMS replication instance](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html)
 - [Working with AWS DMS Serverless](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.html)
 - [AWS DMS Serverless Components](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html)
