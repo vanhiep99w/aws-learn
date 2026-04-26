@@ -1260,7 +1260,11 @@ function showDetail(issue, scrollToTop = false) {
   } else if (issue.description) {
     questionHTML = `<div class="q-stem">${esc(issue.description).replace(/\n/g, '<br>')}</div>`;
   }
-  const sections = parseNotes(issue.notes);
+  const sections = parseNotes(issue.notes).filter(s => {
+    const t = s.title.toLowerCase();
+    // Ẩn section "Kiến thức cốt lõi" khỏi UI (không còn lưu lên D1, nhưng câu cũ vẫn có)
+    return !(t.includes('kiến thức') || t.includes('cốt lõi') || t.includes('core'));
+  });
   let notesHTML = '';
   if (sections.length > 0) {
     notesHTML = sections.map((s, i) => {

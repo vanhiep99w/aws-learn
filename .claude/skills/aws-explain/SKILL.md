@@ -6,7 +6,7 @@ description: >
   rồi tự động lưu Q&A vào Cloudflare D1.
   Use when cần kiểm tra đáp án AWS, phản biện đáp án đã được đánh dấu sẵn,
   so sánh các phương án, xác minh chi tiết kỹ thuật AWS,
-  đối chiếu tài liệu trong repo, và lưu trữ kiến thức AWS đã học.
+  và lưu trữ kiến thức AWS đã học.
 ---
 
 # AWS Explain
@@ -18,7 +18,6 @@ description: >
 - Nếu input có đáp án được đánh dấu, coi đó là giả thuyết cần thẩm định lại.
 - Chọn đáp án đúng theo chứng cứ, giải thích chi tiết từng phương án.
 - Giữ nguyên thứ tự và vị trí đáp án gốc (`#1`, `#4`).
-- Đối chiếu tài liệu markdown trong repo hiện tại.
 - **Tự động lưu mọi Q&A vào Cloudflare D1** để xây dựng knowledge base.
 
 ## Quy trình bắt buộc
@@ -198,34 +197,10 @@ Sau đó dẫn người đọc vào phần kỹ thuật một cách tự nhiên 
 <Tương tự — analogy + misconception + lý do kỹ thuật + constraint vi phạm. Không rút gọn.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 KIẾN THỨC CỐT LÕI
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-<2-4 bullet points tổng kết kiến thức quan trọng rút ra từ câu hỏi này.
-Viết dạng ghi nhớ, dễ ôn tập lại.
-
-**Mạnh mẽ khuyến nghị**: thêm 1 bullet **gọi tên design pattern** nếu câu hỏi minh họa pattern AWS phổ biến (xem catalog đầy đủ tại `references/teaching-patterns.md` mục "Pattern 8 — Gọi tên design pattern"):
-
-- **Pattern thiết kế:** <tên pattern> — <giải thích 1 câu> (gặp lại ở: <list service>)
-
-Ví dụ:
-- **Pattern thiết kế:** *Stable indirection layer* — tách "địa chỉ public client thấy" (cố định) khỏi "địa chỉ thực phía sau" (động). Gặp lại ở: Global Accelerator, Route 53, CloudFront, ALB DNS.
-- **Pattern thiết kế:** *Decoupling via queue* — tách producer khỏi consumer bằng queue trung gian, hỗ trợ retry + DLQ. Gặp lại ở: SQS, EventBridge, SNS+SQS fan-out.
-
-Việc gọi tên pattern giúp người đọc gắn câu trả lời vào framework rộng hơn, dễ áp dụng cho câu mới.>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 NGUỒN THAM KHẢO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 - <Tiêu đề tài liệu> — <URL>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📂 ĐỐI CHIẾU REPO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-- Trạng thái: <Đã đề cập | Đã đề cập nhưng mâu thuẫn | Chưa đề cập>
-- Files: <path/to/file.md> — <heading>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔖 ĐỐI CHIẾU ĐÁP ÁN ĐỀ
@@ -279,10 +254,6 @@ notes = '''## Giải thích câu hỏi
 
 <COPY NGUYÊN VĂN từ section Vì sao các đáp án khác sai>
 
-## Kiến thức cốt lõi
-
-<COPY NGUYÊN VĂN từ section Kiến thức cốt lõi>
-
 ## Nguồn
 
 <COPY NGUYÊN VĂN từ section Nguồn tham khảo>'''
@@ -312,7 +283,6 @@ print(result.stdout)
 - **notes = bản sao nguyên văn** của câu trả lời đã hiển thị, KHÔNG phải bản tóm tắt
 - Mỗi option sai: heading riêng, blank line trước `#ID`, giải thích đầy đủ (không rút gọn)
 - Tất cả trích dẫn tài liệu AWS phải có mặt trong notes
-- Kiến thức cốt lõi viết dạng rule/pattern ôn tập
 - Nếu câu trả lời có numbered steps, bold text, multiple paragraphs → notes cũng phải có
 
 ### Tham số
@@ -337,9 +307,7 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - Ưu tiên công cụ: `aws-knowledge` > `aws-documentation-mcp-server` > tra trực tiếp AWS official docs.
 - Luôn kèm link nguồn cho kết luận quan trọng.
 - Nếu dùng mốc thời gian tương đối → đổi sang ngày cụ thể.
-- Tài liệu repo chỉ để đối chiếu, không thay thế xác minh AWS chính thức.
 - Không đổi thứ tự phương án — luôn bám ID vị trí gốc.
-- **Section "Kiến thức cốt lõi"** phải có giá trị ôn tập: viết dạng rule/pattern, không lặp lại đề bài.
 - Khi trích dẫn tài liệu, ghi rõ đoạn nào là quote gốc vs diễn giải.
 
 ### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có ví dụ đầy đủ)
@@ -351,7 +319,7 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - **"Vì sao sai" mỗi option mở đầu bằng analogy 1 câu** cô đọng misconception, sau đó mới tới lý do kỹ thuật.
 - **"Vì sao sai" dùng heading `#### ❌ #N — ...`** (có emoji ❌ trong heading).
 - **"Giải thích câu hỏi" theo storytelling order**: vấn đề mấu chốt → tại sao yêu cầu khó → câu hệ quả "→ Cần ___". KHÔNG liệt kê constraint kiểu báo cáo.
-- **Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern trong "Kiến thức cốt lõi".
+- **Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern ngay trong section "Vì sao đúng" hoặc lồng vào TL;DR.
 - **Anticipated follow-up + bằng chứng quan sát được** là khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
 
 **Quy tắc theo trigger (áp dụng có điều kiện):**

@@ -1,6 +1,6 @@
 # Teaching Patterns — Viết giải thích AWS dễ hiểu
 
-> **File này được load khi viết section "Giải thích câu hỏi", "Vì sao đúng", "Vì sao các đáp án khác sai", "Kiến thức cốt lõi".**
+> **File này được load khi viết section "Giải thích câu hỏi", "Vì sao đúng", "Vì sao các đáp án khác sai".**
 >
 > Mục tiêu: nâng chất lượng sư phạm của giải thích — không chỉ đúng kỹ thuật mà còn dễ nuốt, dễ nhớ, dễ ôn lại.
 
@@ -225,7 +225,7 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 
 ## Pattern 8 — Gọi tên design pattern
 
-**Khi nào dùng (trong section "Kiến thức cốt lõi"):**
+**Khi nào dùng (lồng vào section "Vì sao đúng" hoặc TL;DR):**
 - Câu hỏi minh họa một pattern AWS thường gặp
 - Pattern có thể transfer sang câu hỏi khác
 

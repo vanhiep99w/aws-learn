@@ -1,7 +1,7 @@
 interface:
   display_name: "AWS Explain"
-  short_description: "Chọn đáp án AWS đúng, giữ vị trí option gốc, đối chiếu doc AWS và repo, lưu Q&A vào beads."
-  default_prompt: "Use $aws-explain to verify AWS answers with MCP, prioritizing aws-knowledge and falling back to aws-documentation-mcp-server for docs-first lookups when aws-knowledge is rate limited or unavailable; preserve original option positions (for example #1, #4), explain each option, check whether the current repo docs already cover the correct answer, and save the Q&A to beads database."
+  short_description: "Chọn đáp án AWS đúng, giữ vị trí option gốc, đối chiếu doc AWS chính thức, lưu Q&A vào beads."
+  default_prompt: "Use $aws-explain to verify AWS answers with MCP, prioritizing aws-knowledge and falling back to aws-documentation-mcp-server for docs-first lookups when aws-knowledge is rate limited or unavailable; preserve original option positions (for example #1, #4), explain each option, and save the Q&A to beads database."
 dependencies:
   tools:
     - type: "mcp"
