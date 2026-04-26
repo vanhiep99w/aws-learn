@@ -466,14 +466,38 @@ body::before{
   color:var(--emerald);
 }
 .detail-columns{
-  flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;
+  flex:1;display:grid;
+  grid-template-columns:minmax(240px,var(--qa-question-width,50%)) 10px minmax(240px,1fr);
+  gap:0;overflow:hidden;
 }
 .detail-question{
   min-width:0;overflow-y:auto;padding:20px 24px 40px;
 }
+.qa-resizer{
+  position:relative;
+  cursor:col-resize;
+  touch-action:none;
+  background:linear-gradient(90deg,transparent 0 4px,var(--border) 4px 5px,transparent 5px);
+  transition:background-color .15s,box-shadow .15s;
+  z-index:2;
+}
+.qa-resizer::before{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:4px;height:42px;border-radius:999px;background:var(--border-hi);
+}
+.qa-resizer:hover,
+.qa-resizer:focus-visible,
+body.qa-resizing .qa-resizer{
+  background-color:var(--accent-soft);
+  box-shadow:inset 0 0 0 1px var(--accent-border);
+  outline:none;
+}
+.qa-resizer:hover::before,
+.qa-resizer:focus-visible::before,
+body.qa-resizing .qa-resizer::before{background:var(--accent)}
+body.qa-resizing{cursor:col-resize;user-select:none}
 #notes-wrap{
   min-width:0;overflow-y:auto;padding:20px 24px 40px;
-  border-left:1px solid var(--border);
 }
 
 /* ── Mode toggle ── */
@@ -764,7 +788,8 @@ body::before{
   .detail-panel{overflow-y:auto}
   .detail-columns{grid-template-columns:1fr;overflow:visible}
   .detail-question{overflow:visible;padding:16px}
-  #notes-wrap{overflow:visible;padding:16px;border-left:none;border-top:1px solid var(--border)}
+  .qa-resizer{display:none}
+  #notes-wrap{overflow:visible;padding:16px;border-top:1px solid var(--border)}
   .detail-card{padding:16px 18px}
   .sep{display:none}
   .header-row{gap:6px}
@@ -843,6 +868,10 @@ body::before{
 <script>
 const API = '/api/questions';
 const POLL_MS = 5000;
+const QA_SPLIT_KEY = 'practice-qa-question-width';
+const QA_SPLIT_DEFAULT = 50;
+const QA_SPLIT_MIN = 25;
+const QA_SPLIT_MAX = 75;
 
 let issues = [];
 let labelsMap = {};
@@ -859,6 +888,71 @@ let totalQuestions = 0;
 let hasMore = true;
 let loadingMore = false;
 let copyFeedbackTimer = null;
+
+function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
+
+function getSavedQaSplit() {
+  const saved = Number(localStorage.getItem(QA_SPLIT_KEY));
+  return Number.isFinite(saved) ? clamp(saved, QA_SPLIT_MIN, QA_SPLIT_MAX) : QA_SPLIT_DEFAULT;
+}
+
+function applyQaSplit(percent) {
+  const value = clamp(percent, QA_SPLIT_MIN, QA_SPLIT_MAX);
+  document.documentElement.style.setProperty('--qa-question-width', value.toFixed(1) + '%');
+  const resizer = document.getElementById('qa-resizer');
+  if (resizer) resizer.setAttribute('aria-valuenow', Math.round(value));
+}
+
+function saveQaSplit(percent) {
+  localStorage.setItem(QA_SPLIT_KEY, String(clamp(percent, QA_SPLIT_MIN, QA_SPLIT_MAX).toFixed(1)));
+}
+
+function bindQaResizer() {
+  const columns = document.getElementById('detail-columns');
+  const resizer = document.getElementById('qa-resizer');
+  if (!columns || !resizer) return;
+
+  const setFromClientX = (clientX, persist = false) => {
+    const rect = columns.getBoundingClientRect();
+    if (!rect.width) return;
+    const minPx = 240;
+    const minByWidth = (minPx / rect.width) * 100;
+    const min = clamp(Math.max(QA_SPLIT_MIN, minByWidth), QA_SPLIT_MIN, 45);
+    const max = clamp(Math.min(QA_SPLIT_MAX, 100 - minByWidth), 55, QA_SPLIT_MAX);
+    const pct = clamp(((clientX - rect.left) / rect.width) * 100, min, max);
+    applyQaSplit(pct);
+    if (persist) saveQaSplit(pct);
+  };
+
+  resizer.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    resizer.setPointerCapture(e.pointerId);
+    document.body.classList.add('qa-resizing');
+    setFromClientX(e.clientX, true);
+  });
+  resizer.addEventListener('pointermove', e => {
+    if (!document.body.classList.contains('qa-resizing')) return;
+    setFromClientX(e.clientX, true);
+  });
+  const stopResize = e => {
+    if (!document.body.classList.contains('qa-resizing')) return;
+    document.body.classList.remove('qa-resizing');
+    try { resizer.releasePointerCapture(e.pointerId); } catch {}
+  };
+  resizer.addEventListener('pointerup', stopResize);
+  resizer.addEventListener('pointercancel', stopResize);
+  resizer.addEventListener('dblclick', () => { applyQaSplit(QA_SPLIT_DEFAULT); saveQaSplit(QA_SPLIT_DEFAULT); });
+  resizer.addEventListener('keydown', e => {
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+    e.preventDefault();
+    const current = getSavedQaSplit();
+    const next = e.key === 'Home' ? QA_SPLIT_MIN : e.key === 'End' ? QA_SPLIT_MAX : current + (e.key === 'ArrowRight' ? 2 : -2);
+    applyQaSplit(next);
+    saveQaSplit(next);
+  });
+}
+
+applyQaSplit(getSavedQaSplit());
 
 function hasActiveFilters() {
   return ['filter-service', 'filter-domain', 'filter-qtype']
@@ -1201,13 +1295,16 @@ function showDetail(issue, scrollToTop = false) {
         </span>
       </div>
     </div>
-    <div class="detail-columns">
+    <div class="detail-columns" id="detail-columns">
       <div class="detail-question">
         <div class="detail-card"><h3>Question</h3>${questionHTML}<div class="question-card-meta">Created: ${issue.created_at || '—'}</div></div>
       </div>
+      <div class="qa-resizer" id="qa-resizer" role="separator" aria-label="Resize question and answer columns" aria-orientation="vertical" aria-valuemin="${QA_SPLIT_MIN}" aria-valuemax="${QA_SPLIT_MAX}" aria-valuenow="${Math.round(getSavedQaSplit())}" tabindex="0" title="Kéo để đổi độ rộng. Double-click để reset."></div>
       <div id="notes-wrap" class="${notesWrapCls}">${notesHTML}</div>
     </div>
   </div>`;
+
+  bindQaResizer();
 
   // Bind option selection in practice mode
   if (isPractice && !state.submitted) {
