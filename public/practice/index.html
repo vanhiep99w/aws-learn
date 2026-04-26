@@ -696,6 +696,31 @@ body::before{
   color:var(--text2);font-size:.88rem;line-height:1.7;
 }
 .md blockquote p{margin-bottom:.3em}
+.md table{
+  width:100%;min-width:640px;border-collapse:separate;border-spacing:0;
+  margin:1rem 0 1.15rem;overflow:hidden;
+  border:1px solid var(--border-hi);border-radius:14px;
+  background:var(--surface-solid);box-shadow:var(--shadow-sm);
+  font-size:.88rem;line-height:1.55;
+}
+.md table th,.md table td{
+  padding:10px 12px;vertical-align:top;text-align:left;
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.md table th:last-child,.md table td:last-child{border-right:none}
+.md table tr:last-child td{border-bottom:none}
+.md table thead th{
+  position:sticky;top:0;z-index:1;
+  background:linear-gradient(180deg,var(--surface2),var(--surface-solid));
+  color:var(--text);font-weight:700;white-space:normal;
+}
+.md table tbody tr:nth-child(even) td{background:var(--surface2)}
+.md table tbody tr:hover td{background:var(--accent-soft)}
+.md table th:nth-child(1),.md table td:nth-child(1){width:24%;white-space:nowrap}
+.md table th:nth-child(2),.md table td:nth-child(2){width:22%;white-space:nowrap;text-align:center}
+.md table th:nth-child(3),.md table td:nth-child(3){width:54%}
+.md table code{white-space:nowrap}
+.md:has(table){overflow-x:auto;padding-bottom:4px}
 
 /* ── Loading / Empty ── */
 .loading{
