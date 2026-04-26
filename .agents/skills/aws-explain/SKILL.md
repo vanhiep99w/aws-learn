@@ -73,6 +73,10 @@ Sau khi hoàn tất phân tích, **bắt buộc** lưu Q&A vào Cloudflare D1. X
 
 Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung section `🔍 GIẢI THÍCH CHI TIẾT` sẽ được **copy nguyên văn** vào D1 notes, nên phải viết đầy đủ chi tiết ngay từ đầu.
 
+> **📖 BẮT BUỘC đọc trước khi viết phần giải thích:** [`references/teaching-patterns.md`](references/teaching-patterns.md)
+>
+> File này định nghĩa các pattern sư phạm bắt buộc: 2-pass (trực giác → kỹ thuật), analogy đời thường, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern. Áp dụng đúng các pattern này là yêu cầu chất lượng, không phải optional.
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 CÂU HỎI
@@ -102,44 +106,88 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 
 ### Giải thích câu hỏi
 
-<Giải thích rõ câu hỏi bằng tiếng Việt dễ hiểu. Mục tiêu: người đọc hiểu được *tại sao* đây là bài toán thú vị TRƯỚC khi nhìn vào đáp án. Bao gồm:
+<Viết theo **storytelling order** (xem `references/teaching-patterns.md` mục "Cấu trúc Giải thích câu hỏi"):
 
-- **Câu hỏi đang hỏi gì**: 1-2 câu ngắn gọn, súc tích. Nêu rõ bài toán cốt lõi. Tránh diễn đạt lại đề nguyên xi — hãy distill ra câu hỏi thực sự.
-- **Ngữ cảnh/Tình huống**: Mô tả bối cảnh và *tại sao* nó tạo ra bài toán (không chỉ mô tả lại scenario). Ví dụ: nếu đề nói "huge volume of data → NAT gateway" thì nêu rõ *tại sao điều đó tốn tiền* (NAT tính phí per-GB data processed).
-- **Điểm cần chú ý**: Liệt kê các từ khóa/constraint dễ bỏ qua. Với mỗi điểm, nêu rõ *hệ quả loại trừ* của nó — ví dụ "IPv4 → loại egress-only IGW", "same region → gateway endpoint khả thi", "cost-optimal → ưu tiên option miễn phí".
-- **Phạm vi đang xét**: Nêu các concept/service đang được so sánh, và nếu có thể, gợi ý chiều phân biệt quan trọng nhất (ví dụ: "gateway endpoint = miễn phí, interface endpoint = có phí").
+1. **Vấn đề mấu chốt** (1-2 câu): Bài toán cốt lõi là gì, *tại sao* nó khó. KHÔNG diễn đạt lại đề nguyên xi.
+2. **Tại sao yêu cầu của đề khó** (1 đoạn): Phân tích các từ khóa quan trọng ("scalable", "minimal config", "low latency", "cost-optimal", "multi-Region"...) — mỗi từ khóa loại trừ class giải pháp nào.
+3. **Hệ quả** (1 câu chốt highlight): "→ Cần một giải pháp mà ___ KHÔNG ___."
 
-Viết 4-6 gạch đầu dòng. Không cần đầy đủ mọi mục nếu không liên quan — ưu tiên những gì thực sự giúp người đọc hiểu bài toán nhanh hơn.>
+Ví dụ:
+> **Vấn đề mấu chốt:** ALB **KHÔNG có IP cố định**. AWS chỉ cấp DNS name; IP đằng sau liên tục đổi khi scale...
+> Đề nhấn mạnh: *scalable* (nhiều Region, traffic biến động) + *minimal config* (không muốn cứ vài ngày update firewall).
+> → **Cần giải pháp mà IP entry point KHÔNG BAO GIỜ ĐỔI**, dù ALB phía sau scale kiểu gì.
+
+Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm giác "vấn đề" trước khi đi vào option.>
 
 ### Vì sao đúng
 
 **#X — <option>**
-<Giải thích chi tiết nhiều đoạn. Bám sát nguồn AWS.
-- Nêu rõ lý do kỹ thuật vì sao đây là đáp án đúng
-- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote, không nối vào cuối quote):
+
+<Tuân theo cấu trúc 2-pass (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao đúng — checklist"):
+
+**Pass 1 — Trực giác (mandatory):**
+- Mở đầu bằng **analogy đời thường** HOẶC **ASCII diagram** (chọn 1, hoặc cả hai nếu phù hợp)
+- 1 câu tóm tắt cơ chế trước khi đi vào kỹ thuật
+
+**Pass 2 — Kỹ thuật (mandatory):**
+- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote):
   > "With Provisioned Throughput, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance."
   >
   > *→ Với Provisioned Throughput, bạn chỉ định mức throughput mà file system có thể duy trì, độc lập với dung lượng lưu trữ hay burst credit balance.*
-- Nếu có quy trình hoạt động → liệt kê numbered steps
+- Nếu có quy trình hoạt động → numbered steps hoặc bảng "Bước / Việc làm"
+- Nếu có ≥2 entity dễ nhầm (vd: "IP của ALB" vs "IP của Global Accelerator") → comparison table
 - Bold key terms quan trọng
-- Đây là nội dung sẽ được copy nguyên văn vào D1 notes>
+
+**Anticipated follow-up (mạnh mẽ khuyến nghị):**
+- Đặt 1 câu hỏi mà người mới CHẮC CHẮN sẽ thắc mắc, rồi trả lời ngay:
+
+  ```
+  ### Câu hỏi quan trọng: <follow-up>
+  **<Trả lời ngắn 1 dòng>**
+  <Giải thích 2-4 đoạn>
+  ```
+
+**Bằng chứng quan sát được (optional):**
+- Nếu có observation từ Console/CLI/API confirm cơ chế → thêm 1 đoạn "Kiểm chứng nhanh:"
+
+**TL;DR cuối section (mandatory):**
+- 1-2 câu chốt lại insight cốt lõi, dạng dễ thuộc:
+  > **TL;DR:** <chốt insight với key term in đậm>
+
+Đây là nội dung sẽ được copy nguyên văn vào D1 notes — viết đầy đủ ngay từ đầu.>
 
 ### Vì sao các đáp án khác sai
 
-**#Y — <option>**
-❌ <Giải thích chi tiết vì sao sai. Nêu rõ misconception/lý do kỹ thuật.
-Viết 3-5 câu mỗi option, không viết ngắn gọn 1 câu.
-Trích dẫn tài liệu AWS nếu cần để chứng minh option sai.>
+<Mỗi option sai dùng heading có emoji ❌ và tuân theo checklist (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao sai — checklist"):>
 
-**#Z — <option>**
-❌ <Tương tự — giải thích đầy đủ, không rút gọn.>
+#### ❌ #Y — <option>
+
+<- **Mở đầu bằng analogy 1 câu** cô đọng misconception:
+  *"Giống như cử người chạy ra hỏi IP rồi gọi điện cho IT update firewall."*
+- Nêu rõ MISCONCEPTION mà option đó đánh trúng (vì sao người làm bài bị lừa chọn nó)
+- Lý do kỹ thuật 3-5 câu, có quote AWS nếu cần chứng minh sai
+- Constraint cứng vi phạm (nếu có) — vd: "VPC bị giới hạn trong 1 Region nên không cross-Region được">
+
+#### ❌ #Z — <option>
+
+<Tương tự — analogy + misconception + lý do kỹ thuật + constraint vi phạm. Không rút gọn.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 💡 KIẾN THỨC CỐT LÕI
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 <2-4 bullet points tổng kết kiến thức quan trọng rút ra từ câu hỏi này.
-Viết dạng ghi nhớ, dễ ôn tập lại.>
+Viết dạng ghi nhớ, dễ ôn tập lại.
+
+**Mạnh mẽ khuyến nghị**: thêm 1 bullet **gọi tên design pattern** nếu câu hỏi minh họa pattern AWS phổ biến (xem catalog đầy đủ tại `references/teaching-patterns.md` mục "Pattern 8 — Gọi tên design pattern"):
+
+- **Pattern thiết kế:** <tên pattern> — <giải thích 1 câu> (gặp lại ở: <list service>)
+
+Ví dụ:
+- **Pattern thiết kế:** *Stable indirection layer* — tách "địa chỉ public client thấy" (cố định) khỏi "địa chỉ thực phía sau" (động). Gặp lại ở: Global Accelerator, Route 53, CloudFront, ALB DNS.
+- **Pattern thiết kế:** *Decoupling via queue* — tách producer khỏi consumer bằng queue trung gian, hỗ trợ retry + DLQ. Gặp lại ở: SQS, EventBridge, SNS+SQS fan-out.
+
+Việc gọi tên pattern giúp người đọc gắn câu trả lời vào framework rộng hơn, dễ áp dụng cho câu mới.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 NGUỒN THAM KHẢO
@@ -268,6 +316,16 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - Không đổi thứ tự phương án — luôn bám ID vị trí gốc.
 - **Section "Kiến thức cốt lõi"** phải có giá trị ôn tập: viết dạng rule/pattern, không lặp lại đề bài.
 - Khi trích dẫn tài liệu, ghi rõ đoạn nào là quote gốc vs diễn giải.
+
+### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có ví dụ đầy đủ)
+
+- **"Vì sao đúng" phải có Pass 1 (trực giác) trước Pass 2 (kỹ thuật)** — analogy đời thường HOẶC ASCII diagram, KHÔNG nhảy thẳng vào quote AWS.
+- **"Vì sao đúng" phải kết bằng TL;DR** 1-2 câu, key term in đậm.
+- **"Vì sao sai" mỗi option mở đầu bằng analogy 1 câu** cô đọng misconception, sau đó mới tới lý do kỹ thuật.
+- **"Vì sao sai" dùng heading `#### ❌ #N — ...`** (có emoji ❌ trong heading).
+- **"Giải thích câu hỏi" theo storytelling order**: vấn đề mấu chốt → tại sao yêu cầu khó → câu hệ quả "→ Cần ___". KHÔNG liệt kê constraint kiểu báo cáo.
+- **Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern trong "Kiến thức cốt lõi".
+- **Anticipated follow-up + bằng chứng quan sát được** là khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
 
 ## Query Q&A đã lưu
 
