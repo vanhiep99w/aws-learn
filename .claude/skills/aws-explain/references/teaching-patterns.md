@@ -15,9 +15,14 @@
 - [Pattern 6 — TL;DR cuối section](#pattern-6--tldr-cuối-section)
 - [Pattern 7 — Bằng chứng quan sát được](#pattern-7--bằng-chứng-quan-sát-được)
 - [Pattern 8 — Gọi tên design pattern](#pattern-8--gọi-tên-design-pattern)
+- [Pattern 9 — Decision walkthrough (loại trừ tuần tự)](#pattern-9--decision-walkthrough-loại-trừ-tuần-tự)
+- [Pattern 10 — Cost component breakdown](#pattern-10--cost-component-breakdown)
+- [Pattern 11 — "Đừng nhầm với..." callout](#pattern-11--đừng-nhầm-với-callout)
 - [Cấu trúc "Giải thích câu hỏi" — storytelling order](#cấu-trúc-giải-thích-câu-hỏi--storytelling-order)
 - [Cấu trúc "Vì sao đúng" — checklist](#cấu-trúc-vì-sao-đúng--checklist)
 - [Cấu trúc "Vì sao sai" — checklist](#cấu-trúc-vì-sao-sai--checklist)
+- [Xử lý câu multi-select (≥2 đáp án đúng)](#xử-lý-câu-multi-select-2-đáp-án-đúng)
+- [Xử lý câu negation (NOT / except / incorrect)](#xử-lý-câu-negation-not--except--incorrect)
 
 ---
 
@@ -248,6 +253,152 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 
 ---
 
+## Pattern 9 — Decision walkthrough (loại trừ tuần tự)
+
+**Khi nào dùng (MẠNH MẼ KHUYẾN NGHỊ):**
+- Câu có **≥3 lựa chọn ở các category khác nhau** (vd: NLB vs ALB vs PrivateLink vs EIP)
+- Câu so sánh services/storage classes với multiple constraints
+- Câu mà thứ tự loại trừ quan trọng để hiểu lý do
+
+**Vì sao cần:** Bullet list "vì sao đúng / vì sao sai" cho từng option riêng lẻ KHÔNG thể hiện được **flow loại trừ**. Người đọc cần thấy *thứ tự* mỗi constraint loại đi class giải pháp nào.
+
+**Format:**
+
+```markdown
+**Decision walkthrough:**
+
+1. <Constraint 1 từ đề bài> → loại class giải pháp nào? (loại #N, #M)
+2. <Constraint 2 từ đề bài> → loại tiếp class nào? (loại #X)
+3. <Constraint 3> → còn lại option nào?
+4. → Còn lại: **#Y ✅**
+```
+
+**Ví dụ thực tế (Bastion HA):**
+
+```markdown
+**Decision walkthrough:**
+
+1. Bastion phục vụ SSH → cần Layer 4 (TCP) → loại **ALB** (Layer 7).
+2. Cần entry point public từ internet → loại **VPC Endpoint** (private only).
+3. Cần HA cho fleet, có health check → loại **Elastic IP** (1 IP gắn 1 instance,
+   không health-based routing).
+4. → Còn lại: **NLB ✅**
+```
+
+**Vị trí đặt:** Đặt ở **đầu Pass 2** (sau analogy/diagram, trước quote AWS). Block này thay thế phần *"Vì sao đáp án đúng là #X"* dài dòng — đi thẳng vào logic loại trừ.
+
+**Anti-pattern:**
+- ❌ Decision walkthrough "fake" liệt kê constraint nhưng không loại trừ thật → vô dụng
+- ❌ Bước nhảy quá lớn ("Constraint 1 + 2 + 3 → #Y") → mất giá trị dẫn dắt
+- ❌ Quá 5 bước → quá phức tạp, gộp lại
+
+---
+
+## Pattern 10 — Cost component breakdown
+
+**Khi nào dùng:**
+- Đáp án xoay quanh từ khóa **cost-optimal, lowest cost, most cost-effective, minimize spend, reduce charges**
+- Có ≥2 option cùng đạt mục tiêu kỹ thuật, khác nhau ở chi phí
+- Nguồn AWS Pricing có công bố con số cụ thể
+
+**Vì sao cần:** "Rẻ hơn" trừu tượng. Người đọc cần biết **rẻ ở chỗ nào**: storage charge? request charge? data transfer? KMS API call? để nhớ pattern cho câu sau.
+
+**Format bảng (3 cột tối thiểu):**
+
+```markdown
+**Cost breakdown:**
+
+| Thành phần phí | Option đúng (#X) | Option sai (#Y) |
+|----------------|------------------|------------------|
+| Storage | <giá> | <giá> |
+| Request (PUT/GET) | <giá> | <giá> |
+| Data transfer | <giá> | <giá> |
+| Hidden cost | <vd: KMS API call> | <vd: NAT GB processed> |
+| **Ước tính tháng (1 TB)** | **~$X** | **~$Y** |
+```
+
+**Quy tắc:**
+- Giá trị phải **trích từ AWS Pricing chính thức** (có MCP verify)
+- Nếu không tra được con số chính xác, dùng dạng định tính: `$$ vs $$$$` thay vì bịa số
+- Highlight dòng **Hidden cost** — đây là chỗ AWS exam hay đánh lừa (NAT data processing, cross-AZ transfer, KMS request, ...)
+- Dòng cuối là **ước tính tổng tháng cho 1 use case cụ thể** (1 TB, 1M requests, ...) — biến trừu tượng thành con số
+
+**Ví dụ:**
+
+```markdown
+**Cost breakdown** (1 TB image archive, infrequent access):
+
+| Thành phần | S3 Intelligent-Tiering (#3) | S3 Standard (#1) |
+|------------|-----------------------------|--------------------|
+| Storage tier | tự move sang IA sau 30d | luôn Standard |
+| Storage charge | ~$0.0125/GB-mo (IA) | $0.023/GB-mo |
+| Monitoring fee | $0.0025/1k objects | 0 |
+| **Total/tháng (1 TB)** | **~$13** | **~$24** |
+```
+
+→ Người đọc thấy `Intelligent-Tiering` rẻ ~45% nhờ tiered storage, monitoring fee chỉ là phần nhỏ.
+
+**Anti-pattern:**
+- ❌ Bịa số ("rẻ hơn 30%") không có nguồn → vi phạm "không suy đoán"
+- ❌ Quá nhiều dòng (>6) → mất focus, gộp lại
+- ❌ Không có dòng total → người đọc phải tự cộng
+
+---
+
+## Pattern 11 — "Đừng nhầm với..." callout
+
+**Khi nào dùng:**
+- Câu hỏi có service **dễ nhầm với service tương tự** trong AWS exam
+- Đáp án đúng có **near-twin service** thường bị chọn nhầm
+
+**Catalog các nhóm service dễ nhầm trong AWS:**
+
+| Nhóm | Confusion |
+|------|-----------|
+| ALB / NLB / GWLB / CLB | Layer khác nhau, target khác nhau |
+| EBS / EFS / FSx / Instance Store | Block vs file vs ephemeral |
+| Direct Connect / Site-to-Site VPN / Transit Gateway / VPC Peering | Connectivity options |
+| Gateway endpoint / Interface endpoint / PrivateLink | VPC endpoints |
+| KDS / Kinesis Firehose / MSK / SQS | Streaming/queue |
+| Dedicated Instance / Dedicated Host / Bare Metal | Tenancy |
+| Spot Instance / Spot Fleet / Spot Block / EC2 Fleet | Spot pricing |
+| Aurora / RDS / DynamoDB / DocumentDB / Neptune | Database engines |
+| S3 Standard / IA / One Zone-IA / Glacier Instant / Glacier Flexible / Glacier Deep | Storage classes |
+| Lambda / Fargate / ECS / EKS / EC2 | Compute |
+| Route 53 routing policies (Simple/Weighted/Latency/Failover/Geolocation/Geoproximity/Multi-value) | Routing |
+| Savings Plans (Compute / EC2 Instance / SageMaker) | Coverage |
+| IAM Role / Resource Policy / Permissions Boundary / SCP | Permission scope |
+| Reserved Instances / Savings Plans / On-Demand / Spot | Pricing models |
+
+**Format callout:**
+
+```markdown
+> **⚠️ Đừng nhầm với:**
+>
+> - **<Service near-twin>** — <khác biệt quan trọng nhất, 1 câu>. Câu này KHÔNG phù hợp vì <constraint cụ thể từ đề>.
+> - **<Service near-twin 2>** — <khác biệt>. <Vì sao loại>.
+```
+
+**Ví dụ:**
+
+```markdown
+> **⚠️ Đừng nhầm với:**
+>
+> - **Dedicated Host** — bạn quản lý từng physical server, thấy được socket/core,
+>   dùng cho BYOL license cần host-affinity. Câu này KHÔNG yêu cầu host-affinity → loại.
+> - **Bare Metal instance** — dành cho workload cần direct access tới hardware
+>   (vd hypervisor stack), không phải single-tenant compliance đơn thuần.
+```
+
+**Vị trí đặt:** Cuối section "Vì sao đúng", **trước TL;DR**. Hoặc thay TL;DR nếu service confusion là insight chính của câu.
+
+**Anti-pattern:**
+- ❌ Liệt kê 5+ service tương tự → loãng, người đọc không nhớ
+- ❌ Lặp lại nội dung "Vì sao sai" của các option → trùng lặp
+- ❌ Callout cho service không trong cùng AWS category → không phải "near-twin" thật
+
+---
+
 ## Cấu trúc "Giải thích câu hỏi" — storytelling order
 
 Thay vì liệt kê constraint, viết theo thứ tự **kể chuyện**:
@@ -330,3 +481,104 @@ AWS có tính năng **ALB as target of NLB**, nhưng có ràng buộc cứng:
 
 → Không khả thi về kỹ thuật **và** sai về kiến trúc.
 ```
+
+---
+
+## Xử lý câu multi-select (≥2 đáp án đúng)
+
+Câu multi-select (`Select two`, `Select three`, `Choose all that apply`) **KHÔNG được dùng template single-choice**. Cần điều chỉnh format.
+
+### Quy tắc bắt buộc
+
+1. **Banner đầu output:**
+   ```
+   📑 MULTI-SELECT — chọn N đáp án đúng
+   ```
+
+2. **Section "✅ ĐÁP ÁN" liệt kê tất cả option đúng**, mỗi option 1 dòng:
+   ```
+   **#X — <option 1>**
+   **#Y — <option 3>**
+   ```
+
+3. **Section "Vì sao đúng" mỗi option đúng có heading riêng:**
+   ```markdown
+   #### ✅ #X — <option đúng 1>
+   <Pass 1 + Pass 2 đầy đủ cho option này>
+
+   #### ✅ #Y — <option đúng 2>
+   <Pass 1 + Pass 2 đầy đủ cho option này>
+   ```
+
+   - KHÔNG gộp các option đúng vào 1 explanation chung
+   - Mỗi option tự đứng được — không phụ thuộc đọc option kia trước
+
+4. **Section "Vì sao sai" thêm subsection "🪤 Bẫy / Near-miss"** giải thích option sai *trông giống* đúng (multi-select hay có 2-3 option na ná):
+
+   ```markdown
+   #### 🪤 Near-miss — #Z (trông giống đúng nhưng KHÔNG phải)
+
+   Option này hấp dẫn vì <điểm đúng một phần>, nhưng thực ra <chỗ bẫy cụ thể>.
+   Đặc biệt dễ chọn khi <điều kiện nào trong đề kích hoạt nhầm lẫn>.
+   ```
+
+5. **TL;DR cuối "Vì sao đúng" tổng cho cả N option** (không từng cái riêng):
+   ```markdown
+   > **TL;DR:** Cả #X và #Y đều cần thiết vì <chốt insight chung>. Không thể
+   > chọn 1 trong 2 — chúng bổ sung cho nhau ở khía cạnh <X> và <Y>.
+   ```
+
+### Anti-pattern multi-select
+
+- ❌ Coi multi-select như single-choice nối liền → mất rõ ràng từng option đứng độc lập
+- ❌ Quên near-miss explanation → người đọc không học được cách phân biệt
+- ❌ TL;DR riêng từng option đúng → loãng, lẽ ra phải có insight tổng
+
+---
+
+## Xử lý câu negation (NOT / except / incorrect)
+
+**Phát hiện câu negation** trong Bước 1 chuẩn hóa đầu vào. Từ khóa kích hoạt:
+
+- **EN:** `NOT`, `except`, `excluding`, `invalid`, `incorrect`, `violates`, `prohibited`, `disallowed`, `cannot`, `unable to`, `least likely`
+- **VI:** `không`, `không được`, `sai`, `không phải`, `loại trừ`, `cấm`, `không thể`, `ít khả năng nhất`
+
+→ Nếu phát hiện **negation question**, áp dụng các điều chỉnh sau.
+
+### Quy tắc bắt buộc
+
+1. **Banner đỏ đầu output (KHÔNG được bỏ qua):**
+   ```
+   ⚠️ NEGATION QUESTION — câu hỏi đang tìm option SAI / VI PHẠM
+   ```
+
+2. **Restate câu hỏi rõ ràng:** viết lại đề bài thành dạng khẳng định để chắc chắn không hiểu nhầm:
+   ```markdown
+   📋 CÂU HỎI
+
+   <đề gốc>
+
+   **Hỏi thực chất:** "Trong các option dưới đây, option nào KHÔNG phải là
+   <hành vi/cấu hình hợp lệ> của <service>?"
+
+   → Đáp án đúng = option mô tả điều VI PHẠM/SAI. 3 option còn lại đều HỢP LỆ.
+   ```
+
+3. **Đảo logic giải thích:**
+
+   - "Vì sao đúng" → đổi tiêu đề thành **"Vì sao option này VI PHẠM / KHÔNG được phép"**
+   - "Vì sao các đáp án khác sai" → đổi tiêu đề thành **"Vì sao 3 option còn lại HỢP LỆ"**
+
+4. **Cấu trúc "Vì sao option này VI PHẠM":**
+   - Nêu rõ **rule/quota/constraint AWS** mà option đó vi phạm
+   - Quote nguồn AWS docs công bố rule
+   - Nếu là edge case → giải thích bối cảnh
+
+5. **Cấu trúc "Vì sao 3 option còn lại HỢP LỆ":** mỗi option 1-3 câu, không cần phân tích sâu (vì đề không hỏi về chúng) — chỉ cần xác nhận tính hợp lệ + nguồn nếu cần.
+
+### Anti-pattern negation
+
+- ❌ Quên banner → người đọc lướt qua, hiểu nhầm câu hỏi
+- ❌ Trả lời như câu thường: "đáp án đúng là #X" → khó hiểu, "đúng" ở đây là "đúng với việc tìm cái sai"
+- ❌ Phân tích 3 option hợp lệ dài như single-choice → lãng phí, nên ngắn gọn
+- ❌ Bỏ qua quote rule AWS cho option vi phạm → kết luận thiếu nguồn

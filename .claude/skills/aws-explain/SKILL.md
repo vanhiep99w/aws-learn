@@ -34,8 +34,13 @@ description: >
 - Tách câu hỏi, ngữ cảnh, danh sách đáp án (nếu có), đáp án đã đánh dấu (nếu có).
 - Gán ID cố định theo vị trí gốc: `#1`, `#2`, `#3`, ...
 - Xác định single-choice hay multi-select (`Select two`, `Select three`, ...).
+  - Nếu **multi-select** → áp dụng template riêng (xem `references/teaching-patterns.md` mục "Xử lý câu multi-select"). KHÔNG dùng template single-choice.
+- **Phát hiện negation question:** Nếu đề chứa `NOT`, `except`, `invalid`, `incorrect`, `violates`, `cannot`, `không`, `không được`, `sai`, `loại trừ`, `cấm`, `không thể`, `ít khả năng nhất` → đánh dấu là negation question và áp dụng quy tắc đảo logic (xem `references/teaching-patterns.md` mục "Xử lý câu negation").
 - Các nhãn sẵn (`Correct selection`, `Your selection is correct/incorrect`) chỉ là tham chiếu, không phải kết luận.
 - Xác định phạm vi xác minh: service, API, limit/quota, default behavior, region, thời điểm phát hành.
+- **Phát hiện cost-driven question:** nếu đề có `cost-optimal`, `lowest cost`, `cheapest`, `minimize spend`, `reduce charges`, `chi phí thấp nhất`, `tối ưu chi phí` → bắt buộc áp dụng Pattern 10 (Cost component breakdown).
+- **Phát hiện comparison ≥3 options:** nếu các option thuộc category khác nhau (vd: NLB vs ALB vs PrivateLink vs EIP) → bắt buộc áp dụng Pattern 9 (Decision walkthrough).
+- **Phát hiện service dễ nhầm:** đối chiếu catalog "near-twin services" trong Pattern 11 — nếu match → thêm callout "⚠️ Đừng nhầm với...".
 
 ### Bước 2: Xác minh bằng tài liệu AWS
 
@@ -72,7 +77,22 @@ Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung sec
 
 > **📖 BẮT BUỘC đọc trước khi viết phần giải thích:** [`references/teaching-patterns.md`](references/teaching-patterns.md)
 >
-> File này định nghĩa các pattern sư phạm bắt buộc: 2-pass (trực giác → kỹ thuật), analogy đời thường, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern. Áp dụng đúng các pattern này là yêu cầu chất lượng, không phải optional.
+> File này định nghĩa các pattern sư phạm bắt buộc:
+>
+> - **Pattern 1-8:** 2-pass (trực giác → kỹ thuật), analogy đời thường, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern.
+> - **Pattern 9-11:** Decision walkthrough, Cost component breakdown, "Đừng nhầm với..." callout.
+> - **Special cases:** template riêng cho **multi-select** và **negation question** — KHÔNG dùng template chuẩn dưới đây cho 2 loại này.
+>
+> Áp dụng đúng các pattern này là yêu cầu chất lượng, không phải optional. Trước khi viết, identify các trigger trong Bước 1 (negation? multi-select? cost-driven? ≥3 options? near-twin service?) và pick patterns tương ứng.
+
+**Special-case banners (nếu áp dụng):**
+
+```
+📑 MULTI-SELECT — chọn N đáp án đúng    ← cho multi-select
+⚠️ NEGATION QUESTION — câu hỏi đang tìm option SAI / VI PHẠM    ← cho negation
+```
+
+Đặt các banner này ngay trên section `📋 QUESTION`.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -127,12 +147,15 @@ Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm gi
 - 1 câu tóm tắt cơ chế trước khi đi vào kỹ thuật
 
 **Pass 2 — Kỹ thuật (mandatory):**
+- Nếu câu có **≥3 options ở category khác nhau** → mở Pass 2 bằng **Decision walkthrough** (Pattern 9) — block 3-5 bước loại trừ tuần tự, đặt TRƯỚC quote AWS.
 - Trích dẫn nguyên văn (quote block) từ tài liệu AWS giữ nguyên tiếng Anh, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote):
   > "With Provisioned Throughput, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance."
   >
   > *→ Với Provisioned Throughput, bạn chỉ định mức throughput mà file system có thể duy trì, độc lập với dung lượng lưu trữ hay burst credit balance.*
 - Nếu có quy trình hoạt động → numbered steps hoặc bảng "Bước / Việc làm"
 - Nếu có ≥2 entity dễ nhầm (vd: "IP của ALB" vs "IP của Global Accelerator") → comparison table
+- Nếu câu **cost-driven** → bắt buộc thêm **Cost breakdown** bảng (Pattern 10), với hidden cost row.
+- Nếu service đáp án có **near-twin** dễ nhầm → thêm callout **⚠️ Đừng nhầm với...** (Pattern 11) cuối Pass 2, trước TL;DR.
 - Bold key terms quan trọng
 
 **Anticipated follow-up (mạnh mẽ khuyến nghị):**
@@ -333,6 +356,7 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 
 ### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có ví dụ đầy đủ)
 
+**Quy tắc chung (mọi câu):**
 - **"Vì sao đúng" phải có Pass 1 (trực giác) trước Pass 2 (kỹ thuật)** — analogy đời thường HOẶC ASCII diagram, KHÔNG nhảy thẳng vào quote AWS.
 - **"Vì sao đúng" phải kết bằng TL;DR** 1-2 câu, key term in đậm.
 - **"Vì sao sai" mỗi option mở đầu bằng analogy 1 câu** cô đọng misconception, sau đó mới tới lý do kỹ thuật.
@@ -340,6 +364,13 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - **"Giải thích câu hỏi" theo storytelling order**: vấn đề mấu chốt → tại sao yêu cầu khó → câu hệ quả "→ Cần ___". KHÔNG liệt kê constraint kiểu báo cáo.
 - **Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern trong "Kiến thức cốt lõi".
 - **Anticipated follow-up + bằng chứng quan sát được** là khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
+
+**Quy tắc theo trigger (áp dụng có điều kiện):**
+- **≥3 options khác category** → BẮT BUỘC có **Decision walkthrough** (Pattern 9) ở đầu Pass 2.
+- **Câu cost-driven** (`cost-optimal`, `lowest cost`, `cheapest`, ...) → BẮT BUỘC có **Cost breakdown table** (Pattern 10) với hidden cost row + dòng total.
+- **Service có near-twin dễ nhầm** (ALB/NLB, EBS/EFS, KDS/Firehose, Dedicated Instance/Host, ...) → BẮT BUỘC có callout **⚠️ Đừng nhầm với...** (Pattern 11).
+- **Multi-select** → áp dụng template riêng (Xử lý câu multi-select): heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.
+- **Negation question** (`NOT`, `except`, `incorrect`, `không`, ...) → áp dụng template riêng (Xử lý câu negation): banner `⚠️ NEGATION QUESTION` đầu output, restate câu hỏi dạng khẳng định, đảo logic "Vì sao đúng" → "Vì sao option này VI PHẠM".
 
 ## Query Q&A đã lưu
 
