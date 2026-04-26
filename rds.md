@@ -99,8 +99,8 @@ Aurora nhanh hơn không phải vì thay đổi MySQL/PostgreSQL engine, mà vì
 | **Log-structured storage** | Giảm 90%+ network I/O |
 | **Quorum-based writes (4/6)** | Không đợi tất cả nodes |
 | **Parallel distributed I/O** | Ghi đồng thời 6 nodes |
-| **Shared storage layer** | All replicas đọc cùng 1 storage |
-| **Replica lag ~10-20ms** | Thay vì seconds như RDS |
+| **Shared storage layer** | All replicas dùng cùng cluster volume |
+| **Replica lag thường ≤100ms** | Reader consume log stream async, thường thấp hơn RDS Read Replica |
 
 **Ví dụ cụ thể:**
 - UPDATE 1 row (thay đổi 100 bytes)
@@ -936,7 +936,7 @@ Writer:  UPDATE user SET name='John'
               │
               ▼ COMMIT
               │
-              │  ← Replication lag (~10-20ms cho Multi-AZ Cluster)
+              │  ← Replication lag (reader/replica async có thể chưa bắt kịp)
               │
 Reader:  SELECT * FROM user
               │
@@ -946,20 +946,22 @@ Reader:  SELECT * FROM user
 
 #### Replication lag theo deployment:
 
-| Deployment | Lag |
-|------------|-----|
-| Multi-AZ Instance | ~0 (Standby không đọc được) |
-| **Multi-AZ Cluster** | **~10-20ms** (semi-sync) |
-| Read Replicas | Seconds → minutes |
-| Aurora Replicas | ~10-20ms |
+| Deployment | Replication | Lag/Stale read |
+|------------|-------------|----------------|
+| **Multi-AZ Instance standby** | **Synchronous** primary → standby | Không có read lag vì standby **không đọc được**; đổi lại write/commit latency có thể tăng |
+| **RDS Read Replica** | **Asynchronous** theo DB engine | Có thể seconds → minutes nếu replica yếu, write spike, query nặng, hoặc cross-Region |
+| **RDS Multi-AZ DB Cluster readers** | Engine-based **semisynchronous** replication | Reader đọc được; lag thường thấp hơn Read Replica nhưng vẫn có stale read |
+| **Aurora storage layer** | **Synchronous/quorum** across storage nodes/AZs | Bảo vệ durability, không phải read endpoint |
+| **Aurora Replicas** | Reader consume log stream **asynchronously** | Thường rất thấp; AWS ghi nhận thường **≤100ms**, nhưng vẫn có thể lag khi reader/write load cao |
 
 #### AWS có tự động xử lý không?
 
 | AWS tự động | Bạn phải làm |
 |-------------|--------------|
-| ✅ Sync data (~10-20ms) | ❌ Chọn endpoint nào để đọc |
-| ✅ Tạo 2 endpoints | ❌ Quyết định read nào cần consistency |
-| ✅ Failover tự động | ❌ Route critical reads về Writer |
+| ✅ Multi-AZ standby sync để failover | ❌ Không đọc từ standby; nó không phải read scale |
+| ✅ Reader/replica bắt kịp dữ liệu theo cơ chế async/semi-sync | ❌ Chọn endpoint nào để đọc |
+| ✅ Tạo endpoint phù hợp với từng kiến trúc | ❌ Quyết định read nào cần consistency |
+| ✅ Failover tự động cho Multi-AZ/Aurora | ❌ Route critical read-after-write về Writer |
 
 #### Best practice:
 
@@ -977,7 +979,27 @@ def get_stats():
     return reader_conn.execute("SELECT COUNT(*) FROM orders")
 ```
 
-> **Tin tốt**: Với Multi-AZ Cluster, lag chỉ ~10-20ms. Khi user refresh page (200-500ms), data thường đã sync xong!
+> **Rule thi AWS**: Multi-AZ standby = **sync + failover only + không đọc**. Read Replica = **async + đọc được + có thể lag**. Aurora Replica = **đọc được + failover target + async log consumption**, thường lag thấp hơn RDS Read Replica.
+
+#### Các tình huống lag thường gặp và cách xử lý
+
+| Tình huống | Dấu hiệu | Cách xử lý |
+|------------|----------|------------|
+| **Read-after-write**: vừa ghi xong đã đọc từ reader | User không thấy order/profile vừa cập nhật | Đọc critical path từ **writer/cluster endpoint**; chỉ dùng reader cho read chấp nhận stale |
+| **Write spike** làm replica apply không kịp | `ReplicaLag` / `AuroraReplicaLagMaximum` tăng | Buffer bằng **SQS/Kinesis**, giới hạn concurrency, batch writes hợp lý |
+| **Replica/reader yếu hơn writer** | CPU/memory reader cao, lag tăng dần | Scale up replica/reader, dùng instance class tương đương hoặc mạnh hơn |
+| **Query/report nặng trên reader** | Reader lag khi chạy analytics/report | Tách workload bằng reader riêng/custom endpoint; tối ưu query/index |
+| **Connection storm từ Lambda/app** | Connections tăng đột biến, CPU cao | Dùng **RDS Proxy**, connection pooling, reserved concurrency |
+| **Cross-Region replica/global database** | Lag cao hơn local replica | Tránh read-after-write ở Region phụ; monitor lag/RPO và route critical reads về primary Region |
+
+**Nguồn AWS chính thức:**
+
+- [Working with DB instance read replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html)
+- [Monitoring read replication](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.Monitoring.html)
+- [Multi-AZ DB instance deployments for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html)
+- [Multi-AZ DB cluster deployments for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html)
+- [Amazon Aurora DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html)
+- [Aurora Replicas](https://docs.aws.amazon.com/prescriptive-guidance/latest/aurora-replication-options/aurora-replicas.html)
 
 ---
 

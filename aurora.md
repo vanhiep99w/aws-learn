@@ -288,9 +288,10 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 | Đặc điểm | RDS Read Replica | Aurora Replica |
 |----------|------------------|----------------|
 | **Số lượng tối đa** | 5 | **15** |
-| **Replication** | Async (lag seconds) | **Sync** (lag ~10-20ms) |
-| **Storage** | Riêng biệt | **Shared** (cùng storage layer) |
-| **Failover tự động** | ❌ Manual promote | ✅ Tự động |
+| **Replication** | Async physical/binlog theo DB engine | **Async log consumption ở reader**; storage layer sync/quorum |
+| **Storage** | Riêng biệt cho từng replica | **Shared cluster volume** (cùng storage layer) |
+| **Lag** | Có thể giây → phút khi replica không theo kịp | Thường rất thấp, AWS ghi nhận thường **≤100ms** |
+| **Failover tự động** | ❌ Manual promote | ✅ Tự động promote Aurora Replica |
 | **Reader Endpoint** | ❌ Không có | ✅ Có sẵn |
 
 ### Aurora Replica Architecture
@@ -312,12 +313,30 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 │                    │   (6 copies/3 AZs)  │                                  │
 │                    └─────────────────────┘                                  │
 │                                                                             │
-│   ✅ Tất cả đọc từ CÙNG storage layer                                       │
-│   ✅ Không cần replicate data giữa instances                                │
-│   ✅ Lag chỉ ~10-20ms (chờ cache invalidation)                              │
+│   ✅ Tất cả dùng CÙNG cluster volume                                        │
+│   ✅ Không copy data file riêng cho từng replica                            │
+│   ✅ Reader nhận log stream async để cập nhật buffer cache/trạng thái       │
+│   ✅ Replica lag thường rất thấp (AWS: thường ≤100ms)                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Aurora Replica lag: vì sao shared storage vẫn có async?
+
+Aurora Replicas **không copy data file riêng** như RDS Read Replica truyền thống. Tất cả DB instances dùng chung **cluster volume**. Tuy nhiên mỗi reader vẫn có **CPU/RAM/buffer cache/query engine riêng**, nên reader cần consume **log stream** từ writer để cập nhật các page đang nằm trong cache của reader.
+
+- **Storage replication = synchronous/quorum**: Aurora cluster volume replicate dữ liệu across storage nodes/AZs để đảm bảo durability.
+- **Aurora Replica = asynchronous log consumption**: writer commit độc lập với việc reader đã apply xong log vào cache/trạng thái đọc hay chưa.
+- Vì vậy Aurora Replica có thể có **replica lag**, nhưng thường rất thấp; AWS Prescriptive Guidance ghi nhận thường **100ms hoặc ít hơn**.
+- Nếu cần **read-after-write consistency** tuyệt đối, đọc lại từ **cluster/writer endpoint**; reader endpoint phù hợp cho read chấp nhận stale ngắn.
+
+**Các nguyên nhân làm Aurora Replica lag tăng:** write spike, reader instance yếu hơn writer, query/report nặng trên reader, quá nhiều connections, hoặc thay đổi schema/DDL lớn.
+
+**Nguồn AWS chính thức:**
+
+- [Amazon Aurora DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html)
+- [Aurora Replicas](https://docs.aws.amazon.com/prescriptive-guidance/latest/aurora-replication-options/aurora-replicas.html)
+- [Amazon CloudWatch metrics for Amazon Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.AuroraMonitoring.Metrics.html)
 
 ### Replica Auto Scaling
 
@@ -780,7 +799,7 @@ Original cluster                    Clone (copy-on-write)
 | **Standby đọc được?** | ❌ Không (chỉ failover) | ✅ Replicas đọc được |
 | **Số lượng standby** | 1 (hoặc 2 với Multi-AZ Cluster) | Tối đa 15 replicas |
 | **Failover time** | 1-2 phút | ~30 giây |
-| **Data sync** | Synchronous block-level | Log-based (nhẹ hơn) |
+| **Data sync** | Standby sync block-level, không đọc được | Storage sync/quorum; Aurora Replicas async log consumption |
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -829,8 +848,8 @@ Original cluster                    Clone (copy-on-write)
 
 | Tiêu chí | RDS Read Replica | Aurora Replica |
 |----------|------------------|----------------|
-| **Cơ chế** | Async binlog replication | Shared storage (không cần copy data) |
-| **Replica lag** | Seconds - minutes | ~10-20ms |
+| **Cơ chế** | Async theo DB engine, replica có storage riêng | Shared storage; reader consume log stream async |
+| **Replica lag** | Có thể seconds → minutes | Thường rất thấp, AWS ghi nhận thường ≤100ms |
 | **Cross-region** | ✅ (lag cao hơn) | ✅ Global Database (<1 giây) |
 | **Failover tự động** | ❌ Manual promote | ✅ Tự động |
 | **Reader Endpoint** | ❌ Phải tự load balance | ✅ Có sẵn |
