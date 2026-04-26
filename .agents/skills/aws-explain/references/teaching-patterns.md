@@ -4,9 +4,11 @@
 >
 > Mục tiêu: nâng chất lượng sư phạm của giải thích — không chỉ đúng kỹ thuật mà còn dễ nuốt, dễ nhớ, dễ ôn lại.
 
+> **⚠️ Quy tắc về phong cách tối quan trọng:** Tất cả các "pattern" và "pass" trong file này là **khung tư duy nội bộ** để giúp viết hay hơn — KHÔNG dùng chúng làm heading hiển thị trong câu trả lời. Người đọc cần một bài giảng **liền mạch, ngôn ngữ tự nhiên**, không phải một báo cáo có nhãn `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:`. Chuyển ý bằng câu nối tự nhiên (vd: "Đi vào chi tiết kỹ thuật một chút...", "Cụ thể trong AWS...", "Tài liệu AWS nói rõ:") thay vì heading meta-process.
+
 ## Mục lục
 
-- [Nguyên tắc 2-pass](#nguyên-tắc-2-pass)
+- [Nguyên tắc dẫn dắt: trực giác trước, kỹ thuật sau](#nguyên-tắc-dẫn-dắt-trực-giác-trước-kỹ-thuật-sau)
 - [Pattern 1 — Analogy đời thường](#pattern-1--analogy-đời-thường)
 - [Pattern 2 — ASCII diagram](#pattern-2--ascii-diagram)
 - [Pattern 3 — Comparison table](#pattern-3--comparison-table)
@@ -26,20 +28,20 @@
 
 ---
 
-## Nguyên tắc 2-pass
+## Nguyên tắc dẫn dắt: trực giác trước, kỹ thuật sau
 
-Mỗi đáp án đúng giải thích theo 2 lượt:
+Mỗi đáp án đúng được viết như một **đoạn văn liền mạch**, dẫn dắt người đọc theo thứ tự:
 
-1. **Pass 1 — Trực giác:** Cho người đọc *cảm thấy* tại sao đúng trước khi hiểu kỹ thuật.
+1. **Trực giác trước** — Cho người đọc *cảm thấy* tại sao đúng:
    - Mở đầu bằng analogy đời thường HOẶC ASCII diagram
-   - Tóm tắt cơ chế bằng 1 câu
+   - 1 câu tóm tắt cơ chế
 
-2. **Pass 2 — Kỹ thuật:** Bám sát tài liệu AWS, có quote + dịch
+2. **Kỹ thuật sau** — Bám sát tài liệu AWS, có quote + dịch:
    - Trích dẫn AWS docs (giữ rules trong SKILL.md chính)
    - Numbered steps nếu có quy trình
    - Comparison table nếu có ≥2 entity dễ nhầm
 
-→ Người đọc lướt qua Pass 1 đã hiểu cốt lõi. Pass 2 là để "vững niềm tin" và verify.
+**Quan trọng:** đây là *thứ tự nội dung*, KHÔNG phải *cấu trúc heading*. KHÔNG viết các nhãn `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật` ra câu trả lời. Người đọc chỉ cần thấy một bài giảng tự nhiên, không cần biết bạn chia thành mấy "pass". Dùng câu nối kiểu *"Cụ thể hơn về kỹ thuật:"*, *"Tài liệu AWS mô tả như sau:"*, *"Đi sâu vào cơ chế:"* để chuyển từ phần trực giác sang phần kỹ thuật.
 
 ---
 
@@ -186,7 +188,7 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 ## Pattern 6 — TL;DR cuối section
 
 **Khi nào dùng (MANDATORY cho section "Vì sao đúng"):**
-- Sau Pass 2 (technical detail), đặt 1 box TL;DR
+- Sau phần technical detail, đặt 1 box TL;DR
 
 **Format:**
 
@@ -211,7 +213,7 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 - Khi có một observation cụ thể từ Console/CLI/API trực tiếp confirm được kết luận
 - Đặc biệt mạnh khi reinforce một cơ chế abstract
 
-**Format:** 1 đoạn ngắn cuối Pass 2, mở đầu bằng *"Kiểm chứng nhanh:"* hoặc *"Bằng chứng trực tiếp:"*
+**Format:** 1 đoạn văn xuôi ngắn, đặt gần cuối phần "Vì sao đúng" (sau quote AWS, trước TL;DR), mở đầu bằng *"Kiểm chứng nhanh:"* hoặc *"Bằng chứng trực tiếp:"* — KHÔNG dùng heading.
 
 **Ví dụ:**
 
@@ -262,10 +264,10 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 
 **Vì sao cần:** Bullet list "vì sao đúng / vì sao sai" cho từng option riêng lẻ KHÔNG thể hiện được **flow loại trừ**. Người đọc cần thấy *thứ tự* mỗi constraint loại đi class giải pháp nào.
 
-**Format:**
+**Format (KHÔNG đặt heading "Decision walkthrough:" — dẫn vào bằng câu nối tự nhiên):**
 
 ```markdown
-**Decision walkthrough:**
+Đi qua từng option theo thứ tự constraint của đề:
 
 1. <Constraint 1 từ đề bài> → loại class giải pháp nào? (loại #N, #M)
 2. <Constraint 2 từ đề bài> → loại tiếp class nào? (loại #X)
@@ -276,7 +278,7 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 **Ví dụ thực tế (Bastion HA):**
 
 ```markdown
-**Decision walkthrough:**
+Lần lượt loại trừ theo các yêu cầu của đề:
 
 1. Bastion phục vụ SSH → cần Layer 4 (TCP) → loại **ALB** (Layer 7).
 2. Cần entry point public từ internet → loại **VPC Endpoint** (private only).
@@ -285,7 +287,7 @@ On-prem firewall ───►│   2 IP tĩnh: A.B.C.D    │
 4. → Còn lại: **NLB ✅**
 ```
 
-**Vị trí đặt:** Đặt ở **đầu Pass 2** (sau analogy/diagram, trước quote AWS). Block này thay thế phần *"Vì sao đáp án đúng là #X"* dài dòng — đi thẳng vào logic loại trừ.
+**Vị trí đặt:** Đặt ngay sau analogy/diagram và trước khi quote AWS, làm cây cầu nối tự nhiên giữa trực giác và phần technical detail. Block này thay thế phần *"Vì sao đáp án đúng là #X"* dài dòng — đi thẳng vào logic loại trừ. **KHÔNG dùng heading `**Decision walkthrough:**`** — chỉ dẫn vào bằng một câu mở đầu tự nhiên (vd: *"Lần lượt loại trừ theo các yêu cầu của đề:"*, *"Đi qua từng option:"*, *"Áp các constraint của đề lên 4 option:"*).
 
 **Anti-pattern:**
 - ❌ Decision walkthrough "fake" liệt kê constraint nhưng không loại trừ thật → vô dụng
@@ -437,12 +439,12 @@ Thay vì liệt kê constraint, viết theo thứ tự **kể chuyện**:
 
 ## Cấu trúc "Vì sao đúng" — checklist
 
-Áp dụng tuần tự:
+Viết liền mạch theo thứ tự dưới đây — KHÔNG dùng heading `Pass 1`, `Pass 2`, `Trực giác:`, `Kỹ thuật:`. Dùng câu nối tự nhiên.
 
-- [ ] **Pass 1 — Trực giác:**
+- [ ] **Mở đầu (trực giác):**
   - [ ] Analogy đời thường HOẶC ASCII diagram (chọn 1)
   - [ ] 1 câu tóm tắt cơ chế
-- [ ] **Pass 2 — Kỹ thuật:**
+- [ ] **Đi vào kỹ thuật** (chuyển ý bằng câu nối, vd "Cụ thể trong AWS...", "Tài liệu AWS mô tả..."):
   - [ ] Trích dẫn AWS docs (quote + dịch theo rules SKILL.md chính)
   - [ ] Numbered steps hoặc bảng nếu có quy trình
   - [ ] Comparison table nếu có ≥2 entity dễ nhầm

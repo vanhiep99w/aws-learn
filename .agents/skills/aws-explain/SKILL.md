@@ -82,8 +82,10 @@ Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung sec
 >
 > File này định nghĩa các pattern sư phạm bắt buộc:
 >
-> - **Pattern 1-8:** 2-pass (trực giác → kỹ thuật), analogy đời thường, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern.
+> - **Pattern 1-8:** Mở bằng trực giác/analogy → đi vào kỹ thuật một cách tự nhiên, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern.
 > - **Pattern 9-11:** Decision walkthrough, Cost component breakdown, "Đừng nhầm với..." callout.
+>
+> **⚠️ Quan trọng về phong cách viết:** KHÔNG dùng các label như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:` (dạng heading meta-process) trong câu trả lời. Người đọc không cần biết bạn chia thành mấy "pass". Viết bằng **ngôn ngữ tự nhiên, mạch lạc**, dẫn dắt từ trực giác sang kỹ thuật như một bài giảng liền mạch. Các pattern là *khung tư duy nội bộ*, không phải heading hiển thị.
 >
 > **📎 Load có điều kiện:** [`references/special-cases.md`](references/special-cases.md) — CHỈ load khi Bước 1 phát hiện trigger **multi-select** hoặc **negation**. KHÔNG load mặc định để tiết kiệm context. File này định nghĩa template riêng (banner, heading format, đảo logic) cho 2 loại câu đặc biệt — KHÔNG dùng template chuẩn dưới đây cho chúng.
 >
@@ -144,14 +146,13 @@ Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm gi
 
 **#X — <option>**
 
-<Tuân theo cấu trúc 2-pass (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao đúng — checklist"):
+<Viết một bài giải thích **liền mạch, ngôn ngữ tự nhiên** (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao đúng — checklist"). KHÔNG dùng heading "Pass 1", "Pass 2", "Decision walkthrough:", "Trực giác:", "Kỹ thuật:" — các label đó chỉ là khung tư duy nội bộ, không hiển thị ra.
 
-**Pass 1 — Trực giác (mandatory):**
-- Mở đầu bằng **analogy đời thường** HOẶC **ASCII diagram** (chọn 1, hoặc cả hai nếu phù hợp)
-- 1 câu tóm tắt cơ chế trước khi đi vào kỹ thuật
+Mở đầu cần (mandatory):
+- **Một analogy đời thường** HOẶC **ASCII diagram** (chọn 1, hoặc cả hai nếu phù hợp), kèm 1 câu tóm tắt cơ chế. Viết như đang kể chuyện, không gắn label.
 
-**Pass 2 — Kỹ thuật (mandatory):**
-- Nếu câu có **≥3 options ở category khác nhau** → mở Pass 2 bằng **Decision walkthrough** (Pattern 9) — block 3-5 bước loại trừ tuần tự, đặt TRƯỚC quote AWS.
+Sau đó dẫn người đọc vào phần kỹ thuật một cách tự nhiên (mandatory):
+- Nếu câu có **≥3 options ở category khác nhau** → trước khi quote AWS, viết một đoạn loại trừ tuần tự bằng văn xuôi hoặc danh sách đánh số (KHÔNG đặt heading "Decision walkthrough:" — chỉ dẫn dắt bằng câu kiểu "Đi qua từng option theo thứ tự constraint của đề:").
 - Trích dẫn nguyên văn (quote block) từ tài liệu AWS, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote):
   > "With Provisioned Throughput, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance."
   >
@@ -159,7 +160,7 @@ Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm gi
 - Nếu có quy trình hoạt động → numbered steps hoặc bảng "Bước / Việc làm"
 - Nếu có ≥2 entity dễ nhầm (vd: "IP của ALB" vs "IP của Global Accelerator") → comparison table
 - Nếu câu **cost-driven** → bắt buộc thêm **Cost breakdown** bảng (Pattern 10), với hidden cost row.
-- Nếu service đáp án có **near-twin** dễ nhầm → thêm callout **⚠️ Đừng nhầm với...** (Pattern 11) cuối Pass 2, trước TL;DR.
+- Nếu service đáp án có **near-twin** dễ nhầm → thêm callout **⚠️ Đừng nhầm với...** (Pattern 11) ở gần cuối section, trước TL;DR.
 - Bold key terms quan trọng
 
 **Anticipated follow-up (mạnh mẽ khuyến nghị):**
@@ -172,7 +173,7 @@ Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm gi
   ```
 
 **Bằng chứng quan sát được (optional):**
-- Nếu có observation từ Console/CLI/API confirm cơ chế → thêm 1 đoạn "Kiểm chứng nhanh:"
+- Nếu có observation từ Console/CLI/API confirm cơ chế → thêm 1 đoạn mở đầu bằng "Kiểm chứng nhanh:" (đoạn văn xuôi, không heading).
 
 **TL;DR cuối section (mandatory):**
 - 1-2 câu chốt lại insight cốt lõi, dạng dễ thuộc:
@@ -344,7 +345,8 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 ### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có ví dụ đầy đủ)
 
 **Quy tắc chung (mọi câu):**
-- **"Vì sao đúng" phải có Pass 1 (trực giác) trước Pass 2 (kỹ thuật)** — analogy đời thường HOẶC ASCII diagram, KHÔNG nhảy thẳng vào quote AWS.
+- **KHÔNG dùng meta-label** như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:`, `Trực giác:`, `Kỹ thuật:` làm heading hiển thị. Đây chỉ là khung tư duy nội bộ. Câu trả lời phải đọc như một **bài giảng liền mạch bằng ngôn ngữ tự nhiên**, dẫn dắt từ analogy/trực giác → kỹ thuật → trích dẫn AWS.
+- **"Vì sao đúng" phải mở bằng analogy đời thường HOẶC ASCII diagram trước**, sau đó mới đi vào phần kỹ thuật + quote AWS — nhưng chuyển ý bằng câu nối tự nhiên, KHÔNG bằng heading.
 - **"Vì sao đúng" phải kết bằng TL;DR** 1-2 câu, key term in đậm.
 - **"Vì sao sai" mỗi option mở đầu bằng analogy 1 câu** cô đọng misconception, sau đó mới tới lý do kỹ thuật.
 - **"Vì sao sai" dùng heading `#### ❌ #N — ...`** (có emoji ❌ trong heading).
@@ -353,7 +355,7 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - **Anticipated follow-up + bằng chứng quan sát được** là khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
 
 **Quy tắc theo trigger (áp dụng có điều kiện):**
-- **≥3 options khác category** → BẮT BUỘC có **Decision walkthrough** (Pattern 9) ở đầu Pass 2.
+- **≥3 options khác category** → BẮT BUỘC có đoạn loại trừ tuần tự (Pattern 9) trước khi quote AWS, viết dạng văn xuôi/numbered list, KHÔNG đặt heading "Decision walkthrough:".
 - **Câu cost-driven** (`cost-optimal`, `lowest cost`, `cheapest`, ...) → BẮT BUỘC có **Cost breakdown table** (Pattern 10) với hidden cost row + dòng total.
 - **Service có near-twin dễ nhầm** (ALB/NLB, EBS/EFS, KDS/Firehose, Dedicated Instance/Host, ...) → BẮT BUỘC có callout **⚠️ Đừng nhầm với...** (Pattern 11).
 - **Multi-select** → load `references/special-cases.md` và áp dụng template riêng: heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.

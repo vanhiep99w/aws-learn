@@ -34,10 +34,10 @@ Câu multi-select (`Select two`, `Select three`, `Choose all that apply`) **KHÔ
 3. **Section "Vì sao đúng" mỗi option đúng có heading riêng:**
    ```markdown
    #### ✅ #X — <option đúng 1>
-   <Pass 1 + Pass 2 đầy đủ cho option này>
+   <Giải thích đầy đủ cho option này: mở bằng analogy/diagram (trực giác), rồi tự nhiên đi vào kỹ thuật + quote AWS. KHÔNG dùng heading "Pass 1", "Pass 2".>
 
    #### ✅ #Y — <option đúng 2>
-   <Pass 1 + Pass 2 đầy đủ cho option này>
+   <Tương tự — viết liền mạch, ngôn ngữ tự nhiên.>
    ```
 
    - KHÔNG gộp các option đúng vào 1 explanation chung
