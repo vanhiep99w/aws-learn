@@ -34,8 +34,8 @@ description: >
 - Tách câu hỏi, ngữ cảnh, danh sách đáp án (nếu có), đáp án đã đánh dấu (nếu có).
 - Gán ID cố định theo vị trí gốc: `#1`, `#2`, `#3`, ...
 - Xác định single-choice hay multi-select (`Select two`, `Select three`, ...).
-  - Nếu **multi-select** → áp dụng template riêng (xem `references/teaching-patterns.md` mục "Xử lý câu multi-select"). KHÔNG dùng template single-choice.
-- **Phát hiện negation question:** Nếu đề chứa `NOT`, `except`, `invalid`, `incorrect`, `violates`, `cannot`, `không`, `không được`, `sai`, `loại trừ`, `cấm`, `không thể`, `ít khả năng nhất` → đánh dấu là negation question và áp dụng quy tắc đảo logic (xem `references/teaching-patterns.md` mục "Xử lý câu negation").
+  - Nếu **multi-select** → load thêm `references/special-cases.md` và áp dụng template riêng. KHÔNG dùng template single-choice.
+- **Phát hiện negation question:** Nếu đề chứa `NOT`, `except`, `invalid`, `incorrect`, `violates`, `cannot`, `không`, `không được`, `sai`, `loại trừ`, `cấm`, `không thể`, `ít khả năng nhất` → load thêm `references/special-cases.md` và áp dụng quy tắc đảo logic.
 - Các nhãn sẵn (`Correct selection`, `Your selection is correct/incorrect`) chỉ là tham chiếu, không phải kết luận.
 - Xác định phạm vi xác minh: service, API, limit/quota, default behavior, region, thời điểm phát hành.
 - **Phát hiện cost-driven question:** nếu đề có `cost-optimal`, `lowest cost`, `cheapest`, `minimize spend`, `reduce charges`, `chi phí thấp nhất`, `tối ưu chi phí` → bắt buộc áp dụng Pattern 10 (Cost component breakdown).
@@ -81,7 +81,8 @@ Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung sec
 >
 > - **Pattern 1-8:** 2-pass (trực giác → kỹ thuật), analogy đời thường, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern.
 > - **Pattern 9-11:** Decision walkthrough, Cost component breakdown, "Đừng nhầm với..." callout.
-> - **Special cases:** template riêng cho **multi-select** và **negation question** — KHÔNG dùng template chuẩn dưới đây cho 2 loại này.
+>
+> **📎 Load có điều kiện:** [`references/special-cases.md`](references/special-cases.md) — CHỈ load khi Bước 1 phát hiện trigger **multi-select** hoặc **negation**. KHÔNG load mặc định để tiết kiệm context. File này định nghĩa template riêng (banner, heading format, đảo logic) cho 2 loại câu đặc biệt — KHÔNG dùng template chuẩn dưới đây cho chúng.
 >
 > Áp dụng đúng các pattern này là yêu cầu chất lượng, không phải optional. Trước khi viết, identify các trigger trong Bước 1 (negation? multi-select? cost-driven? ≥3 options? near-twin service?) và pick patterns tương ứng.
 
@@ -369,8 +370,8 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - **≥3 options khác category** → BẮT BUỘC có **Decision walkthrough** (Pattern 9) ở đầu Pass 2.
 - **Câu cost-driven** (`cost-optimal`, `lowest cost`, `cheapest`, ...) → BẮT BUỘC có **Cost breakdown table** (Pattern 10) với hidden cost row + dòng total.
 - **Service có near-twin dễ nhầm** (ALB/NLB, EBS/EFS, KDS/Firehose, Dedicated Instance/Host, ...) → BẮT BUỘC có callout **⚠️ Đừng nhầm với...** (Pattern 11).
-- **Multi-select** → áp dụng template riêng (Xử lý câu multi-select): heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.
-- **Negation question** (`NOT`, `except`, `incorrect`, `không`, ...) → áp dụng template riêng (Xử lý câu negation): banner `⚠️ NEGATION QUESTION` đầu output, restate câu hỏi dạng khẳng định, đảo logic "Vì sao đúng" → "Vì sao option này VI PHẠM".
+- **Multi-select** → load `references/special-cases.md` và áp dụng template riêng: heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.
+- **Negation question** (`NOT`, `except`, `incorrect`, `không`, ...) → load `references/special-cases.md` và áp dụng template riêng: banner `⚠️ NEGATION QUESTION` đầu output, restate câu hỏi dạng khẳng định, đảo logic "Vì sao đúng" → "Vì sao option này VI PHẠM".
 
 ## Query Q&A đã lưu
 
