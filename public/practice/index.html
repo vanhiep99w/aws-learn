@@ -327,21 +327,19 @@ body::before{
   display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;
 }
 .score-track{
-  flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;
+  flex:1;height:6px;background:var(--surface3);border-radius:999px;overflow:hidden;
+  display:flex;min-width:80px;
 }
 .score-fill{
-  height:100%;background:var(--gradient-success);border-radius:2px;
-  transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;
+  height:100%;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;
 }
+.score-fill.correct{background:var(--gradient-success)}
+.score-fill.wrong{background:var(--gradient-danger)}
+.score-fill.pending{background:var(--surface3)}
 .score-text{
   font-family:'JetBrains Mono',monospace;font-size:.65rem;
-  color:var(--emerald);font-weight:600;white-space:nowrap;
+  color:var(--text2);font-weight:600;white-space:nowrap;
 }
-.score-detail{
-  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
-  font-size:.68rem;color:var(--text2);font-weight:600;
-}
-.score-detail strong{color:var(--text)}
 .reset-progress-btn{
   border:1px solid var(--border);background:var(--surface2);color:var(--text2);
   border-radius:8px;padding:4px 8px;font:600 .64rem 'Inter',sans-serif;
@@ -865,12 +863,13 @@ body.qa-resizing{cursor:col-resize;user-select:none}
       <span class="list-count" id="list-count">0</span>
     </div>
     <div class="score-bar" id="score-bar" style="display:none">
-      <div class="score-track"><div class="score-fill" id="score-fill"></div></div>
-      <span class="score-text" id="score-text">0/0</span>
-      <div class="score-detail">
-        <span id="score-detail">Đã trả lời <strong>0</strong> · Đúng <strong>0</strong> · Sai <strong>0</strong></span>
-        <button type="button" class="reset-progress-btn" id="reset-progress">Reset</button>
+      <div class="score-track" id="score-track" title="Đúng / Sai / Chưa trả lời">
+        <div class="score-fill correct" id="score-fill-correct"></div>
+        <div class="score-fill wrong" id="score-fill-wrong"></div>
+        <div class="score-fill pending" id="score-fill-pending"></div>
       </div>
+      <span class="score-text" id="score-text">0/0</span>
+      <button type="button" class="reset-progress-btn" id="reset-progress">Reset</button>
     </div>
     <div class="list-scroll" id="list-scroll">
       <div class="loading"><div class="spinner"></div>Loading...</div>
@@ -1082,15 +1081,22 @@ function updateScoreBar() {
     }
     if (st.isCorrect === true) correct++;
   }
-  const total = submitted.length;
-  const wrong = Math.max(0, total - correct);
+  const answered = submitted.length;
+  const wrong = Math.max(0, answered - correct);
+  const total = totalQuestions || Math.max(issues.length, answered);
+  const pending = Math.max(0, total - answered);
   const bar = document.getElementById('score-bar');
   if (total > 0) {
     bar.style.display = 'flex';
-    document.getElementById('score-fill').style.width = `${(correct/total)*100}%`;
-    document.getElementById('score-text').textContent = `${correct}/${total}`;
-    const detail = document.getElementById('score-detail');
-    if (detail) detail.innerHTML = `Đã trả lời <strong>${total}</strong> · Đúng <strong>${correct}</strong> · Sai <strong>${wrong}</strong>`;
+    const correctPct = total ? (correct / total) * 100 : 0;
+    const wrongPct = total ? (wrong / total) * 100 : 0;
+    const pendingPct = Math.max(0, 100 - correctPct - wrongPct);
+    document.getElementById('score-fill-correct').style.width = `${correctPct}%`;
+    document.getElementById('score-fill-wrong').style.width = `${wrongPct}%`;
+    document.getElementById('score-fill-pending').style.width = `${pendingPct}%`;
+    document.getElementById('score-text').textContent = `${answered}/${total}`;
+    const track = document.getElementById('score-track');
+    if (track) track.title = `Đúng ${correct} · Sai ${wrong} · Chưa trả lời ${pending}`;
   } else {
     bar.style.display = 'none';
   }
