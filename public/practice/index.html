@@ -1223,7 +1223,7 @@ function showDetail(issue, scrollToTop = false) {
   const revealed = !isPractice || state.submitted;
 
   let questionHTML = '';
-  if (q.stem) questionHTML += `<div class="q-stem">${esc(q.stem)}</div>`;
+  if (q.stem) questionHTML += `<div class="q-stem md">${marked.parse(q.stem)}</div>`;
   if (q.options.length > 0) {
     if (isPractice && !state.submitted) {
       // Practice mode: selectable options
