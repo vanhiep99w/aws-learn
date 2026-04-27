@@ -621,6 +621,13 @@ body.qa-resizing{cursor:col-resize;user-select:none}
   display:flex;align-items:center;gap:14px;
   margin-top:18px;margin-bottom:10px;
 }
+.submit-row.answered{
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.submit-actions{
+  display:flex;align-items:center;gap:10px;margin-left:auto;
+}
 .submit-btn{
   font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;
   padding:10px 28px;border-radius:10px;border:none;
@@ -1376,10 +1383,12 @@ function showDetail(issue, scrollToTop = false) {
       }).join('') + '</div>';
       const allCorrect = q.options.filter(o => o.correct).every(o => state.selected.has(o.id))
         && q.options.filter(o => o.wrong).every(o => !state.selected.has(o.id));
-      questionHTML += `<div class="submit-row">
+      questionHTML += `<div class="submit-row answered">
         <span class="submit-result ${allCorrect ? 'pass' : 'fail'}">${allCorrect ? '✓ CORRECT' : '✗ INCORRECT'}</span>
-        <button class="submit-btn retry" id="retry-btn">Try Again</button>
-        <button class="submit-btn" id="next-question-btn">Next</button>
+        <div class="submit-actions">
+          <button class="submit-btn retry" id="retry-btn">Try Again</button>
+          <button class="submit-btn" id="next-question-btn">Next</button>
+        </div>
       </div>`;
     } else {
       // Review mode
