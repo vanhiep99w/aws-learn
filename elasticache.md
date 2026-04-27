@@ -7,6 +7,7 @@
 - [Tại sao cần Cache?](#tại-sao-cần-cache)
 - [Hai loại Engine](#hai-loại-engine)
 - [ElastiCache for Redis - Chi tiết](#elasticache-for-redis-chi-tiết)
+- [Redis Multi-AZ và Automatic Failover](#redis-multi-az-và-automatic-failover)
 - [ElastiCache for Memcached - Chi tiết](#elasticache-for-memcached-chi-tiết)
 - [Use Cases](#use-cases)
 - [ElastiCache Serverless (2024)](#elasticache-serverless-2024)
@@ -155,7 +156,7 @@ ElastiCache hỗ trợ **2 engines**:
 │                                                                 │
 │  ┌─────────┐         ┌─────────┐  ┌─────────┐  ┌─────────┐      │
 │  │ Primary │────────►│Replica 1│  │Replica 2│  │Replica 3│      │
-│  │  (R/W)  │  Sync   │  (Read) │  │  (Read) │  │  (Read) │      │
+│  │  (R/W)  │  Async  │  (Read) │  │  (Read) │  │  (Read) │      │
 │  └────┬────┘         └────┬────┘  └────┬────┘  └────┬────┘      │
 │       │                   │            │            │           │
 │       ▼                   └────────────┴────────────┘           │
@@ -218,6 +219,251 @@ ElastiCache hỗ trợ **2 engines**:
 | **Max data** | ~310 GB | Multi-TB |
 | **Endpoints cần dùng** | 2 (Primary + Reader) | **1** (Configuration) |
 | **Replicas per shard** | 0-5 | 0-5 |
+
+---
+
+## Redis Multi-AZ và Automatic Failover
+
+### Vấn đề: cache cũng cần HA, không chỉ database
+
+ElastiCache Redis thường nằm giữa application và database:
+
+```
+Application ──► ElastiCache Redis ──► RDS / Aurora / DynamoDB
+                 (hot path)
+```
+
+Nếu Redis primary node bị lỗi:
+
+- App có thể không ghi/read cache được trong một khoảng thời gian
+- Database phía sau bị dồn traffic vì cache miss tăng mạnh
+- Latency tăng, user experience giảm
+- Nếu Redis đang giữ session, leaderboard, queue nhẹ, token, rate-limit counter... thì mất cache có thể ảnh hưởng trực tiếp tới business flow
+
+Vì vậy, production Redis không nên chỉ có 1 node. Cấu hình chuẩn là **replication group** có **primary + read replicas**, đặt ở nhiều AZ, và bật **Multi-AZ with automatic failover**.
+
+---
+
+### Multi-AZ with Automatic Failover là gì?
+
+**Multi-AZ with automatic failover** cho ElastiCache Redis/Valkey nghĩa là:
+
+1. Có ít nhất 1 **primary node** nhận write.
+2. Có ít nhất 1 **read replica** ở AZ khác.
+3. Redis replication chạy từ primary sang replica.
+4. Khi primary lỗi, ElastiCache tự động chọn replica phù hợp nhất để promote thành primary mới.
+5. ElastiCache cập nhật DNS của **primary endpoint**, nên application thường không cần đổi endpoint.
+
+```
+Trước sự cố:
+
+┌───────────── AZ-a ─────────────┐      ┌───────────── AZ-b ─────────────┐
+│  Primary Redis                 │─────►│  Read Replica                  │
+│  Read + Write                  │Async │  Read only                     │
+└──────────────┬────────────────┘      └────────────────────────────────┘
+               │
+               ▼
+      Primary Endpoint
+      myredis.xxxxxx.cache.amazonaws.com
+
+Sau khi Primary fail:
+
+┌───────────── AZ-a ─────────────┐      ┌───────────── AZ-b ─────────────┐
+│  Failed primary                │      │  Promoted Primary              │
+│  offline                       │      │  Read + Write                  │
+└────────────────────────────────┘      └──────────────┬────────────────┘
+                                                        │
+                                                        ▼
+                                             Primary Endpoint trỏ sang node mới
+```
+
+AWS mô tả trực tiếp rằng khi bật Multi-AZ, downtime được giảm thiểu vì primary tự động fail over sang read replica:
+
+> "This replacement results in some downtime for the cluster, but if Multi-AZ is enabled, the downtime is minimized. The role of primary node will automatically fail over to one of the read replicas."
+>
+> *→ Việc thay primary có gây downtime cho cluster, nhưng nếu bật Multi-AZ thì downtime được giảm thiểu. Vai trò primary node sẽ tự động fail over sang một read replica.*
+
+---
+
+### Failover diễn ra như thế nào?
+
+Khi **chỉ primary node fail**, ElastiCache thực hiện flow sau:
+
+| Bước | ElastiCache làm gì | Ý nghĩa |
+|------|---------------------|---------|
+| 1 | Đưa primary lỗi ra khỏi service | Ngăn app ghi vào node lỗi |
+| 2 | Chọn read replica có **replication lag thấp nhất** | Giảm data loss |
+| 3 | Promote replica đó thành primary mới | App có nơi nhận write mới |
+| 4 | Propagate DNS name tới primary endpoint | App không cần đổi connection string |
+| 5 | Tạo replacement replica ở AZ của primary cũ | Khôi phục topology HA |
+| 6 | Các replica sync lại với primary mới | Cluster ổn định trở lại |
+
+AWS ghi rõ:
+
+> "If only the primary node fails, the read replica with the least replication lag is promoted to primary."
+>
+> *→ Nếu chỉ primary node lỗi, read replica có replication lag thấp nhất sẽ được promote thành primary.*
+
+Và sau khi promote:
+
+> "Writes can resume as soon as the promotion process is complete, typically just a few seconds."
+>
+> *→ Write có thể tiếp tục ngay khi quá trình promote hoàn tất, thường chỉ vài giây.*
+
+---
+
+### Read Replicas khác gì Multi-AZ Automatic Failover?
+
+Đây là bẫy thi rất phổ biến.
+
+| Tiêu chí | Chỉ thêm Read Replicas | Multi-AZ + Automatic Failover |
+|----------|-------------------------|-------------------------------|
+| Có bản sao dữ liệu | ✅ Có | ✅ Có |
+| Scale read traffic | ✅ Có | ✅ Có |
+| Replica đặt ở AZ khác | ✅ Có thể | ✅ Nên có / cần cho HA |
+| Tự promote replica khi primary fail | ❌ Không đảm bảo nếu không bật automatic failover | ✅ Có |
+| Tự cập nhật primary endpoint | ❌ Không phải trọng tâm của option | ✅ Có |
+| Giảm downtime khi primary fail | ⚠️ Một phần, nhưng cần thao tác failover | ✅ Mục tiêu chính |
+| Đáp án exam khi hỏi "minimal downtime" | ❌ Thường chưa đủ | ✅ Chọn |
+
+**Rule nhớ:**
+
+> **Read Replica = có bản sao + scale reads.**  
+> **Multi-AZ Automatic Failover = có bản sao + tự động thay primary khi lỗi.**
+
+Nếu đề hỏi **high availability**, **minimal downtime**, **automatic failover**, **disaster recovery cho Redis primary** → chọn **Multi-AZ with automatic failover**, không chỉ chọn “add read replicas”.
+
+---
+
+### Data loss: có mất dữ liệu không?
+
+Có thể mất **một lượng nhỏ dữ liệu** nếu primary fail trước khi dữ liệu replicate sang replica.
+
+Lý do: Redis/Valkey replication trong ElastiCache là **asynchronous**.
+
+> "Valkey and Redis OSS replication is asynchronous. Therefore, when a primary node fails over to a replica, a small amount of data might be lost due to replication lag."
+>
+> *→ Replication của Valkey và Redis OSS là bất đồng bộ. Vì vậy, khi primary fail over sang replica, một lượng nhỏ dữ liệu có thể mất do replication lag.*
+
+Vì vậy:
+
+- Multi-AZ automatic failover giúp **minimal data loss**, không phải **zero data loss**.
+- ElastiCache giảm rủi ro bằng cách chọn replica có **least replication lag**.
+- Nếu workload yêu cầu transactional durability tuyệt đối, Redis cache không phải nơi lưu bản ghi nguồn duy nhất; database bền vững như RDS/Aurora/DynamoDB mới nên là source of truth.
+
+---
+
+### Backup/Snapshot có thay thế Multi-AZ không?
+
+**Không.** Backup dùng cho restore, không phải failover real-time.
+
+| Cơ chế | Dùng để làm gì | RTO/RPO |
+|--------|----------------|---------|
+| **Multi-AZ Automatic Failover** | Primary lỗi → promote replica để app tiếp tục chạy | RTO thấp, thường vài giây; RPO thấp nhưng có thể mất ít data do lag |
+| **Automatic Backups / Snapshots** | Restore cache mới từ backup | RTO cao hơn vì phải tạo/restore cache; RPO phụ thuộc backup gần nhất |
+| **Manual Backup** | Backup trước thay đổi lớn, migration, archive | Không xử lý failover tự động |
+
+AWS mô tả automatic backups là tạo backup hằng ngày và restore cache mới khi có failure:
+
+> "When automatic backups are enabled, ElastiCache creates a backup of the cache on a daily basis."
+>
+> *→ Khi bật automatic backups, ElastiCache tạo backup cache hằng ngày.*
+
+> "In the event of a failure, you can create a new cache, restoring your data from the most recent backup."
+>
+> *→ Khi xảy ra sự cố, bạn có thể tạo cache mới và restore dữ liệu từ backup gần nhất.*
+
+Backup vẫn quan trọng, nhưng nó trả lời câu hỏi **"khôi phục dữ liệu sau sự cố"**, không trả lời câu hỏi **"làm sao downtime thấp nhất khi primary chết"**.
+
+---
+
+### AOF và Multi-AZ: đừng chọn nhầm
+
+Redis có cơ chế persistence gọi là **append-only file (AOF)**, nhưng với ElastiCache Redis OSS, **AOF và Multi-AZ loại trừ lẫn nhau**.
+
+AWS ghi rõ:
+
+> "ElastiCache for Redis OSS Multi-AZ and append-only file (AOF) are mutually exclusive. If you enable one, you can't enable the other."
+>
+> *→ ElastiCache for Redis OSS Multi-AZ và append-only file (AOF) loại trừ lẫn nhau. Nếu bật một cái thì không thể bật cái còn lại.*
+
+Do đó, nếu đề hỏi:
+
+- minimal downtime
+- automatic failover
+- high availability
+- disaster recovery cho Redis primary
+
+thì **không chọn AOF**. Chọn **Multi-AZ with automatic failover**.
+
+---
+
+### Failure scenarios cần nhớ
+
+| Scenario | ElastiCache Multi-AZ xử lý thế nào | Data impact |
+|----------|-------------------------------------|-------------|
+| Chỉ primary fail | Promote replica có lag thấp nhất thành primary | Có thể mất ít data do async replication |
+| Primary + một số replica fail | Promote replica còn sống có lag thấp nhất | Có thể mất nhiều hơn nếu replica còn lại lag |
+| Toàn bộ cluster fail | Recreate nodes cùng AZ ban đầu | Data trong cluster mất; cần restore từ backup nếu cần |
+| Customer reboot primary | Không trigger automatic failover theo tài liệu AWS | Cẩn thận vì có thể gây data loss |
+
+> [!WARNING]
+> Multi-AZ giảm downtime khi node/AZ failure, nhưng không thay thế backup. Production Redis nên có cả **Multi-AZ automatic failover** cho HA và **automatic backups** cho restore/warm start.
+
+---
+
+### Cấu hình tối thiểu để bật Multi-AZ
+
+Theo AWS:
+
+- Multi-AZ chỉ hỗ trợ Redis OSS/Valkey cluster có **nhiều hơn 1 node trong mỗi shard**.
+- Cluster mode disabled cần có ít nhất **1 available read replica**.
+- Multi-AZ chỉ tự động enable nếu cluster có ít nhất một replica ở **AZ khác primary** trong mọi shard.
+- Redis OSS Multi-AZ không hỗ trợ T1 node types.
+
+Ví dụ AWS CLI bật Multi-AZ + automatic failover cho replication group có sẵn replica:
+
+```bash
+aws elasticache modify-replication-group \
+  --replication-group-id redis12 \
+  --automatic-failover-enabled \
+  --multi-az-enabled \
+  --apply-immediately
+```
+
+---
+
+### Exam pattern
+
+| Keyword trong đề | Nên nghĩ tới |
+|------------------|--------------|
+| Redis + minimal downtime | **Multi-AZ with automatic failover** |
+| Redis + primary node failure | **Automatic failover promote replica** |
+| Redis + reduce read load | **Read replicas / reader endpoint** |
+| Redis + restore from point-in-time/snapshot | **Automatic/manual backups** |
+| Redis + low RPO/RTO | **Multi-AZ + backups**, nhưng đáp án realtime HA là Multi-AZ |
+| Redis + AOF + HA | Cẩn thận: **AOF không thay Multi-AZ** |
+
+**Câu hỏi mẫu:**
+
+> Công ty dùng ElastiCache Redis trước RDS, cần DR cho caching layer với minimal downtime, minimal data loss, good performance. Chọn gì?
+
+✅ **Đáp án:** Enable **Multi-AZ with automatic failover**.  
+❌ Không chọn “chỉ thêm read replicas” vì thiếu automatic promotion.  
+❌ Không chọn daily backups vì đó là restore, không phải failover realtime.  
+❌ Không chọn AOF vì không phù hợp với Multi-AZ và không giải quyết automatic failover.
+
+---
+
+### Nguồn AWS chính thức
+
+- [Minimizing downtime in ElastiCache by using Multi-AZ with Valkey and Redis OSS](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html)
+- [Minimizing downtime with Multi-AZ](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/multi-az.html)
+- [High availability using replication groups](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Replication.html)
+- [Scheduling automatic backups](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups-automatic.html)
+- [Snapshot and restore](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/backups.html)
+
+---
 
 ### Data Types trong Redis
 
