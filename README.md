@@ -125,6 +125,7 @@ Two modes:
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
 - [x] [AWS STS](aws-sts.md) - Temporary Credentials, AssumeRole, Web Identity, SAML, Session Policies
 - [x] [IAM JSON Policy Types](iam-json-policy-types.md) - Identity-based, Resource-based, Permissions Boundaries, SCPs, ACLs, Session Policies
+- [x] [AWS Policies Overview](aws-policies-overview.md) - Bản đồ tổng phân biệt TẤT CẢ "policy" trong AWS (IAM/Org/Network/Behavioral/Legal), Confusion Matrix, Decision Tree
 - [x] [Security Groups](security-groups.md) - Virtual Firewall cho VPC resources
 - [x] [Amazon Inspector](amazon-inspector.md) - Vulnerability Scanning cho EC2, ECR Images, Lambda Functions
 - [x] [Amazon GuardDuty](amazon-guardduty.md) - Threat Detection, ML-based Security Monitoring, Malware Protection
