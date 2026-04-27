@@ -324,7 +324,7 @@ body::before{
 /* ── Score bar ── */
 .score-bar{
   padding:8px 16px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;
 }
 .score-track{
   flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;
@@ -336,6 +336,19 @@ body::before{
 .score-text{
   font-family:'JetBrains Mono',monospace;font-size:.65rem;
   color:var(--emerald);font-weight:600;white-space:nowrap;
+}
+.score-detail{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:.68rem;color:var(--text2);font-weight:600;
+}
+.score-detail strong{color:var(--text)}
+.reset-progress-btn{
+  border:1px solid var(--border);background:var(--surface2);color:var(--text2);
+  border-radius:8px;padding:4px 8px;font:600 .64rem 'Inter',sans-serif;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.reset-progress-btn:hover{
+  border-color:var(--wrong-border);background:var(--wrong-soft);color:var(--wrong);
 }
 
 /* ── Card ── */
@@ -853,6 +866,10 @@ body.qa-resizing{cursor:col-resize;user-select:none}
     <div class="score-bar" id="score-bar" style="display:none">
       <div class="score-track"><div class="score-fill" id="score-fill"></div></div>
       <span class="score-text" id="score-text">0/0</span>
+      <div class="score-detail">
+        <span id="score-detail">Đã trả lời <strong>0</strong> · Đúng <strong>0</strong> · Sai <strong>0</strong></span>
+        <button type="button" class="reset-progress-btn" id="reset-progress">Reset</button>
+      </div>
     </div>
     <div class="list-scroll" id="list-scroll">
       <div class="loading"><div class="spinner"></div>Loading...</div>
@@ -870,6 +887,7 @@ body.qa-resizing{cursor:col-resize;user-select:none}
 const API = '/api/questions';
 const POLL_MS = 5000;
 const QA_SPLIT_KEY = 'practice-qa-question-width';
+const PRACTICE_PROGRESS_KEY = 'practice-answers-v1';
 const QA_SPLIT_DEFAULT = 50;
 const QA_SPLIT_MIN = 25;
 const QA_SPLIT_MAX = 75;
@@ -882,7 +900,7 @@ let pollTimer = null;
 let selectedId = null;
 let collapsedSections = {};
 let viewMode = getSavedViewMode();
-let submittedAnswers = {}; // { issueId: { selected: Set, submitted: bool } }
+let submittedAnswers = loadPracticeProgress(); // { issueId: { selected: Set, submitted: bool, isCorrect?: bool } }
 const PAGE_SIZE = 20;
 let loadedCount = 0;
 let totalQuestions = 0;
@@ -906,6 +924,60 @@ function applyQaSplit(percent) {
 
 function saveQaSplit(percent) {
   localStorage.setItem(QA_SPLIT_KEY, String(clamp(percent, QA_SPLIT_MIN, QA_SPLIT_MAX).toFixed(1)));
+}
+
+function loadPracticeProgress() {
+  try {
+    const raw = localStorage.getItem(PRACTICE_PROGRESS_KEY);
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    const out = {};
+    for (const [id, st] of Object.entries(data || {})) {
+      out[id] = {
+        selected: new Set(Array.isArray(st.selected) ? st.selected.map(String) : []),
+        submitted: !!st.submitted,
+        isCorrect: typeof st.isCorrect === 'boolean' ? st.isCorrect : undefined,
+        answeredAt: st.answeredAt || null,
+        updatedAt: st.updatedAt || null
+      };
+    }
+    return out;
+  } catch (err) {
+    console.warn('Could not load practice progress', err);
+    return {};
+  }
+}
+
+function savePracticeProgress() {
+  const data = {};
+  for (const [id, st] of Object.entries(submittedAnswers)) {
+    if (!st || (!st.submitted && (!st.selected || st.selected.size === 0))) continue;
+    data[id] = {
+      selected: [...st.selected],
+      submitted: !!st.submitted,
+      isCorrect: typeof st.isCorrect === 'boolean' ? st.isCorrect : undefined,
+      answeredAt: st.answeredAt || null,
+      updatedAt: st.updatedAt || new Date().toISOString()
+    };
+  }
+  localStorage.setItem(PRACTICE_PROGRESS_KEY, JSON.stringify(data));
+}
+
+function getAnswerState(issueId) {
+  if (!submittedAnswers[issueId]) submittedAnswers[issueId] = { selected: new Set(), submitted: false };
+  if (!(submittedAnswers[issueId].selected instanceof Set)) {
+    submittedAnswers[issueId].selected = new Set(submittedAnswers[issueId].selected || []);
+  }
+  return submittedAnswers[issueId];
+}
+
+function isAnswerCorrect(issue, st) {
+  if (!issue || !st) return false;
+  const q = parseQuestion(issue.description, issue.meta);
+  const correct = q.options.filter(o => o.correct);
+  const wrong = q.options.filter(o => o.wrong);
+  if (correct.length === 0) return false;
+  return correct.every(o => st.selected.has(o.id)) && wrong.every(o => !st.selected.has(o.id));
 }
 
 function bindQaResizer() {
@@ -981,22 +1053,24 @@ function applyViewMode(mode) {
 }
 
 function updateScoreBar() {
-  const total = Object.keys(submittedAnswers).filter(k => submittedAnswers[k].submitted).length;
-  const correct = Object.keys(submittedAnswers).filter(k => {
-    const st = submittedAnswers[k];
-    if (!st.submitted) return false;
-    const issue = issues.find(i => i.id === k);
-    if (!issue) return false;
-    const q = parseQuestion(issue.description, issue.meta);
-    const allCorrect = q.options.filter(o => o.correct).every(o => st.selected.has(o.id))
-      && q.options.filter(o => o.wrong).every(o => !st.selected.has(o.id));
-    return allCorrect;
-  }).length;
+  const submitted = Object.entries(submittedAnswers).filter(([, st]) => st && st.submitted);
+  let correct = 0;
+  for (const [id, st] of submitted) {
+    const issue = issues.find(i => i.id === id);
+    if (issue) {
+      st.isCorrect = isAnswerCorrect(issue, st);
+    }
+    if (st.isCorrect === true) correct++;
+  }
+  const total = submitted.length;
+  const wrong = Math.max(0, total - correct);
   const bar = document.getElementById('score-bar');
   if (total > 0) {
     bar.style.display = 'flex';
     document.getElementById('score-fill').style.width = `${(correct/total)*100}%`;
     document.getElementById('score-text').textContent = `${correct}/${total}`;
+    const detail = document.getElementById('score-detail');
+    if (detail) detail.innerHTML = `Đã trả lời <strong>${total}</strong> · Đúng <strong>${correct}</strong> · Sai <strong>${wrong}</strong>`;
   } else {
     bar.style.display = 'none';
   }
@@ -1033,6 +1107,8 @@ async function fetchData() {
     const still = issues.find(i => i.id === selectedId);
     if (still) showDetail(still);
   }
+  updateScoreBar();
+  savePracticeProgress();
   document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
 }
 
@@ -1051,6 +1127,8 @@ async function loadMore() {
     for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
     populateFilters();
     renderList();
+    updateScoreBar();
+    savePracticeProgress();
   } finally { loadingMore = false; }
 }
 
@@ -1218,7 +1296,7 @@ function showDetail(issue, scrollToTop = false) {
     + (issue.meta.question_type ? `<span class="badge qtype">${issue.meta.question_type}</span>` : '');
   const q = parseQuestion(issue.description, issue.meta);
   const isPractice = viewMode === 'practice';
-  const state = submittedAnswers[issue.id] || { selected: new Set(), submitted: false };
+  const state = getAnswerState(issue.id);
   const isMulti = issue.meta.question_type === 'multi-select';
   const revealed = !isPractice || state.submitted;
 
@@ -1318,8 +1396,7 @@ function showDetail(issue, scrollToTop = false) {
     allOpts.forEach(opt => {
       opt.addEventListener('click', () => {
         const optId = opt.dataset.optId;
-        if (!submittedAnswers[issue.id]) submittedAnswers[issue.id] = { selected: new Set(), submitted: false };
-        const st = submittedAnswers[issue.id];
+        const st = getAnswerState(issue.id);
         if (isMulti) {
           if (st.selected.has(optId)) st.selected.delete(optId); else st.selected.add(optId);
         } else {
@@ -1328,13 +1405,22 @@ function showDetail(issue, scrollToTop = false) {
           allOpts.forEach(o => o.classList.remove('selected'));
         }
         opt.classList.toggle('selected', st.selected.has(optId));
+        st.updatedAt = new Date().toISOString();
+        savePracticeProgress();
+        updateScoreBar();
+        renderList();
         if (submitBtn) submitBtn.disabled = st.selected.size === 0;
       });
     });
     if (submitBtn) {
       submitBtn.addEventListener('click', () => {
-        if (!submittedAnswers[issue.id]) return;
-        submittedAnswers[issue.id].submitted = true;
+        const st = getAnswerState(issue.id);
+        if (st.selected.size === 0) return;
+        st.submitted = true;
+        st.isCorrect = isAnswerCorrect(issue, st);
+        st.answeredAt = new Date().toISOString();
+        st.updatedAt = st.answeredAt;
+        savePracticeProgress();
         showDetail(issue, false);
         updateScoreBar();
         renderList();
@@ -1346,7 +1432,8 @@ function showDetail(issue, scrollToTop = false) {
   const retryBtn = document.getElementById('retry-btn');
   if (retryBtn) {
     retryBtn.addEventListener('click', () => {
-      submittedAnswers[issue.id] = { selected: new Set(), submitted: false };
+      submittedAnswers[issue.id] = { selected: new Set(), submitted: false, updatedAt: new Date().toISOString() };
+      savePracticeProgress();
       showDetail(issue, false);
       updateScoreBar();
       renderList();
@@ -1486,7 +1573,20 @@ document.getElementById('auto-toggle-wrap').addEventListener('click', () => {
 function startPoll() { stopPoll(); pollTimer = setInterval(() => fetchData().catch(console.error), POLL_MS); }
 function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
+document.getElementById('reset-progress')?.addEventListener('click', () => {
+  if (!confirm('Reset toàn bộ tiến độ luyện tập đã lưu trên máy này?')) return;
+  submittedAnswers = {};
+  localStorage.removeItem(PRACTICE_PROGRESS_KEY);
+  updateScoreBar();
+  renderList();
+  if (selectedId) {
+    const issue = issues.find(i => i.id === selectedId);
+    if (issue) showDetail(issue, false);
+  }
+});
+
 applyViewMode(viewMode);
+updateScoreBar();
 fetchData().catch(err => {
   document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
 });
