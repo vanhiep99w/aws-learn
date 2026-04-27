@@ -8,9 +8,10 @@
 
 ## Mục lục
 
+- [Component toolkit — chọn cái fit nội dung](#component-toolkit--chọn-cái-fit-nội-dung)
 - [Nguyên tắc dẫn dắt: trực giác trước, kỹ thuật sau](#nguyên-tắc-dẫn-dắt-trực-giác-trước-kỹ-thuật-sau)
 - [Pattern 1 — Analogy đời thường](#pattern-1--analogy-đời-thường)
-- [Pattern 2 — ASCII diagram](#pattern-2--ascii-diagram)
+- [Pattern 2 — Diagram (Mermaid hoặc ASCII)](#pattern-2--diagram-mermaid-hoặc-ascii)
 - [Pattern 3 — Comparison table](#pattern-3--comparison-table)
 - [Pattern 4 — Numbered step table](#pattern-4--numbered-step-table)
 - [Pattern 5 — Anticipated follow-up](#pattern-5--anticipated-follow-up)
@@ -21,10 +22,69 @@
 - [Pattern 10 — Cost component breakdown](#pattern-10--cost-component-breakdown)
 - [Pattern 11 — "Đừng nhầm với..." callout](#pattern-11--đừng-nhầm-với-callout)
 - [Cấu trúc "Giải thích câu hỏi" — storytelling order](#cấu-trúc-giải-thích-câu-hỏi--storytelling-order)
-- [Cấu trúc "Vì sao đúng" — checklist](#cấu-trúc-vì-sao-đúng--checklist)
-- [Cấu trúc "Vì sao sai" — checklist](#cấu-trúc-vì-sao-sai--checklist)
+- [Cấu trúc "Vì sao đúng"](#cấu-trúc-vì-sao-đúng)
+- [Cấu trúc "Vì sao sai"](#cấu-trúc-vì-sao-sai)
 
 > **📎 Special cases (multi-select, negation):** xem [`special-cases.md`](special-cases.md) — chỉ load file đó khi Bước 1 phát hiện trigger tương ứng. KHÔNG load mặc định để tiết kiệm context.
+
+---
+
+## Component toolkit — chọn cái fit nội dung
+
+**Triết lý:** *structure cố định, content linh hoạt*. Bên trong mỗi subsection (`### Giải thích câu hỏi`, `### Vì sao đúng`, `#### ❌ #N — ...`), pick component theo loại nội dung — KHÔNG tick checklist cứng. Một câu về IAM policy → JSON code block đáng giá hơn analogy. Một câu về topology → diagram đáng giá hơn bullet list.
+
+| Component | Khi nên dùng | Khi nên TRÁNH |
+|---|---|---|
+| **Analogy đời thường** | Concept trừu tượng (eventual consistency, indirection, control plane, IAM trust); misconception cô đọng trong "Vì sao sai" | Câu thuần về limit/quota/syntax; analogy quá dài (>2 câu) làm loãng |
+| **Mermaid diagram** | Topology, flow, state machine, sequence — đặc biệt khi câu trả lời render trong webapp `/docs/` (Fumadocs hỗ trợ Mermaid) | Diagram đơn giản chỉ 2-3 box → ASCII gọn hơn; khi notes hiển thị ở nơi không render Mermaid |
+| **ASCII diagram** | Topology/flow gọn ≤15 dòng, an toàn render mọi nơi (D1 notes, terminal, plain markdown) | Cấu trúc phức tạp >15 dòng → khó đọc, dùng Mermaid |
+| **Comparison table** | ≥2 entity dễ nhầm cần phân biệt thuộc tính (ALB vs NLB, EBS vs EFS, IP của ALB vs IP của GA) | 1 entity duy nhất; >7 dòng → tách 2 bảng |
+| **Step table / numbered list** | Quy trình tuần tự, request flow, deployment sequence | Không có thứ tự — dùng bullet thường |
+| **Code block (`bash`/`json`/`yaml`)** | CLI command, IAM policy, bucket policy, CFN/TF snippet, SDK call, sample API request/response | Khi không có config/code thực tế — đừng "fake" code minh họa |
+| **Inline code (`backtick`)** | Tên API, parameter, config key, ARN format, header name | Câu văn xuôi — đừng inline code mọi từ |
+| **Bullet list** | Liệt kê đặc điểm/constraint/cost component không có thứ tự | Có ≥3 chiều so sánh → comparison table tốt hơn |
+| **Numbered list** | Decision walkthrough, deployment steps, sự kiện tuần tự | Liệt kê không có thứ tự logic — dùng bullet |
+| **Blockquote** | Quote nguyên văn AWS docs (kèm dịch), highlight câu hệ quả, TL;DR, "Kiểm chứng nhanh:", "Đừng nhầm với..." | Không có phần text cần emphasize đặc biệt |
+| **Callout với emoji** | `⚠️` cảnh báo/near-twin; `💡` insight; `📌` ghi chú quan trọng; `🔑` key concept | Lạm dụng emoji làm rối |
+| **Bold key terms** | Thuật ngữ AWS lần đầu xuất hiện, từ khóa then chốt trong câu trả lời | Bold mọi thứ → mất ý nghĩa highlight |
+
+**Chiến thuật pick component:**
+
+1. Đọc câu hỏi & đáp án → xác định **bản chất nội dung** (topology? config? cost? misconception about indirection? near-twin confusion?)
+2. Map sang component fit nhất từ bảng trên
+3. Áp **trigger BẮT BUỘC** nếu match (≥3 options → decision walkthrough; cost-driven → cost table; near-twin → callout)
+4. Còn lại tự do — miễn sao "đầy đủ và dễ hiểu nhất"
+
+**Mẫu code block phổ biến:**
+
+```bash
+# CLI command minh họa
+aws s3api put-bucket-policy \
+  --bucket my-bucket \
+  --policy file://policy.json
+```
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::my-bucket/*"
+  }]
+}
+```
+
+```yaml
+# CloudFormation snippet
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket
+      VersioningConfiguration:
+        Status: Enabled
+```
 
 ---
 
@@ -75,21 +135,65 @@ Mỗi đáp án đúng được viết như một **đoạn văn liền mạch**
 
 ---
 
-## Pattern 2 — ASCII diagram
+## Pattern 2 — Diagram (Mermaid hoặc ASCII)
 
-**Khi nào dùng (DÙNG):**
+**Khi nào dùng:**
 - Front door / fan-out (1 entry → N targets)
 - Cấu trúc tầng/lớp (Layer 4 vs 7, control plane vs data plane, public vs private subnet)
 - Flow request (client → service → backend)
 - Topology mạng (VPC, subnet, route, peering)
 - Replication / failover topology
+- State machine, sequence của event
 
 **Khi nào KHÔNG dùng:**
 - Câu hỏi thuần về limit/quota/pricing
-- Câu hỏi về cú pháp API/CLI/IAM policy
+- Câu hỏi về cú pháp API/CLI/IAM policy → dùng code block
 - Concept đã rõ ràng từ tên service (vd: "S3 Standard vs S3 Glacier")
 
-**Quy tắc:**
+### Mermaid vs ASCII — chọn cái nào?
+
+| Ngữ cảnh hiển thị | Khuyến nghị |
+|---|---|
+| Webapp Fumadocs (`/docs/...`) | **Mermaid** — render đẹp, scale tốt, rich syntax |
+| D1 notes (`/beads/...`) | **ASCII** nếu trang practice không render Mermaid; **Mermaid** nếu có. Khi không chắc, dùng ASCII (an toàn) |
+| Diagram đơn giản 2-3 box | **ASCII** — gọn, không cần init renderer |
+| Diagram phức tạp (≥5 node, branching, sequence) | **Mermaid** — gọn syntax, dễ đọc hơn ASCII |
+| Sequence diagram (request/response qua nhiều service) | **Mermaid sequenceDiagram** — không có equivalent gọn cho ASCII |
+
+### Mermaid — quy tắc & ví dụ
+
+- Dùng các diagram type phù hợp: `flowchart`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`
+- Đặt trong code block với ngôn ngữ `mermaid`
+- Ngắn gọn — node label tiếng Việt OK, nhưng tránh quá dài
+
+**Ví dụ flowchart (front door / fan-out):**
+
+```mermaid
+flowchart LR
+    Firewall["On-prem firewall<br/>allowlist 2 IP"] --> GA["AWS Global Accelerator<br/>2 IP tĩnh: A.B.C.D / W.X.Y.Z"]
+    GA -->|"Region gần nhất"| ALB1["ALB ở Singapore"]
+    GA --> ALB2["ALB ở Tokyo"]
+    GA --> ALB3["ALB ở US-East"]
+```
+
+**Ví dụ sequenceDiagram (S3 multipart upload):**
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S3 as S3
+    C->>S3: CreateMultipartUpload
+    S3-->>C: UploadId
+    loop Mỗi part
+        C->>S3: UploadPart (UploadId, PartNumber)
+        S3-->>C: ETag
+    end
+    C->>S3: CompleteMultipartUpload (list ETag)
+    S3-->>C: Object key + version
+```
+
+### ASCII — quy tắc & ví dụ
+
 - Gọn dưới 15 dòng
 - Dùng box-drawing chars: `┌ ─ ┐ │ └ ▼ ◄ ►`
 - Có chú thích bên cạnh hoặc trong box
@@ -437,33 +541,63 @@ Thay vì liệt kê constraint, viết theo thứ tự **kể chuyện**:
 
 ---
 
-## Cấu trúc "Vì sao đúng" — checklist
+## Cấu trúc "Vì sao đúng"
 
-Viết liền mạch theo thứ tự dưới đây — KHÔNG dùng heading `Pass 1`, `Pass 2`, `Trực giác:`, `Kỹ thuật:`. Dùng câu nối tự nhiên.
+Viết liền mạch theo thứ tự dưới đây — KHÔNG dùng heading `Pass 1`, `Pass 2`, `Trực giác:`, `Kỹ thuật:`. Dùng câu nối tự nhiên (vd. *"Cụ thể trong AWS..."*, *"Tài liệu AWS mô tả..."*).
 
-- [ ] **Mở đầu (trực giác):**
-  - [ ] Analogy đời thường HOẶC ASCII diagram (chọn 1)
-  - [ ] 1 câu tóm tắt cơ chế
-- [ ] **Đi vào kỹ thuật** (chuyển ý bằng câu nối, vd "Cụ thể trong AWS...", "Tài liệu AWS mô tả..."):
-  - [ ] Trích dẫn AWS docs (quote + dịch theo rules SKILL.md chính)
-  - [ ] Numbered steps hoặc bảng nếu có quy trình
-  - [ ] Comparison table nếu có ≥2 entity dễ nhầm
-- [ ] **(Khuyến khích) Anticipated follow-up:** Đặt câu hỏi follow-up phổ biến rồi trả lời ngay
-- [ ] **(Khuyến khích) Bằng chứng quan sát được:** 1 đoạn observation từ Console/CLI nếu có
-- [ ] **TL;DR cuối section:** 1-2 câu chốt
+**Cố định (mandatory):**
+
+- **Mở đầu trực giác** (component pick từ toolkit theo nội dung — analogy/diagram/comparison table/code block/...) + 1 câu tóm tắt cơ chế
+- **Phần kỹ thuật bám AWS docs** — quote + dịch nếu cần chứng minh kết luận
+- **TL;DR cuối section** — 1-2 câu chốt, key term in đậm
+
+**Linh hoạt (chọn fit nội dung — không tick mọi cái):**
+
+| Khi nội dung là... | Component nên dùng |
+|---|---|
+| Concept trừu tượng (indirection, eventual consistency) | Analogy đời thường mở đầu |
+| Topology / flow / failover | Mermaid hoặc ASCII diagram |
+| Phân biệt entity dễ nhầm | Comparison table |
+| Quy trình/sự kiện tuần tự | Numbered steps hoặc bảng "Bước / Việc làm" |
+| Câu xoay quanh config/policy/CLI | Code block (`bash`/`json`/`yaml`) |
+| ≥3 options khác category (TRIGGER) | Decision walkthrough numbered list (Pattern 9) |
+| Cost-driven (TRIGGER) | Cost breakdown table (Pattern 10) |
+| Service có near-twin (TRIGGER) | Callout `⚠️ Đừng nhầm với...` (Pattern 11) |
+
+**Khuyến nghị (optional, dùng khi tăng giá trị sư phạm):**
+
+- Anticipated follow-up — đặt 1 câu hỏi mà người mới CHẮC CHẮN sẽ thắc mắc, rồi trả lời ngay (Pattern 5)
+- Bằng chứng quan sát được — đoạn văn xuôi mở bằng *"Kiểm chứng nhanh:"* (Pattern 7)
+- Gọi tên design pattern AWS lồng vào TL;DR (Pattern 8)
 
 ---
 
-## Cấu trúc "Vì sao sai" — checklist
+## Cấu trúc "Vì sao sai"
 
-Mỗi option sai:
+Mỗi option sai dùng heading `#### ❌ #N — <option>` (emoji ❌ trong heading).
 
-- [ ] Heading có emoji ❌: `### ❌ #N — <option>`
-- [ ] **Mở đầu bằng analogy 1 câu** cô đọng misconception
-  - VD: *"Giống như cử người chạy ra hỏi IP rồi gọi điện cho IT update firewall."*
-- [ ] **Nêu rõ MISCONCEPTION** mà option đánh trúng (vì sao người làm bài bị lừa chọn nó)
-- [ ] **Lý do kỹ thuật** — 3-5 câu, có quote AWS nếu cần để chứng minh sai
-- [ ] **(Optional) constraint cứng** vi phạm — vd: "VPC bị giới hạn trong 1 Region nên không cross-Region được"
+**Cố định (mandatory):**
+
+- **Mở đầu cô đọng misconception** — option đánh trúng nhầm lẫn nào của người làm bài
+- **Lý do kỹ thuật** 3-5 câu — chứng minh sai
+
+**Linh hoạt (chọn cách cô đọng misconception fit nhất):**
+
+| Misconception thuộc loại... | Component khuyến nghị mở đầu |
+|---|---|
+| Hiểu sai cơ chế trừu tượng | Analogy 1 câu — vd: *"Giống như cử người chạy ra hỏi IP rồi gọi điện cho IT update firewall."* |
+| Hiểu sai topology/flow | Diagram nhỏ hoặc 1 dòng box-drawing minh họa cấu hình sai |
+| Sai về tham số/policy/syntax | Inline code/code block snippet show config invalid |
+| So sánh sai với đáp án đúng | Minimal table 2 cột option sai vs đáp án đúng |
+| Đã rõ ngay từ tên option | 1 câu pin-point — vd: *"Tier này là cold storage, không phục vụ low-latency read."* |
+
+**Component lý do kỹ thuật** (chọn fit):
+- Quote+dịch AWS docs nếu cần chứng minh sai bằng nguồn chính thức
+- Code block nếu cần show API/policy minh họa
+- Bullet list liệt kê các vi phạm/giới hạn
+- Constraint cứng — vd: *"VPC bị giới hạn trong 1 Region nên không cross-Region được"*
+
+Tránh: rút gọn quá mức (1-2 câu chung chung) → không có giá trị sư phạm.
 
 **Ví dụ tốt:**
 

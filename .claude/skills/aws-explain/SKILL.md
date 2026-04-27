@@ -77,18 +77,29 @@ Sau khi hoàn tất phân tích, **bắt buộc** lưu Q&A vào Cloudflare D1. X
 
 Trả lời theo cấu trúc sau. Dùng visual markers rõ ràng. Nội dung section `🔍 GIẢI THÍCH CHI TIẾT` sẽ được **copy nguyên văn** vào D1 notes, nên phải viết đầy đủ chi tiết ngay từ đầu.
 
-> **📖 BẮT BUỘC đọc trước khi viết phần giải thích:** [`references/teaching-patterns.md`](references/teaching-patterns.md)
+> **📖 Đọc trước khi viết phần giải thích:** [`references/teaching-patterns.md`](references/teaching-patterns.md)
 >
-> File này định nghĩa các pattern sư phạm bắt buộc:
+> File này có 2 phần:
 >
-> - **Pattern 1-8:** Mở bằng trực giác/analogy → đi vào kỹ thuật một cách tự nhiên, ASCII diagram, comparison table, anticipated follow-up, TL;DR, gọi tên design pattern.
-> - **Pattern 9-11:** Decision walkthrough, Cost component breakdown, "Đừng nhầm với..." callout.
+> - **Component toolkit** — danh sách component (Mermaid/ASCII diagram, comparison table, step table, code block, callout, blockquote quote+dịch, bullet/numbered list, ...) và **khi nào nên dùng từng loại**.
+> - **Pattern catalog (1-11)** — các framework tư duy: analogy, diagram, comparison table, decision walkthrough, cost breakdown, "Đừng nhầm với...", anticipated follow-up, TL;DR, gọi tên design pattern.
 >
-> **⚠️ Quan trọng về phong cách viết:** KHÔNG dùng các label như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:` (dạng heading meta-process) trong câu trả lời. Người đọc không cần biết bạn chia thành mấy "pass". Viết bằng **ngôn ngữ tự nhiên, mạch lạc**, dẫn dắt từ trực giác sang kỹ thuật như một bài giảng liền mạch. Các pattern là *khung tư duy nội bộ*, không phải heading hiển thị.
+> **🎯 Triết lý viết: structure cố định, content linh hoạt.**
 >
-> **📎 Load có điều kiện:** [`references/special-cases.md`](references/special-cases.md) — CHỈ load khi Bước 1 phát hiện trigger **multi-select** hoặc **negation**. KHÔNG load mặc định để tiết kiệm context. File này định nghĩa template riêng (banner, heading format, đảo logic) cho 2 loại câu đặc biệt — KHÔNG dùng template chuẩn dưới đây cho chúng.
+> - **Cố định** (không đổi): output frame (📋 / ✅ / 🔍 / 📚 / 🔖), heading subsection (`### Giải thích câu hỏi`, `### Vì sao đúng`, `#### ❌ #N — ...`, `#### ✅ #N — ...` cho multi-select), banner cho special cases, format quote+dịch trong blockquote, TL;DR cuối "Vì sao đúng".
+> - **Linh hoạt** (chọn theo nội dung): bên trong mỗi subsection, **chọn component và pattern fit nội dung nhất** — không phải câu nào cũng cần ASCII diagram, không phải câu nào cũng cần cost table. Mục tiêu là *đầy đủ và dễ hiểu nhất*, không phải tick đủ checklist. Một câu về IAM policy → code block JSON đáng giá hơn analogy. Một câu về topology → diagram đáng giá hơn bullet list.
 >
-> Áp dụng đúng các pattern này là yêu cầu chất lượng, không phải optional. Trước khi viết, identify các trigger trong Bước 1 (negation? multi-select? cost-driven? ≥3 options? near-twin service?) và pick patterns tương ứng.
+> **⚠️ Phong cách viết:** KHÔNG dùng meta-label như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:` làm heading hiển thị. Viết liền mạch, ngôn ngữ tự nhiên — pattern là khung tư duy nội bộ.
+>
+> **📎 Load có điều kiện:** [`references/special-cases.md`](references/special-cases.md) — CHỈ load khi Bước 1 phát hiện trigger **multi-select** hoặc **negation**. KHÔNG load mặc định để tiết kiệm context.
+>
+> **Triggers BẮT BUỘC pattern tương ứng** (xác định trong Bước 1, không bỏ qua):
+> - ≥3 options khác category → Pattern 9 (Decision walkthrough)
+> - Cost-driven (`cost-optimal`, `cheapest`, `chi phí thấp nhất`, ...) → Pattern 10 (Cost breakdown table)
+> - Service có near-twin dễ nhầm → Pattern 11 ("Đừng nhầm với..." callout)
+> - Multi-select / Negation → load `special-cases.md`
+>
+> Ngoài các trigger trên, **tự do chọn component nào fit nội dung nhất** — đó là chỗ "linh hoạt" của câu trả lời.
 
 **Special-case banners (nếu áp dụng):**
 
@@ -128,73 +139,113 @@ Xác minh: <Đề cập trực tiếp | Suy luận hợp lý | Chưa xác minh �
 
 ### Giải thích câu hỏi
 
-<Viết theo **storytelling order** (xem `references/teaching-patterns.md` mục "Cấu trúc Giải thích câu hỏi"):
+<Viết theo **storytelling order** (xem `references/teaching-patterns.md` mục "Cấu trúc Giải thích câu hỏi"): vấn đề mấu chốt → tại sao yêu cầu khó → câu hệ quả "→ Cần ___".
 
-1. **Vấn đề mấu chốt** (1-2 câu): Bài toán cốt lõi là gì, *tại sao* nó khó. KHÔNG diễn đạt lại đề nguyên xi.
-2. **Tại sao yêu cầu của đề khó** (1 đoạn): Phân tích các từ khóa quan trọng ("scalable", "minimal config", "low latency", "cost-optimal", "multi-Region"...) — mỗi từ khóa loại trừ class giải pháp nào.
+**Component nên cân nhắc** (chọn 1-3 cái fit nhất, không cần dùng hết):
+
+- **Bullet list** liệt kê context/keyword đề bài rồi gắn ý nghĩa từng cái
+- **Bảng "Keyword → loại class giải pháp nào"** khi đề có ≥3 keyword cần phân tích đối chiếu
+- **Mermaid hoặc ASCII diagram nhỏ** khi vấn đề là về topology/luồng (vd. minh họa "ALB không có IP cố định" bằng client → DNS → IP đổi)
+- **Code block / config snippet** khi đề có policy/CLI/IAM rule cần highlight cụ thể
+- **Blockquote** để làm nổi câu chốt vấn đề mấu chốt và câu hệ quả
+- **Bold** các từ khóa quan trọng (`scalable`, `minimal config`, `cost-optimal`, ...)
+
+**Yêu cầu chất lượng (mandatory dù chọn component nào):**
+1. **Vấn đề mấu chốt** (1-2 câu): bài toán cốt lõi là gì, *tại sao* nó khó. KHÔNG diễn đạt lại đề nguyên xi.
+2. **Tại sao yêu cầu của đề khó**: phân tích keyword — mỗi keyword loại trừ class giải pháp nào.
 3. **Hệ quả** (1 câu chốt highlight): "→ Cần một giải pháp mà ___ KHÔNG ___."
 
-Ví dụ:
+Ví dụ tham khảo:
 > **Vấn đề mấu chốt:** ALB **KHÔNG có IP cố định**. AWS chỉ cấp DNS name; IP đằng sau liên tục đổi khi scale...
 > Đề nhấn mạnh: *scalable* (nhiều Region, traffic biến động) + *minimal config* (không muốn cứ vài ngày update firewall).
 > → **Cần giải pháp mà IP entry point KHÔNG BAO GIỜ ĐỔI**, dù ALB phía sau scale kiểu gì.
 
-Tránh format "liệt kê constraint kiểu báo cáo" — phải tạo cảm giác "vấn đề" trước khi đi vào option.>
+Tránh: liệt kê constraint kiểu báo cáo → phải tạo cảm giác "vấn đề" trước khi đi vào option.>
 
 ### Vì sao đúng
 
 **#X — <option>**
 
-<Viết một bài giải thích **liền mạch, ngôn ngữ tự nhiên** (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao đúng — checklist"). KHÔNG dùng heading "Pass 1", "Pass 2", "Decision walkthrough:", "Trực giác:", "Kỹ thuật:" — các label đó chỉ là khung tư duy nội bộ, không hiển thị ra.
+<Viết một bài giải thích **liền mạch, ngôn ngữ tự nhiên** (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao đúng" + "Component toolkit"). KHÔNG dùng heading "Pass 1", "Pass 2", "Decision walkthrough:", "Trực giác:", "Kỹ thuật:" — các label đó chỉ là khung tư duy nội bộ, không hiển thị ra.
 
-Mở đầu cần (mandatory):
-- **Một analogy đời thường** HOẶC **ASCII diagram** (chọn 1, hoặc cả hai nếu phù hợp), kèm 1 câu tóm tắt cơ chế. Viết như đang kể chuyện, không gắn label.
+**🧩 Cách tiếp cận: chọn component fit nội dung, không phải tick checklist cứng.** Output viết liền mạch từ trực giác → kỹ thuật → quote AWS → (follow-up nếu có) → TL;DR. Các đoạn dưới đây là HƯỚNG DẪN nội bộ — KHÔNG copy số thứ tự `[1]`-`[5]` vào output thực tế.
 
-Sau đó dẫn người đọc vào phần kỹ thuật một cách tự nhiên (mandatory):
-- Nếu câu có **≥3 options ở category khác nhau** → trước khi quote AWS, viết một đoạn loại trừ tuần tự bằng văn xuôi hoặc danh sách đánh số (KHÔNG đặt heading "Decision walkthrough:" — chỉ dẫn dắt bằng câu kiểu "Đi qua từng option theo thứ tự constraint của đề:").
-- Trích dẫn nguyên văn (quote block) từ tài liệu AWS, sau đó **xuống dòng mới** thêm dòng dịch tiếng Việt **sát nghĩa** (dòng dịch là dòng riêng biệt trong cùng blockquote):
+**[1] Mở đầu — cho người đọc *cảm thấy* tại sao đúng (mandatory, linh hoạt cách thực hiện):**
+
+Chọn **1 hoặc kết hợp** các component sau theo loại nội dung:
+
+| Loại câu hỏi | Component khuyến nghị |
+|---|---|
+| Concept trừu tượng (control plane, eventual consistency, indirection) | **Analogy đời thường** 1-2 câu (Pattern 1) |
+| Topology, fan-out, request flow, failover sequence | **Mermaid hoặc ASCII diagram** (Pattern 2) |
+| Phân biệt 2-3 entity dễ nhầm là chính | **Comparison table** mở đầu trực tiếp (Pattern 3) |
+| Service ít người biết, cần intro | **Bullet list định nghĩa nhanh** + 1 câu tóm tắt vai trò |
+| Câu xoay quanh 1 setting/parameter/policy | **Code block** snippet config minh họa |
+
+Sau component mở đầu, kèm **1 câu tóm tắt cơ chế** trước khi đi vào kỹ thuật.
+
+**[2] Phần kỹ thuật — bám tài liệu AWS:**
+
+Dẫn vào bằng câu nối tự nhiên (vd. *"Cụ thể trong AWS..."*, *"Tài liệu AWS mô tả..."*). Pick các component phù hợp:
+
+- **Quote + dịch (mandatory khi cần chứng minh kết luận):** blockquote với quote nguyên văn AWS, xuống dòng mới thêm dịch tiếng Việt sát nghĩa trong cùng blockquote:
   > "With Provisioned Throughput, you specify a level of throughput that the file system can drive independent of the file system's size or burst credit balance."
   >
   > *→ Với Provisioned Throughput, bạn chỉ định mức throughput mà file system có thể duy trì, độc lập với dung lượng lưu trữ hay burst credit balance.*
-- Nếu có quy trình hoạt động → numbered steps hoặc bảng "Bước / Việc làm"
-- Nếu có ≥2 entity dễ nhầm (vd: "IP của ALB" vs "IP của Global Accelerator") → comparison table
-- Nếu câu **cost-driven** → bắt buộc thêm **Cost breakdown** bảng (Pattern 10), với hidden cost row.
-- Nếu service đáp án có **near-twin** dễ nhầm → thêm callout **⚠️ Đừng nhầm với...** (Pattern 11) ở gần cuối section, trước TL;DR.
-- Bold key terms quan trọng
 
-**Anticipated follow-up (mạnh mẽ khuyến nghị):**
-- Đặt 1 câu hỏi mà người mới CHẮC CHẮN sẽ thắc mắc, rồi trả lời ngay:
+- **Numbered steps hoặc bảng "Bước / Việc làm"** — khi có quy trình triển khai/sự kiện
+- **Comparison table** — khi cần phân biệt thuộc tính (2-4 cột, 5-7 dòng)
+- **Mermaid/ASCII diagram** — khi cơ chế là về topology, flow, hoặc state transition
+- **Code block** (```bash / ```json / ```yaml) — CLI command, IAM policy, SDK call, CloudFormation/Terraform snippet, sample API request/response
+- **Inline code** (`backtick`) cho tên API, tham số, config key
+- **Bold** key terms quan trọng
 
-  ```
-  ### Câu hỏi quan trọng: <follow-up>
-  **<Trả lời ngắn 1 dòng>**
-  <Giải thích 2-4 đoạn>
-  ```
+**[3] Trigger BẮT BUỘC pattern (nếu Bước 1 phát hiện):**
 
-**Bằng chứng quan sát được (optional):**
-- Nếu có observation từ Console/CLI/API confirm cơ chế → thêm 1 đoạn mở đầu bằng "Kiểm chứng nhanh:" (đoạn văn xuôi, không heading).
+- ≥3 options khác category → **decision walkthrough** dạng numbered list (Pattern 9), trước khi quote AWS, dẫn vào bằng câu kiểu *"Đi qua từng option theo thứ tự constraint của đề:"*
+- Câu cost-driven → **cost breakdown table** với hidden cost row + dòng total (Pattern 10)
+- Service có near-twin dễ nhầm → callout **`⚠️ Đừng nhầm với...`** đặt gần cuối, trước TL;DR (Pattern 11)
 
-**TL;DR cuối section (mandatory):**
-- 1-2 câu chốt lại insight cốt lõi, dạng dễ thuộc:
-  > **TL;DR:** <chốt insight với key term in đậm>
+**[4] Khuyến nghị (optional — dùng khi tăng giá trị sư phạm):**
+
+- **Anticipated follow-up:** đặt 1 câu hỏi mà người mới CHẮC CHẮN sẽ thắc mắc, rồi trả lời ngay với heading `### Câu hỏi quan trọng: <follow-up>`, sau đó trả lời ngắn 1 dòng + giải thích 2-4 đoạn.
+- **Bằng chứng quan sát được:** đoạn văn xuôi mở bằng *"Kiểm chứng nhanh:"* mô tả observation từ Console/CLI/API confirm cơ chế (không heading).
+- **Gọi tên design pattern AWS** (stable indirection, decoupling via queue, eventual consistency boundary, ...) lồng vào TL;DR hoặc đoạn cuối (Pattern 8).
+
+**[5] TL;DR cuối section (mandatory):**
+
+1-2 câu chốt insight cốt lõi, dạng dễ thuộc, key term in đậm:
+
+> **TL;DR:** <chốt insight với key term in đậm>
 
 Đây là nội dung sẽ được copy nguyên văn vào D1 notes — viết đầy đủ ngay từ đầu.>
 
 ### Vì sao các đáp án khác sai
 
-<Mỗi option sai dùng heading có emoji ❌ và tuân theo checklist (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao sai — checklist"):>
+<Mỗi option sai dùng heading có emoji ❌ và bám theo nguyên tắc (xem `references/teaching-patterns.md` mục "Cấu trúc Vì sao sai"). **Component bên trong mỗi option linh hoạt** — chọn cái fit misconception nhất:>
 
 #### ❌ #Y — <option>
 
-<- **Mở đầu bằng analogy 1 câu** cô đọng misconception:
-  *"Giống như cử người chạy ra hỏi IP rồi gọi điện cho IT update firewall."*
-- Nêu rõ MISCONCEPTION mà option đó đánh trúng (vì sao người làm bài bị lừa chọn nó)
-- Lý do kỹ thuật 3-5 câu, có quote AWS nếu cần chứng minh sai
-- Constraint cứng vi phạm (nếu có) — vd: "VPC bị giới hạn trong 1 Region nên không cross-Region được">
+<**Mở đầu cô đọng misconception** — chọn cách fit nhất:
+- *Analogy 1 câu* — vd: *"Giống như cử người chạy ra hỏi IP rồi gọi điện cho IT update firewall."*
+- *Diagram nhỏ* hoặc *minimal table* nếu misconception là về topology/so sánh sai
+- *1 câu pin-point* nếu misconception đã rõ ngay từ tên option (vd: "Tier này là cold storage, không phục vụ low-latency read")
+- *Inline code/config* nếu option sai do tham số/policy không hợp lệ
+
+**Bắt buộc có trong mỗi option:**
+- **MISCONCEPTION** — vì sao người làm bài bị lừa chọn nó (1-2 câu)
+- **Lý do kỹ thuật** 3-5 câu — dùng component fit:
+  - **Quote+dịch AWS** nếu cần chứng minh sai bằng nguồn chính thức
+  - **Code block** nếu cần show API/policy minh họa lý do sai
+  - **Inline comparison table** nếu cần đối chiếu nhanh option sai vs đáp án đúng
+  - **Bullet list** liệt kê các vi phạm/giới hạn
+- **Constraint cứng vi phạm** (nếu có) — vd: *"VPC bị giới hạn trong 1 Region nên không cross-Region được"*
+
+Tránh: rút gọn quá mức (1-2 câu chung chung) → không có giá trị sư phạm.>
 
 #### ❌ #Z — <option>
 
-<Tương tự — analogy + misconception + lý do kỹ thuật + constraint vi phạm. Không rút gọn.>
+<Tương tự — chọn component fit misconception. Không rút gọn.>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 NGUỒN THAM KHẢO
@@ -310,24 +361,39 @@ API trả về `{"id": "aws-learn-XXXXXXXX", "success": true}`. Hiển thị:
 - Không đổi thứ tự phương án — luôn bám ID vị trí gốc.
 - Khi trích dẫn tài liệu, ghi rõ đoạn nào là quote gốc vs diễn giải.
 
-### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có ví dụ đầy đủ)
+### Yêu cầu sư phạm (xem `references/teaching-patterns.md` để có Component toolkit + ví dụ đầy đủ)
 
-**Quy tắc chung (mọi câu):**
-- **KHÔNG dùng meta-label** như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:`, `Trực giác:`, `Kỹ thuật:` làm heading hiển thị. Đây chỉ là khung tư duy nội bộ. Câu trả lời phải đọc như một **bài giảng liền mạch bằng ngôn ngữ tự nhiên**, dẫn dắt từ analogy/trực giác → kỹ thuật → trích dẫn AWS.
-- **"Vì sao đúng" phải mở bằng analogy đời thường HOẶC ASCII diagram trước**, sau đó mới đi vào phần kỹ thuật + quote AWS — nhưng chuyển ý bằng câu nối tự nhiên, KHÔNG bằng heading.
-- **"Vì sao đúng" phải kết bằng TL;DR** 1-2 câu, key term in đậm.
-- **"Vì sao sai" mỗi option mở đầu bằng analogy 1 câu** cô đọng misconception, sau đó mới tới lý do kỹ thuật.
-- **"Vì sao sai" dùng heading `#### ❌ #N — ...`** (có emoji ❌ trong heading).
+**🎯 Triết lý: structure cố định, content linh hoạt.** Output frame và heading subsection là cố định; bên trong chọn component (Mermaid/ASCII/table/list/code/callout/quote+dịch/...) fit nội dung nhất.
+
+**Cố định (không đổi, áp mọi câu):**
+
+- Heading subsection: `### Giải thích câu hỏi`, `### Vì sao đúng`, `### Vì sao các đáp án khác sai`, `#### ❌ #N — ...` cho option sai (emoji ❌ trong heading). Multi-select dùng `#### ✅ #N — ...` cho option đúng.
+- **TL;DR cuối "Vì sao đúng"** — 1-2 câu chốt, key term in đậm (mandatory).
+- **Quote AWS docs format** — blockquote nguyên văn + xuống dòng dịch tiếng Việt sát nghĩa cùng blockquote.
 - **"Giải thích câu hỏi" theo storytelling order**: vấn đề mấu chốt → tại sao yêu cầu khó → câu hệ quả "→ Cần ___". KHÔNG liệt kê constraint kiểu báo cáo.
-- **Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern ngay trong section "Vì sao đúng" hoặc lồng vào TL;DR.
-- **Anticipated follow-up + bằng chứng quan sát được** là khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
+- **"Vì sao đúng" phải có phần mở đầu trực giác** trước phần kỹ thuật (component cụ thể là analogy/diagram/table/list/code/... tùy nội dung).
+- **"Vì sao sai" mỗi option phải nêu rõ MISCONCEPTION** (component cô đọng tùy chọn: analogy/diagram nhỏ/1 câu pin-point/inline code).
+- **KHÔNG dùng meta-label** như `Pass 1 — Trực giác`, `Pass 2 — Kỹ thuật`, `Decision walkthrough:`, `Trực giác:`, `Kỹ thuật:` làm heading hiển thị. Câu trả lời đọc như một bài giảng liền mạch — pattern là khung tư duy nội bộ, không hiển thị.
 
-**Quy tắc theo trigger (áp dụng có điều kiện):**
-- **≥3 options khác category** → BẮT BUỘC có đoạn loại trừ tuần tự (Pattern 9) trước khi quote AWS, viết dạng văn xuôi/numbered list, KHÔNG đặt heading "Decision walkthrough:".
-- **Câu cost-driven** (`cost-optimal`, `lowest cost`, `cheapest`, ...) → BẮT BUỘC có **Cost breakdown table** (Pattern 10) với hidden cost row + dòng total.
+**Linh hoạt (chọn component fit nội dung — không tick checklist cứng):**
+
+- **Diagram:** Mermaid (cho webapp render đẹp) hoặc ASCII (an toàn mọi nơi) — khi cơ chế là về topology/flow/state. KHÔNG ép buộc câu nào cũng phải có diagram.
+- **Table:** comparison table (≥2 entity dễ nhầm), step table (quy trình), keyword→loại class table ("Giải thích câu hỏi"), cost breakdown table (cost-driven).
+- **Code block:** CLI (`bash`), IAM/bucket policy (`json`), CloudFormation/Terraform (`yaml`/`hcl`), SDK call (`python`/`typescript`) — khi câu hỏi xoay quanh config/policy/API.
+- **List:** bullet (liệt kê đặc điểm), numbered (quy trình tuần tự, decision walkthrough).
+- **Callout/blockquote:** highlight câu hệ quả, "Đừng nhầm với...", TL;DR, "Kiểm chứng nhanh:", quote+dịch AWS.
+- **Inline code & bold:** key terms, tên API/parameter, thuật ngữ AWS quan trọng.
+- **Anticipated follow-up + bằng chứng quan sát được:** khuyến nghị mạnh khi đáp án đúng còn vẻ "magic" hoặc có cơ chế ẩn.
+
+**Trigger BẮT BUỘC pattern (áp dụng có điều kiện — không skip được):**
+
+- **≥3 options khác category** → BẮT BUỘC có decision walkthrough (Pattern 9) trước khi quote AWS, dạng numbered list, KHÔNG heading "Decision walkthrough:".
+- **Câu cost-driven** (`cost-optimal`, `lowest cost`, `cheapest`, `chi phí thấp nhất`, ...) → BẮT BUỘC có **Cost breakdown table** (Pattern 10) với hidden cost row + dòng total.
 - **Service có near-twin dễ nhầm** (ALB/NLB, EBS/EFS, KDS/Firehose, Dedicated Instance/Host, ...) → BẮT BUỘC có callout **⚠️ Đừng nhầm với...** (Pattern 11).
-- **Multi-select** → load `references/special-cases.md` và áp dụng template riêng: heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.
-- **Negation question** (`NOT`, `except`, `incorrect`, `không`, ...) → load `references/special-cases.md` và áp dụng template riêng: banner `⚠️ NEGATION QUESTION` đầu output, restate câu hỏi dạng khẳng định, đảo logic "Vì sao đúng" → "Vì sao option này VI PHẠM".
+- **Multi-select** → load `references/special-cases.md` và áp template riêng: heading `#### ✅ #N — ...` cho mỗi option đúng, có subsection **🪤 Near-miss** giải thích option sai trông giống đúng.
+- **Negation question** (`NOT`, `except`, `incorrect`, `không`, ...) → load `references/special-cases.md` và áp template riêng: banner `⚠️ NEGATION QUESTION` đầu output, restate câu hỏi dạng khẳng định, đảo logic "Vì sao đúng" → "Vì sao option này VI PHẠM".
+
+**Khi câu hỏi minh họa design pattern AWS phổ biến** (stable indirection, decoupling via queue, eventual consistency boundary, ...) → gọi tên pattern ngay trong "Vì sao đúng" hoặc lồng vào TL;DR (Pattern 8).
 
 ## Query Q&A đã lưu
 
