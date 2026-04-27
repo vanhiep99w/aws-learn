@@ -326,9 +326,9 @@ SCP vs IAM Policy:
 SCP:                              IAM Policy:
 ────                              ──────────
 Cấp độ: Account/OU               Cấp độ: User/Group/Role
-Áp dụng: TẤT CẢ users trong     Áp dụng: Chỉ entity được gắn
+Áp dụng: TẤT CẢ users trong      Áp dụng: Chỉ entity được gắn
           account (trừ root*)
-Mục đích: Guardrails              Mục đích: Grant permissions
+Mục đích: Guardrails             Mục đích: Grant permissions
 
 * Root user của Management Account KHÔNG bị SCP ảnh hưởng
 ```
