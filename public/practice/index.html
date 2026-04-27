@@ -1231,6 +1231,29 @@ function selectCard(issue) {
   showDetail(issue, true);
 }
 
+async function goToNextQuestion(currentId) {
+  let filtered = getFiltered();
+  let idx = filtered.findIndex(i => i.id === currentId);
+  if (idx >= 0 && idx < filtered.length - 1) {
+    selectCard(filtered[idx + 1]);
+    const card = document.querySelector(`.card[data-id="${CSS.escape(filtered[idx + 1].id)}"]`);
+    if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return;
+  }
+
+  if (!hasMore) return;
+  const before = issues.length;
+  await loadMore();
+  filtered = getFiltered();
+  idx = filtered.findIndex(i => i.id === currentId);
+  if (issues.length > before && idx >= 0 && idx < filtered.length - 1) {
+    selectCard(filtered[idx + 1]);
+    const next = filtered[idx + 1];
+    const card = document.querySelector(`.card[data-id="${CSS.escape(next.id)}"]`);
+    if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
 function parseQuestion(desc, meta) {
   if (!desc) return { stem: '', options: [], answerLine: '' };
   const lines = desc.split('\n');
@@ -1350,6 +1373,7 @@ function showDetail(issue, scrollToTop = false) {
       questionHTML += `<div class="submit-row">
         <span class="submit-result ${allCorrect ? 'pass' : 'fail'}">${allCorrect ? '✓ CORRECT' : '✗ INCORRECT'}</span>
         <button class="submit-btn retry" id="retry-btn">Try Again</button>
+        <button class="submit-btn" id="next-question-btn">Next</button>
       </div>`;
     } else {
       // Review mode
@@ -1460,6 +1484,13 @@ function showDetail(issue, scrollToTop = false) {
       showDetail(issue, false);
       updateScoreBar();
       renderList();
+    });
+  }
+
+  const nextBtn = document.getElementById('next-question-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', async () => {
+      await goToNextQuestion(issue.id);
     });
   }
 
