@@ -5,6 +5,7 @@
 ## Mục lục
 
 - [Tại sao hay bị nhầm?](#tại-sao-hay-bị-nhầm)
+- [AWS thiết kế Policy để làm gì? (Triết lý)](#aws-thiết-kế-policy-để-làm-gì-triết-lý)
 - [Bản đồ tổng — 5 nhóm policy](#bản-đồ-tổng--5-nhóm-policy)
 - [Nhóm A — IAM / Access Policies (quyền truy cập)](#nhóm-a--iam--access-policies-quyền-truy-cập)
 - [Nhóm B — AWS Organizations Policies (governance toàn org)](#nhóm-b--aws-organizations-policies-governance-toàn-org)
@@ -31,6 +32,119 @@ Trong AWS, từ **"policy"** bị **overload** — dùng cho ÍT NHẤT 5 khái 
 
 > [!IMPORTANT]
 > **Cùng một chữ "policy" nhưng cú pháp, cơ chế đánh giá, nơi gắn, và mục đích khác nhau hoàn toàn.** Khi gặp tài liệu nói "policy", luôn hỏi: *policy cho cái gì? Gắn vào đâu? Cấp quyền hay giới hạn quyền hay chỉ là cấu hình?*
+
+---
+
+## AWS thiết kế Policy để làm gì? (Triết lý)
+
+Để hiểu tại sao policy AWS phức tạp như vậy, phải nhìn vào **bài toán gốc** mà AWS phải giải. AWS không phải hệ thống nhỏ — họ chạy hàng triệu khách hàng, mỗi giây hàng tỷ API call, lưu hàng nghìn tỷ object. Mô hình access control kiểu cũ (RBAC đơn giản, `/etc/sudoers`...) **không đủ**.
+
+### Bài toán AWS phải giải đồng thời
+
+| Mục tiêu | Vấn đề thực tế |
+|---------|---------------|
+| **Least Privilege at scale** | 1 công ty 10K developer không thể cấp quyền thủ công |
+| **Default Deny / Zero Trust** | Một quyền cấp nhầm = data breach hàng tỷ đô |
+| **Cross-account / cross-org sharing** | Phải share data giữa các account mà không copy credential |
+| **Delegation an toàn** | Cho dev tự quản nhưng không vượt giới hạn |
+| **Auditability & Compliance** | SOC2, HIPAA, PCI yêu cầu chứng minh ai làm gì khi nào |
+| **Automation friendly** | IaC, CI/CD, bot, Lambda → cần lập trình được |
+
+→ AWS phát minh ra **một ngôn ngữ policy declarative**, chia thành **nhiều layer độc lập**, mỗi layer phục vụ 1 vai trò trong tổ chức.
+
+### 7 nguyên tắc thiết kế cốt lõi
+
+#### 1. Declarative thay vì Imperative
+
+Policy mô tả **"WHAT" — điều kiện được phép**, không phải **"HOW"**. Engine của AWS tự đánh giá. Hệ quả:
+
+- **Audit được** không cần chạy code
+- **Verify formally**: AWS Zelkova và IAM Access Analyzer dùng SMT solver để **chứng minh toán học** không có lỗ hổng
+- **Version control** trong Git như source code
+- **Tooling** đa dạng: lint, simulator, policy generator
+
+#### 2. Default Deny + Explicit Allow + Explicit Deny Wins
+
+```
+Implicit Deny  ──►  Allow nếu có  ──►  Deny luôn thắng
+```
+
+- An toàn mặc định: chưa cấp = không có quyền
+- Explicit Deny **không thể bị bypass** → guardrail tuyệt đối (SCP/RCP/Boundary dựa trên cơ chế này)
+
+#### 3. Separation of Concerns — mỗi layer có "chủ" khác nhau
+
+Đây là chìa khóa hiểu **tại sao có nhiều loại policy đến vậy**. Mỗi loại policy phản ánh **một vai trò trong tổ chức**:
+
+| Layer | Ai sở hữu | Mục đích |
+|-------|----------|----------|
+| **SCP / RCP** | Org admin (CISO) | "Toàn công ty không được làm X" |
+| **Identity Policy** | Account admin (team lead) | "Team tôi được làm Y" |
+| **Permissions Boundary** | Senior dev / platform team | "Cho dev tự tạo role nhưng max ceiling Z" |
+| **Resource Policy** | Resource owner | "Bucket của tôi cho ai vào" |
+| **Trust Policy** | Role owner | "Ai được hoá thân thành role này" |
+| **Session Policy** | Caller (app/CLI) | "Tôi tự giảm phạm vi token tạm" |
+
+→ Tổ chức không có **cấu trúc kiểm soát 1 chiều** → AWS phải có nhiều layer chồng nhau, mỗi layer trao cho 1 nhóm người 1 phần kiểm soát mà không cần can thiệp nhóm khác.
+
+#### 4. Intersection Logic (AND tất cả layer)
+
+Quyền thật = **phép giao** của tất cả layer cho phép, trừ đi mọi explicit Deny:
+
+```
+Effective = SCP ∩ RCP ∩ Identity Policy ∩ Resource Policy
+            ∩ Permissions Boundary ∩ Session Policy
+            – (any explicit Deny)
+```
+
+→ Cho phép **delegation an toàn**: admin tin dev tự tạo role mà không sợ dev cấp quyền vượt boundary. Đây là điều RBAC truyền thống không làm được.
+
+#### 5. Identity-based ↔ Resource-based — hai chiều của cùng quyền
+
+```
+"User A được đọc Bucket X"     ↔     "Bucket X cho User A đọc"
+   (Identity Policy)                     (Resource Policy)
+```
+
+Tại sao cần **cả hai**?
+
+- **Cross-account**: Account A muốn cho User của Account B đọc bucket → Account A KHÔNG thể chỉnh IAM của Account B → phải có Resource-based để **bên owner resource** chủ động cấp quyền.
+- **Two-way handshake**: Cross-account thường yêu cầu **cả 2 bên đều allow** → khó bị share nhầm.
+- **Service-to-service**: Lambda invoke từ S3 event — S3 không có IAM identity → resource-based policy là lối duy nhất.
+
+#### 6. Time-bound credentials thay vì long-lived keys
+
+AWS thiết kế để **STS (temporary credentials)** là mặc định, long-lived access key là exception:
+
+- Role assumption → token chỉ sống vài giờ
+- Session policy giảm phạm vi runtime của token
+- Federation với IdP công ty (SAML/OIDC) → không cần tạo IAM user
+
+→ Giảm **blast radius** khi bị leak credentials.
+
+#### 7. Auditability First-class
+
+Mọi quyết định policy đều log vào **CloudTrail**: ai gọi (principal) — làm gì (action) — lên resource nào — policy nào allow/deny.
+
+Cộng với **IAM Access Analyzer** dùng formal proof để phát hiện cấu hình lệch (ví dụ: bucket policy public mà bạn không biết). Đây là lý do AWS có thể nói "policy của bạn an toàn" mà không cần chạy thử.
+
+### Tóm tắt 1 câu
+
+> AWS thiết kế policy như một **ngôn ngữ declarative đa lớp** để **nhiều vai trò trong tổ chức** có thể **độc lập** đặt ra constraint cho cùng một request, kết hợp lại theo **least privilege + default deny + explicit deny wins**, đồng thời vẫn cho phép **delegation an toàn**, **cross-account sharing**, **auditability** và **automation** — ở quy mô internet.
+
+### Tại sao "loạn loại policy" — và đó không phải bug mà là feature
+
+5 nhóm policy ở phần dưới không phải vì AWS tham lam đặt tên. Mỗi nhóm sinh ra để giải 1 bài toán cụ thể:
+
+| Nhóm | Sinh ra để giải bài toán... |
+|------|----------------------------|
+| **A. IAM / Access** | Quyền truy cập có thể lập trình, cross-account, delegation |
+| **B. Organizations** | Multi-account governance, compliance, billing tách bạch |
+| **C. Network / Firewall** | Phòng thủ ở tầng mạng (defense in depth) |
+| **D. Behavioral** | Cấu hình hành vi service một cách declarative (Routing, Scaling, Lifecycle... cũng nên là policy để IaC được) |
+| **E. Legal** | Hợp đồng pháp lý — không phải kỹ thuật |
+
+Sự "trùng tên" gây nhầm thực ra phản ánh một triết lý chung của AWS: **cái gì cấu hình được bằng cách khai báo (declarative), AWS gọi là policy** — kể cả khi nó không liên quan gì tới quyền. Hệ quả phụ là **bạn phải biết policy đó thuộc nhóm nào** trước khi đọc.
 
 ---
 
