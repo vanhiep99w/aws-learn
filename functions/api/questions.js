@@ -57,13 +57,19 @@ export async function onRequest({ request, env }) {
 
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
     const offset = parseInt(url.searchParams.get('offset') || '0');
+    const sort = url.searchParams.get('sort');
+    const orderBy = sort === 'created-asc'
+      ? 'created_at ASC, id ASC'
+      : sort === 'created-desc'
+        ? 'created_at DESC, id DESC'
+        : 'updated_at DESC';
 
     const [questionsResult, labelsResult, countResult] = await Promise.all([
       env.DB.prepare(
         `SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
          FROM questions
          WHERE status = 'open'
-         ORDER BY updated_at DESC
+         ORDER BY ${orderBy}
          LIMIT ? OFFSET ?`
       ).bind(limit, offset).all(),
       env.DB.prepare(

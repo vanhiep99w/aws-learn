@@ -834,6 +834,7 @@ body.qa-resizing{cursor:col-resize;user-select:none}
     <select id="filter-service"><option value="">All Services</option></select>
     <select id="filter-domain"><option value="">All Domains</option></select>
     <select id="filter-qtype"><option value="">All Types</option></select>
+    <select id="sort-created"><option value="created-desc">Newest first</option><option value="created-asc">Oldest first</option></select>
     <form class="id-jump-form" id="id-jump-form" title="Jump to saved question ID">
       <input id="id-jump-input" type="search" placeholder="Question ID…" autocomplete="off" spellcheck="false">
       <button id="id-jump-btn" type="submit">Go</button>
@@ -888,6 +889,7 @@ const API = '/api/questions';
 const POLL_MS = 5000;
 const QA_SPLIT_KEY = 'practice-qa-question-width';
 const PRACTICE_PROGRESS_KEY = 'practice-answers-v1';
+const PRACTICE_SORT_KEY = 'practice-sort-created';
 const QA_SPLIT_DEFAULT = 50;
 const QA_SPLIT_MIN = 25;
 const QA_SPLIT_MAX = 75;
@@ -900,6 +902,7 @@ let pollTimer = null;
 let selectedId = null;
 let collapsedSections = {};
 let viewMode = getSavedViewMode();
+let sortCreated = getSavedCreatedSort();
 let submittedAnswers = loadPracticeProgress(); // { issueId: { selected: Set, submitted: bool, isCorrect?: bool } }
 const PAGE_SIZE = 20;
 let loadedCount = 0;
@@ -1045,6 +1048,23 @@ function getSavedViewMode() {
   return saved === 'review' ? 'review' : 'practice';
 }
 
+function getSavedCreatedSort() {
+  const saved = localStorage.getItem(PRACTICE_SORT_KEY);
+  return saved === 'created-asc' ? 'created-asc' : 'created-desc';
+}
+
+function applyCreatedSort(sortValue) {
+  sortCreated = sortValue === 'created-asc' ? 'created-asc' : 'created-desc';
+  localStorage.setItem(PRACTICE_SORT_KEY, sortCreated);
+  const select = document.getElementById('sort-created');
+  if (select) select.value = sortCreated;
+}
+
+function getCreatedTime(issue) {
+  const time = Date.parse(issue?.created_at || '');
+  return Number.isFinite(time) ? time : 0;
+}
+
 function applyViewMode(mode) {
   viewMode = mode === 'review' ? 'review' : 'practice';
   localStorage.setItem('practice-view-mode', viewMode);
@@ -1079,7 +1099,7 @@ function updateScoreBar() {
 async function fetchData() {
   const filterMode = hasActiveFilters();
   const limit = filterMode ? 500 : Math.max(loadedCount, PAGE_SIZE);
-  const res = await fetch(`${API}?limit=${limit}&offset=0`);
+  const res = await fetch(`${API}?limit=${limit}&offset=0&sort=${encodeURIComponent(sortCreated)}`);
   if (!res.ok) throw new Error(`API ${res.status}`);
   const data = await res.json();
 
@@ -1116,7 +1136,7 @@ async function loadMore() {
   if (loadingMore || !hasMore) return;
   loadingMore = true;
   try {
-    const res = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${loadedCount}`);
+    const res = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${loadedCount}&sort=${encodeURIComponent(sortCreated)}`);
     if (!res.ok) throw new Error(`API ${res.status}`);
     const data = await res.json();
     if (data.rows.length === 0) { hasMore = false; return; }
@@ -1160,6 +1180,9 @@ function getFiltered() {
     if (dom && i.meta.domain !== dom) return false;
     if (qt && i.meta.question_type !== qt) return false;
     return true;
+  }).sort((a, b) => {
+    const diff = getCreatedTime(a) - getCreatedTime(b);
+    return sortCreated === 'created-asc' ? diff : -diff;
   });
 }
 
@@ -1499,6 +1522,13 @@ function esc(s) {
   })
 );
 
+document.getElementById('sort-created')?.addEventListener('change', e => {
+  applyCreatedSort(e.target.value);
+  loadedCount = 0;
+  hasMore = true;
+  fetchData().catch(console.error);
+});
+
 async function jumpToQuestionId(rawId) {
   const id = (rawId || '').trim();
   const form = document.getElementById('id-jump-form');
@@ -1586,6 +1616,7 @@ document.getElementById('reset-progress')?.addEventListener('click', () => {
 });
 
 applyViewMode(viewMode);
+applyCreatedSort(sortCreated);
 updateScoreBar();
 fetchData().catch(err => {
   document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
