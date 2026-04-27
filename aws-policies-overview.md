@@ -225,7 +225,7 @@ Sự "trùng tên" gây nhầm thực ra phản ánh một triết lý chung c�
 
 ## Nhóm A — IAM / Access Policies (quyền truy cập)
 
-Tất cả đều dùng **JSON IAM policy language** với cú pháp `Version / Statement / Effect / Action / Resource / [Principal] / [Condition]`. Chi tiết: <ref_file file="/home/hieptran/Desktop/aws-learn/iam-json-policy-types.md" />.
+Tất cả đều dùng **JSON IAM policy language** với cú pháp `Version / Statement / Effect / Action / Resource / [Principal] / [Condition]`. Chi tiết: [IAM JSON Policy Types](iam-json-policy-types.md).
 
 | Loại | Gắn vào | Có `Principal`? | Cấp quyền? | Giới hạn quyền? | Mục đích |
 |------|---------|----------------|------------|-----------------|----------|
@@ -253,7 +253,7 @@ KHÔNG có "Principal"              CÓ "Principal"
 
 ### Trust Policy — đừng nhầm với Resource-based thông thường
 
-Trust policy **chỉ tồn tại trên IAM Role**, action duy nhất là `sts:AssumeRole` (và biến thể), `Principal` chỉ ai được phép **đảm nhận** role. Khác với Resource-based policy (S3 bucket policy…) là cấp quyền **dùng** resource. Chi tiết: <ref_file file="/home/hieptran/Desktop/aws-learn/iam-roles.md" />.
+Trust policy **chỉ tồn tại trên IAM Role**, action duy nhất là `sts:AssumeRole` (và biến thể), `Principal` chỉ ai được phép **đảm nhận** role. Khác với Resource-based policy (S3 bucket policy…) là cấp quyền **dùng** resource. Chi tiết: [IAM Roles Deep Dive](iam-roles.md).
 
 ```json
 // Trust policy cho phép EC2 service assume role
@@ -312,7 +312,7 @@ Organizations chia policies thành **2 nhóm con**: **Authorization** (giới h�
 
 > Authorization policies (SCP/RCP) **không** ảnh hưởng management account. Management policies thì **có** áp lên cả management account.
 
-Chi tiết SCP/RCP: <ref_file file="/home/hieptran/Desktop/aws-learn/aws-organizations.md" />.
+Chi tiết SCP/RCP: [AWS Organizations](aws-organizations.md).
 
 ---
 
@@ -332,7 +332,7 @@ Chi tiết SCP/RCP: <ref_file file="/home/hieptran/Desktop/aws-learn/aws-organiz
 > [!NOTE]
 > **NACL** (Network ACL) đôi khi bị gọi là "ACL" và xếp vào nhóm IAM legacy. Thực ra NACL là **subnet firewall**, hoàn toàn khác với **S3 ACL** dù trùng tên.
 
-Chi tiết: <ref_file file="/home/hieptran/Desktop/aws-learn/security-groups.md" />, <ref_file file="/home/hieptran/Desktop/aws-learn/vpc.md" />.
+Chi tiết: [Security Groups](security-groups.md), [VPC](vpc.md).
 
 ---
 
@@ -362,11 +362,11 @@ Chi tiết: <ref_file file="/home/hieptran/Desktop/aws-learn/security-groups.md"
 > Nhìn chữ "policy" trong nhóm D, **đừng tìm `Effect/Action/Resource`**. Nó là cấu hình. Xem doc của từng service.
 
 Chi tiết:
-- Routing Policy: <ref_file file="/home/hieptran/Desktop/aws-learn/route53.md" />
-- Scaling Policy: <ref_file file="/home/hieptran/Desktop/aws-learn/asg.md" />, <ref_file file="/home/hieptran/Desktop/aws-learn/auto-scaling.md" />
-- Deployment Policy (Beanstalk): <ref_file file="/home/hieptran/Desktop/aws-learn/elastic-beanstalk.md" />
-- S3 Lifecycle: <ref_file file="/home/hieptran/Desktop/aws-learn/s3.md" />
-- CloudFront: <ref_file file="/home/hieptran/Desktop/aws-learn/cloudfront.md" />
+- Routing Policy: [Route 53](route53.md)
+- Scaling Policy: [ASG](asg.md), [Auto Scaling](auto-scaling.md)
+- Deployment Policy (Beanstalk): [Elastic Beanstalk](elastic-beanstalk.md)
+- S3 Lifecycle: [S3](s3.md)
+- CloudFront: [CloudFront](cloudfront.md)
 
 ---
 
@@ -382,7 +382,7 @@ Chi tiết:
 | **AWS Privacy Policy** | Cách AWS xử lý data | aws.amazon.com/privacy |
 | **AWS Penetration Testing Policy** | Pentest được/không được, dịch vụ nào | aws.amazon.com/security/penetration-testing |
 
-Chi tiết: <ref_file file="/home/hieptran/Desktop/aws-learn/aws-policies-compliance.md" />.
+Chi tiết: [AWS Policies & Compliance](aws-policies-compliance.md).
 
 ---
 
@@ -601,9 +601,9 @@ Cả hai cùng nói về cách deploy code, nhưng nằm ở 2 service khác:
 
 ## Liên quan
 
-- <ref_file file="/home/hieptran/Desktop/aws-learn/iam-json-policy-types.md" /> — chi tiết 6 loại IAM JSON policy
-- <ref_file file="/home/hieptran/Desktop/aws-learn/iam-roles.md" /> — Trust policy, Cross-account
-- <ref_file file="/home/hieptran/Desktop/aws-learn/aws-organizations.md" /> — SCP/RCP và các Org policy
-- <ref_file file="/home/hieptran/Desktop/aws-learn/aws-policies-compliance.md" /> — AUP, compliance
-- <ref_file file="/home/hieptran/Desktop/aws-learn/aws-sts.md" /> — Session policy chi tiết
-- <ref_file file="/home/hieptran/Desktop/aws-learn/iam.md" /> — IAM tổng quan
+- [IAM JSON Policy Types](iam-json-policy-types.md) — chi tiết 6 loại IAM JSON policy
+- [IAM Roles Deep Dive](iam-roles.md) — Trust policy, Cross-account, Confused Deputy
+- [AWS Organizations](aws-organizations.md) — SCP/RCP và các Org policy
+- [AWS Policies & Compliance](aws-policies-compliance.md) — AUP, Penetration Testing, compliance programs
+- [AWS STS](aws-sts.md) — Temporary credentials, Session policy chi tiết
+- [IAM](iam.md) — Users, Groups, Roles tổng quan
