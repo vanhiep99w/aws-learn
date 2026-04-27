@@ -796,6 +796,27 @@ body.qa-resizing{cursor:col-resize;user-select:none}
 ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--text3)}
 
+.username-modal-backdrop{
+  position:fixed;inset:0;background:rgba(2,6,23,.45);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.username-modal-backdrop.open{display:flex}
+.username-modal{
+  width:min(420px,100%);background:var(--surface-solid);border:1px solid var(--border-hi);
+  border-radius:18px;padding:24px;box-shadow:var(--shadow-lg);animation:scaleIn .18s ease;
+}
+.username-modal h2{font-size:1.05rem;margin-bottom:8px;letter-spacing:-.02em}
+.username-modal p{font-size:.86rem;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.username-modal input{
+  width:100%;border:1px solid var(--border-hi);background:var(--surface2);color:var(--text);
+  border-radius:12px;padding:12px 14px;font:500 .92rem 'Inter',sans-serif;outline:none;
+}
+.username-modal input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.username-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.username-modal-error{display:none;margin-top:10px;color:var(--wrong);font-size:.78rem;font-weight:600}
+.username-modal-error.show{display:block}
+
 /* ── Responsive ── */
 @media(max-width:900px){
   .main{flex-direction:column}
@@ -890,11 +911,24 @@ body.qa-resizing{cursor:col-resize;user-select:none}
   </div>
 </div>
 
+<div class="username-modal-backdrop" id="username-modal" aria-hidden="true">
+  <form class="username-modal" id="username-form">
+    <h2>Nhập username để luyện tập</h2>
+    <p>Tiến độ trả lời sẽ được lưu trên D1 theo username này. Lần sau trình duyệt sẽ nhớ username trong localStorage.</p>
+    <input id="username-input" type="text" placeholder="Ví dụ: hieptran" autocomplete="username" maxlength="80" required>
+    <div class="username-modal-error" id="username-error">Vui lòng nhập username.</div>
+    <div class="username-modal-actions">
+      <button class="submit-btn" type="submit">Bắt đầu</button>
+    </div>
+  </form>
+</div>
+
 <script>
 const API = '/api/questions';
+const PRACTICE_HISTORY_API = '/api/practice-history';
 const POLL_MS = 5000;
 const QA_SPLIT_KEY = 'practice-qa-question-width';
-const PRACTICE_PROGRESS_KEY = 'practice-answers-v1';
+const PRACTICE_USERNAME_KEY = 'practice-username';
 const PRACTICE_SORT_KEY = 'practice-sort-created';
 const QA_SPLIT_DEFAULT = 50;
 const QA_SPLIT_MIN = 25;
@@ -909,7 +943,8 @@ let selectedId = null;
 let collapsedSections = {};
 let viewMode = getSavedViewMode();
 let sortCreated = getSavedCreatedSort();
-let submittedAnswers = loadPracticeProgress(); // { issueId: { selected: Set, submitted: bool, isCorrect?: bool } }
+let practiceUsername = getSavedPracticeUsername();
+let submittedAnswers = {}; // { issueId: { selected: Set, submitted: bool, isCorrect?: bool } }
 const PAGE_SIZE = 20;
 let loadedCount = 0;
 let totalQuestions = 0;
@@ -935,41 +970,89 @@ function saveQaSplit(percent) {
   localStorage.setItem(QA_SPLIT_KEY, String(clamp(percent, QA_SPLIT_MIN, QA_SPLIT_MAX).toFixed(1)));
 }
 
-function loadPracticeProgress() {
-  try {
-    const raw = localStorage.getItem(PRACTICE_PROGRESS_KEY);
-    if (!raw) return {};
-    const data = JSON.parse(raw);
-    const out = {};
-    for (const [id, st] of Object.entries(data || {})) {
-      out[id] = {
-        selected: new Set(Array.isArray(st.selected) ? st.selected.map(String) : []),
-        submitted: !!st.submitted,
-        isCorrect: typeof st.isCorrect === 'boolean' ? st.isCorrect : undefined,
-        answeredAt: st.answeredAt || null,
-        updatedAt: st.updatedAt || null
-      };
-    }
-    return out;
-  } catch (err) {
-    console.warn('Could not load practice progress', err);
-    return {};
+function getSavedPracticeUsername() {
+  return (localStorage.getItem(PRACTICE_USERNAME_KEY) || '').trim();
+}
+
+function setPracticeUsername(username) {
+  practiceUsername = String(username || '').trim();
+  if (practiceUsername) localStorage.setItem(PRACTICE_USERNAME_KEY, practiceUsername);
+}
+
+function showUsernameModal() {
+  const modal = document.getElementById('username-modal');
+  const input = document.getElementById('username-input');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  requestAnimationFrame(() => input?.focus());
+}
+
+function hideUsernameModal() {
+  const modal = document.getElementById('username-modal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+async function ensurePracticeUser() {
+  if (viewMode !== 'practice') return true;
+  if (practiceUsername) return true;
+  showUsernameModal();
+  return false;
+}
+
+async function loadPracticeHistory() {
+  if (!practiceUsername) return;
+  const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}`);
+  if (!res.ok) throw new Error(`History API ${res.status}`);
+  const data = await res.json();
+  const next = {};
+  for (const row of data.rows || []) {
+    next[row.question_id] = {
+      selected: new Set((row.selected || []).map(String)),
+      submitted: !!row.submitted,
+      isCorrect: !!row.isCorrect,
+      answeredAt: row.answeredAt || null,
+      updatedAt: row.updatedAt || null
+    };
+  }
+  submittedAnswers = next;
+  updateScoreBar();
+  renderList();
+  if (selectedId) {
+    const issue = issues.find(i => i.id === selectedId);
+    if (issue) showDetail(issue, false);
   }
 }
 
-function savePracticeProgress() {
-  const data = {};
-  for (const [id, st] of Object.entries(submittedAnswers)) {
-    if (!st || (!st.submitted && (!st.selected || st.selected.size === 0))) continue;
-    data[id] = {
+async function savePracticeAnswer(issueId) {
+  if (!practiceUsername) return;
+  const st = submittedAnswers[issueId];
+  if (!st || !st.submitted) return;
+  const res = await fetch(PRACTICE_HISTORY_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: practiceUsername,
+      question_id: issueId,
       selected: [...st.selected],
       submitted: !!st.submitted,
-      isCorrect: typeof st.isCorrect === 'boolean' ? st.isCorrect : undefined,
-      answeredAt: st.answeredAt || null,
-      updatedAt: st.updatedAt || new Date().toISOString()
-    };
-  }
-  localStorage.setItem(PRACTICE_PROGRESS_KEY, JSON.stringify(data));
+      isCorrect: !!st.isCorrect,
+      answeredAt: st.answeredAt || null
+    })
+  });
+  if (!res.ok) throw new Error(`History API ${res.status}`);
+}
+
+async function deletePracticeAnswer(issueId) {
+  if (!practiceUsername) return;
+  const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}&question_id=${encodeURIComponent(issueId)}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`History API ${res.status}`);
+}
+
+async function resetPracticeHistory() {
+  if (!practiceUsername) return;
+  const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`History API ${res.status}`);
 }
 
 function getAnswerState(issueId) {
@@ -1141,7 +1224,6 @@ async function fetchData() {
     if (still) showDetail(still);
   }
   updateScoreBar();
-  savePracticeProgress();
   document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
 }
 
@@ -1161,7 +1243,6 @@ async function loadMore() {
     populateFilters();
     renderList();
     updateScoreBar();
-    savePracticeProgress();
   } finally { loadingMore = false; }
 }
 
@@ -1468,21 +1549,21 @@ function showDetail(issue, scrollToTop = false) {
         }
         opt.classList.toggle('selected', st.selected.has(optId));
         st.updatedAt = new Date().toISOString();
-        savePracticeProgress();
         updateScoreBar();
         renderList();
         if (submitBtn) submitBtn.disabled = st.selected.size === 0;
       });
     });
     if (submitBtn) {
-      submitBtn.addEventListener('click', () => {
+      submitBtn.addEventListener('click', async () => {
+        if (!(await ensurePracticeUser())) return;
         const st = getAnswerState(issue.id);
         if (st.selected.size === 0) return;
         st.submitted = true;
         st.isCorrect = isAnswerCorrect(issue, st);
         st.answeredAt = new Date().toISOString();
         st.updatedAt = st.answeredAt;
-        savePracticeProgress();
+        try { await savePracticeAnswer(issue.id); } catch (err) { console.error(err); }
         showDetail(issue, false);
         updateScoreBar();
         renderList();
@@ -1493,9 +1574,9 @@ function showDetail(issue, scrollToTop = false) {
   // Retry button
   const retryBtn = document.getElementById('retry-btn');
   if (retryBtn) {
-    retryBtn.addEventListener('click', () => {
+    retryBtn.addEventListener('click', async () => {
       submittedAnswers[issue.id] = { selected: new Set(), submitted: false, updatedAt: new Date().toISOString() };
-      savePracticeProgress();
+      try { await deletePracticeAnswer(issue.id); } catch (err) { console.error(err); }
       showDetail(issue, false);
       updateScoreBar();
       renderList();
@@ -1621,10 +1702,14 @@ document.getElementById('id-jump-form').addEventListener('submit', e => {
 
 // Mode toggle
 document.querySelectorAll('#mode-toggle .mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
     const mode = btn.dataset.mode;
     if (mode === viewMode) return;
     applyViewMode(mode);
+    if (mode === 'practice') {
+      await ensurePracticeUser();
+      if (practiceUsername) loadPracticeHistory().catch(console.error);
+    }
     if (selectedId) {
       const issue = issues.find(i => i.id === selectedId);
       if (issue) showDetail(issue, false);
@@ -1649,10 +1734,29 @@ document.getElementById('auto-toggle-wrap').addEventListener('click', () => {
 function startPoll() { stopPoll(); pollTimer = setInterval(() => fetchData().catch(console.error), POLL_MS); }
 function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
-document.getElementById('reset-progress')?.addEventListener('click', () => {
-  if (!confirm('Reset toàn bộ tiến độ luyện tập đã lưu trên máy này?')) return;
+document.getElementById('username-form')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const input = document.getElementById('username-input');
+  const err = document.getElementById('username-error');
+  const username = (input.value || '').trim();
+  if (!username) { err.classList.add('show'); return; }
+  err.classList.remove('show');
+  setPracticeUsername(username);
+  hideUsernameModal();
+  try { await loadPracticeHistory(); } catch (loadErr) { console.error(loadErr); }
+});
+
+async function bootstrapPracticeHistory() {
+  if (viewMode !== 'practice') return;
+  if (!(await ensurePracticeUser())) return;
+  await loadPracticeHistory();
+}
+
+document.getElementById('reset-progress')?.addEventListener('click', async () => {
+  if (!(await ensurePracticeUser())) return;
+  if (!confirm(`Reset toàn bộ lịch sử luyện tập của "${practiceUsername}" trên D1?`)) return;
+  try { await resetPracticeHistory(); } catch (err) { console.error(err); return; }
   submittedAnswers = {};
-  localStorage.removeItem(PRACTICE_PROGRESS_KEY);
   updateScoreBar();
   renderList();
   if (selectedId) {
@@ -1667,6 +1771,7 @@ updateScoreBar();
 fetchData().catch(err => {
   document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
 });
+bootstrapPracticeHistory().catch(console.error);
 startPoll();
 
 // ── Theme toggle ──
