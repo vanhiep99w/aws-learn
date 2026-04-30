@@ -55,31 +55,37 @@
 
 ### Các thành phần chính
 
+```mermaid
+flowchart LR
+    subgraph OnPrem["Customer network / Data center"]
+        CR["Customer router"]
+        APP["Servers / Apps"]
+        APP --- CR
+    end
+
+    subgraph DXLoc["AWS Direct Connect Location"]
+        CAGE["Customer / partner cage"]
+        AWSDEV["AWS Direct Connect device"]
+        CAGE <-- "Cross-connect" --> AWSDEV
+    end
+
+    subgraph AWS["AWS Region"]
+        DXGW["Direct Connect Gateway<br/>(optional)"]
+        VGW["Virtual Private Gateway"]
+        TGW["Transit Gateway"]
+        VPC1["VPC 1<br/>EC2 / RDS"]
+        VPC2["VPC 2"]
+        PUB["Public AWS services<br/>S3 / DynamoDB"]
+    end
+
+    CR <-- "Dedicated connection" --> CAGE
+    AWSDEV <-- "802.1Q VLAN + BGP<br/>Virtual Interface (VIF)" --> DXGW
+    DXGW --> VGW --> VPC1
+    DXGW --> TGW --> VPC2
+    AWSDEV -. "Public VIF" .-> PUB
 ```
-┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                          AWS Direct Connect Architecture                                                          │
-├───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                                                   │
-│  ┌─────────────┐    ┌─────────────────────┐    ┌───────────────────────────┐                                      │
-│  │ Customer    │    │ Direct Connect      │    │   AWS Region                                                   │ │
-│  │ Network     │    │ Location            │    │                                                                │ │
-│  │             │    │                     │    │  ┌─────────────────────┐                                       │ │
-│  │ ┌─────────┐ │    │ ┌─────────────────┐ │    │  │ VPC 1               │                                       │ │
-│  │ │ Router  │◄├────┼►│ Customer Router │ │    │  │ ┌─────┐ ┌─────────┐ │                                       │ │
-│  │ └─────────┘ │    │ └────────┬────────┘ │    │  │ │EC2  │ │ RDS     │ │                                       │ │
-│  │             │    │          │          │    │  │ └─────┘ └─────────┘ │                                       │ │
-│  │ ┌─────────┐ │    │ ┌────────▼────────┐ │    │  └─────────────────────┘                                       │ │
-│  │             │ Servers │                     │    │  │ AWS Device          │◄├────┼─►                         │ │
-│  │ └─────────┘ │    │ └─────────────────┘ │    │  ┌─────────────────────┐                                       │ │
-│  │             │    │                     │    │  │ VPC 2               │                                       │ │
-│  └─────────────┘    └─────────────────────┘    │  └─────────────────────┘                                       │ │
-│                                                │                                                                │ │
-│                       Cross-connect            │  ┌─────────────────────┐                                       │ │
-│                       (802.1Q VLAN)            │  │ S3, DynamoDB, etc.  │                                       │ │
-│                                                │  └─────────────────────┘                                       │ │
-│                                                └───────────────────────────┘                                      │
-└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+
+> Direct Connect tạo **kết nối vật lý chuyên dụng** tới một Direct Connect location. Sau khi có physical connectivity, bạn tạo **Virtual Interface (VIF)** chạy trên VLAN 802.1Q và dùng **BGP** để truy cập tài nguyên AWS: private VIF tới VPC/VGW/DX Gateway, transit VIF tới Transit Gateway/Cloud WAN, hoặc public VIF tới dịch vụ public của AWS.
 
 ### Quy trình thiết lập
 
