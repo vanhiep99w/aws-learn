@@ -588,6 +588,70 @@ Provisioned:
 | **Bursting** | Dựa trên size | Gồm trong storage | EFS nhỏ, tiết kiệm |
 | **Provisioned** | Cố định | Cố định/tháng | Cần throughput ổn định |
 
+### Bursting Throughput: burst credits hoạt động như thế nào?
+
+**Bursting** giống như cơ chế **tích điểm lúc ít dùng, tiêu điểm lúc cao điểm**:
+
+```text
+Dùng dưới baseline throughput  → tích burst credits
+Dùng trên baseline throughput  → tiêu burst credits
+Hết burst credits              → quay về baseline throughput
+```
+
+Baseline của Bursting throughput phụ thuộc vào lượng data trong **EFS Standard storage class**:
+
+```text
+Baseline write throughput = 50 KiB/s cho mỗi GiB trong EFS Standard
+```
+
+Ví dụ:
+
+```text
+100 GiB data  → baseline write ~5 MiB/s
+1 TiB data    → baseline write ~50 MiB/s
+10 TiB data   → baseline write ~500 MiB/s
+```
+
+Read throughput được tính ưu đãi hơn write, nên có thể cao hơn:
+
+```text
+Baseline read throughput ≈ 3 × baseline write throughput
+```
+
+| Size trong EFS Standard | Baseline write | Burst write | Baseline read | Burst read |
+|---:|---:|---:|---:|---:|
+| **100 GiB** | 5 MiB/s | 100 MiB/s | 15 MiB/s | 300 MiB/s |
+| **1 TiB** | 50 MiB/s | 100 MiB/s | 150 MiB/s | 300 MiB/s |
+| **10 TiB** | 500 MiB/s | 1 GiB/s | 1.5 GiB/s | 3 GiB/s |
+
+**Burst credits tích được tối đa:**
+
+| File system size | Max burst credit balance |
+|---|---:|
+| **Nhỏ hơn 1 TiB** | 2.1 TiB credits |
+| **Lớn hơn 1 TiB** | 2.1 TiB credits cho mỗi 1 TiB stored |
+
+Điều này tương đương: nếu credits đầy, EFS có thể **burst liên tục tối đa khoảng 12 giờ**.
+
+Ví dụ với file system **100 GiB**:
+
+```text
+Baseline = 5 MiB/s
+Idle 24h → tích: 5 MiB/s × 86,400s = 432,000 MiB credits
+
+Nếu burst write ở 100 MiB/s:
+432,000 MiB ÷ 100 MiB/s = 4,320s ≈ 72 phút
+```
+
+> [!WARNING]
+> Bursting **không phải vô hạn**. Nếu workload burst quá lâu hoặc quá thường xuyên, `BurstCreditBalance` có thể cạn. Khi đó EFS bị giới hạn về baseline throughput. Nếu thường xuyên dùng >80% permitted throughput hoặc hết credits, nên cân nhắc **Elastic throughput** hoặc **Provisioned throughput**.
+
+Metric cần monitor trong CloudWatch:
+
+- `BurstCreditBalance`: số burst credits còn lại
+- `PermittedThroughput`: throughput tối đa EFS đang cho phép
+- `MeteredIOBytes`: lượng throughput thực tế đang tiêu thụ
+
 > 📌 **99% trường hợp**: Chọn **General Purpose** + **Elastic** là xong.
 
 ## Mount EFS trên EC2

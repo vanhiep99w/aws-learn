@@ -310,9 +310,9 @@ Trước khi xem các loại volume, cần hiểu 2 khái niệm:
 ```
 Database MySQL:
 ┌─────────────────────────────────────┐
-│ SELECT * FROM users WHERE id = 1   │  → 1 operation
-│ SELECT * FROM users WHERE id = 2   │  → 1 operation  
-│ SELECT * FROM users WHERE id = 3   │  → 1 operation
+│ SELECT * FROM users WHERE id = 1    │  → 1 operation
+│ SELECT * FROM users WHERE id = 2    │  → 1 operation  
+│ SELECT * FROM users WHERE id = 3    │  → 1 operation
 │ ...                                 │
 │ 5000 queries/giây                   │  → Cần 5000 IOPS
 └─────────────────────────────────────┘

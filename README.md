@@ -22,6 +22,7 @@ Two modes:
 - [x] [AWS CLI](aws-cli.md) - Cài đặt, cấu hình, các lệnh thường dùng
 - [x] [AWS Cloud Adoption Framework (CAF)](aws-caf.md) - 6 Perspectives, Cloud Transformation Roadmap
 - [x] [AWS Well-Architected Framework](aws-well-architected.md) - 6 Pillars, Design Principles, Best Practices
+- [x] [AWS Burst Credit Patterns](aws-burst-credit-patterns.md) - Baseline, burst credits/capacity trong EC2 T, EFS, EBS gp2/st1/sc1, DynamoDB
 
 ## Compute
 

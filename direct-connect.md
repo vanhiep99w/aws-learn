@@ -334,8 +334,8 @@ Kết hợp Direct Connect với Site-to-Site VPN để có cả tốc độ cao
 │  │ VPN     │────►│  Private VIF    │────►│ Transit     │     │
 │  │ Gateway │     │  (Private IP)   │     │ Gateway     │     │
 │  └─────────┘     └─────────────────┘     └────┬────────┘     │
-│       │                                        │             │
-│       │◄──────── IPsec Tunnel ────────────────►│             │
+│       │                                       │              │
+│       │◄──────── IPsec Tunnel ───────────────►│              │
 │                                                              │
 │  ✅ Không dùng Public IP                                     │
 │  ✅ Traffic encrypted end-to-end                             │
@@ -423,7 +423,7 @@ Sự khác biệt nằm ở **hạ tầng vật lý**:
 │                                                                              │
 │   ┌─────────┐      ┌────────────────────────┐         ┌─────────┐            │
 │   │ Router  │─────►│ 🏢 Physical Facility   │────────►│ VGW     │            │
-│   │         │      │    (AWS có port tại đây)│         │        │            │
+│   │         │      │   (AWS có port tại đây)│         │         │            │
 │   └─────────┘      └────────────────────────┘         └─────────┘            │
 │        │                    ▲            ▲                  │                │
 │        │                    │            │                  │                │

@@ -11,6 +11,7 @@
 - [EKS Integrations với AWS](#eks-integrations-với-aws)
 - [EKS Cluster Setup](#eks-cluster-setup)
 - [EKS vs ECS - Khi nào dùng cái nào?](#eks-vs-ecs-khi-nào-dùng-cái-nào)
+- [Autoscaling trong EKS](#autoscaling-trong-eks)
 - [Production Best Practices](#production-best-practices)
 - [Monitoring & Logging](#monitoring-logging)
 - [Tổng kết](#tổng-kết)
@@ -735,6 +736,196 @@ kubectl cluster-info
 3. **Small team** → Ít người quản lý infrastructure
 4. **Cost conscious** → Không muốn trả $0.10/hr cho control plane
 5. **New to containers** → Learning curve thấp hơn
+
+---
+
+## Autoscaling trong EKS
+
+EKS có **2 tầng autoscaling** hoạt động song song:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                  HAI TẦNG AUTOSCALING                               │
+│                                                                     │
+│   1. POD-LEVEL (scale workload bên trong cluster)                   │
+│      ├── HPA  (Horizontal Pod Autoscaler) → tăng/giảm số pods       │
+│      └── VPA  (Vertical Pod Autoscaler)   → tăng/giảm CPU/RAM pod   │
+│                                                                     │
+│   2. NODE-LEVEL (scale capacity của cluster)                        │
+│      ├── Cluster Autoscaler (CAS)  → scale Auto Scaling Groups      │
+│      ├── Karpenter                 → provision EC2 trực tiếp        │
+│      └── EKS Auto Mode             → managed Karpenter (AWS lo)     │
+│                                                                     │
+│   👉 Pod-level + Node-level dùng CHUNG để cluster scale đầu-cuối    │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+> AWS chính thức hỗ trợ **3 phương án node-level autoscaling**: EKS Auto Mode, Karpenter, và Kubernetes Cluster Autoscaler. Nguồn: [Best Practices for Cluster Autoscaling](https://docs.aws.amazon.com/eks/latest/best-practices/cluster-autoscaling.html).
+
+---
+
+### 1. Kubernetes Cluster Autoscaler (CAS)
+
+**Cluster Autoscaler** là dự án open-source thuộc Kubernetes SIG-Autoscaling, scale **số lượng node** trong cluster bằng cách điều chỉnh **Auto Scaling Groups (ASG)** phía dưới.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                   CLUSTER AUTOSCALER FLOW                           │
+│                                                                     │
+│   Pod (Pending) ──┐                                                 │
+│                   │                                                 │
+│                   ▼                                                 │
+│   ┌────────────────────────────────┐                                │
+│   │  Cluster Autoscaler controller │                                │
+│   │  (chạy như 1 deployment)       │                                │
+│   └────────────────────────────────┘                                │
+│                   │                                                 │
+│         "Cần thêm node?"                                            │
+│                   │                                                 │
+│                   ▼                                                 │
+│   ┌────────────────────────────────┐                                │
+│   │  EC2 Auto Scaling Group (ASG)  │  ← desired-capacity ++         │
+│   └────────────────────────────────┘                                │
+│                   │                                                 │
+│                   ▼                                                 │
+│              EC2 join cluster → Pod được schedule                   │
+│                                                                     │
+│   Khi nodes RỖI (idle > 10p, default):                              │
+│              → CAS giảm ASG → terminate node                        │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### Cách CAS quyết định scale
+
+| Sự kiện | CAS làm gì |
+|---|---|
+| Pod ở trạng thái **Pending** vì thiếu resource | **Scale-out**: tăng `desiredCapacity` của ASG phù hợp |
+| Node có **utilization < threshold** (mặc định 50%) trong **>10 phút** và pods có thể chuyển đi nơi khác | **Scale-in**: drain node rồi giảm ASG |
+
+CAS dựa vào **Pod requests** (không phải actual usage) để tính node cần thiết → request đặt sai sẽ scale sai.
+
+#### Ưu / nhược điểm CAS
+
+| ✅ Ưu | ❌ Nhược |
+|---|---|
+| Open-source, ổn định, được dùng rộng rãi | Phụ thuộc **ASG** → mỗi loại instance/AZ cần 1 ASG riêng |
+| Tích hợp tốt với mọi cloud (AWS, GCP, Azure) | Scale **chậm hơn** (qua ASG API + EC2 launch) |
+| Hành vi đơn giản, dễ debug | Bin-packing kém — không tự chọn instance type tối ưu cho pod |
+| Phù hợp cluster có ít node group, workload đồng nhất | Quản lý nhiều ASG = phức tạp ở quy mô lớn |
+
+#### Cài đặt nhanh CAS trên EKS
+
+```bash
+# 1. Tag ASG để CAS auto-discover
+k8s.io/cluster-autoscaler/enabled = true
+k8s.io/cluster-autoscaler/<cluster-name> = owned
+
+# 2. Tạo IAM Policy cho CAS (autoscaling:Describe*, SetDesiredCapacity, ...)
+# 3. Tạo IRSA cho service account cluster-autoscaler
+
+# 4. Install qua Helm
+helm repo add autoscaler https://kubernetes.github.io/autoscaler
+helm install cluster-autoscaler autoscaler/cluster-autoscaler \
+  --namespace kube-system \
+  --set autoDiscovery.clusterName=my-cluster \
+  --set awsRegion=ap-southeast-1 \
+  --set rbac.serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=arn:aws:iam::<acc>:role/CASRole
+```
+
+Tham số cần biết:
+
+```yaml
+# Một số flags quan trọng
+--scale-down-utilization-threshold=0.5      # node < 50% utilization → ứng viên scale-down
+--scale-down-unneeded-time=10m              # phải idle ≥ 10 phút mới remove
+--expander=least-waste                      # chọn ASG ít lãng phí nhất khi scale-out
+--balance-similar-node-groups=true          # cân bằng node giữa các AZ
+--skip-nodes-with-local-storage=false       # cho phép evict pod có emptyDir
+```
+
+---
+
+### 2. Karpenter (khuyến nghị bởi AWS cho cluster mới)
+
+**Karpenter** là cluster autoscaler **AWS xây dựng**, provision EC2 **trực tiếp qua EC2 API** — không cần ASG.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│   Pod (Pending) → Karpenter đọc requirements (CPU, RAM, GPU,        │
+│                   topology, arch, spot/on-demand…)                  │
+│        ▼                                                            │
+│   Karpenter chọn instance type TỐI ƯU NHẤT (bin-packing) →          │
+│        ▼                                                            │
+│   Gọi EC2 RunInstances → node sẵn sàng trong ~30-60 giây            │
+│        ▼                                                            │
+│   Consolidation: định kỳ rà soát cluster, gộp pods + tắt node thừa  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Cấu hình bằng `NodePool` + `EC2NodeClass`** (CRDs) — không cần tạo nhiều ASG.
+
+---
+
+### 3. EKS Auto Mode
+
+**EKS Auto Mode** = Karpenter được **AWS quản lý sẵn** trong control plane. Bạn không cần install/maintain Karpenter, không cần tạo node group — AWS tự lo node provisioning, OS patching, scaling.
+
+→ Phụ phí **+12%** trên giá EC2 mà Auto Mode quản lý. Đổi lại: zero-ops cho data plane.
+
+---
+
+### 4. So sánh CAS vs Karpenter vs EKS Auto Mode
+
+| Tiêu chí | Cluster Autoscaler | Karpenter | EKS Auto Mode |
+|---|---|---|---|
+| **Cơ chế** | Scale ASG | Gọi EC2 API trực tiếp | Karpenter managed |
+| **Tốc độ scale-out** | Trung bình (1-3 phút) | Nhanh (~30-60s) | Nhanh (~30-60s) |
+| **Bin-packing / chọn instance** | Theo ASG cố định | Tự chọn instance tối ưu theo pod | Tự chọn |
+| **Số node group/ASG cần** | Nhiều (theo type/AZ) | Không cần — dùng NodePool CRD | Không cần |
+| **Spot support** | Có (nhưng phải cấu hình ASG) | Native, mix spot/on-demand mượt | Native |
+| **Consolidation** | Hạn chế | ✅ Có (gộp pods, terminate node thừa) | ✅ Có |
+| **Operational overhead** | Trung bình | Thấp | Rất thấp |
+| **Chi phí** | EC2 thường | EC2 thường | EC2 + 12% phụ phí |
+| **Multi-cloud portable** | ✅ Có | Hiện chỉ AWS (chính) | Chỉ AWS |
+| **Khi nào chọn?** | Cluster đơn giản, ít node group, đã quen ASG | Cluster mới, workload đa dạng, cần tiết kiệm | Team không muốn quản lý data plane |
+
+> **Khuyến nghị thực tế của AWS (2024+):** Cluster mới → ưu tiên **EKS Auto Mode** hoặc **Karpenter**. Case studies như **Salesforce** (1,000+ EKS clusters) và **BMW Connected** đã migrate từ CAS → Karpenter và đạt **+12% CPU utilization, tiết kiệm hàng triệu USD/năm**. Nguồn: [Salesforce migration](https://aws.amazon.com/blogs/architecture/how-salesforce-migrated-from-cluster-autoscaler-to-karpenter-across-their-fleet-of-1000-eks-clusters/) · [BMW migration](https://aws.amazon.com/blogs/industries/transforming-the-bmw-connected-vehicle-backend-with-karpenter/).
+
+---
+
+### 5. Pod-level autoscaling (HPA & VPA) — bổ sung
+
+Node-level autoscaler (CAS/Karpenter) **chỉ phản ứng khi có pod Pending**. Để pods tự scale theo tải, dùng:
+
+```yaml
+# Horizontal Pod Autoscaler (HPA) — scale theo CPU/Memory hoặc custom metrics
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 3
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+```
+
+| Autoscaler | Scale theo gì | Khi nào dùng |
+|---|---|---|
+| **HPA** | Số pod (replicas) theo CPU/RAM/custom metrics | Workload có thể scale ngang |
+| **VPA** | CPU/RAM **requests** của pod | Workload không scale ngang dễ (DB, stateful) |
+| **KEDA** | Pod theo event-driven (SQS, Kafka, Cron…) | Workload bursty, event-driven |
+
+**Pipeline đầy đủ:** `Metric tăng` → `HPA tăng replicas` → `Pod Pending` → `CAS/Karpenter tạo node` → `Pod chạy`.
 
 ---
 

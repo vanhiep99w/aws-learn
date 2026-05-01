@@ -9,7 +9,7 @@
 - [Kiến trúc](#kiến-trúc)
 - [Use Cases](#use-cases)
 - [So sánh với các Database khác](#so-sánh-với-các-database-khác)
-- [Neptune Features](#neptune-features)
+- [Neptune Features](#neptune-fTape Gatewayeatures)
 - [Neptune Serverless](#neptune-serverless)
 - [Neptune ML](#neptune-ml)
 - [Exam Tips](#exam-tips)

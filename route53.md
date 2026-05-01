@@ -995,32 +995,38 @@ example.com ───▶ Primary (Active)
 
 **Định tuyến dựa trên khoảng cách địa lý** giữa user và resources, với khả năng điều chỉnh **bias**.
 
-```
-                        Bias = 0 (mặc định)
-User ở giữa 2 servers     │
-         │                ▼
-         │          ┌───────────────┐
-         │          │ 50%  │  50%   │
-         │          └───────────────┘
-         │              │       │
-         ▼              ▼       ▼
-    ┌─────────┐    Server A   Server B
+```text
+Bias = 0 (mặc định)
+
+          User ở giữa 2 resources
+                    │
+                    ▼
+        ┌──────────────────────────┐
+        │  Boundary chia gần 50/50 │
+        └──────────────────────────┘
+             │                │
+             ▼                ▼
+        ┌─────────┐      ┌─────────┐
+        │Server A │      │Server B │
+        └─────────┘      └─────────┘
 ```
 
-```
-                        Bias điều chỉnh
-Server A: Bias = +50          Server B: Bias = -25
-         │                            │
-         ▼                            ▼
-    ┌────────────────────────────────────────┐
-    │        70%          │        30%       │ (thay vì 50-50)
-    └────────────────────────────────────────┘
+```text
+Bias điều chỉnh phạm vi phục vụ
+
+        Server A: Bias +50          Server B: Bias -25
+                 │                           │
+                 ▼                           ▼
+        ┌──────────────────────────────┬──────────────┐
+        │        ~70% traffic          │ ~30% traffic │
+        │   phạm vi A được mở rộng     │ B bị thu hẹp │
+        └──────────────────────────────┴──────────────┘
 ```
 
 **Bias range:** -99 đến +99
 
 - **Positive bias** (+): Mở rộng phạm vi, thu hút nhiều traffic hơn
-- **Negative bias** (-)\*\*: Thu hẹp phạm vi, giảm traffic
+- **Negative bias** (-): Thu hẹp phạm vi, giảm traffic
 
 **Yêu cầu:** Phải sử dụng **Route 53 Traffic Flow** để configure.
 

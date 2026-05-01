@@ -10,10 +10,11 @@
 - [4. SNS + SQS Fan-out](#4-sns-sqs-fan-out)
 - [5. Spring Boot Integration](#5-spring-boot-integration)
 - [6. FIFO Topics](#6-fifo-topics)
-- [6. Security](#6-security)
-- [7. Best Practices](#7-best-practices)
-- [8. SNS vs SQS vs EventBridge](#8-sns-vs-sqs-vs-eventbridge)
-- [9. Common Exam Questions](#9-common-exam-questions)
+- [7. Limits & Quotas](#7-limits--quotas)
+- [8. Security](#8-security)
+- [9. Best Practices](#9-best-practices)
+- [10. SNS vs SQS vs EventBridge](#10-sns-vs-sqs-vs-eventbridge)
+- [11. Common Exam Questions](#11-common-exam-questions)
 - [Tài liệu tham khảo](#tài-liệu-tham-khảo)
 
 ---
@@ -29,17 +30,17 @@
 │                                                                   │
 │   Publisher (1)                                                   │
 │         │                                                         │
-│       ↓                                                           │
+│         ↓                                                         │
 │   ┌───────────────────────────────────────┐                       │
 │   │           SNS TOPIC                   │                       │
 │   │    "order-created-topic"              │                       │
 │   └───────────────────────────────────────┘                       │
-│       │           │           │             │                     │
+│       │           │           │           │                       │
 │       ↓           ↓           ↓           ↓                       │
-│   ┌───────┐   ┌───────┐   ┌───────┐   ┌───────┐                   │
-│   │  SQS  │   │Lambda │   │ Email │   │ HTTP  │                   │
-│   │ Queue │   │       │   │       │   │Endpoint │                 │
-│   └───────┘   └───────┘   └───────┘   └───────┘                   │
+│   ┌───────┐   ┌───────┐   ┌───────┐   ┌────────┐                  │
+│   │  SQS  │   │Lambda │   │ Email │   │ HTTP   │                  │
+│   │ Queue │   │       │   │       │   │Endpoint│                  │
+│   └───────┘   └───────┘   └───────┘   └────────┘                  │
 │                                                                   │
 │   Subscribers (many) - TẤT CẢ đều nhận message                    │
 │                                                                   │
@@ -312,27 +313,27 @@ Ví dụ: User upload ảnh → cần làm:
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Publisher gửi: { "orderType": "online" }                                  │
-│                         │                                                   │
+│                          │                                                  │
 │                          ↓                                                  │
 │                   ┌─────────────┐                                           │
 │                   │  SNS Topic  │                                           │
 │                   └──────┬──────┘                                           │
-│                         │                                                   │
+│                          │                                                  │
 │        ┌─────────────────┼─────────────────┐                                │
 │        ↓                 ↓                 ↓                                │
 │   ┌──────────┐     ┌──────────┐     ┌──────────┐                            │
 │   │Filter:   │     │Filter:   │     │Filter:   │  ← Filter Policy gắn       │
 │   │"online"  │     │"in-store"│     │ (none)   │    VÀO SUBSCRIPTION        │
 │   └────┬─────┘     └────┬─────┘     └────┬─────┘                            │
-│        │                │               │                                   │
+│        │                │                │                                  │
 │    ✅ MATCH         ❌ SKIP          ✅ MATCH                               │
-│        │                ✖               │                                   │
+│        │                ✖                │                                  │
 │        ↓                                 ↓                                  │
 │   ┌──────────┐                     ┌──────────┐                             │
 │   │SQS Online│                     │SQS All   │                             │
 │   └──────────┘                     └──────────┘                             │
 │                                                                             │
-│   ⚡ SNS filter TRƯỚC → Không match = KHÔNG gửi → Tiết kiệm cost!           │
+│   ⚡ SNS filter TRƯỚC → Không match = KHÔNG gửi → Tiết kiệm cost!            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -464,7 +465,7 @@ public class OrderEventConsumer {
 
 ## 6. FIFO Topics
 
-### 5.1 FIFO Topic Features
+### 6.1 FIFO Topic Features
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -474,12 +475,13 @@ public class OrderEventConsumer {
 │   Standard Topic:                                               │
 │   • Best-effort ordering                                        │
 │   • At-least-once delivery                                      │
-│   • Unlimited throughput                                        │
+│   • Publish throughput quota depends on Region/account          │
 │                                                                 │
 │   FIFO Topic:                                                   │
 │   • Strict ordering (by Message Group ID)                       │
 │   • Exactly-once delivery                                       │
-│   • 300 msg/s (or 10 MB/s with batching)                        │
+│   • Default per-topic throughput: 3,000 msg/s or 20 MB/s        │
+│   • Per message group: up to 300 msg/s                          │
 │   • Name must end with ".fifo"                                  │
 │                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
@@ -490,7 +492,7 @@ public class OrderEventConsumer {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 5.2 Message Group ID
+### 6.2 Message Group ID
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -516,9 +518,86 @@ public class OrderEventConsumer {
 
 ---
 
-## 6. Security
+## 7. Limits & Quotas
 
-### 6.1 Encryption
+> **Nguồn:** AWS General Reference — Amazon SNS endpoints and quotas. Các quota publish là **per account, per Region** và có thể thay đổi theo Region.
+
+### 7.1 Resource quotas
+
+| Resource | Default quota |
+|---|---:|
+| Standard topics | 100,000 topics/account |
+| FIFO topics | 1,000 topics/account |
+| Standard topic subscriptions | 12,500,000 subscriptions/topic |
+| FIFO topic subscriptions | 100 subscriptions/topic |
+| Pending subscriptions | 5,000/account |
+| Message size | 256 KiB |
+| Message header size | 16 KiB |
+| Messages per `PublishBatch` request | 10 messages |
+| Email / email-json delivery rate | 10 messages/second/subscription — hard limit |
+| Promotional SMS delivery rate | 20 messages/second |
+| Transactional SMS delivery rate | 20 messages/second |
+
+### 7.2 Publish throughput quota
+
+SNS `Publish`/`PublishBatch` throughput quota tính theo **messages published per second**, không chỉ số API calls. `PublishBatch` có thể gửi tối đa 10 messages/request, nên ví dụ quota 30,000 msg/s có thể đạt bằng:
+
+- `Publish`: 30,000 API requests/s × 1 message
+- `PublishBatch`: 3,000 API requests/s × 10 messages
+- kết hợp `Publish` và `PublishBatch`, miễn tổng message/s không vượt quota Region
+
+| AWS Region group | Standard topics | FIFO topics |
+|---|---:|---:|
+| US East (N. Virginia) `us-east-1` | 30,000 msg/s | 30,000 msg/s |
+| US West (Oregon) `us-west-2`, Europe (Ireland) `eu-west-1` | 9,000 msg/s | 9,000 msg/s |
+| US East (Ohio), US West (N. California), Mumbai, Seoul, Singapore, Sydney, Tokyo, Frankfurt | 1,500 msg/s | 3,000 msg/s |
+| All other supported Regions | 300 msg/s | 3,000 msg/s |
+
+### 7.3 FIFO-specific throughput notes
+
+| Scope | Quota / behavior |
+|---|---|
+| Per message group | Up to 300 messages/second |
+| Per FIFO topic default | 3,000 messages/second or 20 MB/second, whichever comes first, when `FifoThroughputScope = Topic` |
+| High-throughput FIFO | Có thể đạt cao hơn khi dùng message-group-level throughput và request quota increase theo Region |
+| Ordering tradeoff | Cross-Region deliveries có thể giảm throughput trong một message group vì phải giữ strict ordering |
+
+### 7.4 API throttling examples
+
+Một số API throttling là **hard quota** và không tăng được:
+
+| API | Transactions/second |
+|---|---:|
+| `Subscribe` | 100 |
+| `Unsubscribe` | 100 |
+| `ListTopics` | 30 |
+| `ListSubscriptions` | 30 |
+| `ListSubscriptionsByTopic` | 30 |
+| `AddPermission` / `RemovePermission` | 10 |
+| `GetSMSAttributes` | 20 |
+| `SetSMSAttributes` | 1 |
+
+Các API quản trị topic/subscription như `CreateTopic`, `DeleteTopic`, `GetTopicAttributes`, `SetTopicAttributes`, `ConfirmSubscription` có quota khác nhau theo Region, ví dụ:
+
+| Region group | Transactions/second |
+|---|---:|
+| US East (N. Virginia) | 3,000 |
+| US West (Oregon), Europe (Ireland) | 900 |
+| Một số Region lớn khác | 150 |
+| Các Region còn lại | 30 |
+
+### 7.5 Exam notes
+
+- **Standard SNS không có “unlimited throughput” tuyệt đối** — publish throughput vẫn bị quota theo account/Region.
+- **Quota publish là soft quota**: có thể request tăng qua Service Quotas/AWS Support.
+- **Email delivery 10 msg/s/subscription là hard limit**: không tăng được.
+- Nếu cần throughput cao, ưu tiên `PublishBatch`, chọn Region phù hợp, và request quota increase trước peak traffic.
+
+---
+
+## 8. Security
+
+### 8.1 Encryption
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -540,7 +619,7 @@ public class OrderEventConsumer {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-### 6.2 Access Control
+### 8.2 Access Control
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -583,9 +662,9 @@ public class OrderEventConsumer {
 
 ---
 
-## 7. Best Practices
+## 9. Best Practices
 
-### 7.1 Design Patterns
+### 9.1 Design Patterns
 
 | Pattern | Description |
 |---------|-------------|
@@ -594,7 +673,7 @@ public class OrderEventConsumer {
 | **Cross-account** | SNS topic in Account A, SQS in Account B |
 | **Cross-region** | SNS topic in region A, SQS in region B |
 
-### 7.2 Message Filtering Best Practices
+### 9.2 Message Filtering Best Practices
 
 | Practice | Recommendation |
 |----------|---------------|
@@ -602,7 +681,7 @@ public class OrderEventConsumer {
 | **Use MessageAttributes** | More efficient than body filtering |
 | **Keep policies simple** | Complex policies = slower processing |
 
-### 7.3 Reliability
+### 9.3 Reliability
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -624,7 +703,7 @@ public class OrderEventConsumer {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 7.4 Cost Optimization
+### 9.4 Cost Optimization
 
 | Strategy | Description |
 |----------|-------------|
@@ -634,7 +713,7 @@ public class OrderEventConsumer {
 
 ---
 
-## 8. SNS vs SQS vs EventBridge
+## 10. SNS vs SQS vs EventBridge
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -675,7 +754,7 @@ public class OrderEventConsumer {
 
 ---
 
-## 9. Common Exam Questions
+## 11. Common Exam Questions
 
 ### Q1: SNS vs SQS delivery model?
 **A:** SNS = Push to all subscribers. SQS = Consumer pulls messages, 1 per message.
@@ -702,3 +781,4 @@ public class OrderEventConsumer {
 - [Amazon SNS Developer Guide](https://docs.aws.amazon.com/sns/latest/dg/)
 - [SNS Message Filtering](https://docs.aws.amazon.com/sns/latest/dg/sns-message-filtering.html)
 - [SNS FAQs](https://aws.amazon.com/sns/faqs/)
+- [Amazon SNS endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/sns.html)
