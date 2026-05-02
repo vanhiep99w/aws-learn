@@ -478,36 +478,76 @@ Ngoài Windows và Lustre, FSx còn 2 loại nữa thỉnh thoảng xuất hiệ
 
 ## Bản đồ toàn cảnh AWS File Storage
 
+Diagram dưới đây gom **tất cả các chiều** quan trọng vào 1 bức tranh duy nhất: client/use case → protocol → service → đặc tính chính, kèm lớp hybrid và bối cảnh rộng hơn (Block vs File vs Object).
+
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    AWS FILE STORAGE MAP                             │
-│                                                                     │
-│  ┌──────────────┐   NFS    ┌────────────────────────────────────┐   │
-│  │  Linux Apps  │─────────►│  Amazon EFS                        │   │
-│  │  Containers  │          │  → Shared file cho Linux workloads │   │
-│  └──────────────┘          └────────────────────────────────────┘   │
-│                                                                     │
-│  ┌──────────────┐   SMB    ┌────────────────────────────────────┐   │
-│  │ Windows Apps │─────────►│  FSx for Windows File Server       │   │
-│  │ AD Users     │          │  → Windows native file shares      │   │
-│  └──────────────┘          └────────────────────────────────────┘   │
-│                                                                     │
-│  ┌──────────────┐  Lustre  ┌────────────────────────────────────┐   │
-│  │  HPC / ML    │─────────►│  FSx for Lustre                    │   │
-│  │  Big Data    │          │  → High-performance computing      │   │
-│  └──────────────┘          └────────────────────────────────────┘   │
-│                                                                     │
-│  ┌──────────────┐ NFS+SMB  ┌────────────────────────────────────┐   │
-│  │  NAS / Multi │─────────►│  FSx for NetApp ONTAP              │   │
-│  │  Protocol    │          │  → Enterprise NAS replacement      │   │
-│  └──────────────┘          └────────────────────────────────────┘   │
-│                                                                     │
-│  ┌──────────────┐  NFS/SMB ┌────────────────────────────────────┐   │
-│  │ On-premises  │─────────►│  AWS Storage Gateway               │   │
-│  │  ↔ Cloud     │          │  → Hybrid bridge (cầu nối)         │   │
-│  └──────────────┘          └────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+│                        AWS FILE STORAGE — ONE-PAGE OVERVIEW                                   │
+│                                                                                               │
+│  CLIENT / USE CASE          PROTOCOL          SERVICE                      KEY SPECS          │
+│  ══════════════════        ══════════        ═══════════════════          ═══════════════     │
+│                                                                                               │
+│  Linux apps                                   ┌─────────────────────┐     Multi-AZ · 99.99%   │
+│  Containers (ECS/EKS) ───── NFS v4 ─────────► │  Amazon EFS         │     ~10 GB/s            │
+│  Lambda, general share                        │  (managed NFS)      │     No AD · Auto-scale  │
+│                                               └─────────────────────┘                         │
+│                                                                                               │
+│  Windows apps, .NET                           ┌─────────────────────┐     Single/Multi-AZ     │
+│  SharePoint, SQL Server ──  SMB 2/3  ───────► │  FSx for Windows    │     12-20 GB/s          │
+│  Home dirs, DFS             (+ NTFS on disk)  │  File Server        │     Active Directory ✓  │
+│  (AD-integrated)            (AD auth)         └─────────────────────┘     NTFS permissions    │
+│                                                                                               │
+│  HPC, ML training                             ┌─────────────────────┐     Single-AZ · 99.5%   │
+│  Genomics, video            Lustre            │  FSx for Lustre     │     1000 GB/s           │
+│  Big data from S3    ─────  (POSIX)  ───────► │  (Linux only)       │     Auto-sync với S3    │
+│                                               └─────────────────────┘     Sub-ms latency      │
+│                                                                                               │
+│  NAS migration                                ┌─────────────────────┐     Single/Multi-AZ     │
+│  Cần cả Windows + Linux     NFS + SMB         │  FSx for NetApp     │     72-80 GB/s          │
+│  Enterprise appliances ──── + iSCSI  ───────► │  ONTAP              │     AD ✓ · SnapMirror   │
+│                                               └─────────────────────┘     Tiering · Dedup     │
+│                                                                                               │
+│  ZFS Linux migration                          ┌─────────────────────┐     Single/Multi-AZ     │
+│  Dev/test, snapshots  ───── NFS     ────────► │  FSx for OpenZFS    │     10-21 GB/s          │
+│  & cloning                                    │                     │     <0.5ms latency      │
+│                                               └─────────────────────┘     Clone · Compression │
+│                                                                                               │
+│ ──────────────────────────────────────────────────────────────────────────────────────────────│
+│  HYBRID (On-premises ↔ AWS)                                                                   │
+│                                                                                               │
+│  On-prem app (không sửa code)                 ┌───────────────────────────────┐               │
+│  ┌─────────────┐                              │  AWS Storage Gateway          │               │
+│  │ NFS/SMB/    │                              │  ├─ S3 File Gateway    → S3   │               │
+│  │ iSCSI client│ ──── NFS/SMB/iSCSI ────────► │  ├─ FSx File Gateway  → FSx W │               │
+│  └─────────────┘        (+ local cache)       │  ├─ Volume Gateway    → EBS   │               │
+│                                               │  └─ Tape Gateway      → Glac. │               │
+│                                               └───────────────────────────────┘               │
+│                                                                                               │
+│ ══════════════════════════════════════════════════════════════════════════════════════════════│
+│  BỐI CẢNH — File Storage chỉ là 1 trong 3 loại Core Storage                                   │
+│                                                                                               │
+│     BLOCK (ổ cứng 1-EC2)       ║    FILE (folder share)      ║    OBJECT (HTTP API)           │
+│     ────────────────────       ║    ─────────────────        ║    ─────────────────           │
+│     • EBS (persistent)         ║   • EFS                     ║   • S3                         │
+│     • Instance Store (ephemeral)║   • FSx (4 loại)           ║   • S3 Glacier                 │
+│     Format NTFS/ext4/XFS       ║    Mount qua NFS/SMB        ║    GET/PUT/DELETE              │
+│                                                                                               │
+└───────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Quick decision tree — chọn service nào?**
+
+```
+OS của client?         Windows + AD ─────────────► FSx for Windows
+                       Linux, general-purpose ───► EFS
+                       Linux, cực nhanh (HPC/ML) ► FSx for Lustre
+Cần cả NFS + SMB? ─────────────────────────────────► FSx for NetApp ONTAP
+Migrate ZFS? ──────────────────────────────────────► FSx for OpenZFS
+App cũ on-prem? ───────────────────────────────────► Storage Gateway
+Chỉ 1 EC2 dùng? ───────────────────────────────────► EBS (Block, không phải File)
+```
+
+> **Lưu ý thuật ngữ — NAS (Network Attached Storage):** thiết bị/server chuyên dụng chứa file và chia sẻ qua mạng cho nhiều máy cùng truy cập (NFS/SMB). Hãng NAS phổ biến: NetApp, Dell EMC, Synology, QNAP. Trong AWS: **EFS** (NAS cho Linux), **FSx for Windows** (NAS cho Windows), **FSx for NetApp ONTAP** (thay thế trực tiếp NAS appliance on-premises).
 
 ---
 
