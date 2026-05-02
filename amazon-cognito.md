@@ -220,37 +220,119 @@ Identity Pool có 2 loại IAM Roles:
 
 ## User Pools vs Identity Pools
 
+### Cốt lõi: 2 câu hỏi hoàn toàn khác nhau
+
+Đây là điểm hay làm người mới rối — tưởng 2 cái cùng làm 1 việc (login). Thực ra chúng giải quyết **2 vấn đề riêng biệt**:
+
+```
+USER POOL trả lời:       "Bạn là AI?"                  → Authentication
+IDENTITY POOL trả lời:   "Bạn được làm gì trên AWS?"   → Authorization (cho AWS resources)
+```
+
+### Ví dụ đời thực: Đi vào tòa nhà công ty
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  USER POOL  =  Quầy Lễ Tân                                  │
+│  ─────────────────────                                      │
+│  • Bạn xuất trình CMND, lễ tân kiểm tra                     │
+│  • Lễ tân in cho bạn 1 thẻ khách (badge)                    │
+│  • Trên thẻ ghi: "Tên: Hiệp, Vai trò: Khách hàng"           │
+│  • → Đây là JWT token                                       │
+│                                                             │
+│  Nhưng cái thẻ này chỉ chứng minh BẠN LÀ AI.                │
+│  Nó KHÔNG mở được cửa phòng server, kho, két sắt...         │
+│                                                             │
+│ ─────────────────────────────────────────────────────────── │
+│                                                             │
+│  IDENTITY POOL  =  Quầy đổi thẻ ra "chìa khóa từ"           │
+│  ──────────────────────────────────────                     │
+│  • Bạn đưa thẻ khách (JWT) vào                              │
+│  • Hệ thống kiểm tra: "Khách thì được vào phòng nào?"       │
+│  • Nó đưa cho bạn 1 chìa khóa từ tạm thời (~1 tiếng)        │
+│  • Chìa khóa này MỞ ĐƯỢC cửa phòng họp, máy in              │
+│  • → Đây là AWS Credentials tạm thời (Access Key + Secret)  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Vì sao phải tách ra 2 thứ?
+
+**Câu trả lời ngắn:** JWT từ User Pool **không phải** AWS credentials. AWS SDK (S3, DynamoDB...) **chỉ chấp nhận AWS credentials**, nó không hiểu JWT.
+
+```
+JWT Token              ≠       AWS Credentials
+──────────                     ────────────────
+"Tôi là Hiệp"                  "Tôi được phép gọi s3:PutObject vào bucket X"
+Backend của BẠN hiểu           AWS API hiểu (qua chữ ký SigV4)
+Dùng cho: API Gateway,         Dùng cho: gọi trực tiếp S3, DynamoDB,
+          Lambda của bạn                 SQS, Kinesis... từ client
+```
+
+### Bảng so sánh
+
 | Aspect | User Pools | Identity Pools |
 |--------|------------|----------------|
-| **Purpose** | Authentication (Who are you?) | Authorization (What can you do?) |
-| **Output** | JWT Tokens | AWS Credentials |
-| **Use case** | Login to your app | Access AWS services directly |
-| **Stores users** | ✅ Yes | ❌ No |
-| **Social login** | ✅ Yes | Through User Pool |
+| **Purpose** | Authentication (Who are you?) | Authorization (What can you do on AWS?) |
+| **Output** | JWT Tokens (ID/Access/Refresh) | AWS Credentials tạm thời (~1h) |
+| **Ai "hiểu" output này?** | Backend của bạn (API Gateway, Lambda) | AWS Services (S3, DynamoDB, ...) |
+| **Use case** | Login vào app của bạn | Cho client gọi thẳng AWS service |
+| **Lưu trữ users?** | ✅ Có (như database user) | ❌ Không |
+| **Social login** | ✅ Native (Google, Facebook, SAML, OIDC) | Thường lấy identity từ User Pool |
 
-### Khi nào dùng gì?
+### 2 kịch bản thực tế — khi nào cần cái nào
+
+**Kịch bản A — Chỉ cần User Pool** (phổ biến nhất)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                  User Pools vs Identity Pools                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Chỉ cần USER POOLS khi:                                        │
-│  ├── App có backend API (API Gateway + Lambda)                  │
-│  ├── Backend verify JWT token                                   │
-│  └── Users không cần access AWS trực tiếp                       │
-│                                                                 │
-│  Cần IDENTITY POOLS khi:                                        │
-│  ├── Mobile/Web app access AWS trực tiếp                        │
-│  ├── Upload files to S3 từ client                               │
-│  ├── Read/Write DynamoDB từ client                              │
-│  └── Cần AWS credentials cho SDK                                │
-│                                                                 │
-│  Thường dùng CẢ HAI:                                            │
-│  User Pool (authenticate) → Identity Pool (AWS access)          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+Mobile App ──login──► User Pool ──JWT──► Mobile App
+                                             │
+                                             │ Authorization: Bearer <JWT>
+                                             ▼
+                                        API Gateway ──► Lambda ──► DynamoDB
+                                        (validate JWT)   (chạy với IAM role
+                                                          của Lambda, KHÔNG
+                                                          phải của user)
 ```
+
+→ Backend của BẠN tự gọi DynamoDB. User chỉ nói chuyện với API của bạn. **Không cần Identity Pool.**
+
+**Kịch bản B — Cần cả 2** (client gọi AWS trực tiếp)
+
+```
+Mobile App ──login──► User Pool ──JWT──► Mobile App
+                                             │
+                                             │ Đưa JWT này
+                                             ▼
+                                        Identity Pool
+                                             │
+                                             │ Trả AWS Credentials
+                                             ▼
+                                        Mobile App
+                                             │
+                                             │ Dùng AWS SDK
+                                             ▼
+                                        S3 (upload ảnh trực tiếp)
+```
+
+→ App **gọi thẳng S3** từ điện thoại, không qua backend của bạn. **Bắt buộc cần Identity Pool** để có AWS credentials hợp lệ.
+
+### Khi nào cần Identity Pool?
+
+Chỉ khi **client (mobile/web/IoT) gọi trực tiếp dịch vụ AWS** — không qua backend của bạn:
+
+- Upload ảnh/video thẳng từ điện thoại lên **S3**
+- Đọc/ghi **DynamoDB** trực tiếp từ web app
+- Gọi **AWS AppSync / Kinesis / IoT Core** từ device
+- Cho phép **guest user** (chưa login) xem một số resource công khai trong S3
+
+Nếu bạn có backend (API Gateway + Lambda, hoặc EC2/ECS chạy code của bạn) làm trung gian → **chỉ cần User Pool**.
+
+### Tóm 1 câu để nhớ
+
+> **User Pool** = "thẻ nhân viên" để app của BẠN nhận biết user.
+> **Identity Pool** = "chìa khóa AWS" để user (qua app) tự mở cửa kho AWS.
 
 ---
 
