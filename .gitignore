@@ -19,6 +19,7 @@ content/
 .source/
 
 .superpowers/
+.pi/
 
 # Devin local config (user-specific permissions)
 .devin/*.local.json
