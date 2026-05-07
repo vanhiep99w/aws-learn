@@ -378,6 +378,8 @@ body::before{
 .card.active::before{
   background:var(--gradient-accent);
 }
+.card.active.card-correct::before{background:var(--correct)}
+.card.active.card-wrong::before{background:var(--wrong)}
 .card-title{
   font-size:.88rem;font-weight:500;line-height:1.5;margin-bottom:8px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
@@ -402,10 +404,17 @@ body::before{
   width:22px;height:22px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
 }
-.card.card-correct{border-left:3px solid var(--correct);background:var(--correct-soft)}
+.card.card-correct{background:var(--correct-soft)}
+.card.card-correct::before{background:var(--correct)}
 .card.card-correct .card-status{background:var(--correct);color:#fff}
-.card.card-wrong{border-left:3px solid var(--wrong);background:var(--wrong-soft)}
+.card.card-wrong{background:var(--wrong-soft)}
+.card.card-wrong::before{background:var(--wrong)}
 .card.card-wrong .card-status{background:var(--wrong);color:#fff}
+.card.active.card-correct,
+.card.active.card-wrong{
+  border-color:var(--accent-border);
+  box-shadow:var(--card-hover-shadow);
+}
 
 /* ── Detail panel ── */
 .detail-panel{flex:1;overflow:hidden;background:var(--bg);min-width:0;position:relative;display:flex;flex-direction:column}
@@ -885,6 +894,12 @@ body.qa-resizing{cursor:col-resize;user-select:none}
     <select id="filter-service"><option value="">All Services</option></select>
     <select id="filter-domain"><option value="">All Domains</option></select>
     <select id="filter-qtype"><option value="">All Types</option></select>
+    <select id="filter-result" title="Filter practice result">
+      <option value="">All Results</option>
+      <option value="correct">Correct</option>
+      <option value="wrong">Wrong</option>
+      <option value="unanswered">Unanswered</option>
+    </select>
     <select id="sort-created"><option value="created-desc">Newest first</option><option value="created-asc">Oldest first</option></select>
     <form class="id-jump-form" id="id-jump-form" title="Jump to saved question ID">
       <input id="id-jump-input" type="search" placeholder="Question ID…" autocomplete="off" spellcheck="false">
@@ -1191,7 +1206,7 @@ function bindQaResizer() {
 applyQaSplit(getSavedQaSplit());
 
 function hasActiveFilters() {
-  return ['filter-service', 'filter-domain', 'filter-qtype']
+  return ['filter-service', 'filter-domain', 'filter-qtype', 'filter-result']
     .some(id => document.getElementById(id)?.value);
 }
 
@@ -1255,7 +1270,7 @@ function updateScoreBar() {
     document.getElementById('score-fill-correct').style.width = `${correctPct}%`;
     document.getElementById('score-fill-wrong').style.width = `${wrongPct}%`;
     document.getElementById('score-fill-pending').style.width = `${pendingPct}%`;
-    document.getElementById('score-text').textContent = `${answered}/${total}`;
+    document.getElementById('score-text').textContent = `${answered}/${total} · ✗ ${wrong}`;
     const track = document.getElementById('score-track');
     if (track) track.title = `Đúng ${correct} · Sai ${wrong} · Chưa trả lời ${pending}`;
   } else {
@@ -1340,10 +1355,17 @@ function getFiltered() {
   const svc = document.getElementById('filter-service').value;
   const dom = document.getElementById('filter-domain').value;
   const qt = document.getElementById('filter-qtype').value;
+  const result = document.getElementById('filter-result')?.value || '';
   return issues.filter(i => {
     if (svc && !i.labels.includes(svc)) return false;
     if (dom && i.meta.domain !== dom) return false;
     if (qt && i.meta.question_type !== qt) return false;
+    if (result) {
+      const status = getCardStatus(i.id);
+      if (result === 'correct' && status !== '✓') return false;
+      if (result === 'wrong' && status !== '✗') return false;
+      if (result === 'unanswered' && status) return false;
+    }
     return true;
   }).sort((a, b) => {
     const diff = getCreatedTime(a) - getCreatedTime(b);
@@ -1713,8 +1735,8 @@ function esc(s) {
   return d.innerHTML;
 }
 
-['filter-service', 'filter-domain', 'filter-qtype'].forEach(id =>
-  document.getElementById(id).addEventListener('change', () => {
+['filter-service', 'filter-domain', 'filter-qtype', 'filter-result'].forEach(id =>
+  document.getElementById(id)?.addEventListener('change', () => {
     loadedCount = 0; hasMore = true;
     fetchData().catch(console.error);
   })
