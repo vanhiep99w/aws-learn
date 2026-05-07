@@ -338,8 +338,14 @@ body::before{
 .score-fill.pending{background:var(--surface3)}
 .score-text{
   font-family:'JetBrains Mono',monospace;font-size:.65rem;
-  color:var(--text2);font-weight:600;white-space:nowrap;
+  color:var(--text2);font-weight:700;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:3px;
 }
+.score-num{font-variant-numeric:tabular-nums}
+.score-num.correct{color:var(--correct)}
+.score-num.wrong{color:var(--wrong)}
+.score-num.total{color:var(--text2)}
+.score-sep{color:var(--text3);font-weight:600}
 .reset-progress-btn{
   border:1px solid var(--border);background:var(--surface2);color:var(--text2);
   border-radius:8px;padding:4px 8px;font:600 .64rem 'Inter',sans-serif;
@@ -1305,7 +1311,7 @@ function updateScoreBar() {
     document.getElementById('score-fill-correct').style.width = `${correctPct}%`;
     document.getElementById('score-fill-wrong').style.width = `${wrongPct}%`;
     document.getElementById('score-fill-pending').style.width = `${pendingPct}%`;
-    document.getElementById('score-text').textContent = `${answered}/${total} · ✗ ${wrong}`;
+    document.getElementById('score-text').innerHTML = `<span class="score-num correct">${correct}</span><span class="score-sep">/</span><span class="score-num wrong">${wrong}</span><span class="score-sep">/</span><span class="score-num total">${total}</span>`;
     const track = document.getElementById('score-track');
     if (track) track.title = `Đúng ${correct} · Sai ${wrong} · Chưa trả lời ${pending}`;
   } else {
