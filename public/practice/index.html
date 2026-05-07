@@ -1086,7 +1086,7 @@ async function ensurePracticeUser() {
   return false;
 }
 
-async function loadPracticeHistory() {
+async function loadPracticeHistory({ autoSelectLast = false } = {}) {
   if (!practiceUsername) return;
   const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}`);
   if (!res.ok) throw new Error(`History API ${res.status}`);
@@ -1104,10 +1104,45 @@ async function loadPracticeHistory() {
   submittedAnswers = next;
   updateScoreBar();
   renderList();
+  if (autoSelectLast && viewMode === 'practice' && !selectedId) {
+    await selectLastAnsweredQuestion();
+    return;
+  }
   if (selectedId) {
     const issue = issues.find(i => i.id === selectedId);
     if (issue) showDetail(issue, false);
   }
+}
+
+function getLastAnsweredQuestionId() {
+  return Object.entries(submittedAnswers)
+    .filter(([, st]) => st && st.submitted)
+    .sort((a, b) => {
+      const at = Date.parse(a[1].answeredAt || a[1].updatedAt || '') || 0;
+      const bt = Date.parse(b[1].answeredAt || b[1].updatedAt || '') || 0;
+      return bt - at;
+    })[0]?.[0] || '';
+}
+
+async function selectLastAnsweredQuestion() {
+  const lastId = getLastAnsweredQuestionId();
+  if (!lastId) return;
+  let issue = issues.find(i => i.id === lastId);
+  if (!issue) {
+    const res = await fetch(`${API}?id=${encodeURIComponent(lastId)}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
+    if (!row) return;
+    issue = normalizeIssue(row);
+    issues.unshift(issue);
+    loadedCount = issues.length;
+  }
+  selectedId = issue.id;
+  renderList();
+  showDetail(issue, true);
+  const card = document.querySelector(`.card[data-id="${CSS.escape(issue.id)}"]`);
+  if (card) card.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 async function savePracticeAnswer(issueId) {
@@ -1801,7 +1836,7 @@ document.querySelectorAll('#mode-toggle .mode-btn').forEach(btn => {
     applyViewMode(mode);
     if (mode === 'practice') {
       await ensurePracticeUser();
-      if (practiceUsername) loadPracticeHistory().catch(console.error);
+      if (practiceUsername) loadPracticeHistory({ autoSelectLast: !selectedId }).catch(console.error);
     }
     if (selectedId) {
       const issue = issues.find(i => i.id === selectedId);
@@ -1836,13 +1871,13 @@ document.getElementById('username-form')?.addEventListener('submit', async e => 
   err.classList.remove('show');
   setPracticeUsername(username);
   hideUsernameModal();
-  try { await loadPracticeHistory(); } catch (loadErr) { console.error(loadErr); }
+  try { await loadPracticeHistory({ autoSelectLast: !selectedId }); } catch (loadErr) { console.error(loadErr); }
 });
 
 async function bootstrapPracticeHistory() {
   if (viewMode !== 'practice') return;
   if (!(await ensurePracticeUser())) return;
-  await loadPracticeHistory();
+  await loadPracticeHistory({ autoSelectLast: !selectedId });
 }
 
 document.getElementById('reset-progress')?.addEventListener('click', async () => {
@@ -1866,10 +1901,12 @@ document.getElementById('reset-progress')?.addEventListener('click', async () =>
 applyViewMode(viewMode);
 applyCreatedSort(sortCreated);
 updateScoreBar();
-fetchData().catch(err => {
-  document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
-});
-bootstrapPracticeHistory().catch(console.error);
+fetchData()
+  .then(() => bootstrapPracticeHistory())
+  .catch(err => {
+    document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
+    console.error(err);
+  });
 startPoll();
 
 // ── Theme toggle ──
