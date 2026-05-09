@@ -466,10 +466,13 @@ body::before{
   font-size:.68rem;
   color:var(--text3);
 }
-.copy-id-btn{
+.copy-id-btn,
+.note-question-btn,
+.note-filter-btn{
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  gap:5px;
   font-family:'Inter',sans-serif;
   border:1px solid var(--border);
   background:var(--surface2);
@@ -481,7 +484,9 @@ body::before{
   cursor:pointer;
   transition:all .2s;
 }
-.copy-id-btn:hover{
+.copy-id-btn:hover,
+.note-question-btn:hover,
+.note-filter-btn:hover{
   border-color:var(--accent-border);
   background:var(--accent-soft);
   color:var(--accent);
@@ -491,6 +496,25 @@ body::before{
   border-color:var(--emerald-border);
   color:var(--emerald);
 }
+.note-question-btn.noted,
+.note-filter-btn.active{
+  background:var(--amber-soft);
+  border-color:rgba(245,158,11,.35);
+  color:var(--amber);
+}
+.note-filter-btn{
+  height:28px;
+  border-radius:8px;
+  padding:5px 10px;
+  font-size:.72rem;
+  white-space:nowrap;
+}
+.card-note-indicator{
+  position:absolute;top:10px;right:10px;
+  color:var(--amber);font-size:.88rem;line-height:1;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.12));
+}
+.card:has(.card-status) .card-note-indicator{right:38px}
 .detail-columns{
   flex:1;display:grid;
   grid-template-columns:minmax(240px,var(--qa-question-width,50%)) 10px minmax(240px,1fr);
@@ -906,6 +930,7 @@ body.qa-resizing{cursor:col-resize;user-select:none}
       <option value="wrong">Wrong</option>
       <option value="unanswered">Unanswered</option>
     </select>
+    <button type="button" class="note-filter-btn" id="filter-notes" aria-pressed="false" title="Chỉ hiện câu hỏi đã note">☆ Notes</button>
     <select id="sort-created"><option value="created-desc">Newest first</option><option value="created-asc">Oldest first</option></select>
     <form class="id-jump-form" id="id-jump-form" title="Jump to saved question ID">
       <input id="id-jump-input" type="search" placeholder="Question ID…" autocomplete="off" spellcheck="false">
@@ -988,6 +1013,7 @@ const POLL_MS = 5000;
 const QA_SPLIT_KEY = 'practice-qa-question-width';
 const PRACTICE_USERNAME_KEY = 'practice-username';
 const PRACTICE_SORT_KEY = 'practice-sort-created';
+const NOTE_QUESTIONS_KEY = 'practice-note-question-ids';
 const QA_SPLIT_DEFAULT = 50;
 const QA_SPLIT_MIN = 25;
 const QA_SPLIT_MAX = 75;
@@ -1009,8 +1035,46 @@ let totalQuestions = 0;
 let hasMore = true;
 let loadingMore = false;
 let copyFeedbackTimer = null;
+let noteFilterActive = false;
+let notedQuestionIds = getSavedNotedQuestionIds();
 
 function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
+
+function getSavedNotedQuestionIds() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(NOTE_QUESTIONS_KEY) || '[]');
+    return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveNotedQuestionIds() {
+  localStorage.setItem(NOTE_QUESTIONS_KEY, JSON.stringify([...notedQuestionIds]));
+}
+
+function isQuestionNoted(questionId) {
+  return notedQuestionIds.has(String(questionId || ''));
+}
+
+function setNoteFilterActive(active) {
+  noteFilterActive = !!active;
+  const btn = document.getElementById('filter-notes');
+  if (btn) {
+    btn.classList.toggle('active', noteFilterActive);
+    btn.setAttribute('aria-pressed', noteFilterActive ? 'true' : 'false');
+    btn.textContent = noteFilterActive ? '★ Notes' : '☆ Notes';
+  }
+}
+
+function toggleQuestionNote(questionId) {
+  const id = String(questionId || '');
+  if (!id) return false;
+  if (notedQuestionIds.has(id)) notedQuestionIds.delete(id);
+  else notedQuestionIds.add(id);
+  saveNotedQuestionIds();
+  return notedQuestionIds.has(id);
+}
 
 function getSavedQaSplit() {
   const saved = Number(localStorage.getItem(QA_SPLIT_KEY));
@@ -1247,8 +1311,32 @@ function bindQaResizer() {
 applyQaSplit(getSavedQaSplit());
 
 function hasActiveFilters() {
-  return ['filter-service', 'filter-domain', 'filter-qtype', 'filter-result']
+  return noteFilterActive || ['filter-service', 'filter-domain', 'filter-qtype', 'filter-result']
     .some(id => document.getElementById(id)?.value);
+}
+
+async function ensureNotedIssuesLoaded() {
+  if (!noteFilterActive || notedQuestionIds.size === 0) return;
+  const existing = new Set(issues.map(i => i.id));
+  const missing = [...notedQuestionIds].filter(id => !existing.has(id));
+  if (missing.length === 0) return;
+  const fetched = await Promise.all(missing.map(async id => {
+    try {
+      const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
+      return row ? normalizeIssue(row) : null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }));
+  const additions = fetched.filter(Boolean);
+  if (additions.length > 0) {
+    issues.push(...additions);
+    loadedCount = issues.length;
+  }
 }
 
 function normalizeIssue(row) {
@@ -1340,6 +1428,7 @@ async function fetchData() {
 
   issues = data.rows.map(normalizeIssue);
   loadedCount = issues.length;
+  await ensureNotedIssuesLoaded();
   if (data.total != null) totalQuestions = data.total;
   hasMore = data.total != null ? loadedCount < data.total : data.rows.length >= limit;
   if (filterMode) hasMore = false;
@@ -1401,6 +1490,7 @@ function getFiltered() {
     if (svc && !i.labels.includes(svc)) return false;
     if (dom && i.meta.domain !== dom) return false;
     if (qt && i.meta.question_type !== qt) return false;
+    if (noteFilterActive && !isQuestionNoted(i.id)) return false;
     if (result) {
       const status = getCardStatus(i.id);
       if (result === 'correct' && status !== '✓') return false;
@@ -1438,8 +1528,9 @@ function renderList(changedIds = new Set()) {
     const status = getCardStatus(i.id);
     const statusCls = status === '✓' ? ' card-correct' : status === '✗' ? ' card-wrong' : '';
     const statusHTML = status ? `<span class="card-status">${status}</span>` : '';
+    const noteHTML = isQuestionNoted(i.id) ? '<span class="card-note-indicator" title="Noted">★</span>' : '';
     return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}${statusCls}" data-id="${i.id}">
-        ${statusHTML}
+        ${statusHTML}${noteHTML}
         <div class="card-title">${esc(i.title)}</div>
         <div class="card-badges">${svc}${dom}${qt}</div>
       </div>`;
@@ -1650,6 +1741,7 @@ function showDetail(issue, scrollToTop = false) {
       <h2>${esc(issue.title)}</h2>
       <div class="detail-badges-row">${badges}</div>
       <div class="detail-meta">
+        <button type="button" class="note-question-btn${isQuestionNoted(issue.id) ? ' noted' : ''}" id="note-question" data-question-id="${esc(issue.id)}" aria-pressed="${isQuestionNoted(issue.id) ? 'true' : 'false'}" title="Note / unnote câu hỏi này">${isQuestionNoted(issue.id) ? '★ Noted' : '☆ Note'}</button>
         <span class="question-id-wrap">
           <button type="button" class="copy-id-btn" id="copy-question-id" data-question-id="${esc(issue.id)}">${esc(issue.id)}</button>
         </span>
@@ -1724,6 +1816,26 @@ function showDetail(issue, scrollToTop = false) {
     });
   }
 
+  const noteBtn = document.getElementById('note-question');
+  if (noteBtn) {
+    noteBtn.addEventListener('click', () => {
+      const noted = toggleQuestionNote(issue.id);
+      noteBtn.classList.toggle('noted', noted);
+      noteBtn.setAttribute('aria-pressed', noted ? 'true' : 'false');
+      noteBtn.textContent = noted ? '★ Noted' : '☆ Note';
+      renderList();
+      if (noteFilterActive && !noted) {
+        const next = getFiltered()[0];
+        if (next) selectCard(next);
+        else {
+          selectedId = null;
+          renderList();
+          panel.innerHTML = `<div class="detail-empty"><div class="detail-empty-icon">◇</div><div class="detail-empty-text">No noted questions</div></div>`;
+        }
+      }
+    });
+  }
+
   const copyBtn = document.getElementById('copy-question-id');
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
@@ -1782,6 +1894,12 @@ function esc(s) {
     fetchData().catch(console.error);
   })
 );
+
+document.getElementById('filter-notes')?.addEventListener('click', () => {
+  setNoteFilterActive(!noteFilterActive);
+  loadedCount = 0; hasMore = true;
+  fetchData().catch(console.error);
+});
 
 document.getElementById('sort-created')?.addEventListener('change', e => {
   applyCreatedSort(e.target.value);
