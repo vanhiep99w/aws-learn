@@ -190,6 +190,7 @@ Two modes:
 
 - [x] [AWS Pricing Calculator](aws-pricing-calculator.md) - Estimate Costs Before Deploying, Compare Pricing Options
 - [x] [AWS Cost Explorer](aws-cost-explorer.md) - Analyze Costs After Deployment, Usage Reports, Forecasting
+- [x] [AWS Cost Anomaly Detection](aws-cost-anomaly-detection.md) - ML-based Cost Spike Detection, Monitors, Alert Subscriptions
 
 ## Support
 
