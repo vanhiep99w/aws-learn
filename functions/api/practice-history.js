@@ -161,19 +161,37 @@ export async function onRequest({ request, env }) {
   if (request.method === 'DELETE') {
     const username = normalizeUsername(url.searchParams.get('username'));
     const questionId = String(url.searchParams.get('question_id') || '').trim();
+    const scope = String(url.searchParams.get('scope') || 'history').trim();
     if (!username) return json({ error: 'username is required' }, 400);
 
     if (questionId) {
       await env.DB.prepare(
         `DELETE FROM practice_answer_history WHERE username = ? AND question_id = ?`
       ).bind(username, questionId).run();
-      return json({ success: true, username, question_id: questionId });
+      return json({ success: true, username, question_id: questionId, scope: 'history' });
+    }
+
+    if (scope === 'notes') {
+      await env.DB.prepare(
+        `DELETE FROM practice_question_notes WHERE username = ?`
+      ).bind(username).run();
+      return json({ success: true, username, scope });
+    }
+
+    if (scope === 'all') {
+      await env.DB.prepare(
+        `DELETE FROM practice_answer_history WHERE username = ?`
+      ).bind(username).run();
+      await env.DB.prepare(
+        `DELETE FROM practice_question_notes WHERE username = ?`
+      ).bind(username).run();
+      return json({ success: true, username, scope });
     }
 
     await env.DB.prepare(
       `DELETE FROM practice_answer_history WHERE username = ?`
     ).bind(username).run();
-    return json({ success: true, username });
+    return json({ success: true, username, scope: 'history' });
   }
 
   return json({ error: 'Method not allowed' }, 405);

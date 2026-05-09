@@ -1014,6 +1014,9 @@ body.qa-resizing{cursor:col-resize;user-select:none}
     <p id="confirm-message">Bạn có chắc chắn muốn tiếp tục?</p>
     <div class="confirm-modal-actions">
       <button type="button" class="confirm-btn" id="confirm-cancel">Huỷ</button>
+      <button type="button" class="confirm-btn" id="confirm-reset-notes" hidden>Reset note</button>
+      <button type="button" class="confirm-btn" id="confirm-reset-history" hidden>Reset history</button>
+      <button type="button" class="confirm-btn danger" id="confirm-reset-all" hidden>Reset cả 2</button>
       <button type="button" class="confirm-btn danger" id="confirm-ok">Reset</button>
     </div>
   </div>
@@ -1130,6 +1133,8 @@ function showConfirmModal({ title = 'Xác nhận thao tác', message = 'Bạn c�
   const msgEl = document.getElementById('confirm-message');
   const okBtn = document.getElementById('confirm-ok');
   const cancelBtn = document.getElementById('confirm-cancel');
+  ['confirm-reset-notes', 'confirm-reset-history', 'confirm-reset-all'].forEach(id => { const btn = document.getElementById(id); if (btn) btn.hidden = true; });
+  okBtn.hidden = false;
   titleEl.textContent = title;
   msgEl.textContent = message;
   okBtn.textContent = okText;
@@ -1155,6 +1160,58 @@ function showConfirmModal({ title = 'Xác nhận thao tác', message = 'Bạn c�
     modal.addEventListener('click', onBackdrop);
     document.addEventListener('keydown', onKeydown);
     requestAnimationFrame(() => cancelBtn.focus());
+  });
+}
+
+function showResetChoiceModal() {
+  const modal = document.getElementById('confirm-modal');
+  const titleEl = document.getElementById('confirm-title');
+  const msgEl = document.getElementById('confirm-message');
+  const cancelBtn = document.getElementById('confirm-cancel');
+  const okBtn = document.getElementById('confirm-ok');
+  const notesBtn = document.getElementById('confirm-reset-notes');
+  const historyBtn = document.getElementById('confirm-reset-history');
+  const allBtn = document.getElementById('confirm-reset-all');
+  titleEl.textContent = 'Reset dữ liệu luyện tập?';
+  msgEl.textContent = `Chọn dữ liệu muốn xoá cho user "${practiceUsername}". Thao tác này không thể hoàn tác.`;
+  okBtn.hidden = true;
+  notesBtn.hidden = false;
+  historyBtn.hidden = false;
+  allBtn.hidden = false;
+  notesBtn.textContent = 'Reset note';
+  historyBtn.textContent = 'Reset lịch sử câu hỏi';
+  allBtn.textContent = 'Reset cả 2';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  return new Promise(resolve => {
+    const cleanup = result => {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      okBtn.hidden = false;
+      notesBtn.hidden = true;
+      historyBtn.hidden = true;
+      allBtn.hidden = true;
+      notesBtn.removeEventListener('click', onNotes);
+      historyBtn.removeEventListener('click', onHistory);
+      allBtn.removeEventListener('click', onAll);
+      cancelBtn.removeEventListener('click', onCancel);
+      modal.removeEventListener('click', onBackdrop);
+      document.removeEventListener('keydown', onKeydown);
+      resolve(result);
+    };
+    const onNotes = () => cleanup('notes');
+    const onHistory = () => cleanup('history');
+    const onAll = () => cleanup('all');
+    const onCancel = () => cleanup(false);
+    const onBackdrop = e => { if (e.target === modal) cleanup(false); };
+    const onKeydown = e => { if (e.key === 'Escape') cleanup(false); };
+    notesBtn.addEventListener('click', onNotes);
+    historyBtn.addEventListener('click', onHistory);
+    allBtn.addEventListener('click', onAll);
+    cancelBtn.addEventListener('click', onCancel);
+    modal.addEventListener('click', onBackdrop);
+    document.addEventListener('keydown', onKeydown);
+    requestAnimationFrame(() => historyBtn.focus());
   });
 }
 
@@ -1252,9 +1309,9 @@ async function deletePracticeAnswer(issueId) {
   if (!res.ok) throw new Error(`History API ${res.status}`);
 }
 
-async function resetPracticeHistory() {
+async function resetPracticeHistory(scope = 'history') {
   if (!practiceUsername) return;
-  const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}`, { method: 'DELETE' });
+  const res = await fetch(`${PRACTICE_HISTORY_API}?username=${encodeURIComponent(practiceUsername)}&scope=${encodeURIComponent(scope)}`, { method: 'DELETE' });
   if (!res.ok) throw new Error(`History API ${res.status}`);
 }
 
@@ -2042,14 +2099,14 @@ async function bootstrapPracticeHistory() {
 
 document.getElementById('reset-progress')?.addEventListener('click', async () => {
   if (!(await ensurePracticeUser())) return;
-  const confirmed = await showConfirmModal({
-    title: 'Reset lịch sử luyện tập?',
-    message: `Toàn bộ đáp án, trạng thái đúng/sai và tiến độ của "${practiceUsername}" sẽ bị xoá khỏi D1. Thao tác này không thể hoàn tác.`,
-    okText: 'Reset history'
-  });
-  if (!confirmed) return;
-  try { await resetPracticeHistory(); } catch (err) { console.error(err); return; }
-  submittedAnswers = {};
+  const choice = await showResetChoiceModal();
+  if (!choice) return;
+  try { await resetPracticeHistory(choice); } catch (err) { console.error(err); return; }
+  if (choice === 'history' || choice === 'all') submittedAnswers = {};
+  if (choice === 'notes' || choice === 'all') {
+    notedQuestionIds = new Set();
+    setNoteFilterActive(false);
+  }
   updateScoreBar();
   renderList();
   if (selectedId) {
