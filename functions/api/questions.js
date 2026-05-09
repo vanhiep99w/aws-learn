@@ -58,31 +58,32 @@ export async function onRequest({ request, env }) {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const sort = url.searchParams.get('sort');
+    const listMode = url.searchParams.get('mode') === 'list';
+    const includeLabels = url.searchParams.get('labels') !== '0';
+    const includeCount = url.searchParams.get('count') === '1';
     const orderBy = sort === 'created-asc'
       ? 'created_at ASC, id ASC'
       : sort === 'created-desc'
         ? 'created_at DESC, id DESC'
         : 'updated_at DESC';
+    const columns = listMode
+      ? 'id, title, status, priority, issue_type, metadata, created_at, updated_at'
+      : 'id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at';
 
-    const [questionsResult, countResult] = await Promise.all([
-      env.DB.prepare(
-        `SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
-         FROM questions
-         WHERE status = 'open'
-         ORDER BY ${orderBy}
-         LIMIT ? OFFSET ?`
-      ).bind(limit, offset).all(),
-      env.DB.prepare(
-        `SELECT COUNT(*) AS total FROM questions WHERE status = 'open'`
-      ).first(),
-    ]);
+    const questionsResult = await env.DB.prepare(
+      `SELECT ${columns}
+       FROM questions
+       WHERE status = 'open'
+       ORDER BY ${orderBy}
+       LIMIT ? OFFSET ?`
+    ).bind(limit, offset).all();
 
     const questionIds = questionsResult.results.map(({ id }) => id);
     let labels = [];
-    if (questionIds.length > 0) {
+    if (includeLabels && questionIds.length > 0) {
       const placeholders = questionIds.map(() => '?').join(',');
       const labelsResult = await env.DB.prepare(
-        `SELECT DISTINCT question_id AS issue_id, label
+        `SELECT question_id AS issue_id, label
          FROM question_labels
          WHERE question_id IN (${placeholders})
          ORDER BY question_id ASC, label ASC`
@@ -90,10 +91,19 @@ export async function onRequest({ request, env }) {
       labels = labelsResult.results;
     }
 
+    let total;
+    if (includeCount) {
+      const countResult = await env.DB.prepare(
+        `SELECT COUNT(*) AS total FROM questions WHERE status = 'open'`
+      ).first();
+      total = countResult.total;
+    }
+
     return json({
       rows: questionsResult.results,
       labels,
-      total: countResult.total,
+      total,
+      hasMore: questionsResult.results.length === limit,
     });
   }
 

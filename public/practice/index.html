@@ -1039,7 +1039,7 @@ body.qa-resizing{cursor:col-resize;user-select:none}
 <script>
 const API = '/api/questions';
 const PRACTICE_HISTORY_API = '/api/practice-history';
-const POLL_MS = 5000;
+const POLL_MS = 60000;
 const QA_SPLIT_KEY = 'practice-qa-question-width';
 const PRACTICE_USERNAME_KEY = 'practice-username';
 const PRACTICE_SORT_KEY = 'practice-sort-created';
@@ -1050,7 +1050,7 @@ const QA_SPLIT_MAX = 75;
 let issues = [];
 let labelsMap = {};
 let prevUpdatedMap = {};
-let autoRefresh = true;
+let autoRefresh = false;
 let pollTimer = null;
 let selectedId = null;
 let collapsedSections = {};
@@ -1262,7 +1262,7 @@ async function loadPracticeHistory({ autoSelectLast = false } = {}) {
     return;
   }
   if (selectedId) {
-    const issue = issues.find(i => i.id === selectedId);
+    const issue = await hydrateIssue(issues.find(i => i.id === selectedId));
     if (issue) showDetail(issue, false);
   }
 }
@@ -1283,6 +1283,7 @@ async function selectLastAnsweredQuestion() {
   let issue = issues.find(i => i.id === lastId);
   if (!issue) issue = await loadUntilIssueLoaded(lastId);
   if (!issue) issue = await fetchIssueById(lastId);
+  issue = await hydrateIssue(issue);
   if (!issue) return;
   selectedId = issue.id;
   renderList();
@@ -1297,11 +1298,23 @@ async function fetchIssueById(issueId) {
   const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
   if (!row) return null;
   const issue = normalizeIssue(row);
-  if (!issues.some(i => i.id === issue.id)) {
+  const existingIdx = issues.findIndex(i => i.id === issue.id);
+  if (existingIdx >= 0) issues[existingIdx] = { ...issues[existingIdx], ...issue };
+  else {
     issues.push(issue);
     loadedCount = issues.length;
   }
-  return issue;
+  return issues.find(i => i.id === issue.id) || issue;
+}
+
+function isIssueHydrated(issue) {
+  return issue && Object.prototype.hasOwnProperty.call(issue, 'description') && Object.prototype.hasOwnProperty.call(issue, 'notes');
+}
+
+async function hydrateIssue(issue) {
+  if (!issue) return null;
+  if (isIssueHydrated(issue)) return issue;
+  return fetchIssueById(issue.id);
 }
 
 async function savePracticeAnswer(issueId) {
@@ -1476,7 +1489,7 @@ function updateScoreBar() {
   let correct = 0;
   for (const [id, st] of submitted) {
     const issue = issues.find(i => i.id === id);
-    if (issue) {
+    if (isIssueHydrated(issue)) {
       st.isCorrect = isAnswerCorrect(issue, st);
     }
     if (st.isCorrect === true) correct++;
@@ -1505,7 +1518,8 @@ function updateScoreBar() {
 async function fetchData() {
   const filterMode = hasActiveFilters();
   const limit = filterMode ? 500 : Math.max(loadedCount, PAGE_SIZE);
-  const res = await fetch(`${API}?limit=${limit}&offset=0&sort=${encodeURIComponent(sortCreated)}`);
+  const countParam = totalQuestions ? '0' : '1';
+  const res = await fetch(`${API}?mode=list&limit=${limit}&offset=0&sort=${encodeURIComponent(sortCreated)}&count=${countParam}`);
   if (!res.ok) throw new Error(`API ${res.status}`);
   const data = await res.json();
 
@@ -1525,13 +1539,13 @@ async function fetchData() {
   loadedCount = issues.length;
   await ensureNotedIssuesLoaded();
   if (data.total != null) totalQuestions = data.total;
-  hasMore = data.total != null ? loadedCount < data.total : data.rows.length >= limit;
+  hasMore = data.total != null ? loadedCount < data.total : (data.hasMore ?? data.rows.length >= limit);
   if (filterMode) hasMore = false;
 
   populateFilters();
   renderList(changedIds);
   if (selectedId && changedIds.has(selectedId)) {
-    const still = issues.find(i => i.id === selectedId);
+    const still = await hydrateIssue(issues.find(i => i.id === selectedId));
     if (still) showDetail(still);
   }
   updateScoreBar();
@@ -1539,7 +1553,7 @@ async function fetchData() {
 }
 
 async function loadIssuePage(offset = loadedCount, limit = PAGE_SIZE) {
-  const res = await fetch(`${API}?limit=${limit}&offset=${offset}&sort=${encodeURIComponent(sortCreated)}`);
+  const res = await fetch(`${API}?mode=list&limit=${limit}&offset=${offset}&sort=${encodeURIComponent(sortCreated)}&count=0`);
   if (!res.ok) throw new Error(`API ${res.status}`);
   const data = await res.json();
   if (Array.isArray(data.labels)) {
@@ -1551,7 +1565,7 @@ async function loadIssuePage(offset = loadedCount, limit = PAGE_SIZE) {
   issues.push(...newIssues);
   loadedCount = issues.length;
   for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
-  hasMore = data.total != null ? loadedCount < data.total : data.rows.length >= limit;
+  hasMore = data.total != null ? loadedCount < data.total : (data.hasMore ?? data.rows.length >= limit);
   return data.rows.map(r => r.id);
 }
 
@@ -1625,7 +1639,7 @@ function getCardStatus(issueId) {
   const st = submittedAnswers[issueId];
   if (!st || !st.submitted) return '';
   const issue = issues.find(i => i.id === issueId);
-  if (!issue) return '';
+  if (!isIssueHydrated(issue)) return st.isCorrect === true ? '✓' : '✗';
   const q = parseQuestion(issue.description, issue.meta);
   const allCorrect = q.options.filter(o => o.correct).every(o => st.selected.has(o.id))
     && q.options.filter(o => o.wrong).every(o => !st.selected.has(o.id));
@@ -1679,10 +1693,11 @@ function renderList(changedIds = new Set()) {
   el.scrollTop = prevScroll;
 }
 
-function selectCard(issue) {
+async function selectCard(issue) {
   selectedId = issue.id;
   document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id === selectedId));
-  showDetail(issue, true);
+  const hydrated = await hydrateIssue(issue);
+  if (hydrated && selectedId === hydrated.id) showDetail(hydrated, true);
 }
 
 async function goToNextQuestion(currentId) {
@@ -2077,18 +2092,8 @@ async function jumpToQuestionId(rawId) {
   btn.textContent = '...';
   try {
     let issue = issues.find(i => i.id === id);
-    if (!issue) {
-      const res = await fetch(`${API}?id=${encodeURIComponent(id)}`);
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const data = await res.json();
-      const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
-      if (!row) throw new Error('Question not found');
-      issue = normalizeIssue(row);
-      const existingIdx = issues.findIndex(i => i.id === issue.id);
-      if (existingIdx >= 0) issues[existingIdx] = issue;
-      else issues.unshift(issue);
-      loadedCount = issues.length;
-    }
+    issue = await hydrateIssue(issue || { id });
+    if (!issue) throw new Error('Question not found');
     selectedId = issue.id;
     input.value = issue.id;
     renderList();
@@ -2120,7 +2125,7 @@ document.querySelectorAll('#mode-toggle .mode-btn').forEach(btn => {
       if (practiceUsername) loadPracticeHistory({ autoSelectLast: !selectedId }).catch(console.error);
     }
     if (selectedId) {
-      const issue = issues.find(i => i.id === selectedId);
+      const issue = await hydrateIssue(issues.find(i => i.id === selectedId));
       if (issue) showDetail(issue, false);
     }
   });
@@ -2133,13 +2138,16 @@ document.getElementById('list-scroll').addEventListener('scroll', e => {
 
 document.getElementById('auto-toggle-wrap').addEventListener('click', () => {
   autoRefresh = !autoRefresh;
+  syncAutoRefreshUi();
+  if (autoRefresh) startPoll(); else stopPoll();
+});
+
+function syncAutoRefreshUi() {
   document.getElementById('auto-toggle').classList.toggle('on', autoRefresh);
   document.getElementById('live-dot').classList.toggle('off', !autoRefresh);
   document.getElementById('live-label').classList.toggle('off', !autoRefresh);
   document.getElementById('live-label').textContent = autoRefresh ? 'LIVE' : 'PAUSED';
-  if (autoRefresh) startPoll(); else stopPoll();
-});
-
+}
 function startPoll() { stopPoll(); pollTimer = setInterval(() => fetchData().catch(console.error), POLL_MS); }
 function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
@@ -2174,13 +2182,14 @@ document.getElementById('reset-progress')?.addEventListener('click', async () =>
   updateScoreBar();
   renderList();
   if (selectedId) {
-    const issue = issues.find(i => i.id === selectedId);
+    const issue = await hydrateIssue(issues.find(i => i.id === selectedId));
     if (issue) showDetail(issue, false);
   }
 });
 
 applyViewMode(viewMode);
 applyCreatedSort(sortCreated);
+syncAutoRefreshUi();
 updateScoreBar();
 fetchData()
   .then(() => bootstrapPracticeHistory())
@@ -2188,7 +2197,7 @@ fetchData()
     document.getElementById('list-scroll').innerHTML = `<div class="empty">Failed: ${esc(err.message)}</div>`;
     console.error(err);
   });
-startPoll();
+if (autoRefresh) startPoll();
 
 // ── Theme toggle ──
 function getPreferredTheme() {
