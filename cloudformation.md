@@ -980,7 +980,7 @@ Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual change
 │   │   CloudFormation  │  vs     │   Actual State    │               │
 │   │   Template State  │         │   (AWS Resources) │               │
 │   └─────────┬─────────┘         └─────────┬─────────┘               │
-│             │                            │                          │
+│             │                             │                         │
 │             └──────────┬──────────────────┘                         │
 │                        ▼                                            │
 │              ┌─────────────────────┐                                │
