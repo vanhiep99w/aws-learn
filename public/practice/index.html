@@ -1272,20 +1272,27 @@ async function selectLastAnsweredQuestion() {
   const lastId = getLastAnsweredQuestionId();
   if (!lastId) return;
   let issue = issues.find(i => i.id === lastId);
-  if (!issue) {
-    const res = await fetch(`${API}?id=${encodeURIComponent(lastId)}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
-    if (!row) return;
-    issue = normalizeIssue(row);
-    issues.unshift(issue);
-    loadedCount = issues.length;
-  }
+  if (!issue) issue = await loadUntilIssueLoaded(lastId);
+  if (!issue) issue = await fetchIssueById(lastId);
+  if (!issue) return;
   selectedId = issue.id;
   renderList();
   showDetail(issue, true);
   scrollListToCard(issue.id, 'center', 'smooth');
+}
+
+async function fetchIssueById(issueId) {
+  const res = await fetch(`${API}?id=${encodeURIComponent(issueId)}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  const row = data.row || (Array.isArray(data.rows) ? data.rows[0] : null);
+  if (!row) return null;
+  const issue = normalizeIssue(row);
+  if (!issues.some(i => i.id === issue.id)) {
+    issues.push(issue);
+    loadedCount = issues.length;
+  }
+  return issue;
 }
 
 async function savePracticeAnswer(issueId) {
@@ -1518,19 +1525,41 @@ async function fetchData() {
   document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
 }
 
+async function loadIssuePage(offset = loadedCount, limit = PAGE_SIZE) {
+  const res = await fetch(`${API}?limit=${limit}&offset=${offset}&sort=${encodeURIComponent(sortCreated)}`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  const data = await res.json();
+  if (Array.isArray(data.labels)) {
+    for (const r of data.labels) (labelsMap[r.issue_id] ||= []).push(r.label);
+  }
+  if (data.total != null) totalQuestions = data.total;
+  const existing = new Set(issues.map(i => i.id));
+  const newIssues = data.rows.map(normalizeIssue).filter(i => !existing.has(i.id));
+  issues.push(...newIssues);
+  loadedCount = issues.length;
+  for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
+  hasMore = data.total != null ? loadedCount < data.total : data.rows.length >= limit;
+  return data.rows.map(r => r.id);
+}
+
+async function loadUntilIssueLoaded(issueId) {
+  let guard = 0;
+  while (hasMore && !issues.some(i => i.id === issueId) && guard < 100) {
+    const before = loadedCount;
+    const ids = await loadIssuePage(loadedCount, PAGE_SIZE);
+    guard++;
+    if (ids.includes(issueId)) break;
+    if (loadedCount === before || ids.length === 0) break;
+  }
+  return issues.find(i => i.id === issueId) || null;
+}
+
 async function loadMore() {
   if (loadingMore || !hasMore) return;
   loadingMore = true;
   try {
-    const res = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${loadedCount}&sort=${encodeURIComponent(sortCreated)}`);
-    if (!res.ok) throw new Error(`API ${res.status}`);
-    const data = await res.json();
-    if (data.rows.length === 0) { hasMore = false; return; }
-    if (data.rows.length < PAGE_SIZE) hasMore = false;
-    const newIssues = data.rows.map(normalizeIssue);
-    issues.push(...newIssues);
-    loadedCount = issues.length;
-    for (const r of data.rows) prevUpdatedMap[r.id] = r.updated_at;
+    const ids = await loadIssuePage(loadedCount, PAGE_SIZE);
+    if (ids.length === 0) { hasMore = false; return; }
     populateFilters();
     renderList();
     updateScoreBar();
@@ -1595,14 +1624,13 @@ function scrollListToCard(issueId, block = 'center', behavior = 'smooth') {
     const list = document.getElementById('list-scroll');
     const card = document.querySelector(`.card[data-id="${CSS.escape(issueId)}"]`);
     if (!list || !card) return;
-    if (block === 'nearest') {
-      const listRect = list.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      if (cardRect.top >= listRect.top && cardRect.bottom <= listRect.bottom) return;
-    }
+    const listRect = list.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    if (block === 'nearest' && cardRect.top >= listRect.top && cardRect.bottom <= listRect.bottom) return;
+    const delta = cardRect.top - listRect.top;
     const targetTop = block === 'center'
-      ? card.offsetTop - Math.max(0, (list.clientHeight - card.offsetHeight) / 2)
-      : card.offsetTop - 8;
+      ? list.scrollTop + delta - Math.max(0, (list.clientHeight - cardRect.height) / 2)
+      : list.scrollTop + delta - 8;
     list.scrollTo({ top: Math.max(0, targetTop), behavior });
   }));
 }
