@@ -11,6 +11,7 @@
 - [Stack Updates và Change Sets](#stack-updates-và-change-sets)
 - [Rollback và Protection](#rollback-và-protection)
 - [Nested Stacks và Cross-Stack References](#nested-stacks-và-cross-stack-references)
+- [StackSets - Deploy đa account và đa region](#stacksets---deploy-đa-account-và-đa-region)
 - [️ Drift Detection](#drift-detection)
 - [CloudFormation vs Terraform](#cloudformation-vs-terraform)
 - [Pricing](#pricing)
@@ -846,6 +847,127 @@ Resources:
 
 ---
 
+## StackSets - Deploy đa account và đa region
+
+**CloudFormation StackSets** mở rộng khái niệm stack thông thường: thay vì deploy một stack trong một account/region, bạn dùng **một StackSet** để tạo, update hoặc delete nhiều stack trên **nhiều AWS accounts và nhiều Regions** bằng một operation.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         STACKSETS                                   │
+│                                                                     │
+│   Administrator account                                             │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │ StackSet: security-baseline                                 │   │
+│   │ Template: iam-role + config-rule + cloudtrail settings      │   │
+│   └───────────────┬───────────────────────┬─────────────────────┘   │
+│                   │                       │                         │
+│        us-east-1  ▼            ap-southeast-1 ▼                     │
+│   ┌─────────────────────┐   ┌─────────────────────┐                 │
+│   │ Account A Stack     │   │ Account A Stack     │                 │
+│   │ Account B Stack     │   │ Account B Stack     │                 │
+│   │ Account C Stack     │   │ Account C Stack     │                 │
+│   └─────────────────────┘   └─────────────────────┘                 │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Khi nào dùng StackSets?
+
+Dùng StackSets khi cần cấu hình hạ tầng **nhất quán ở quy mô tổ chức**:
+
+- Deploy security baseline cho nhiều account: IAM roles, AWS Config rules, CloudTrail, GuardDuty settings.
+- Tạo networking/shared resources theo region trong nhiều account.
+- Roll out monitoring/logging baseline: CloudWatch alarms, log groups, EventBridge rules.
+- Quản trị multi-account với AWS Organizations, ví dụ account mới vào OU thì tự nhận baseline.
+
+Không nên dùng StackSets nếu chỉ deploy một app trong một account/region; stack thường, nested stack hoặc CDK pipeline có thể đơn giản hơn.
+
+### Khái niệm chính
+
+| Khái niệm | Ý nghĩa |
+|-----------|---------|
+| **Administrator account** | Account tạo và quản lý StackSet. Với service-managed permissions, đây là management account của AWS Organizations hoặc delegated administrator. |
+| **Target account** | Account đích nơi StackSet tạo/update/delete stack. |
+| **StackSet** | Container logic chứa template, parameters và cấu hình deploy. StackSet là **regional resource**: tạo ở region nào thì chỉ thấy/quản lý từ region đó. |
+| **Stack instance** | Tham chiếu tới một stack cụ thể trong một target account + region. Một stack instance có thể tồn tại cả khi stack thật tạo thất bại để lưu lý do lỗi. |
+| **Operation** | Tác vụ create/update/delete stack instances từ StackSet. |
+
+### Permission models
+
+StackSets có 2 mô hình phân quyền:
+
+| Model | Cách hoạt động | Khi nào dùng |
+|-------|----------------|--------------|
+| **Self-managed permissions** | Bạn tự tạo IAM roles để thiết lập trust giữa administrator account và target accounts. Thường gồm role quản trị ở admin account và execution role ở target account. | Khi deploy tới accounts không nằm trong cùng AWS Organizations, hoặc cần tự kiểm soát IAM role/trust relationship. |
+| **Service-managed permissions** | StackSets tích hợp với AWS Organizations và tự tạo IAM roles cần thiết thay bạn. Có thể bật automatic deployment cho account mới được thêm vào organization/OU. | Khuyến nghị cho môi trường multi-account quản lý bằng AWS Organizations. |
+
+### Operation preferences
+
+Khi chạy operation, bạn có thể kiểm soát rollout để cân bằng tốc độ và rủi ro:
+
+- **Region order**: thứ tự các region được deploy.
+- **Region concurrency**: deploy từng region tuần tự hoặc song song.
+- **Maximum concurrent accounts**: số lượng hoặc phần trăm account được xử lý đồng thời.
+- **Failure tolerance**: số lượng hoặc phần trăm lỗi được chấp nhận trước khi operation dừng.
+- **Concurrency mode**: cách CloudFormation điều chỉnh concurrency theo failure tolerance.
+
+Ví dụ: deploy security baseline tới 100 accounts, nhưng chỉ cho tối đa 10 accounts chạy đồng thời và dừng nếu quá 2 accounts lỗi.
+
+### Ví dụ tạo StackSet bằng AWS CLI
+
+Ví dụ self-managed permissions đơn giản:
+
+```bash
+# 1. Tạo StackSet từ template
+aws cloudformation create-stack-set \
+  --stack-set-name security-baseline \
+  --template-body file://security-baseline.yaml \
+  --permission-model SELF_MANAGED \
+  --administration-role-arn arn:aws:iam::111122223333:role/AWSCloudFormationStackSetAdministrationRole \
+  --execution-role-name AWSCloudFormationStackSetExecutionRole
+
+# 2. Tạo stack instances trong target accounts và regions
+aws cloudformation create-stack-instances \
+  --stack-set-name security-baseline \
+  --accounts 444455556666 777788889999 \
+  --regions us-east-1 ap-southeast-1 \
+  --operation-preferences FailureToleranceCount=1,MaxConcurrentCount=2
+```
+
+Ví dụ service-managed permissions với AWS Organizations thường target theo OU thay vì liệt kê từng account:
+
+```bash
+aws cloudformation create-stack-set \
+  --stack-set-name org-security-baseline \
+  --template-body file://security-baseline.yaml \
+  --permission-model SERVICE_MANAGED \
+  --auto-deployment Enabled=true,RetainStacksOnAccountRemoval=false \
+  --capabilities CAPABILITY_NAMED_IAM
+
+aws cloudformation create-stack-instances \
+  --stack-set-name org-security-baseline \
+  --deployment-targets OrganizationalUnitIds=ou-abcd-12345678 \
+  --regions us-east-1 ap-southeast-1 \
+  --operation-preferences RegionConcurrencyType=PARALLEL,FailureTolerancePercentage=5,MaxConcurrentPercentage=20
+```
+
+### StackSet vs Nested Stack vs Cross-Stack Reference
+
+| Nhu cầu | Nên dùng |
+|---------|----------|
+| Chia template lớn trong **cùng một stack/application** | Nested Stacks |
+| Chia sẻ output giữa các stack trong **cùng account/region** | Cross-Stack References |
+| Deploy cùng một baseline/template tới **nhiều accounts/regions** | StackSets |
+
+### Lưu ý quan trọng
+
+- Update template của StackSet ảnh hưởng tới **tất cả stack instances** liên quan; không thể chỉ update template cho một vài stack instances và bỏ qua các stack còn lại.
+- Có thể override parameters cho từng stack instance khi cần khác biệt nhỏ giữa account/region.
+- Có thể xóa stack instances khỏi StackSet và chọn **Retain Stacks** để giữ stacks chạy độc lập ngoài StackSet.
+- StackSets hỗ trợ drift detection ở cấp StackSet để phát hiện stack instances bị thay đổi ngoài CloudFormation.
+- Với service-managed permissions, cân nhắc dùng delegated administrator thay vì luôn thao tác trực tiếp từ management account.
+
+---
+
 ## Drift Detection
 
 Phát hiện khi resources bị thay đổi NGOÀI CloudFormation (manual changes):
@@ -1246,13 +1368,14 @@ Resources:
 │   ✅ Drift Detection phát hiện manual changes                       │
 │   ✅ Nested Stacks cho large infrastructures                        │
 │   ✅ Cross-stack references để share values                         │
+│   ✅ StackSets deploy đồng bộ across accounts/Regions               │
 │                                                                     │
 │   📚 Recommended Learning Path:                                     │
 │   1. Viết template đơn giản (S3, EC2)                               │
 │   2. Hiểu intrinsic functions (!Ref, !Sub, !GetAtt)                 │
 │   3. Sử dụng Parameters và Conditions                               │
 │   4. Practice với Change Sets                                       │
-│   5. Học Nested Stacks                                              │
+│   5. Học Nested Stacks và StackSets                                 │
 │   6. Explore AWS CDK (nếu muốn dùng programming language)           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -1264,4 +1387,7 @@ Resources:
 - [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/)
 - [Resource Types Reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html)
 - [Intrinsic Functions Reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html)
+- [Managing stacks across accounts and Regions with StackSets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html)
+- [StackSets concepts](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html)
+- [AWS::CloudFormation::StackSet Resource Reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudformation-stackset.html)
 - [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
