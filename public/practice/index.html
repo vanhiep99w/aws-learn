@@ -667,6 +667,15 @@ body.qa-resizing{cursor:col-resize;user-select:none}
   background:var(--accent);color:#fff;
   box-shadow:0 2px 8px var(--accent-glow);
 }
+.q-opt.selectable.selected:hover{
+  border-color:var(--accent-border);
+  background:var(--opt-selected-bg);
+  box-shadow:0 0 0 1px var(--accent-border),var(--shadow-sm);
+}
+.q-opt.selectable.selected:hover .opt-id{
+  background:var(--accent);color:#fff;
+  box-shadow:0 2px 8px var(--accent-glow);
+}
 
 .submit-row{
   display:flex;align-items:center;gap:14px;
