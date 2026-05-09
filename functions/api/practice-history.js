@@ -36,6 +36,20 @@ async function ensureTable(env) {
     `CREATE INDEX IF NOT EXISTS idx_practice_history_username_updated
      ON practice_answer_history(username, updated_at)`
   ).run();
+
+  await env.DB.prepare(
+    `CREATE TABLE IF NOT EXISTS practice_question_notes (
+      username TEXT NOT NULL,
+      question_id TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      PRIMARY KEY (username, question_id)
+    )`
+  ).run();
+  await env.DB.prepare(
+    `CREATE INDEX IF NOT EXISTS idx_practice_notes_username_updated
+     ON practice_question_notes(username, updated_at)`
+  ).run();
 }
 
 export async function onRequest({ request, env }) {
@@ -51,11 +65,39 @@ export async function onRequest({ request, env }) {
     if (!username) return json({ error: 'username is required' }, 400);
 
     const result = await env.DB.prepare(
-      `SELECT username, question_id, selected_json, submitted, is_correct, answered_at, updated_at
-       FROM practice_answer_history
-       WHERE username = ?
-       ORDER BY updated_at DESC`
-    ).bind(username).all();
+      `SELECT
+         COALESCE(h.username, n.username) AS username,
+         COALESCE(h.question_id, n.question_id) AS question_id,
+         h.selected_json,
+         h.submitted,
+         h.is_correct,
+         h.answered_at,
+         h.updated_at,
+         n.updated_at AS note_updated_at,
+         CASE WHEN n.question_id IS NULL THEN 0 ELSE 1 END AS noted,
+         COALESCE(h.updated_at, n.updated_at) AS sort_at
+       FROM practice_answer_history h
+       LEFT JOIN practice_question_notes n
+         ON n.username = h.username AND n.question_id = h.question_id
+       WHERE h.username = ?
+       UNION ALL
+       SELECT
+         n.username,
+         n.question_id,
+         '[]' AS selected_json,
+         0 AS submitted,
+         0 AS is_correct,
+         NULL AS answered_at,
+         NULL AS updated_at,
+         n.updated_at AS note_updated_at,
+         1 AS noted,
+         n.updated_at AS sort_at
+       FROM practice_question_notes n
+       LEFT JOIN practice_answer_history h
+         ON h.username = n.username AND h.question_id = n.question_id
+       WHERE n.username = ? AND h.question_id IS NULL
+       ORDER BY sort_at DESC`
+    ).bind(username, username).all();
 
     return json({
       username,
@@ -66,6 +108,8 @@ export async function onRequest({ request, env }) {
         isCorrect: !!row.is_correct,
         answeredAt: row.answered_at,
         updatedAt: row.updated_at,
+        noted: !!row.noted,
+        noteUpdatedAt: row.note_updated_at,
       })),
     });
   }
@@ -76,13 +120,29 @@ export async function onRequest({ request, env }) {
 
     const username = normalizeUsername(body.username);
     const questionId = String(body.question_id || '').trim();
-    const selected = Array.isArray(body.selected) ? body.selected.map(String) : [];
-    const submitted = body.submitted === false ? 0 : 1;
-    const isCorrect = body.isCorrect === true ? 1 : 0;
     if (!username) return json({ error: 'username is required' }, 400);
     if (!questionId) return json({ error: 'question_id is required' }, 400);
 
     const now = nowISO();
+
+    if (Object.prototype.hasOwnProperty.call(body, 'noted')) {
+      if (body.noted === true) {
+        await env.DB.prepare(
+          `INSERT INTO practice_question_notes (username, question_id, created_at, updated_at)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(username, question_id) DO UPDATE SET updated_at = excluded.updated_at`
+        ).bind(username, questionId, now, now).run();
+      } else {
+        await env.DB.prepare(
+          `DELETE FROM practice_question_notes WHERE username = ? AND question_id = ?`
+        ).bind(username, questionId).run();
+      }
+      return json({ success: true, username, question_id: questionId, noted: body.noted === true, updated_at: now });
+    }
+
+    const selected = Array.isArray(body.selected) ? body.selected.map(String) : [];
+    const submitted = body.submitted === false ? 0 : 1;
+    const isCorrect = body.isCorrect === true ? 1 : 0;
     const answeredAt = body.answeredAt || (submitted ? now : null);
     await env.DB.prepare(
       `INSERT INTO practice_answer_history (username, question_id, selected_json, submitted, is_correct, answered_at, updated_at)
