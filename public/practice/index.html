@@ -1525,7 +1525,7 @@ function renderList(changedIds = new Set()) {
     const svc = i.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('');
     const dom = i.meta.domain ? `<span class="badge domain">${i.meta.domain}</span>` : '';
     const qt = i.meta.question_type ? `<span class="badge qtype">${i.meta.question_type}</span>` : '';
-    const status = getCardStatus(i.id);
+    const status = viewMode === 'practice' ? getCardStatus(i.id) : '';
     const statusCls = status === '✓' ? ' card-correct' : status === '✗' ? ' card-wrong' : '';
     const statusHTML = status ? `<span class="card-status">${status}</span>` : '';
     const noteHTML = isQuestionNoted(i.id) ? '<span class="card-note-indicator" title="Noted">★</span>' : '';
