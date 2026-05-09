@@ -1280,8 +1280,7 @@ async function selectLastAnsweredQuestion() {
   selectedId = issue.id;
   renderList();
   showDetail(issue, true);
-  const card = document.querySelector(`.card[data-id="${CSS.escape(issue.id)}"]`);
-  if (card) card.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  scrollListToCard(issue.id, 'center', 'smooth');
 }
 
 async function savePracticeAnswer(issueId) {
@@ -1584,6 +1583,23 @@ function getCardStatus(issueId) {
   const allCorrect = q.options.filter(o => o.correct).every(o => st.selected.has(o.id))
     && q.options.filter(o => o.wrong).every(o => !st.selected.has(o.id));
   return allCorrect ? '✓' : '✗';
+}
+
+function scrollListToCard(issueId, block = 'center', behavior = 'smooth') {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const list = document.getElementById('list-scroll');
+    const card = document.querySelector(`.card[data-id="${CSS.escape(issueId)}"]`);
+    if (!list || !card) return;
+    if (block === 'nearest') {
+      const listRect = list.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      if (cardRect.top >= listRect.top && cardRect.bottom <= listRect.bottom) return;
+    }
+    const targetTop = block === 'center'
+      ? card.offsetTop - Math.max(0, (list.clientHeight - card.offsetHeight) / 2)
+      : card.offsetTop - 8;
+    list.scrollTo({ top: Math.max(0, targetTop), behavior });
+  }));
 }
 
 function renderList(changedIds = new Set()) {
