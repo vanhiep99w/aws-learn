@@ -108,7 +108,7 @@ Khi bạn ghi **1 record** vào Aurora, Aurora **TỰ ĐỘNG sao chép** record
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Bạn có 1 Aurora Instance:                                                 │
-│        │                                                                    │
+│         │                                                                   │
 │         ▼  INSERT INTO users VALUES ('John')                                │
 │                                                                             │
 │   Aurora tự động tạo 6 copies:                                              │
@@ -179,7 +179,7 @@ Scenario 3: Mất 1 AZ + 1 disk
 |----------|----------|
 | 🛡️ **Durability** | Mất 3 copies vẫn an toàn (11 nines: 99.999999999%) |
 | ⚡ **Write Performance** | Chỉ cần 4/6 ACK = không đợi slow disks |
-| 📖 **Read Performance** | Đọc từ copy nào gần/nhanh nhất |
+| 📖 **Read Performance** | Đọc qua cluster volume logic; Aurora storage chọn storage nodes phù hợp và kiểm tra version/LSN |
 | 🔧 **Self-healing** | AWS tự động rebuild copy bị hỏng |
 | 🌍 **AZ Failure Tolerance** | Mất cả 1 AZ (2 copies) vẫn hoạt động bình thường |
 
@@ -254,7 +254,62 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 > **Tóm tắt:**
 > - **6 copies** = Data cực kỳ an toàn
 > - **4/6 write** = Nhanh, không đợi tất cả
-> - **3/6 read** = Luôn đọc được data mới nhất (nhờ LSN)
+> - **3/6 read** = Luôn đọc được version phù hợp nhờ quorum giao nhau với write quorum + LSN
+
+### Engine đọc có bị trúng storage copy chưa sync không?
+
+Có thể có **storage copy chưa sync kịp**, nhưng Aurora không đơn giản đọc mù từ một copy cũ rồi trả về như dữ liệu đúng.
+
+Ví dụ writer commit ở **LSN 101** khi đủ **4/6 ACK**:
+
+```
+Copy 1 ✅ LSN 101
+Copy 2 ✅ LSN 101
+Copy 3 ✅ LSN 101
+Copy 4 ✅ LSN 101
+Copy 5 ⏳ LSN 100
+Copy 6 ⏳ LSN 100
+```
+
+Lúc này commit đã thành công vì đủ write quorum. Copy 5 và Copy 6 có thể bắt kịp sau trong background.
+
+Điểm quan trọng: mỗi page/log record có **LSN (Log Sequence Number)**. Khi tầng engine/storage cần đọc một version nhất định, Aurora có thể nhận biết copy nào mới/cũ bằng LSN. Nếu một storage node trả về page ở LSN cũ hơn version cần đọc, Aurora không coi đó là bản hợp lệ cuối cùng.
+
+Vì sao quorum giúp tránh đọc sai?
+
+```
+Write quorum (W) = 4
+Read quorum  (R) = 3
+Total copies (N) = 6
+
+W + R > N
+4 + 3 > 6
+```
+
+Nghĩa là mọi nhóm 3 copies được đọc sẽ luôn giao với nhóm 4 copies đã nhận write mới ít nhất 1 copy. Kết hợp với LSN, Aurora biết đâu là version mới hơn.
+
+> [!IMPORTANT]
+> Quorum này là ở **tầng storage nodes/copies**, không phải giữa các Aurora Replicas. Aurora Replicas là DB instances/engine riêng; chúng cùng kết nối vào **shared cluster volume**.
+
+Tuy nhiên, **Aurora Replica vẫn có thể có replica lag**. Lý do là mỗi reader có engine, RAM, buffer cache và trạng thái đọc riêng. Writer commit vào storage quorum xong không cần chờ mọi reader apply/consume xong log vào cache/trạng thái của reader.
+
+```
+Storage layer:
+Writer → 6 storage copies → đủ 4/6 ACK → commit
+
+Reader layer:
+Writer log stream → Aurora Replica engine/cache → async consumption
+```
+
+Vì vậy cần phân biệt:
+
+| Hiện tượng | Ý nghĩa |
+|------------|---------|
+| Storage copy chưa sync | Một vài storage nodes có thể còn LSN cũ sau commit quorum |
+| Storage quorum + LSN | Aurora biết version nào hợp lệ/mới hơn khi đọc từ storage |
+| Aurora Replica lag | Reader engine/cache/state có thể chưa bắt kịp writer ngay lập tức |
+
+Nếu cần **read-after-write consistency tuyệt đối**, đọc lại từ **writer/cluster endpoint**. Reader endpoint phù hợp cho read scaling và thường chỉ stale rất ngắn.
 
 ### Storage Auto-Scaling
 
@@ -307,7 +362,7 @@ Write Quorum (W) + Read Quorum (R) > Tổng copies (N)
 │   └────┬────┘     └────┬────┘     └────┬────┘     └────┬────┘               │
 │        │               │               │               │                    │
 │        └───────────────┴───────────────┴───────────────┘                    │
-│                              │                                              │
+│                               │                                             │
 │                    ┌──────────▼──────────┐                                  │
 │                    │   SHARED STORAGE    │                                  │
 │                    │   (6 copies/3 AZs)  │                                  │
