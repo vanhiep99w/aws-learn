@@ -391,6 +391,8 @@ body::before{
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   letter-spacing:-.01em;
 }
+.card.has-indicators .card-title{padding-right:28px}
+.card.has-two-indicators .card-title{padding-right:54px}
 .card-badges{display:flex;flex-wrap:wrap;gap:4px}
 .badge{
   font-family:'JetBrains Mono',monospace;font-size:.6rem;
@@ -1536,7 +1538,8 @@ function renderList(changedIds = new Set()) {
     const statusCls = status === '✓' ? ' card-correct' : status === '✗' ? ' card-wrong' : '';
     const statusHTML = status ? `<span class="card-status">${status}</span>` : '';
     const noteHTML = isQuestionNoted(i.id) ? '<span class="card-note-indicator" title="Noted">★</span>' : '';
-    return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}${statusCls}" data-id="${i.id}">
+    const indicatorCls = status && noteHTML ? ' has-two-indicators' : (status || noteHTML ? ' has-indicators' : '');
+    return `<div class="card${i.id === selectedId ? ' active' : ''}${changedIds.has(i.id) ? ' flash' : ''}${statusCls}${indicatorCls}" data-id="${i.id}">
         ${statusHTML}${noteHTML}
         <div class="card-title">${esc(i.title)}</div>
         <div class="card-badges">${svc}${dom}${qt}</div>
