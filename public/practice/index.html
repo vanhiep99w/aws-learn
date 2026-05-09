@@ -1428,11 +1428,15 @@ async function ensureNotedIssuesLoaded() {
   }
 }
 
+function uniq(values) {
+  return [...new Set((values || []).filter(Boolean))];
+}
+
 function normalizeIssue(row) {
   let meta = {};
   try { meta = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : (row.metadata || {}); } catch {}
   const inferredLabels = ['aws', meta.service, meta.domain].filter(Boolean);
-  const labels = labelsMap[row.id] || row.labels || inferredLabels;
+  const labels = uniq(labelsMap[row.id] || row.labels || inferredLabels);
   return { ...row, meta, labels };
 }
 
@@ -1506,7 +1510,7 @@ async function fetchData() {
   const data = await res.json();
 
   labelsMap = {};
-  for (const r of data.labels) (labelsMap[r.issue_id] ||= []).push(r.label);
+  for (const r of data.labels) labelsMap[r.issue_id] = uniq([...(labelsMap[r.issue_id] || []), r.label]);
 
   const changedIds = new Set();
   const newMap = {};
@@ -1539,7 +1543,7 @@ async function loadIssuePage(offset = loadedCount, limit = PAGE_SIZE) {
   if (!res.ok) throw new Error(`API ${res.status}`);
   const data = await res.json();
   if (Array.isArray(data.labels)) {
-    for (const r of data.labels) (labelsMap[r.issue_id] ||= []).push(r.label);
+    for (const r of data.labels) labelsMap[r.issue_id] = uniq([...(labelsMap[r.issue_id] || []), r.label]);
   }
   if (data.total != null) totalQuestions = data.total;
   const existing = new Set(issues.map(i => i.id));
@@ -1651,7 +1655,8 @@ function renderList(changedIds = new Set()) {
   document.getElementById('list-count').textContent = hasActiveFilters() ? filtered.length : (totalQuestions || filtered.length);
   if (filtered.length === 0) { el.innerHTML = '<div class="empty">No questions found</div>'; return; }
   el.innerHTML = filtered.map(i => {
-    const svc = i.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('');
+    const svcLabels = uniq(i.labels).filter(l => l !== 'aws' && l !== i.meta.domain);
+    const svc = svcLabels.map(l => `<span class="badge">${l}</span>`).join('');
     const dom = i.meta.domain ? `<span class="badge domain">${i.meta.domain}</span>` : '';
     const qt = i.meta.question_type ? `<span class="badge qtype">${i.meta.question_type}</span>` : '';
     const status = viewMode === 'practice' ? getCardStatus(i.id) : '';
@@ -1786,7 +1791,8 @@ function sectionMeta(title) {
 function showDetail(issue, scrollToTop = false) {
   const panel = document.getElementById('detail-panel');
   const prevScroll = panel.scrollTop;
-  const badges = issue.labels.filter(l => l !== 'aws').map(l => `<span class="badge">${l}</span>`).join('')
+  const detailSvcLabels = uniq(issue.labels).filter(l => l !== 'aws' && l !== issue.meta.domain);
+  const badges = detailSvcLabels.map(l => `<span class="badge">${l}</span>`).join('')
     + (issue.meta.domain ? `<span class="badge domain">${issue.meta.domain}</span>` : '')
     + (issue.meta.question_type ? `<span class="badge qtype">${issue.meta.question_type}</span>` : '');
   const q = parseQuestion(issue.description, issue.meta);

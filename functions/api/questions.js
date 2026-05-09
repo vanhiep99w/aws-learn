@@ -64,7 +64,7 @@ export async function onRequest({ request, env }) {
         ? 'created_at DESC, id DESC'
         : 'updated_at DESC';
 
-    const [questionsResult, labelsResult, countResult] = await Promise.all([
+    const [questionsResult, countResult] = await Promise.all([
       env.DB.prepare(
         `SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
          FROM questions
@@ -73,16 +73,26 @@ export async function onRequest({ request, env }) {
          LIMIT ? OFFSET ?`
       ).bind(limit, offset).all(),
       env.DB.prepare(
-        'SELECT question_id AS issue_id, label FROM question_labels'
-      ).all(),
-      env.DB.prepare(
         `SELECT COUNT(*) AS total FROM questions WHERE status = 'open'`
       ).first(),
     ]);
 
+    const questionIds = questionsResult.results.map(({ id }) => id);
+    let labels = [];
+    if (questionIds.length > 0) {
+      const placeholders = questionIds.map(() => '?').join(',');
+      const labelsResult = await env.DB.prepare(
+        `SELECT DISTINCT question_id AS issue_id, label
+         FROM question_labels
+         WHERE question_id IN (${placeholders})
+         ORDER BY question_id ASC, label ASC`
+      ).bind(...questionIds).all();
+      labels = labelsResult.results;
+    }
+
     return json({
       rows: questionsResult.results,
-      labels: labelsResult.results,
+      labels,
       total: countResult.total,
     });
   }
