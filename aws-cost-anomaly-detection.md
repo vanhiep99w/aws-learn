@@ -55,7 +55,7 @@ Dịch vụ này giúp trả lời các câu hỏi như:
 │  └───────────────┬───────────────┘                              │
 │                  │                                              │
 │                  ▼                                              │
-│  Email / SNS / Chat / EventBridge / User Notifications           │
+│  Email / SNS / Chat / EventBridge / User Notifications          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
