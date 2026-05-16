@@ -63,6 +63,7 @@ Two modes:
 - [x] [AWS Transfer Family](aws-transfer-family.md) - Managed SFTP/FTPS/FTP/AS2, File Transfer to S3/EFS
 - [x] [AWS DataSync](aws-datasync.md) - Data Migration, Bulk Transfer, On-premises to AWS Sync
 - [x] [AWS Data Transfer & Hybrid Storage Comparison](aws-data-transfer-hybrid-storage-comparison.md) - Phân biệt DataSync, Storage Gateway, Transfer Family, Snow Family, Data Transfer Terminal
+- [x] [AWS Storage & Transfer Protocols Cheatsheet](aws-storage-transfer-protocols.md) - Phân biệt NFS, SMB, iSCSI, VTL, S3 API với SFTP, FTPS, FTP, AS2
 - [x] [AWS Storage Deep Dive](aws-storage-deep-dive.md) - So sánh chi tiết các loại Block, File, Object, Hybrid, Edge
 - [x] [AWS File Storage Guide](aws-file-storage-guide.md) - EFS, FSx, Storage Gateway, NFS, SMB, NTFS, Active Directory — giải thích toàn diện
 
