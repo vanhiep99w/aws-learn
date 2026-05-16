@@ -4,6 +4,7 @@
 
 - [Tổng quan](#tổng-quan)
 - [STS giải quyết vấn đề gì](#sts-giải-quyết-vấn-đề-gì)
+- [STS đứng sau những cơ chế nào](#sts-đứng-sau-những-cơ-chế-nào)
 - [Temporary credentials gồm những gì](#temporary-credentials-gồm-những-gì)
 - [STS hoạt động như thế nào](#sts-hoạt-động-như-thế-nào)
 - [Các API STS quan trọng](#các-api-sts-quan-trọng)
@@ -111,6 +112,32 @@ AWS nêu các lợi ích chính của temporary credentials:
 - Credentials có lifetime giới hạn, hết hạn thì không thể tái sử dụng.
 
 > Nguồn: [Temporary security credentials in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html)
+
+---
+
+## STS đứng sau những cơ chế nào
+
+Câu nhớ nhanh:
+
+> **Cứ thấy AWS cấp temporary credentials thì gần như có STS ở phía sau.**
+
+| Cơ chế bạn thấy | STS/API phía sau | Ghi nhớ |
+|---|---|---|
+| **IAM Role** | `AssumeRole` hoặc cơ chế STS-managed tương đương | Role là “ghế quyền”; STS phát “vé tạm” để ngồi vào role. |
+| **Cross-account access** | `AssumeRole` | Account A assume role ở Account B. |
+| **EC2 Instance Profile** | Temporary credentials dựa trên role | App lấy credentials qua Instance Metadata Service, không hard-code key. |
+| **ECS Task Role** | Temporary credentials dựa trên task role | Container lấy credentials qua task metadata endpoint. |
+| **Lambda Execution Role** | Temporary credentials dựa trên execution role | Lambda runtime cung cấp credentials tạm cho function. |
+| **EKS IRSA** | `AssumeRoleWithWebIdentity` | Kubernetes ServiceAccount dùng OIDC token để lấy AWS credentials. |
+| **GitHub Actions OIDC** | `AssumeRoleWithWebIdentity` | CI/CD không cần lưu AWS access key dài hạn. |
+| **SAML federation** | `AssumeRoleWithSAML` | User từ corporate IdP như Okta/Entra ID vào AWS. |
+| **OIDC federation** | `AssumeRoleWithWebIdentity` | IdP phát JWT/OIDC token, AWS đổi thành temporary credentials. |
+| **Cognito Identity Pool** | Temporary credentials qua STS | App user đổi token từ User Pool/IdP thành AWS credentials. |
+| **IAM Identity Center / AWS CLI SSO** | Role session/temporary credentials | User SSO vào AWS account và nhận credentials tạm để dùng Console/CLI. |
+| **MFA-protected temporary credentials cho IAM user** | `GetSessionToken` | IAM user lấy credentials tạm có MFA context. |
+| **Custom federation broker** | `GetFederationToken` hoặc `AssumeRole` | Broker tự xác thực user ngoài AWS rồi xin credentials tạm. |
+
+Ngược lại, các dịch vụ như **KMS, Secrets Manager, ACM, WAF, GuardDuty, Inspector, Macie** không “đứng sau bởi STS” theo nghĩa nghiệp vụ chính. Caller có thể dùng STS credentials để gọi API của chúng, nhưng lõi của các dịch vụ đó không phải là cấp credentials.
 
 ---
 
