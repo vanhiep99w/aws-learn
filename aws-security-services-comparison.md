@@ -21,28 +21,28 @@
 ```mermaid
 graph TB
     subgraph ID["Identity & Access - Ai được làm gì?"]
-        IAM["IAM\nUser/Role/Policy cho AWS account"]
-        IDC["IAM Identity Center\nSSO workforce vào nhiều account/app"]
-        STS["STS\nCấp temporary credentials"]
-        COG["Cognito\nĐăng nhập user app/web/mobile"]
-        AVP["Verified Permissions\nAuthorization chi tiết trong app"]
+        IAM["IAM<br/>User/Role/Policy cho AWS account"]
+        IDC["IAM Identity Center<br/>SSO workforce vào nhiều account/app"]
+        STS["STS<br/>Cấp temporary credentials"]
+        COG["Cognito<br/>Đăng nhập user app/web/mobile"]
+        AVP["Verified Permissions<br/>Authorization chi tiết trong app"]
     end
 
     subgraph SECRET["Secrets, Keys, Certificates - Cất và dùng bí mật"]
-        KMS["KMS\nQuản lý encryption keys"]
-        SM["Secrets Manager\nDB password/API key + rotation"]
-        SSM["SSM Parameter Store\nConfig/secret đơn giản"]
-        ACM["ACM\nSSL/TLS certificate"]
-        HSM["CloudHSM\nHSM riêng, kiểm soát sâu"]
+        KMS["KMS<br/>Quản lý encryption keys"]
+        SM["Secrets Manager<br/>DB password/API key + rotation"]
+        SSM["SSM Parameter Store<br/>Config/secret đơn giản"]
+        ACM["ACM<br/>SSL/TLS certificate"]
+        HSM["CloudHSM<br/>HSM riêng, kiểm soát sâu"]
     end
 
     subgraph PROTECT["Protect & Detect - Chặn, quét, phát hiện"]
-        WAF["WAF\nChặn HTTP/S: SQLi, XSS, bot"]
-        SHIELD["Shield\nDDoS protection"]
-        GD["GuardDuty\nThreat detection từ logs"]
-        INSP["Inspector\nVulnerability scan EC2/ECR/Lambda"]
-        MACIE["Macie\nTìm PII/sensitive data trong S3"]
-        HUB["Security Hub\nTổng hợp findings/compliance"]
+        WAF["WAF<br/>Chặn HTTP/S: SQLi, XSS, bot"]
+        SHIELD["Shield<br/>DDoS protection"]
+        GD["GuardDuty<br/>Threat detection từ logs"]
+        INSP["Inspector<br/>Vulnerability scan EC2/ECR/Lambda"]
+        MACIE["Macie<br/>Tìm PII/sensitive data trong S3"]
+        HUB["Security Hub<br/>Tổng hợp findings/compliance"]
     end
 
     IDC --> STS
