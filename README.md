@@ -123,6 +123,7 @@ Two modes:
 
 - [x] [IAM Management Overview](aws-iam-management-overview.md) - Tổng quan Account, Users, Groups, Roles, Policies, Best Practices (Diagram)
 - [x] [Security & Encryption Overview](aws-security-encryption-overview.md) - Tổng quan KMS, Shield, WAF, GuardDuty, Inspector, Macie, ACM, Cognito (Diagram)
+- [x] [AWS Security Services Comparison](aws-security-services-comparison.md) - Phân biệt KMS, Secrets Manager, IAM Identity Center, Cognito, STS và các dịch vụ security liên quan
 - [x] [IAM](iam.md) - Users, Groups, Roles, Policies
 - [x] [IAM Identity Center](iam-identity-center.md) - Single Sign-On (SSO), Multi-Account Access, Identity Providers, Permission Sets
 - [x] [IAM Roles Deep Dive](iam-roles.md) - Trust Policy, Cross-Account, Confused Deputy, Roles Anywhere
