@@ -993,42 +993,108 @@ example.com ───▶ Primary (Active)
 
 ### 6. Geoproximity Routing
 
-**Định tuyến dựa trên khoảng cách địa lý** giữa user và resources, với khả năng điều chỉnh **bias**.
+**Geoproximity Routing = chọn endpoint gần user nhất, nhưng cho phép “bóp/mở vùng phục vụ” bằng bias.**
+
+Nó khác **Geolocation Routing** ở điểm quan trọng:
+
+| Policy | Route theo gì? | Ví dụ |
+| ------ | -------------- | ----- |
+| **Geolocation** | Theo location rule cố định: quốc gia/châu lục/default | User ở Vietnam → luôn đi Singapore |
+| **Geoproximity** | Theo khoảng cách giữa user và resource | User gần Tokyo hơn Singapore → đi Tokyo |
+| **Geoproximity + bias** | Theo khoảng cách đã được điều chỉnh | Dù gần Tokyo hơn một chút, vẫn có thể kéo traffic về Singapore nếu Singapore có bias dương |
+
+#### Cách Route 53 quyết định
+
+Với mỗi DNS query, Route 53 ước lượng vị trí của user rồi tính khoảng cách tới từng resource.
+
+Resource có thể là:
+
+- AWS resource: chỉ định bằng **AWS Region** hoặc **Local Zone Group**.
+- Non-AWS resource: chỉ định bằng **latitude/longitude**.
+
+Nếu **bias = 0**, Route 53 chọn resource gần nhất.
 
 ```text
-Bias = 0 (mặc định)
+User ở Bangkok
 
-          User ở giữa 2 resources
-                    │
-                    ▼
-        ┌──────────────────────────┐
-        │  Boundary chia gần 50/50 │
-        └──────────────────────────┘
-             │                │
-             ▼                ▼
-        ┌─────────┐      ┌─────────┐
-        │Server A │      │Server B │
-        └─────────┘      └─────────┘
+Khoảng cách tới Singapore = 1,430 km
+Khoảng cách tới Tokyo     = 4,600 km
+
+=> Chọn Singapore vì gần hơn
 ```
+
+#### Bias là gì?
+
+**Bias** là số từ **-99 đến +99** dùng để thay đổi “khoảng cách cảm nhận” của Route 53.
+
+AWS dùng công thức:
 
 ```text
-Bias điều chỉnh phạm vi phục vụ
-
-        Server A: Bias +50          Server B: Bias -25
-                 │                           │
-                 ▼                           ▼
-        ┌──────────────────────────────┬──────────────┐
-        │        ~70% traffic          │ ~30% traffic │
-        │   phạm vi A được mở rộng     │ B bị thu hẹp │
-        └──────────────────────────────┴──────────────┘
+Biased distance = actual distance * [1 - (bias / 100)]
 ```
 
-**Bias range:** -99 đến +99
+Ý nghĩa:
 
-- **Positive bias** (+): Mở rộng phạm vi, thu hút nhiều traffic hơn
-- **Negative bias** (-): Thu hẹp phạm vi, giảm traffic
+- **Bias dương**: làm endpoint có vẻ **gần hơn** → vùng phục vụ mở rộng → nhận nhiều traffic hơn.
+- **Bias âm**: làm endpoint có vẻ **xa hơn** → vùng phục vụ thu hẹp → nhận ít traffic hơn.
 
-**Yêu cầu:** Phải sử dụng **Route 53 Traffic Flow** để configure.
+Ví dụ AWS đưa ra:
+
+```text
+Server A cách user 150 km, bias +50
+Server B cách user 100 km, bias 0
+
+A biased distance = 150 * [1 - (50/100)] = 75 km
+B biased distance = 100 * [1 - (0/100)]  = 100 km
+
+=> Route 53 chọn A, dù khoảng cách thật A xa hơn B
+```
+
+Nói dễ hiểu:
+
+```text
+Không bias:
+User ──100km── Server B  ✅ gần hơn
+User ──150km── Server A
+
+A có bias +50:
+User ──100km── Server B
+User ── 75km── Server A  ✅ Route 53 coi như gần hơn
+```
+
+#### Bias không phải phần trăm traffic cố định
+
+Điểm rất dễ nhầm:
+
+> Bias +50 **không có nghĩa là lấy 50% traffic**.
+
+Bias chỉ thay đổi **ranh giới địa lý** giữa các endpoint. Traffic thực tế thay đổi bao nhiêu phụ thuộc vào:
+
+- Endpoint nằm ở đâu.
+- User tập trung ở khu vực nào.
+- Endpoint gần nhau hay xa nhau.
+- Có nhiều user ở vùng ranh giới hay không.
+
+Ví dụ nếu nhiều user nằm gần ranh giới giữa Singapore và Tokyo, chỉ cần bias nhỏ cũng có thể làm traffic chuyển rất nhiều.
+
+#### Khi nào dùng Geoproximity?
+
+Dùng khi bạn muốn routing theo địa lý nhưng cần điều chỉnh linh hoạt:
+
+- Region A mạnh hơn Region B, muốn Region A nhận nhiều traffic hơn.
+- Muốn dần chuyển traffic từ region cũ sang region mới theo khu vực địa lý.
+- Muốn giảm tải một region bằng bias âm.
+- Muốn người dùng gần endpoint nào thì đi endpoint đó, nhưng vẫn điều chỉnh được phạm vi.
+
+#### Khi nào không dùng?
+
+- Muốn chia traffic chính xác 80/20 → dùng **Weighted Routing**.
+- Muốn user ở một quốc gia cố định đi một endpoint cụ thể → dùng **Geolocation Routing**.
+- Muốn route theo latency đo được từ AWS regions → dùng **Latency-based Routing**.
+
+**Yêu cầu:** Geoproximity thường được cấu hình qua **Route 53 Traffic Flow**. Bản đồ visualization của geoproximity chỉ có trong Traffic Flow.
+
+> Nguồn: [Geoproximity routing - Amazon Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-geoproximity.html)
 
 ---
 
