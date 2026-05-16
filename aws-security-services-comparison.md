@@ -210,6 +210,10 @@ KMS phù hợp cho:
 
 Điểm dễ nhầm:
 
+- KMS **có automatic key rotation**, nhưng nó rotate **key material** của KMS key, không rotate password/API key của ứng dụng.
+- Với customer managed KMS key đủ điều kiện, bạn có thể bật automatic rotation; mặc định khi bật thì AWS KMS tạo key material mới hằng năm, hoặc bạn cấu hình rotation period tùy chỉnh. KMS cũng hỗ trợ on-demand rotation.
+- Sau khi rotate, **Key ID/ARN/policy/alias vẫn là cùng logical KMS key**; AWS KMS tự chọn đúng key material cũ để decrypt ciphertext cũ, nên thường không cần đổi code.
+- KMS rotation **không re-encrypt dữ liệu đã mã hóa**, không rotate data keys đã được generate trước đó, và không khắc phục nếu data key đã bị lộ.
 - KMS **không phải nơi lưu password**. Nó bảo vệ encryption keys.
 - KMS key không rời KMS ở dạng plaintext.
 - Data lớn thường không gửi toàn bộ vào KMS để encrypt; app/service dùng envelope encryption: KMS tạo/decrypt data key, data key mã hóa dữ liệu.
@@ -324,11 +328,11 @@ Security Hub không thay thế GuardDuty/Inspector/Macie. Nó là nơi:
 |---|---|---|
 | Lưu DB password? | Không trực tiếp | Có |
 | Tạo encryption key? | Có | Không, nó dùng KMS để encrypt secret |
-| Rotate key/secret? | Rotate KMS key material/key theo cơ chế KMS | Rotate secret value, ví dụ đổi password DB |
+| Rotate key/secret? | Có automatic/on-demand rotation cho **KMS key material**; không đổi Key ID/ARN và không đổi password ứng dụng | Rotate **secret value**, ví dụ đổi password DB/API key/OAuth token |
 | App gọi để lấy password? | Không | Có, `GetSecretValue` |
 | App gọi để decrypt data key/data? | Có | Không phải mục tiêu chính |
 
-Ví dụ: password database nằm trong Secrets Manager; secret đó được encrypt at rest bằng KMS key.
+Ví dụ: password database nằm trong Secrets Manager; secret đó được encrypt at rest bằng KMS key. Nếu bật KMS rotation, thứ được rotate là key material dùng để bảo vệ secret at rest; còn password database chỉ đổi khi Secrets Manager rotation chạy.
 
 ### IAM Identity Center vs Cognito
 
