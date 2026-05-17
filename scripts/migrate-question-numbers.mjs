@@ -32,10 +32,12 @@ runSql(`CREATE TABLE IF NOT EXISTS question_sequence (
   question_id TEXT NOT NULL UNIQUE
 );`);
 
-runSql(`INSERT OR IGNORE INTO question_sequence (question_id)
-SELECT id
-FROM questions
-ORDER BY created_at ASC, id ASC;`);
+runSql(`INSERT INTO question_sequence (question_id)
+SELECT q.id
+FROM questions q
+LEFT JOIN question_sequence s ON s.question_id = q.id
+WHERE s.question_id IS NULL
+ORDER BY q.created_at ASC, q.id ASC;`);
 
 runSql(`UPDATE questions
 SET question_number = (
