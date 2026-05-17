@@ -34,20 +34,21 @@ export async function onRequest({ request, env }) {
   // GET /api/questions — list questions + labels
   if (request.method === 'GET') {
     const id = url.searchParams.get('id');
-    if (id) {
-      const [questionResult, labelsResult] = await Promise.all([
-        env.DB.prepare(
-          `SELECT id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
-           FROM questions
-           WHERE id = ?
-           LIMIT 1`
-        ).bind(id).first(),
-        env.DB.prepare(
-          'SELECT label FROM question_labels WHERE question_id = ? ORDER BY label ASC'
-        ).bind(id).all(),
-      ]);
+    const number = url.searchParams.get('number');
+    if (id || number) {
+      const lookupByNumber = !id && number;
+      const questionResult = await env.DB.prepare(
+        `SELECT id, question_number, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at
+         FROM questions
+         WHERE ${lookupByNumber ? 'question_number = ?' : 'id = ?'}
+         LIMIT 1`
+      ).bind(lookupByNumber ? Number(number) : id).first();
 
       if (!questionResult) return json({ error: 'Question not found' }, 404);
+
+      const labelsResult = await env.DB.prepare(
+        'SELECT label FROM question_labels WHERE question_id = ? ORDER BY label ASC'
+      ).bind(questionResult.id).all();
 
       return json({
         row: questionResult,
@@ -67,8 +68,8 @@ export async function onRequest({ request, env }) {
         ? 'created_at DESC, id DESC'
         : 'updated_at DESC';
     const columns = listMode
-      ? 'id, title, status, priority, issue_type, metadata, created_at, updated_at'
-      : 'id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at';
+      ? 'id, question_number, title, status, priority, issue_type, metadata, created_at, updated_at'
+      : 'id, question_number, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at';
 
     const questionsResult = await env.DB.prepare(
       `SELECT ${columns}
@@ -123,10 +124,17 @@ export async function onRequest({ request, env }) {
     const now = nowISO();
     const metadataStr = typeof metadata === 'string' ? metadata : JSON.stringify(metadata || {});
 
+    const sequenceRow = await env.DB.prepare(
+      `INSERT INTO question_sequence (question_id)
+       VALUES (?)
+       RETURNING number`
+    ).bind(id).first();
+    const questionNumber = sequenceRow?.number;
+
     await env.DB.prepare(
-      `INSERT INTO questions (id, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at)
-       VALUES (?, ?, 'open', '3', 'decision', ?, ?, ?, ?, ?)`
-    ).bind(id, title, description || '', notes || '', metadataStr, now, now).run();
+      `INSERT INTO questions (id, question_number, title, status, priority, issue_type, description, notes, metadata, created_at, updated_at)
+       VALUES (?, ?, ?, 'open', '3', 'decision', ?, ?, ?, ?, ?)`
+    ).bind(id, questionNumber, title, description || '', notes || '', metadataStr, now, now).run();
 
     if (Array.isArray(labels) && labels.length > 0) {
       const stmt = env.DB.prepare(
@@ -135,7 +143,7 @@ export async function onRequest({ request, env }) {
       await env.DB.batch(labels.map(label => stmt.bind(id, label)));
     }
 
-    return json({ id, success: true }, 201);
+    return json({ id, question_number: questionNumber, success: true }, 201);
   }
 
   // PATCH /api/questions?id=... — update existing question
@@ -151,7 +159,7 @@ export async function onRequest({ request, env }) {
     }
 
     const existing = await env.DB.prepare(
-      `SELECT id, title, status, priority, issue_type, description, notes, metadata
+      `SELECT id, question_number, title, status, priority, issue_type, description, notes, metadata
        FROM questions
        WHERE id = ?
        LIMIT 1`

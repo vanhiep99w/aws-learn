@@ -9,7 +9,7 @@
     "prebuild": "node scripts/prepare-content.mjs",
     "build": "next build",
     "preview": "wrangler pages dev dist",
-    "deploy": "npm run build && wrangler pages deploy dist"
+    "deploy": "npm run build && npx wrangler pages deploy dist"
   },
   "dependencies": {
     "fumadocs-core": "^14.5.6",
