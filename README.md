@@ -27,6 +27,7 @@ Two modes:
 ## Compute
 
 - [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
+- [x] [Bastion Host](bastion-host.md) - Jump Box truy cập private subnet, SSH flow, Security Group/NACL, Session Manager
 - [x] [Spot Instances](spot-instances.md) - Spot request, interruption, persistent request, Spot Fleet, best practices
 - [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
 - [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
