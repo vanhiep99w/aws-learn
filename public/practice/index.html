@@ -995,7 +995,6 @@ body.qa-resizing{cursor:col-resize;user-select:none}
         <div class="score-fill pending" id="score-fill-pending"></div>
       </div>
       <span class="score-text" id="score-text">0/0</span>
-      <button type="button" class="reset-progress-btn" id="reset-progress">Reset</button>
     </div>
     <div class="list-scroll" id="list-scroll">
       <div class="loading"><div class="spinner"></div>Loading...</div>
@@ -1485,6 +1484,11 @@ function applyViewMode(mode) {
 }
 
 function updateScoreBar() {
+  if (viewMode === 'review') {
+    const bar = document.getElementById('score-bar');
+    if (bar) bar.style.display = 'none';
+    return;
+  }
   const submitted = Object.entries(submittedAnswers).filter(([, st]) => st && st.submitted);
   let correct = 0;
   for (const [id, st] of submitted) {
@@ -2169,23 +2173,7 @@ async function bootstrapPracticeHistory() {
   await loadPracticeHistory({ autoSelectLast: !selectedId });
 }
 
-document.getElementById('reset-progress')?.addEventListener('click', async () => {
-  if (!(await ensurePracticeUser())) return;
-  const choice = await showResetChoiceModal();
-  if (!choice) return;
-  try { await resetPracticeHistory(choice); } catch (err) { console.error(err); return; }
-  if (choice === 'history' || choice === 'all') submittedAnswers = {};
-  if (choice === 'notes' || choice === 'all') {
-    notedQuestionIds = new Set();
-    setNoteFilterActive(false);
-  }
-  updateScoreBar();
-  renderList();
-  if (selectedId) {
-    const issue = await hydrateIssue(issues.find(i => i.id === selectedId));
-    if (issue) showDetail(issue, false);
-  }
-});
+
 
 applyViewMode(viewMode);
 applyCreatedSort(sortCreated);
