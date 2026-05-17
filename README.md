@@ -53,6 +53,7 @@ Two modes:
 ## Storage
 
 - [x] [S3](s3.md) - Simple Storage Service, Storage Classes, Lifecycle, Security
+- [x] [AWS Services Làm Việc Cùng S3](s3-related-services-guide.md) - Phân biệt Athena, Glue, Lake Formation, Firehose, DataSync, Transfer Family và các dịch vụ liên quan đến S3
 - [x] [S3 Transfer Acceleration](s3-transfer-acceleration.md) - Tăng tốc upload/download qua Edge Locations
 - [x] [S3 Storage Lens](s3-storage-lens.md) - Organization-wide Storage Analytics, 60+ Metrics, Cost & Security Recommendations
 - [x] [S3 Security](s3-security.md) - Access Control, Encryption, Block Public Access, Pre-signed URLs, VPC Endpoints
