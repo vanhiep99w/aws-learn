@@ -6,6 +6,7 @@
 - [Tổng Quan](#tổng-quan)
 - [Tại Sao Công Ty Cần Nhiều AWS Accounts?](#tại-sao-công-ty-cần-nhiều-aws-accounts)
 - [SSO Đến Business Applications](#sso-đến-business-applications)
+- [Hai Cơ Chế Hoạt Động Khác Nhau](#hai-cơ-chế-hoạt-động-khác-nhau)
 - [Kiến Trúc](#kiến-trúc)
 - [Identity Sources](#identity-sources)
 - [Permission Sets](#permission-sets)
@@ -243,7 +244,7 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 │  │                                                                 │    │
 │  │   [Login]                                                       │    │
 │  └─────────────────────────────────────────────────────────────────┘    │
-│                             │                                           │
+│                              │                                          │
 │                              │ ✅ Đã xác thực                           │
 │                              ▼                                          │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
@@ -294,7 +295,7 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 │    │                  │                     │                           │
 │    │── Click Salesforce (with SAML Token) ─►│                           │
 │    │                                        │                           │
-│    │◄──────────── Welcome Hiệp! ─────────── │                            │
+│    │◄──────────── Welcome Hiệp! ─────────── │                           │
 │    │          (no password needed)          │                           │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -340,6 +341,203 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ---
 
+## Hai Cơ Chế Hoạt Động Khác Nhau
+
+> [!NOTE]
+> Đây là điểm quan trọng dễ gây nhầm lẫn: Identity Center dùng **hai cơ chế hoàn toàn khác nhau** tùy thuộc vào đích đến là AWS Account hay ứng dụng bên ngoài (Jira, Slack...).
+
+### Tóm Tắt Nhanh
+
+| | AWS Accounts | Jira / Slack / Salesforce... |
+|---|---|---|
+| **Cơ chế** | AWS STS (Temporary Credentials) | SAML 2.0 Assertion |
+| **Thứ gửi đi** | Access Key + Secret + Session Token | File XML được ký điện tử |
+| **Ai xử lý** | AWS nội bộ | App tự verify chữ ký |
+| **Jira có tài khoản không?** | N/A | Có, sync tự động qua SCIM hoặc JIT |
+| **Hết hạn** | 1–12 giờ (tự gia hạn) | Assertion hết hạn sau vài phút (sau đó dùng session của Jira) |
+
+---
+
+### Cơ Chế 1: AWS STS — Dành Cho AWS Accounts
+
+Khi click vào một AWS Account trên portal, Identity Center gọi **AWS STS** (Security Token Service) để tạo ra *Temporary Credentials* — một bộ thẻ tạm thời có giới hạn thời gian.
+
+```
+Nam click "Dev Account" trên Access Portal
+           │
+           ▼
+┌──────────────────────┐
+│  IAM Identity Center │
+│                      │
+│  Kiểm tra:           │
+│  ✓ Nam đã login      │
+│  ✓ Nam có quyền vào  │
+│    Dev Account       │
+│  ✓ Permission Set:   │
+│    Developer         │
+└──────────┬───────────┘
+           │ Gọi AWS STS
+           ▼
+┌──────────────────────┐
+│   AWS STS            │
+│                      │
+│  Tạo Temporary Creds:│
+│  {                   │
+│    AccessKeyId:      │
+│     "ASIAXXX...",    │
+│    SecretAccessKey:  │
+│     "abc123...",     │
+│    SessionToken:     │
+│     "FQoGZXIv...",   │
+│    Expiration:       │
+│     "...T10:00:00Z"  │
+│  }         ↑         │
+│      Hết hạn 1 giờ   │
+└──────────┬───────────┘
+           │
+           ▼
+    AWS Console mở ra
+    với quyền Developer ✅
+
+Sau 1 giờ → tự động xin thẻ mới
+Nam không biết gì, mọi thứ vẫn chạy
+```
+
+**Tại sao dùng STS thay vì password?**
+- Không có access key nào tồn tại vĩnh viễn → nếu bị lộ, sau 1 giờ thẻ tự hết hạn
+- IAM User truyền thống: access key tồn tại **mãi mãi** cho đến khi bạn tự xóa → rủi ro cao hơn
+
+---
+
+### Cơ Chế 2: SAML 2.0 — Dành Cho Jira, Slack, Salesforce...
+
+SAML (Security Assertion Markup Language) là **giao thức chuẩn quốc tế**, không liên quan đến AWS. Jira, Salesforce, Microsoft 365... đều hỗ trợ SAML, vì thế Identity Center mới có thể tích hợp được.
+
+#### Bước 0 — Admin setup một lần duy nhất
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Admin cấu hình "trust" giữa hai phía:              │
+│                                                     │
+│  Bên Jira:                                          │
+│    Settings → Authentication → SAML 2.0             │
+│    → "Identity Provider URL": (URL của Identity     │
+│       Center)                                       │
+│    → "Certificate": (copy từ Identity Center)       │
+│    → Save ✓                                         │
+│                                                     │
+│  Bên Identity Center:                               │
+│    Applications → Add → Jira                        │
+│    → "ACS URL": (URL callback của Jira)             │
+│    → "Entity ID": (ID định danh Jira)               │
+│    → Save ✓                                         │
+│                                                     │
+│  Kết quả: Jira "tin tưởng" Identity Center          │
+│           từ đây về sau                             │
+└─────────────────────────────────────────────────────┘
+```
+
+#### Bước 1–4 — Mỗi lần Nam click vào Jira
+
+```
+Nam click "Jira" trên Access Portal
+           │
+           ▼
+┌──────────────────────────────────────────────┐
+│  Identity Center tạo SAML Assertion          │
+│  (file XML, được ký bằng private key của IC) │
+│                                              │
+│  <SAMLResponse>                              │
+│    <Assertion>                               │
+│      <Subject>                               │
+│        <NameID>nam@techvn.com</NameID>       │
+│      </Subject>                              │
+│      <Attributes>                            │
+│        email: nam@techvn.com                 │
+│        displayName: Nam Nguyen               │
+│        groups: developers                    │
+│      </Attributes>                           │
+│      <Conditions NotOnOrAfter="+5min"/>      │
+│      <Signature>ABC123XYZ...</Signature>     │
+│    </Assertion>                              │
+│  </SAMLResponse>                             │
+└──────────────────┬───────────────────────────┘
+                   │ Gửi qua trình duyệt
+                   ▼
+┌──────────────────────────────────────────────┐
+│  Jira nhận SAML Assertion và kiểm tra:       │
+│                                              │
+│  1. Chữ ký có hợp lệ không?                  │
+│     → Dùng certificate của Identity Center   │
+│       để verify                              │
+│     → ✓ Đúng là IC ký, không ai giả mạo      │
+│                                              │
+│  2. Assertion còn hạn không?                 │
+│     → NotOnOrAfter: còn trong 5 phút ✓       │
+│                                              │
+│  3. User nam@techvn.com có trong Jira chưa?  │
+│     → Có rồi (hoặc tự tạo — xem JIT bên      │
+│       dưới)                                  │
+│                                              │
+│  → Cho Nam vào! Không hỏi password ✅        │
+└──────────────────────────────────────────────┘
+```
+
+> [!NOTE]
+> SAML Assertion chỉ dùng **một lần** và hết hạn sau vài phút. Sau khi Jira xác nhận xong, Jira tạo **session riêng** cho Nam (như cookie đăng nhập bình thường). Nếu Nam tắt trình duyệt và mở lại, quá trình SAML sẽ lặp lại — nhưng Nam vẫn không cần nhập password.
+
+---
+
+### Vậy Jira Có Tài Khoản Riêng Không?
+
+**Có!** Jira vẫn có database user riêng. Identity Center không "thay thế" Jira — nó chỉ **đảm nhận phần xác thực (authentication)**. Có 2 cách tạo tài khoản Jira:
+
+#### Cách 1: SCIM — Tự Động Hoàn Toàn (Khuyến nghị)
+
+```
+SCIM = System for Cross-domain Identity Management
+       (Giao thức sync user tự động)
+
+Admin thêm Nam vào Identity Center
+           │
+           │ Identity Center gọi Jira API
+           ▼
+  Jira tự tạo user nam@techvn.com ✓
+  (không cần Admin vào Jira làm gì)
+
+Admin disable Nam trong Identity Center
+           │
+           │ Identity Center gọi Jira API
+           ▼
+  Jira tự disable user nam@techvn.com ✓
+  (ngay lập tức, không bỏ sót)
+```
+
+#### Cách 2: JIT (Just-In-Time) Provisioning — Tạo Khi Cần
+
+```
+Lần ĐẦU TIÊN Nam click vào Jira:
+
+  Jira nhận SAML Assertion
+  → Tìm user nam@techvn.com trong DB... Không có!
+  → Tự tạo user mới từ thông tin trong Assertion:
+      email: nam@techvn.com
+      name: Nam Nguyen
+      group: developers
+  → Cho Nam vào ✓
+
+Lần SAU Nam vào Jira:
+  → Tìm user nam@techvn.com... Có rồi!
+  → Cho vào luôn ✓
+
+⚠️ Nhược điểm của JIT: Khi Nam nghỉ việc,
+   account Jira vẫn tồn tại (dù không login được
+   vì không qua được Identity Center).
+   → SCIM giải quyết vấn đề này tốt hơn.
+```
+
+---
+
 ## Kiến Trúc
 
 ### Luồng Xác Thực
@@ -361,9 +559,9 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
      │          │  │ • Active Dir   │  │ │
      │          │  └────────────────┘  │ │  ┌─────────────────────────────────┐
      │          └──────────────────────┘ │  │       Third-party Apps          │
-     │                                   │  │  ┌─────────┐ ┌─────────────────┐│
-     │                                   └──│  │Salesforce│ │ Microsoft 365  ││
-     │                                      │  └─────────┘ └─────────────────┘│
+     │                                   │  │  ┌──────────┐┌─────────────────┐│
+     │                                   └──│  │Salesforce││ Microsoft 365   ││
+     │                                      │  └──────────┘└─────────────────┘│
      │                                      │  ┌─────────┐ ┌─────────────────┐│
      └──────────────────────────────────────│  │  Slack  │ │     Zoom        ││
                                             │  └─────────┘ └─────────────────┘│
@@ -382,7 +580,7 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 │  │ Who can access? │   │ What can they   │   │ Which accounts/apps   │  │
 │  │                 │   │ do?             │   │ can they access?      │  │
 │  └─────────────────┘   └─────────────────┘   └───────────────────────┘  │
-│          │                     │                        │               │
+│          │                     │                       │                │
 │          └─────────────────────┼───────────────────────┘                │
 │                                ▼                                        │
 │                    ┌───────────────────────┐                            │
@@ -397,57 +595,100 @@ AWS IAM Identity Center là dịch vụ quản lý truy cập tập trung, cho p
 
 ## Identity Sources
 
-IAM Identity Center hỗ trợ 3 loại Identity Sources:
+> **Identity Source = "Tao lấy danh sách user từ đâu"**
+
+IAM Identity Center đóng vai trò **bảo vệ cổng công ty** — khi nhân viên đến đăng nhập, nó cần tra cứu "người này có phải nhân viên không?". **Identity Source chính là quyển danh sách nhân viên đó**, và có thể để ở 3 chỗ khác nhau tùy công ty bạn.
+
+> [!IMPORTANT]
+> Mỗi AWS Organization chỉ được có **1 Identity Source duy nhất** tại một thời điểm. Thay đổi sau khi đã setup có thể **mất toàn bộ assignments** — cần cân nhắc kỹ trước khi chọn!
 
 ### 1. Identity Center Directory (Built-in)
 
-```yaml
-Type: Native directory trong AWS
-Use Case: Tổ chức nhỏ, không có IdP sẵn
-Features:
-  - Tạo users/groups trực tiếp trong console
-  - Fully managed by AWS
-  - Free
+**Dùng khi:** Công ty chưa có hệ thống quản lý user nào, hoặc team nhỏ muốn bắt đầu nhanh.
+
+Admin tự tạo user/group trực tiếp trong AWS console, AWS lưu toàn bộ thông tin user trong Identity Center. Miễn phí, không cần cài đặt gì thêm.
+
+**Ví dụ thực tế:**
 ```
+Startup 5 người chưa có gì:
+  Admin vào AWS Console → Identity Center → Users → Create user
+  Nhập: tên, email, group "Developers"
+  → User nhận email để set password → đăng nhập được luôn
+```
+
+**Hạn chế:** Phải tạo và xóa user thủ công trong AWS — khi nhân viên nghỉ phải nhớ vào AWS để disable.
 
 ### 2. Microsoft Active Directory
 
-```yaml
-Type: On-premises hoặc AWS Managed Microsoft AD
-Connection: 
-  - AWS Managed Microsoft AD
-  - AD Connector (proxy to on-prem AD)
-Use Case: Enterprise đã có AD infrastructure
-Features:
-  - Sync users/groups từ AD
-  - Seamless với Windows environment
+**Dùng khi:** Công ty đã có hệ thống Windows Server + Active Directory từ trước (rất phổ biến ở enterprise).
+
+**Hai cách kết nối:**
+- **AWS Managed Microsoft AD**: AWS host AD trên cloud cho bạn
+- **AD Connector**: Proxy kết nối về AD on-premises, không sync dữ liệu lên AWS
+
+**Ví dụ thực tế:**
+```
+Công ty 500 người đã dùng Windows AD từ 10 năm nay:
+  Nhân viên login máy tính bằng: domain\hiep + password AD
+  → Cùng account đó login vào AWS Access Portal luôn
+  → Không cần tạo thêm account mới trong AWS
+  → IT disable trong AD → mất quyền AWS ngay lập tức
 ```
 
 ### 3. External Identity Provider (IdP)
 
-```yaml
-Type: Third-party IdP
-Protocols: SAML 2.0, SCIM
-Supported IdPs:
-  - Okta
-  - Microsoft Entra ID (Azure AD)
-  - Google Workspace
-  - OneLogin
-  - Ping Identity
-Features:
-  - Automatic provisioning với SCIM
-  - Federation authentication
+**Dùng khi:** Công ty đã dùng Okta, Azure AD, Google Workspace... để quản lý tất cả SaaS apps.
+
+**Luồng hoạt động:**
+```
+Nhân viên vào AWS Access Portal
+        |
+        | Identity Center redirect sang IdP
+        v
+Okta / Azure AD / Google Workspace
+  (nhân viên nhập credentials ở đây)
+        |
+        | IdP xác nhận qua SAML 2.0
+        v
+Identity Center cho vào portal
+```
+
+**User sync tự động qua SCIM:**
+```
+IT thêm nhân viên mới trong Okta
+        | SCIM tự động sync
+        v
+User xuất hiện trong Identity Center ngay (không cần tạo thủ công)
+
+IT disable nhân viên trong Okta
+        | SCIM tự động sync
+        v
+User bị disable trong Identity Center ngay lap tuc
+```
+
+**Các IdP được hỗ trợ:** Okta, Microsoft Entra ID (Azure AD), Google Workspace, OneLogin, Ping Identity
+
+**Ví dụ thực tế:**
+```
+Công ty tech 200 người đang dùng Okta cho Slack, Zoom, Gmail:
+  → Set External IdP = Okta
+  → Nhân viên dùng cùng 1 Okta account để login vào AWS
+  → IT chỉ quản lý user ở Okta, AWS tự động cập nhật
 ```
 
 ### So Sánh Identity Sources
 
-| Feature | Built-in | Active Directory | External IdP |
-|---------|----------|------------------|--------------|
-| **Cost** | Free | AD costs | IdP license |
-| **Setup Complexity** | Easy | Medium | Medium |
-| **User Management** | Manual | Sync from AD | Sync via SCIM |
-| **MFA** | Built-in | AD/IdP MFA | IdP MFA |
-| **Best For** | Small orgs | Windows shops | Cloud-first orgs |
+| | **Built-in** | **Active Directory** | **External IdP** |
+|---|---|---|---|
+| **Phù hợp với** | Startup, team nho | Cong ty dung Windows/AD | Cloud-first, da co Okta/Azure AD |
+| **Chi phi** | Mien phi | Chi phi AD (neu dung AWS Managed AD) | Phi license IdP |
+| **Cai dat** | Don gian | Trung binh | Trung binh |
+| **Quan ly user** | Thu cong trong AWS Console | Tu dong sync tu AD | Tu dong sync qua SCIM |
+| **MFA** | Built-in trong Identity Center | MFA cua AD hoac IdP | MFA cua IdP |
+| **Khi nhan vien nghi** | Xoa thu cong trong AWS | Disable trong AD → tu dong | Disable trong IdP → tu dong |
+
+> [!TIP]
+> Da so enterprise chon **External IdP (Okta/Azure AD)** vi da co san he thong IdP. Startup moi thuong bat dau bang **Built-in** roi migrate sau.
 
 ---
 
@@ -581,13 +822,13 @@ IAM Identity Center hoạt động tốt nhất với AWS Organizations:
 │                                                                     │
 │   Permission Set    +    User/Group    +    Account/OU              │
 │        │                     │                 │                    │
-│        ▼                     ▼                  ▼                   │
+│        ▼                     ▼                 ▼                    │
 │   ┌──────────┐         ┌──────────┐       ┌──────────┐              │
 │   │ Developer│    +    │ DevTeam  │  +    │  Dev     │              │
 │   │ Access   │         │ Group    │       │  Account │              │
 │   └──────────┘         └──────────┘       └──────────┘              │
 │                             │                                       │
-│                              ▼                                      │
+│                             ▼                                       │
 │              DevTeam members có Developer Access                    │
 │              trong Dev Account                                      │
 └─────────────────────────────────────────────────────────────────────┘
