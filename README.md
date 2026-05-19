@@ -167,6 +167,7 @@ Two modes:
 - [x] [AWS Compute Optimizer](aws-compute-optimizer.md) - ML-based Rightsizing Recommendations cho EC2, EBS, Lambda, ECS
 - [x] [AWS Config](aws-config.md) - Configuration Recording, Compliance Rules, Remediation, Multi-Account Aggregation
 - [x] [AWS Launch Wizard](aws-launch-wizard.md) - Guided Deployment of Enterprise Applications (SQL Server, SAP, Active Directory)
+- [x] [AWS License Manager](aws-license-manager.md) - BYOL License Governance, Hard/Soft Limit Enforcement, EC2 Launch Control, SNS Alerts
 
 ## Developer Tools
 
