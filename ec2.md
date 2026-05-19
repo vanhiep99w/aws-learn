@@ -132,6 +132,30 @@ Amazon EC2 cung cấp **7 mô hình pricing** chính để tối ưu chi phí th
 
 ---
 
+### EC2 Instance States & Billing
+
+Không phải mọi trạng thái của EC2 instance đều bị tính phí **compute/instance usage**. Theo AWS, instance usage chỉ bị tính khi instance ở trạng thái `running`, với một số ngoại lệ như Hibernate trong lúc `stopping`.
+
+| Instance state | Mô tả ngắn | EC2 instance usage billing |
+|----------------|------------|-----------------------------|
+| `pending` | Instance đang chuẩn bị chuyển sang `running` khi launch/start | ❌ Không tính |
+| `running` | Instance đang chạy và có thể sử dụng | ✅ Có tính |
+| `stopping` | Instance đang chuẩn bị stop | ❌ Không tính, **trừ khi Hibernate** |
+| `stopped` | Instance đã tắt, có thể start lại | ❌ Không tính compute |
+| `shutting-down` | Instance đang chuẩn bị terminate | ❌ Không tính |
+| `terminated` | Instance đã bị xóa vĩnh viễn, không start lại được | ❌ Không tính compute |
+
+**Lưu ý chi phí đi kèm:**
+
+- `stopped` không bị tính tiền EC2 compute, nhưng vẫn có thể bị tính tiền **EBS volumes**, **EBS snapshots**, **Elastic IP**, Load Balancer, NAT Gateway hoặc resource khác còn tồn tại.
+- Khi instance chuyển sang `running`, AWS tính phí theo thời gian chạy; Linux EC2 thường tính theo giây với mức tối thiểu 60 giây mỗi lần start.
+- Với **Hibernate**, AWS không tính tiền compute khi instance đã ở `stopped`, nhưng vẫn tính trong giai đoạn `stopping` và vẫn tính tiền EBS để lưu root volume/RAM data.
+- Với **Reserved Instances**, việc instance bị `terminated` không tự động hủy cam kết; RI vẫn tính phí đến hết term theo payment option.
+
+> **Nguồn**: [Amazon EC2 instance state changes - Billing by instance state](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html)
+
+---
+
 ### 1. On-Demand Instances
 
 **Mô hình cơ bản nhất** - trả tiền theo thời gian sử dụng, không cần cam kết trước.
@@ -1782,7 +1806,8 @@ Automatic recovery = Host AWS bị lỗi
 ```
 ⚠️ CHÚ Ý:
 ├── Hibernate có thể dùng cho Spot Instances nếu thỏa điều kiện hỗ trợ
-├── Khi hibernate, KHÔNG tính tiền EC2 (vẫn tính tiền EBS và EIP)
+├── Khi hibernate: đã stopped thì KHÔNG tính EC2 compute; trong lúc stopping vẫn có thể bị tính
+├── Vẫn tính tiền EBS/EIP và EBS root volume cần đủ chỗ để lưu RAM
 ├── EBS root volume PHẢI được encrypt (bắt buộc!)
 └── Hibernate > 60 ngày → AWS sẽ tự động stop instance
 ```
