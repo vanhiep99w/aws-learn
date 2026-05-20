@@ -223,29 +223,31 @@ AWS Storage Gateway có **4 loại chính**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          S3 File Gateway                                     │
+│                              S3 File Gateway                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│   On-Premises                                           AWS Cloud            │
+│   ON-PREMISES / EDGE                                  AWS CLOUD              │
 │                                                                              │
-│   ┌─────────────┐    NFS v3/v4.1    ┌──────────────┐    HTTPS                │
-│   │   Linux     │───────────────────│              │──────────┐              │
-│   │   Servers   │                   │              │          │              │
-│   └─────────────┘                   │     S3       │          ▼              │
-│                                     │     File     │    ┌────────────┐       │
-│   ┌─────────────┐    SMB            │   Gateway    │    │    S3      │       │
-│   │   Windows   │───────────────────│              │    │   Bucket   │       │
-│   │   Servers   │                   │  ┌────────┐  │    │            │       │
-│   └─────────────┘                   │  │ Cache  │  │    │  Objects   │       │
-│   │             │(local)            │              │    │            │       │
-│   │             └───────────────────┘              │    └────────────┘       │
-│                                     └──────────────┘          │              │
-│                                                               ▼              │
-│   Files nhìn thấy như:                              ┌───────────────────┐    │
-│   /share/folder/file.txt                            │  S3 Lifecycle     │    │
-│                                                     │  → Standard-IA    │    │
-│   Lưu trữ trên S3 như:                              │  → Glacier        │    │
-│   s3://bucket/folder/file.txt                       └───────────────────┘    │
+│   File clients                  Gateway appliance        Amazon S3            │
+│                                                                              │
+│   ┌─────────────┐  NFS v3/v4.1  ┌─────────────────┐  HTTPS/TLS  ┌──────────┐ │
+│   │ Linux apps  │──────────────►│                 │────────────►│ S3 bucket│ │
+│   └─────────────┘               │  S3 File        │  async      │          │ │
+│                                 │  Gateway        │  upload     │ objects  │ │
+│   ┌─────────────┐      SMB      │                 │             │          │ │
+│   │Windows apps │──────────────►│  ┌───────────┐  │◄────────────│          │ │
+│   └─────────────┘               │  │ Local     │  │ byte-range  └──────────┘ │
+│                                 │  │ cache     │  │ download         │       │
+│                                 │  │ hot data  │  │                  ▼       │
+│                                 │  └───────────┘  │        ┌────────────────┐│
+│                                 └─────────────────┘        │ S3 features    ││
+│                                         ▲                  │ Lifecycle      ││
+│                                         │                  │ Versioning     ││
+│          Clients thấy file share local  │                  │ Replication    ││
+│          /share/folder/file.txt         │                  └────────────────┘│
+│                                                                              │
+│          Mapping 1-1 trên S3:                                                │
+│          /share/folder/file.txt  ───────────────►  s3://bucket/folder/file.txt│
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
