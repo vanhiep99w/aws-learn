@@ -667,7 +667,7 @@ MySQL/PostgreSQL (Replication):
 | **Volume type** | Chỉ **io1** và **io2** |
 | **Số instances** | Tối đa **16** |
 | **AZ** | Tất cả instances phải **cùng AZ** |
-| **OS** | Chỉ **Linux** |
+| **OS** | **Linux**: hỗ trợ Multi-Attach với `io1` và `io2`; **Windows**: chỉ hỗ trợ Multi-Attach với `io2` |
 | **File system** | Cần **cluster-aware FS** (GFS2, OCFS2) |
 
 ### Cách bật Multi-Attach
