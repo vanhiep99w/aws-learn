@@ -157,6 +157,7 @@ Two modes:
 - [x] [Monitoring & Audit Overview](aws-monitoring-audit-overview.md) - Tổng quan CloudWatch, CloudTrail, Config, X-Ray, Best Practices (Diagram)
 - [x] [AWS Systems Manager (SSM)](aws-systems-manager.md) - Run Command, Session Manager, Patch Manager, Parameter Store, Automation
 - [x] [SSM Deep Dive](ssm.md) - SSM Agent, Session Manager, Run Command, Patch Manager chi tiết
+- [x] [SSM State Manager](aws-ssm-state-manager.md) - Associations, Desired State, Targeting, Scheduling, Automation Runbooks, Configuration Drift
 - [x] [AWS AppConfig](aws-appconfig.md) - Dynamic Configuration, Feature Flags, Gradual Deployment, Rollback
 - [x] [AWS OpsWorks](aws-opsworks.md) - Configuration Management, Chef/Puppet, Stacks, Layers
 - [x] [CloudWatch](cloudwatch.md) - Metrics, Alarms, Logs, Dashboards, Insights
