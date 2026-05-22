@@ -228,7 +228,7 @@ AWS Storage Gateway có **4 loại chính**:
 │                                                                              │
 │   ON-PREMISES / EDGE                                  AWS CLOUD              │
 │                                                                              │
-│   File clients                  Gateway appliance        Amazon S3            │
+│   File clients                  Gateway appliance        Amazon S3           │
 │                                                                              │
 │   ┌─────────────┐  NFS v3/v4.1  ┌─────────────────┐  HTTPS/TLS  ┌──────────┐ │
 │   │ Linux apps  │──────────────►│                 │────────────►│ S3 bucket│ │
@@ -247,7 +247,7 @@ AWS Storage Gateway có **4 loại chính**:
 │          /share/folder/file.txt         │                  └────────────────┘│
 │                                                                              │
 │          Mapping 1-1 trên S3:                                                │
-│          /share/folder/file.txt  ───────────────►  s3://bucket/folder/file.txt│
+│         /share/folder/file.txt  ───────────────►  s3://bucket/folder/file.txt│
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```

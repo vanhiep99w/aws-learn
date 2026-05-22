@@ -29,7 +29,7 @@
 │                        State Manager                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   VẤN ĐỀ: Configuration Drift                                              │
+│   VẤN ĐỀ: Configuration Drift                                               │
 │   ─────────────────────────────                                             │
 │   • Server A cài antivirus, Server B quên                                   │
 │   • Dev tắt firewall rule rồi quên bật lại                                  │
@@ -37,11 +37,11 @@
 │   • SSH config bị thay đổi thủ công                                         │
 │                                                                             │
 │   GIẢI PHÁP: State Manager Associations                                     │
-│   ──────────────────────────────────────                                     │
-│   • Định nghĩa trạng thái mong muốn (desired state)                        │
+│   ──────────────────────────────────────                                    │
+│   • Định nghĩa trạng thái mong muốn (desired state)                         │
 │   • Tự động apply lên tất cả target nodes                                   │
-│   • Lên lịch chạy định kỳ → phát hiện & fix drift                          │
-│   • Nodes mới tự động nhận cấu hình khi match target                       │
+│   • Lên lịch chạy định kỳ → phát hiện & fix drift                           │
+│   • Nodes mới tự động nhận cấu hình khi match target                        │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,19 +71,19 @@
 │   ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                  │
 │   │ SSM Document │    │   Targets    │    │   Schedule   │                  │
 │   │              │    │              │    │              │                  │
-│   │ "CÀI CÁI GÌ"│    │ "CÀI Ở ĐÂU" │    │ "CÀI KHI NÀO"│                  │
+│   │ "CÀI CÁI GÌ" │    │ "CÀI Ở ĐÂU"  │    │ "CÀI KHI NÀO"│                  │
 │   └──────┬───────┘    └──────┬───────┘    └──────┬───────┘                  │
 │          │                   │                   │                          │
 │          └───────────────────┼───────────────────┘                          │
 │                              │                                              │
 │                              ▼                                              │
-│                    ┌──────────────────┐                                      │
-│                    │  State Manager   │                                      │
-│                    │  thực thi trên   │                                      │
-│                    │  managed nodes   │                                      │
-│                    └──────────────────┘                                      │
+│                    ┌──────────────────┐                                     │
+│                    │  State Manager   │                                     │
+│                    │  thực thi trên   │                                     │
+│                    │  managed nodes   │                                     │
+│                    └──────────────────┘                                     │
 │                                                                             │
-│   Giới hạn: Mỗi managed node tối đa 20 associations                        │
+│   Giới hạn: Mỗi managed node tối đa 20 associations                         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -94,19 +94,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Workflow — 4 bước                                         │
+│                    Workflow — 4 bước                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  BƯỚC 1: Xác định Desired State                                            │
+│  BƯỚC 1: Xác định Desired State                                             │
 │  ────────────────────────────────                                           │
-│  "Tôi muốn tất cả EC2 phải cài CloudWatch Agent"                           │
+│  "Tôi muốn tất cả EC2 phải cài CloudWatch Agent"                            │
 │                                                                             │
 │                    ▼                                                        │
 │                                                                             │
-│  BƯỚC 2: Chọn SSM Document                                                 │
+│  BƯỚC 2: Chọn SSM Document                                                  │
 │  ────────────────────────────                                               │
 │  → Dùng document có sẵn: AWS-ConfigureAWSPackage                            │
-│  → Hoặc tạo custom document                                                │
+│  → Hoặc tạo custom document                                                 │
 │                                                                             │
 │                    ▼                                                        │
 │                                                                             │
@@ -114,16 +114,16 @@
 │  ──────────────────────────                                                 │
 │  → Chọn targets (tags, instance IDs, resource groups, all)                  │
 │  → Đặt schedule: rate(1 day)                                                │
-│  → Cấu hình parameters                                                     │
+│  → Cấu hình parameters                                                      │
 │                                                                             │
 │                    ▼                                                        │
 │                                                                             │
 │  BƯỚC 4: State Manager tự động enforce                                      │
-│  ──────────────────────────────────────                                      │
-│  → Chạy ngay khi tạo association (mặc định)                                │
+│  ──────────────────────────────────────                                     │
+│  → Chạy ngay khi tạo association (mặc định)                                 │
 │  → Chạy lại theo schedule                                                   │
-│  → Chạy khi có thay đổi (config, target, document)                         │
-│  → Nodes mới match target → tự động apply                                  │
+│  → Chạy khi có thay đổi (config, target, document)                          │
+│  → Nodes mới match target → tự động apply                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -184,7 +184,7 @@ State Manager hỗ trợ 3 loại documents:
 │  --targets Key=tag:Environment,Values=Production                            │
 │                                                                             │
 │  ✅ Nodes mới có tag match → tự động nhận association                       │
-│  ✅ Xóa tag → ngừng chạy association                                       │
+│  ✅ Xóa tag → ngừng chạy association                                        │
 │  ✅ Best practice cho Auto Scaling Groups                                   │
 │                                                                             │
 │  2. CHOOSE INSTANCES MANUALLY                                               │
@@ -195,7 +195,7 @@ State Manager hỗ trợ 3 loại documents:
 │  ────────────────────                                                       │
 │  --targets Key=resource-groups:Name,Values=MyWebServers                     │
 │                                                                             │
-│  ⚠️ Resource group tối đa 5 tag keys                                       │
+│  ⚠️ Resource group tối đa 5 tag keys                                        │
 │                                                                             │
 │  4. ALL MANAGED NODES                                                       │
 │  ──────────────────────                                                     │
@@ -245,24 +245,24 @@ Kết quả:  Chạy vào Chủ nhật sau Thứ 5 tuần thứ 2
 │                        Rate Controls                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  CONCURRENCY — Bao nhiêu nodes chạy đồng thời?                             │
+│  CONCURRENCY — Bao nhiêu nodes chạy đồng thời?                              │
 │  ──────────────────────────────────────────────                             │
-│  • Absolute: "Tối đa 20 nodes cùng lúc"                                    │
-│  • Percentage: "Tối đa 10% fleet cùng lúc"                                 │
-│  • Mặc định (nếu không set): 50 nodes                                      │
+│  • Absolute: "Tối đa 20 nodes cùng lúc"                                     │
+│  • Percentage: "Tối đa 10% fleet cùng lúc"                                  │
+│  • Mặc định (nếu không set): 50 nodes                                       │
 │                                                                             │
-│  ⚠️ Nodes mới match target khi đang chạy:                                  │
-│     → Nếu chưa vượt concurrency → chạy luôn                                │
-│     → Nếu đã vượt → chờ interval tiếp theo                                 │
+│  ⚠️ Nodes mới match target khi đang chạy:                                   │
+│     → Nếu chưa vượt concurrency → chạy luôn                                 │
+│     → Nếu đã vượt → chờ interval tiếp theo                                  │
 │                                                                             │
-│  ERROR THRESHOLD — Bao nhiêu lỗi thì dừng?                                 │
+│  ERROR THRESHOLD — Bao nhiêu lỗi thì dừng?                                  │
 │  ────────────────────────────────────────────                               │
-│  • Absolute: "Dừng sau 10 lỗi"                                             │
-│  • Percentage: "Dừng sau 10% nodes lỗi"                                    │
-│  • Mặc định (nếu không set): 100% (không giới hạn)                         │
+│  • Absolute: "Dừng sau 10 lỗi"                                              │
+│  • Percentage: "Dừng sau 10% nodes lỗi"                                     │
+│  • Mặc định (nếu không set): 100% (không giới hạn)                          │
 │                                                                             │
-│  💡 Muốn đảm bảo không vượt error threshold:                               │
-│     → Set Concurrency = 1 (chạy từng node một)                             │
+│  💡 Muốn đảm bảo không vượt error threshold:                                │
+│     → Set Concurrency = 1 (chạy từng node một)                              │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -289,7 +289,7 @@ State Manager không chỉ chạy commands trên nodes, mà còn **schedule Auto
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  Command/Policy Documents          Automation Runbooks                      │
-│  ────────────────────────          ─────────────────────                     │
+│  ────────────────────────          ─────────────────────                    │
 │  Target: Managed Nodes             Target: ANY AWS Resources                │
 │  Scope: Chạy scripts/configs       Scope: Multi-step workflows              │
 │                                                                             │
@@ -466,8 +466,8 @@ Schedule:    cron(0 7 ? * MON-FRI *)
 │                   State Manager — Key Takeaways                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  🎯 WHAT:   Tool trong SSM để duy trì desired state trên nodes/resources   │
-│  💰 COST:   FREE (Automation steps có thể tính phí riêng)                  │
+│  🎯 WHAT:   Tool trong SSM để duy trì desired state trên nodes/resources    │
+│  💰 COST:   FREE (Automation steps có thể tính phí riêng)                   │
 │  🔑 CORE:   Association = Document + Targets + Schedule + Rate Controls     │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
@@ -476,12 +476,12 @@ Schedule:    cron(0 7 ? * MON-FRI *)
 │  │  ✅ Bootstrap instances khi launch (cài software, join domain)      │    │
 │  │  ✅ Enforce security configs liên tục (SSH, firewall, antivirus)    │    │
 │  │  ✅ Tự động update agents (SSM Agent, CloudWatch Agent)             │    │
-│  │  ✅ Chống configuration drift ở quy mô lớn                         │    │
-│  │  ✅ Schedule Automation runbooks (stop/start EC2, snapshots)         │    │
+│  │  ✅ Chống configuration drift ở quy mô lớn                          │    │
+│  │  ✅ Schedule Automation runbooks (stop/start EC2, snapshots)        │    │
 │  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                  Nhớ nhanh cho exam                                  │    │
+│  │                  Nhớ nhanh cho exam                                 │    │
 │  │                                                                     │    │
 │  │  • "Desired state" / "Configuration drift" → State Manager          │    │
 │  │  • "Bootstrap EC2 at launch" → State Manager + Tags                 │    │
