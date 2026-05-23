@@ -5,7 +5,7 @@
 
 - [Tổng quan](#tổng-quan)
 - [EKS vs Tự cài Kubernetes](#eks-vs-tự-cài-kubernetes)
-- [️ Kiến trúc EKS](#kiến-trúc-eks)
+- [️Kiến trúc EKS](#kiến-trúc-eks)
 - [Kubernetes Core Concepts](#kubernetes-core-concepts)
 - [EKS Node Types](#eks-node-types)
 - [EKS Integrations với AWS](#eks-integrations-với-aws)

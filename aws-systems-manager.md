@@ -86,10 +86,10 @@
 │   ┌─────────────────────┐                                                     │
 │   │   AWS SSM Service   │  ← "Trung tâm điều khiển" ở cloud                   │
 │   │   (trên cloud)      │                                                     │
-│   └──────────▲──────────┘                        p                            │
-│               │                                                               │
+│   └──────────▲──────────┘                                                     │
+│              │                                                                │
 │              │  WebSocket (Agent GỌI RA, giữ connection)                      │
-│               │                                                               │
+│              │                                                                │
 │   ┌──────────┴──────────┐                                                     │
 │   │   SSM Agent         │  ← Phần mềm TRONG EC2                               │
 │   │   (trong EC2)       │     Gọi ra SSM Service, nhận lệnh, thực hiện        │
