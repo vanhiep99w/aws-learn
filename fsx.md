@@ -93,21 +93,105 @@ FSx cung cấp **4 loại file system** khác nhau, mỗi loại tối ưu cho c
 
 ## 2. FSx for NetApp ONTAP
 
-### Đặc điểm
-- **Enterprise-grade NAS** với NetApp ONTAP software
-- Latency < 1 ms, throughput 72-80 GB/s
-- Kích thước: **Virtually unlimited (10s of PBs)**
-- Hỗ trợ **SMB, NFS, iSCSI** (shared block storage)
-- **Multi-protocol access**: Windows, Linux, macOS
+### Hiểu đơn giản
 
-### Key Features
-- **Snapshots & Cloning**: Instant, space-efficient
-- **Data Tiering**: Tự động move cold data sang capacity pool (cost savings)
-- **Data Deduplication & Compression**
-- **SnapMirror**: Cross-region replication
-- **FlexCache**: On-premises caching, compute burst
+**FSx for NetApp ONTAP = một hệ thống NetApp ONTAP được AWS vận hành giúp bạn**. Nếu trước đây doanh nghiệp có một cụm NetApp NAS on-premises để chia sẻ file cho Windows/Linux/macOS, chạy NFS/SMB, tạo snapshot, clone, replication... thì FSx ONTAP mang gần như cùng mô hình đó lên AWS dưới dạng managed service.
 
-### Hybrid Cloud
+Điểm dễ nhầm: đây **không chỉ là một file share đơn giản**. Nó là một nền tảng storage enterprise có nhiều lớp tài nguyên:
+
+```
+FSx for ONTAP File System
+│
+├── HA pair(s): cặp file server active/standby do AWS quản lý
+│
+├── Storage Virtual Machine (SVM)
+│   ├── Endpoint NFS / SMB / iSCSI / Management
+│   ├── Có thể join Active Directory
+│   └── Giống một "file server ảo" độc lập
+│
+└── Volumes
+    ├── Chứa dữ liệu thực tế
+    ├── Mount bằng NFS/SMB hoặc expose block bằng iSCSI/NVMe-over-TCP
+    ├── Thin-provisioned: chỉ tiêu thụ dung lượng thật đã ghi
+    └── Có snapshot, clone, tiering policy riêng
+```
+
+Nói cách khác:
+
+- **File system**: giống một cụm ONTAP/NetApp cluster.
+- **SVM**: giống một file server/NAS ảo bên trong cluster, có DNS/IP endpoint riêng.
+- **Volume**: nơi chứa dataset/app/user share cụ thể, ví dụ `/finance`, `/home`, `/app-data`.
+- **Client**: EC2, ECS, EKS, WorkSpaces, on-premises... mount volume qua NFS/SMB hoặc dùng block protocol.
+
+### Đặc điểm chính
+
+- **Enterprise-grade NAS/SAN** chạy NetApp ONTAP software, nhưng AWS quản lý phần hạ tầng, phần cứng, thay thế node, failover, backup integration.
+- **Latency sub-millisecond** cho dữ liệu nằm trên SSD tier; throughput có thể scale rất cao tùy generation/số HA pair.
+- Hỗ trợ nhiều protocol: **NFS**, **SMB**, **iSCSI**, và tài liệu AWS hiện cũng nêu hỗ trợ **NVMe-over-TCP** cho block access.
+- **Multi-protocol access**: Windows, Linux, macOS có thể truy cập cùng hệ thống, nhưng cần cấu hình identity/permission đúng nếu cùng dataset được truy cập bằng cả SMB và NFS.
+- Dung lượng logic có thể rất lớn vì volume thin-provisioned và capacity pool có thể scale đến petabyte cho dữ liệu ít truy cập.
+
+### Vì sao ONTAP khác EFS hoặc FSx Windows?
+
+| Nhu cầu | FSx ONTAP mạnh ở điểm nào? |
+|---------|-----------------------------|
+| Có cả Linux và Windows | Một hệ thống có thể phục vụ **NFS + SMB** |
+| Đang dùng NetApp on-premises | Dễ migrate/replicate bằng **SnapMirror** |
+| Cần snapshot/clone nhanh | **Snapshot** và **FlexClone** gần như tức thì, tiết kiệm dung lượng |
+| Muốn giảm chi phí data lạnh | **Data tiering** tự chuyển block ít dùng sang capacity pool |
+| Cần storage block chia sẻ | Hỗ trợ **iSCSI/NVMe-over-TCP** bên cạnh file protocols |
+| Cần hybrid cloud | Kết nối on-prem NetApp ↔ AWS bằng SnapMirror/FlexCache |
+
+### Storage tiers: SSD và capacity pool
+
+FSx ONTAP có 2 tầng lưu trữ chính:
+
+1. **Primary SSD storage**
+   - Dành cho dữ liệu nóng/active dataset.
+   - Hiệu năng cao, latency thấp.
+   - Bạn provision dung lượng SSD và throughput capacity cho file system.
+
+2. **Capacity pool storage**
+   - Tầng lưu trữ elastic, cost-optimized cho dữ liệu lạnh/infrequently accessed.
+   - Có thể scale đến petabytes.
+   - Dữ liệu được tự động chuyển giữa SSD và capacity pool dựa trên **tiering policy** của từng volume.
+
+Ví dụ thực tế:
+
+```
+Ứng dụng ghi/đọc file thường xuyên ──► SSD tier
+File cũ ít truy cập sau N ngày ──────► Capacity pool
+Khi file cũ được đọc lại ────────────► ONTAP phục vụ lại cho client, có thể đưa data nóng về SSD tùy policy
+```
+
+Điểm quan trọng: với app/client, đường dẫn mount vẫn không đổi. Việc block nào nằm ở SSD hay capacity pool là do ONTAP quản lý bên dưới.
+
+### Snapshot, clone và vì sao tiết kiệm dung lượng
+
+- **Snapshot**: ảnh chụp point-in-time của volume. Ban đầu snapshot gần như không copy toàn bộ dữ liệu; nó giữ metadata/tham chiếu đến block hiện có. Khi dữ liệu thay đổi, chỉ phần block thay đổi mới phát sinh thêm dung lượng.
+- **FlexClone**: tạo bản clone ghi được từ snapshot. Clone xuất hiện rất nhanh và chỉ tiêu thụ thêm dung lượng cho các thay đổi mới.
+
+Use case dễ hiểu:
+
+```
+Production volume: /app-data
+        │
+        ├── Snapshot lúc 00:00
+        │
+        └── FlexClone từ snapshot ──► /app-data-test
+                                  └── Dev/test chạy trên clone mà không copy cả TB dữ liệu
+```
+
+Vì vậy FSx ONTAP rất hợp cho dev/test, database/file dataset lớn, analytics sandbox, hoặc các môi trường cần tạo nhiều bản sao tạm thời.
+
+### SnapMirror và hybrid cloud
+
+**SnapMirror** là tính năng replication của NetApp. Với FSx ONTAP, bạn có thể replicate dữ liệu giữa:
+
+- NetApp ONTAP on-premises ↔ FSx ONTAP trên AWS
+- FSx ONTAP ở Region này ↔ FSx ONTAP ở Region khác
+- Volume production ↔ volume data protection/read-only
+
 ```
 ┌─────────────────┐        SnapMirror        ┌─────────────────┐
 │   On-premises   │◄────────────────────────►│  FSx ONTAP      │
@@ -119,9 +203,48 @@ FSx cung cấp **4 loại file system** khác nhau, mỗi loại tối ưu cho c
    Local Cache                              Multi-AZ/Single-AZ
 ```
 
-### Availability
-- **Multi-AZ**: 99.99% SLA
-- **Single-AZ**: 99.9% SLA
+Use case:
+
+- Migrate dữ liệu NetApp on-prem sang AWS.
+- Disaster Recovery: replicate sang AWS, khi on-prem lỗi có thể promote dữ liệu ở AWS.
+- Hybrid workload: dữ liệu chính ở một nơi, cache/replica ở nơi khác để compute gần dữ liệu hơn.
+
+### Multi-AZ, Single-AZ và failover
+
+FSx ONTAP dùng mô hình **HA pair**: một file server active và một file server standby.
+
+- **Single-AZ**: active/standby nằm trong cùng một AZ nhưng khác fault domain. Rẻ hơn, phù hợp dev/test, secondary copy, hoặc workload đã có replication ở tầng khác.
+- **Multi-AZ**: active và standby nằm ở 2 AZ khác nhau, dữ liệu được replicate đồng bộ giữa AZ. Phù hợp production/business-critical cần chịu được lỗi AZ.
+
+Khi node active lỗi hoặc AWS bảo trì:
+
+1. FSx tự failover sang standby.
+2. Endpoint IP/DNS client dùng để truy cập NFS/SMB vẫn giữ nguyên.
+3. Linux/Windows/macOS client thường tiếp tục I/O sau một khoảng gián đoạn ngắn, không cần admin đổi mount target thủ công.
+
+SLA tham khảo:
+
+- **Multi-AZ**: 99.99%
+- **Single-AZ HA**: 99.9%
+
+### Khi nào nên chọn FSx ONTAP?
+
+Chọn FSx ONTAP khi bạn có một hoặc nhiều nhu cầu sau:
+
+- Doanh nghiệp đã quen/dùng **NetApp ONTAP** và muốn migrate lên AWS ít thay đổi vận hành.
+- Cần **NFS + SMB** trong cùng một nền tảng storage.
+- Cần tính năng enterprise như snapshot, clone, deduplication, compression, compaction, SnapMirror.
+- Muốn tiết kiệm chi phí bằng cách tự động tier dữ liệu lạnh xuống capacity pool.
+- Cần kết nối hybrid cloud giữa on-premises và AWS.
+- Cần storage cho VMware Cloud on AWS, EKS/ECS/EC2, WorkSpaces hoặc workload enterprise file share phức tạp.
+
+Không nhất thiết chọn FSx ONTAP nếu bạn chỉ cần một NFS share Linux đơn giản; khi đó **EFS** thường dễ vận hành hơn. Nếu bạn chỉ cần SMB native cho Windows app và tích hợp AD đơn giản, **FSx for Windows File Server** có thể phù hợp hơn.
+
+### Nguồn AWS chính thức
+
+- [How Amazon FSx for NetApp ONTAP works](https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/how-it-works-fsx-ontap.html)
+- [Availability, durability, and deployment options](https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/high-availability-AZ.html)
+- [FSx for NetApp ONTAP Features](https://aws.amazon.com/fsx/netapp-ontap/features/)
 
 ---
 
