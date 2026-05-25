@@ -250,28 +250,176 @@ Không nhất thiết chọn FSx ONTAP nếu bạn chỉ cần một NFS share L
 
 ## 3. FSx for OpenZFS
 
-### Đặc điểm
-- Fully managed **OpenZFS file system**
-- **Latency < 0.5 ms** (thấp nhất trong các FSx)
-- Throughput 10-21 GB/s, IOPS 1-2 million
-- Kích thước tối đa: **512 TiB**
-- Hỗ trợ NFS 3, 4.0, 4.1, 4.2
+### Hiểu đơn giản
 
-### Key Features
-- **Instant Cloning**: Space-efficient clones
-- **Snapshots**: Point-in-time recovery
-- **Data Compression**: LZ4, ZSTD
-- **Cross-region backups**
+**FSx for OpenZFS = OpenZFS file system được AWS quản lý sẵn cho bạn**. Nếu FSx ONTAP phù hợp với môi trường NetApp enterprise, thì FSx OpenZFS phù hợp hơn với các workload Linux/Unix quen dùng **ZFS hoặc NFS file server** và cần hiệu năng rất thấp latency.
 
-### Use Cases
-- Migrate ZFS-based workloads sang AWS
-- Linux application development/testing
-- Media processing pipelines
-- CI/CD environments (clone for testing)
+OpenZFS bản chất là file system nổi tiếng với các khả năng như snapshot, clone, compression, quota, data integrity. FSx for OpenZFS lấy các khả năng đó và đóng gói thành managed service: bạn không cần tự dựng server ZFS, tự thay disk, tự cấu hình failover, tự backup thủ công.
 
-### Availability
-- **Multi-AZ**: 99.99% SLA
-- **Single-AZ**: 99.5% SLA
+Mô hình tài nguyên có thể hình dung như sau:
+
+```
+FSx for OpenZFS File System
+│
+├── File server / HA file servers do AWS quản lý
+│
+├── Root volume
+│   └── Volume mặc định khi tạo file system
+│
+├── Child volumes
+│   ├── /app-data
+│   ├── /dev-test
+│   └── /analytics
+│
+└── NFS endpoint
+    └── Linux / macOS / Windows NFS client mount vào để đọc ghi file
+```
+
+Nói ngắn gọn:
+
+- **File system**: hệ thống OpenZFS managed bởi AWS.
+- **Volume**: container logic chứa dữ liệu, có mount path, quota, compression, snapshot riêng.
+- **Snapshot**: ảnh point-in-time của volume.
+- **Clone**: volume ghi được tạo gần như tức thì từ snapshot.
+- **Client**: EC2, ECS, EKS, on-premises... truy cập chủ yếu qua **NFS**.
+
+### Đặc điểm chính
+
+- Fully managed **OpenZFS file system**.
+- Truy cập qua **NFS** từ Linux, Windows, macOS; rất hợp với workload Linux/NFS.
+- AWS nêu FSx OpenZFS được thiết kế đạt **latency vài trăm microseconds/sub-millisecond**, hơn 1 triệu IOPS cho dữ liệu cached, và throughput tối đa khoảng **21 GB/s** tùy cấu hình.
+- Có thể scale riêng các thành phần: storage capacity, throughput capacity, SSD IOPS.
+- Hỗ trợ nhiều tính năng ZFS quen thuộc: **snapshot**, **clone**, **compression**, **thin provisioning**, **multi-volume**, **user/group quota**.
+- Có thể truy cập dữ liệu từ AWS compute/container như EC2, ECS, EKS, VMware Cloud on AWS, WorkSpaces, AppStream 2.0; cũng có thể truy cập từ on-prem qua VPN/Direct Connect nếu network cho phép.
+
+### Vì sao OpenZFS khác ONTAP, EFS và FSx Windows?
+
+| Nhu cầu | OpenZFS phù hợp vì |
+|---------|--------------------|
+| Linux/NFS performance cao | NFS + latency rất thấp + throughput/IOPS cao |
+| Đang dùng ZFS on-prem | Dễ migrate tư duy vận hành: volume, snapshot, clone, compression |
+| Dev/test cần copy dataset nhanh | Clone volume gần như tức thì từ snapshot |
+| Cần nhiều volume trong một file system | Mỗi app/team có volume, quota, compression riêng |
+| Cần POSIX permission | Hợp với Linux/Unix style permission |
+| Không cần SMB/AD native | Đơn giản hơn ONTAP/Windows nếu workload chủ yếu là NFS |
+
+Không nên nhầm OpenZFS với EFS:
+
+- **EFS**: NFS managed đơn giản, elastic tự động, ít phải nghĩ về dung lượng/performance.
+- **FSx OpenZFS**: NFS hiệu năng cao hơn và nhiều tính năng ZFS hơn, nhưng bạn phải quan tâm hơn đến capacity/throughput/IOPS, volume, snapshot, clone.
+
+### Volume, thin provisioning và quota
+
+Trong FSx OpenZFS, bạn có thể tạo nhiều **volume** trong cùng một file system. Mỗi volume giống một dataset riêng:
+
+```
+File system: fs-abc
+│
+├── Volume: /prod-app       quota 20 TiB, compression LZ4
+├── Volume: /analytics      quota 50 TiB, compression ZSTD
+└── Volume: /dev-clone      clone từ snapshot production
+```
+
+Các volume có thể dùng **thin provisioning**: bạn đặt logical size/quota lớn, nhưng hệ thống chỉ tiêu thụ dung lượng vật lý theo dữ liệu thực sự ghi vào. Điều này giúp chia không gian linh hoạt cho nhiều team/app mà không phải copy hoặc cấp phát cứng toàn bộ ngay từ đầu.
+
+Quota hữu ích khi bạn muốn:
+
+- Giới hạn một team/app không dùng quá nhiều dung lượng.
+- Tách dữ liệu production, dev/test, analytics.
+- Áp compression khác nhau cho từng volume tùy kiểu dữ liệu.
+
+### Snapshot: backup nhanh ở cấp volume
+
+**Snapshot** là ảnh chụp read-only của một volume tại một thời điểm. Snapshot trong OpenZFS rất nhẹ vì nó không copy toàn bộ dữ liệu ngay lập tức; nó chỉ lưu phần dữ liệu thay đổi so với snapshot trước đó.
+
+Ví dụ:
+
+```
+10:00  Volume /app-data có 5 TiB dữ liệu
+10:01  Tạo snapshot snap-10h
+10:30  App sửa 20 GiB dữ liệu
+       Snapshot chỉ cần giữ lại phần block cũ bị thay đổi
+```
+
+Snapshot giúp:
+
+- Khôi phục file/folder bị xóa nhầm.
+- So sánh version cũ/mới của dữ liệu.
+- Tạo clone cho dev/test.
+- Restore volume về trạng thái trước đó.
+
+Theo tài liệu AWS, snapshot nằm trong thư mục ẩn **`.zfs/snapshot`** ở root của volume. Người dùng có thể tự copy file cũ từ snapshot về vị trí mong muốn nếu export NFS được cấu hình phù hợp.
+
+### Clone vs Full-copy volume
+
+Từ một snapshot, FSx OpenZFS có thể tạo volume mới theo 2 cách:
+
+| Cách tạo | Đặc điểm | Khi dùng |
+|----------|----------|----------|
+| **Clone volume** | Tạo gần như tức thì, ban đầu gần như không tốn thêm dung lượng; chỉ tốn thêm khi clone/source thay đổi | Dev/test, CI/CD, thử nghiệm schema/app trên dataset lớn |
+| **Full-copy volume** | Copy toàn bộ dữ liệu để tạo volume độc lập; lâu hơn và tốn dung lượng hơn | Khi cần bản copy độc lập, không phụ thuộc snapshot gốc |
+
+Ví dụ clone cho môi trường test:
+
+```
+Production volume: /prod-db-files
+        │
+        ├── Snapshot: before-release
+        │
+        └── Clone volume: /test-release
+                 └── QA chạy test trên dữ liệu gần giống production
+                     mà không cần copy nhiều TB dữ liệu
+```
+
+Lưu ý quan trọng: clone volume còn phụ thuộc vào snapshot nguồn. Nếu clone vẫn tồn tại, snapshot nguồn có thể chưa xóa được cho đến khi xóa clone hoặc tạo full-copy độc lập.
+
+### Compression: LZ4 và ZSTD
+
+FSx OpenZFS hỗ trợ compression như **LZ4** và **ZSTD**.
+
+- **LZ4**: thường rất nhanh, ít ảnh hưởng CPU, hợp workload cần latency/performance.
+- **ZSTD**: thường nén tốt hơn, có thể tiết kiệm dung lượng hơn, phù hợp dữ liệu compressible.
+
+Compression giúp:
+
+- Giảm dung lượng SSD tiêu thụ.
+- Giảm dung lượng backup.
+- Có thể tăng effective throughput nếu dữ liệu nén tốt vì hệ thống đọc/ghi ít byte vật lý hơn.
+
+### Deployment types và availability
+
+FSx OpenZFS có các lựa chọn deployment khác nhau:
+
+| Deployment | Mô tả | Phù hợp |
+|------------|------|---------|
+| **Multi-AZ (HA)** | Có cặp file server ở 2 AZ, dữ liệu replicate đồng bộ giữa AZ, tự failover thường trong <60 giây | Production/business-critical, database/workload cần HA cao |
+| **Single-AZ (HA)** | Có primary/standby file server trong cùng một AZ, tự failover thường trong <60 giây | Workload cần HA nhưng không cần chống lỗi cả AZ, ví dụ analytics/EDA |
+| **Single-AZ (non-HA)** | Một file server trong một AZ; khi failure/maintenance có thể downtime khoảng 30 phút | Dev/test hoặc workload chịu được gián đoạn |
+
+SLA tham khảo:
+
+- **Multi-AZ**: 99.99%
+- **Single-AZ HA**: 99.9%
+- **Single-AZ non-HA**: 99.5%
+
+### Khi nào nên chọn FSx OpenZFS?
+
+Chọn FSx OpenZFS khi bạn có một hoặc nhiều nhu cầu sau:
+
+- Cần **NFS shared storage hiệu năng cao** cho Linux/app/container.
+- Đang chạy ZFS hoặc NFS file server on-prem và muốn migrate lên AWS.
+- Cần snapshot/clone nhanh cho dev/test, CI/CD, database testing, media pipeline.
+- Cần latency rất thấp, IOPS cao, throughput cao hơn nhu cầu NFS thông thường.
+- Muốn dùng compression, quota, multi-volume theo kiểu ZFS.
+- Workload như analytics, EDA, genomics, media processing, build farm, hoặc application data cần file semantics.
+
+Không nhất thiết chọn FSx OpenZFS nếu bạn chỉ cần NFS đơn giản và muốn storage tự động co giãn ít phải quản trị; lúc đó **EFS** có thể đơn giản hơn. Nếu cần SMB/Windows/Active Directory native, cân nhắc **FSx for Windows File Server** hoặc **FSx for NetApp ONTAP**.
+
+### Nguồn AWS chính thức
+
+- [Amazon FSx for OpenZFS Documentation overview](https://aws.amazon.com/documentation-overview/fsx-openzfs/)
+- [Protecting your data with snapshots](https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/snapshots-openzfs.html)
+- [Availability and durability for Amazon FSx for OpenZFS](https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/availability-durability.html)
 
 ---
 
@@ -357,7 +505,7 @@ Không nhất thiết chọn FSx ONTAP nếu bạn chỉ cần một NFS share L
 | File System | Multi-AZ | Single-AZ |
 |-------------|----------|-----------|
 | NetApp ONTAP | 99.99% | 99.9% |
-| OpenZFS | 99.99% | 99.5% |
+| OpenZFS | 99.99% | 99.9% (HA) / 99.5% (non-HA) |
 | Windows | 99.99% | 99.5% |
 | Lustre | N/A | 99.5% |
 
