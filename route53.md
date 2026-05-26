@@ -661,7 +661,7 @@ _(Ví dụ danh bạ điện thoại)_
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Client query: example.com                                      │
-│      │                                                          │
+│       │                                                         │
 │       ▼                                                         │
 │  Route 53 trả về: "example.com CNAME myapp.elb.amazonaws.com"   │
 │       │                    ↑                                    │
@@ -677,7 +677,7 @@ _(Ví dụ danh bạ điện thoại)_
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Client query: example.com (type A)                             │
-│      │                                                          │
+│       │                                                         │
 │       ▼                                                         │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │  Route 53 NỘI BỘ (client KHÔNG thấy):                    │   │
@@ -685,7 +685,7 @@ _(Ví dụ danh bạ điện thoại)_
 │  │  2. Tự động query IP của ELB: 54.231.12.45               │   │
 │  │  3. Trả về cho client như là A RECORD!                   │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│      │                                                          │
+│       │                                                         │
 │       ▼                                                         │
 │  Client nhận: "example.com A 54.231.12.45"                      │
 │                            ↑                                    │
