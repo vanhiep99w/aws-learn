@@ -56,7 +56,7 @@ export async function onRequest({ request, env }) {
       });
     }
 
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 200);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 500);
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const sort = url.searchParams.get('sort');
     const listMode = url.searchParams.get('mode') === 'list';
@@ -82,14 +82,21 @@ export async function onRequest({ request, env }) {
     const questionIds = questionsResult.results.map(({ id }) => id);
     let labels = [];
     if (includeLabels && questionIds.length > 0) {
-      const placeholders = questionIds.map(() => '?').join(',');
-      const labelsResult = await env.DB.prepare(
-        `SELECT question_id AS issue_id, label
-         FROM question_labels
-         WHERE question_id IN (${placeholders})
-         ORDER BY question_id ASC, label ASC`
-      ).bind(...questionIds).all();
-      labels = labelsResult.results;
+      // D1/SQLite has a practical bound on variables per statement. Filter mode can
+      // request hundreds of questions, so fetch labels in small batches instead of
+      // building one large IN (...) query that can fail with Cloudflare error 1101.
+      const LABEL_BATCH_SIZE = 90;
+      for (let i = 0; i < questionIds.length; i += LABEL_BATCH_SIZE) {
+        const batch = questionIds.slice(i, i + LABEL_BATCH_SIZE);
+        const placeholders = batch.map(() => '?').join(',');
+        const labelsResult = await env.DB.prepare(
+          `SELECT question_id AS issue_id, label
+           FROM question_labels
+           WHERE question_id IN (${placeholders})
+           ORDER BY question_id ASC, label ASC`
+        ).bind(...batch).all();
+        labels.push(...labelsResult.results);
+      }
     }
 
     let total;
