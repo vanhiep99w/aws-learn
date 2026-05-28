@@ -98,6 +98,7 @@ Two modes:
 ## Analytics
 
 - [x] [Amazon Athena](amazon-athena.md) - Serverless SQL Query Service, Query S3 Data, Presto/Trino Engine, Partitioning
+- [x] [Amazon Data Firehose](amazon-data-firehose.md) - Fully managed streaming ETL/delivery service, S3/Redshift/OpenSearch/Splunk destinations, Lambda transform, format conversion, dynamic partitioning
 - [x] [Amazon QuickSight](amazon-quicksight.md) - BI Visualization, SPICE Engine, Dashboards, ML Insights, Generative BI
 
 ## Networking
