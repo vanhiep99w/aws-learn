@@ -1,0 +1,2175 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<base href="file:///home/hieptran/Desktop/aws-learn/" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Markdown Preview</title>
+<style>
+:root {
+  color-scheme: dark;
+  --preview-font-size: 15px;
+  --bg: #0b1020;
+  --card: #121a2f;
+  --panel-2: #22304f;
+  --border: #5d7cff;
+  --border-muted: #293956;
+  --border-subtle: #19243b;
+  --panel-border: #1d2841;
+  --text: #d3deee;
+  --muted: #8a98ad;
+  --accent: #3fbfba;
+  --warn: #d8bd66;
+  --error: #d76f6f;
+  --ok: #83cf73;
+  --code-bg: #22304f;
+  --link: #3fbfba;
+  --md-heading: #d8bd66;
+  --md-link: #3fbfba;
+  --md-link-url: #8a98ad;
+  --md-code: #55c49b;
+  --md-codeblock: #d3deee;
+  --md-codeblock-border: #2d3b59;
+  --md-quote: #8a98ad;
+  --md-quote-border: #9d86d9;
+  --md-hr: #385174;
+  --md-list-bullet: #3fbfba;
+  --syntax-keyword: #9d86d9;
+  --syntax-function: #4fa8d4;
+  --syntax-variable: #edf4ff;
+  --syntax-string: #83cf73;
+  --syntax-number: #d9965f;
+  --syntax-type: #3fbfba;
+  --syntax-comment: #61708b;
+  --syntax-operator: #c879d8;
+  --syntax-punctuation: #8a98ad;
+  --syntax-error: #d76f6f;
+  --annotation-bg: rgba(63, 191, 186, 0.25);
+  --annotation-border: rgba(63, 191, 186, 0.65);
+  --annotation-text: #d3deee;
+  --blockquote-bg: rgba(157, 134, 217, 0.16);
+  --inline-code-bg: rgba(138, 152, 173, 0.18);
+  --table-alt-bg: rgba(138, 152, 173, 0.14);
+  --md-table-border: #19243b;
+  --diff-add-bg: rgba(131, 207, 115, 0.14);
+  --diff-add-text: #83cf73;
+  --diff-del-bg: rgba(215, 111, 111, 0.14);
+  --diff-del-text: #d76f6f;
+  --diff-meta-text: #8a98ad;
+  --diff-header-bg: rgba(63, 191, 186, 0.10);
+  --diff-header-text: #3fbfba;
+  --diff-hunk-bg: rgba(63, 191, 186, 0.16);
+  --diff-hunk-text: #3fbfba;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  min-height: 100vh;
+  padding: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+#preview-root {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  overflow-wrap: anywhere;
+  line-height: 1.58;
+  font-size: var(--preview-font-size);
+}
+#preview-root h1, #preview-root h2, #preview-root h3, #preview-root h4, #preview-root h5, #preview-root h6 {
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--md-heading);
+}
+#preview-root h1 { font-size: 1.6em; border-bottom: 0; padding-bottom: 0; }
+#preview-root h2 { font-size: 1.25em; border-bottom: 0; padding-bottom: 0; }
+#preview-root p, #preview-root ul, #preview-root ol, #preview-root blockquote, #preview-root table {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+#preview-root li::marker { color: var(--md-list-bullet); }
+#preview-root a { color: var(--md-link); text-decoration: none; }
+#preview-root a:hover { text-decoration: underline; }
+#preview-root a.uri, #preview-root .uri { color: var(--md-link-url); }
+#preview-root blockquote {
+  margin-left: 0;
+  padding: 0.2em 1em;
+  border-left: 0.25em solid var(--md-quote-border);
+  border-radius: 0 8px 8px 0;
+  background: var(--blockquote-bg);
+  color: var(--md-quote);
+}
+#preview-root pre {
+  background: var(--panel-2);
+  border: 1px solid var(--md-codeblock-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow: auto;
+}
+#preview-root code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+  color: var(--md-code);
+}
+#preview-root pre code {
+  color: var(--text);
+}
+#preview-root :not(pre) > code {
+  background: var(--inline-code-bg);
+  border: 1px solid var(--md-codeblock-border);
+  border-radius: 6px;
+  padding: 0.12em 0.35em;
+}
+#preview-root .annotation-marker {
+  display: inline;
+  border-radius: 4px;
+  border: 1px solid var(--annotation-border);
+  background: var(--annotation-bg);
+  color: var(--annotation-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  padding: 0 0.28em;
+}
+#preview-root .annotation-marker mjx-container {
+  margin: 0;
+}
+#preview-root pre.sourceCode.diff code > .diff-line {
+  display: block;
+  margin: 0 -4px;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+#preview-root pre.sourceCode.diff code > .diff-add-line {
+  background: var(--diff-add-bg);
+  color: var(--diff-add-text);
+}
+#preview-root pre.sourceCode.diff code > .diff-del-line {
+  background: var(--diff-del-bg);
+  color: var(--diff-del-text);
+}
+#preview-root pre.sourceCode.diff code > .diff-meta-line {
+  color: var(--diff-meta-text);
+}
+#preview-root pre.sourceCode.diff code > .diff-header-line {
+  background: var(--diff-header-bg);
+  color: var(--diff-header-text);
+  font-weight: 600;
+}
+#preview-root pre.sourceCode.diff code > .diff-hunk-line {
+  background: var(--diff-hunk-bg);
+  color: var(--diff-hunk-text);
+}
+#preview-root pre.sourceCode.diff code > .diff-line .kw,
+#preview-root pre.sourceCode.diff code > .diff-line .dt,
+#preview-root pre.sourceCode.diff code > .diff-line .st,
+#preview-root pre.sourceCode.diff code > .diff-line .va {
+  color: inherit;
+  font-weight: inherit;
+}
+#preview-root code span.kw,
+#preview-root code span.cf,
+#preview-root code span.im {
+  color: var(--syntax-keyword);
+  font-weight: 600;
+}
+#preview-root code span.dt {
+  color: var(--syntax-type);
+  font-weight: 600;
+}
+#preview-root code span.fu,
+#preview-root code span.bu {
+  color: var(--syntax-function);
+}
+#preview-root code span.va,
+#preview-root code span.ot {
+  color: var(--syntax-variable);
+}
+#preview-root code span.st,
+#preview-root code span.ss,
+#preview-root code span.sc,
+#preview-root code span.ch {
+  color: var(--syntax-string);
+}
+#preview-root code span.dv,
+#preview-root code span.bn,
+#preview-root code span.fl {
+  color: var(--syntax-number);
+}
+#preview-root code span.co {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+#preview-root code span.op {
+  color: var(--syntax-operator);
+}
+#preview-root code span.pp,
+#preview-root code span.pu {
+  color: var(--syntax-punctuation);
+}
+#preview-root code span.er,
+#preview-root code span.al {
+  color: var(--syntax-error);
+  font-weight: 600;
+}
+#preview-root table {
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+}
+#preview-root th, #preview-root td {
+  border: 1px solid var(--md-table-border);
+  padding: 6px 12px;
+}
+#preview-root thead th {
+  background: var(--panel-2);
+}
+#preview-root tbody tr:nth-child(even) {
+  background: var(--table-alt-bg);
+}
+#preview-root hr {
+  border: 0;
+  border-top: 1px solid var(--md-hr);
+  margin: 1.25em 0;
+}
+#preview-root img { max-width: 100%; }
+#preview-root math[display="block"] {
+  display: block;
+  margin: 1em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#preview-root mjx-container[display="true"] {
+  display: block;
+  margin: 1em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#preview-root .mermaid-container {
+  text-align: center;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+#preview-root .mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+}
+</style>
+</head>
+<body>
+  <article id="preview-root"><h1 id="bastion-host-deep-dive-các-cách-thay-thế-truy-cập-ec2">Bastion Host Deep Dive &amp; Các cách thay thế truy cập EC2</h1>
+<h2 id="mục-lục">Mục lục</h2>
+<ul>
+<li><a href="#mục-tiêu-của-doc-này">Mục tiêu của doc này</a></li>
+<li><a href="#phần-1-vì-sao-cần-secure-access-vào-ec2">Phần 1: Vì sao cần “secure access” vào EC2</a></li>
+<li><a href="#phần-2-bastion-host-truyền-thống-mechanics-sâu">Phần 2: Bastion Host truyền thống — mechanics sâu</a></li>
+<li><a href="#phần-3-ssh-qua-bastion-4-cách-và-vì-sao-khác-nhau">Phần 3: SSH qua Bastion — 4 cách và vì sao khác nhau</a></li>
+<li><a href="#phần-4-ssh-agent-proxyjump-và-agent-forwarding">Phần 4: ssh-agent, ProxyJump và Agent Forwarding</a></li>
+<li><a href="#phần-5-aws-systems-manager-session-manager">Phần 5: AWS Systems Manager Session Manager</a></li>
+<li><a href="#phần-6-amazon-ec2-instance-connect-endpoint">Phần 6: Amazon EC2 Instance Connect Endpoint</a></li>
+<li><a href="#phần-7-aws-client-vpn">Phần 7: AWS Client VPN</a></li>
+<li><a href="#phần-8-third-party-hardened-access-teleport-boundary-tailscale">Phần 8: Third-party hardened access (Teleport, Boundary, Tailscale)</a></li>
+<li><a href="#phần-9-decision-matrix--chọn-cách-nào">Phần 9: Decision matrix — chọn cách nào</a></li>
+<li><a href="#phần-10-production-patterns">Phần 10: Production patterns</a></li>
+<li><a href="#phần-11-common-pitfalls">Phần 11: Common pitfalls</a></li>
+<li><a href="#phần-12-cheatsheet">Phần 12: Cheatsheet</a></li>
+<li><a href="#gợi-ý-khi-gặp-trong-đề-thi--phỏng-vấn">Gợi ý khi gặp trong đề thi / phỏng vấn</a></li>
+<li><a href="#nguồn-aws-chính-thức">Nguồn AWS chính thức</a></li>
+</ul>
+<hr />
+<h2 id="mục-tiêu-của-doc-này">Mục tiêu của doc này</h2>
+<p>Doc này là phần <strong>deep dive</strong> của <a href="bastion-host.md"><code>bastion-host.md</code></a>. File kia giải thích “bastion là gì”, file này trả lời các câu hỏi sâu hơn:</p>
+<ul>
+<li>1 lệnh <code>ssh</code> thực sự tạo ra bao nhiêu TCP connection khi đi qua bastion?</li>
+<li>Tại sao <code>-J</code> (ProxyJump) an toàn hơn <code>-A</code> (Agent Forwarding)?</li>
+<li><code>ssh-agent</code> giữ key như thế nào, và vì sao <code>-A</code> có rủi ro?</li>
+<li>Trên production người ta có còn dùng bastion không, hay chuyển sang cái gì?</li>
+<li>Session Manager, EC2 Instance Connect Endpoint, Client VPN khác nhau thế nào, khi nào dùng cái nào?</li>
+</ul>
+<p>Đi kèm doc này là diagram minh hoạ packet flow:</p>
+<ul>
+<li><a href="docs/diagrams/vpc-ssh-full-flow-2-connections.png"><code>docs/diagrams/vpc-ssh-full-flow-2-connections.png</code></a> — full SSH flow 2 connections, 4 luồng packet</li>
+</ul>
+<hr />
+<h2 id="phần-1-vì-sao-cần-secure-access-vào-ec2">Phần 1: Vì sao cần “secure access” vào EC2</h2>
+<p>Trong 3-tier VPC, các EC2 nằm ở <strong>private subnet</strong> thường:</p>
+<pre class="text"><code>- Không có public IP
+- Không mở port 22 ra Internet
+- Chỉ nhận traffic nội bộ VPC (từ ALB, app tier, ...)</code></pre>
+<p>Vậy khi admin cần SSH vào để debug/patch/cài đặt, làm sao truy cập được nếu không có public IP?</p>
+<p>Có 2 triết lý trả lời câu hỏi này:</p>
+<h3 id="triết-lý-1-bastion-host-cổ-điển">Triết lý 1: Bastion Host (cổ điển)</h3>
+<blockquote>
+<p>Đặt 1 EC2 ở <strong>public subnet</strong>, mở port 22 cho IP của admin. Admin SSH vào bastion, rồi từ bastion SSH tiếp vào private EC2.</p>
+</blockquote>
+<pre class="text"><code>Internet ──► Bastion (public) ──► Private EC2</code></pre>
+<h3 id="triết-lý-2-bastion-less-hiện-đại">Triết lý 2: Bastion-less (hiện đại)</h3>
+<blockquote>
+<p>Không cần bastion vật lý. Dùng dịch vụ của AWS làm “identity-aware proxy”, auth bằng IAM thay vì SSH key, không mở port 22.</p>
+</blockquote>
+<pre class="text"><code>Internet ──► AWS Proxy (SSM / EIC Endpoint) ──► Private EC2</code></pre>
+<p>Phần 2–4 đi sâu vào triết lý 1. Phần 5–8 đi sâu vào triết lý 2 và các biến thể.</p>
+<hr />
+<h2 id="phần-2-bastion-host-truyền-thống-mechanics-sâu">Phần 2: Bastion Host truyền thống — mechanics sâu</h2>
+<h3 id="kiến-trúc-tham-chiếu">2.1 Kiến trúc tham chiếu</h3>
+<pre class="text"><code>┌─────────────────────────── VPC 10.0.0.0/16 ───────────────────────────┐
+│                                                                        │
+│  ┌── Public subnet 10.0.1.0/24 ──┐    ┌── Private subnet 10.0.3.0/24 ─┐│
+│  │                                │    │                               ││
+│  │  ┌──────────────┐              │    │  ┌──────────────┐            ││
+│  │  │ Bastion EC2  │              │    │  │ Private EC2  │            ││
+│  │  │ 10.0.1.76    │══════════════┼────┼─►│ 10.0.3.57    │            ││
+│  │  │ public IP    │              │local  │ no public IP │            ││
+│  │  │ SG: 22 open  │              │route │ SG: 22 only  │            ││
+│  │  └──────────────┘              │    │  │ from bastion │            ││
+│  │         ▲                      │    │  └──────────────┘            ││
+│  └─────────┼──────────────────────┘    └───────────────────────────────┘│
+│            │                                                            │
+└────────────┼────────────────────────────────────────────────────────────┘
+             │
+        ┌────┴────┐
+        │ Internet│
+        │ Gateway │
+        └────┬────┘
+             │
+        Admin laptop (public IP)</code></pre>
+<h3 id="nhận-diện-sai-lầm-phổ-biến-1-lệnh-ssh--j-không-phải-1-tcp-connection">2.2 Nhận diện sai lầm phổ biến: 1 lệnh <code>ssh -J</code> KHÔNG phải 1 TCP connection</h3>
+<p>Khi bạn chạy:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> singapo.pem <span class="at">-J</span> ec2-user@47.129.159.247 ec2-user@10.0.3.57</span></code></pre></div>
+<p>Thực tế có <strong>2 TCP connections riêng biệt</strong> và <strong>2 SSH handshakes riêng biệt</strong>:</p>
+<pre class="text"><code>Connection 1 (Laptop ↔ Bastion):
+  - TCP: laptop:ephemeral ↔ 47.129.159.247:22
+  - SSH: authenticate với bastion bằng key
+
+Connection 2 (Bastion ↔ Private EC2):
+  - TCP: 10.0.1.76:ephemeral ↔ 10.0.3.57:22
+  - SSH: authenticate với private EC2 bằng key</code></pre>
+<p>Hai connection này độc lập. Tắt một cái không tự tắt cái kia (nếu không dùng <code>-J</code>). Mỗi connection bị kiểm bởi <strong>bộ NACL/SG riêng của subnet chứa nó</strong>.</p>
+<h3 id="trace-packet-chi-tiết-xem-diagram-đi-kèm">2.3 Trace packet chi tiết (xem diagram đi kèm)</h3>
+<p>Diagram <code>vpc-ssh-full-flow-2-connections.png</code> vẽ đầy đủ 4 luồng packet:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Luồng</th>
+<th>Packet</th>
+<th>Đi qua checkpoint nào</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 Request</strong> (Laptop→Bastion)</td>
+<td><code>59.153.x.x:51544 → 47.129.159.247:22</code></td>
+<td>IGW → facing NACL IN(22) → bastion-SG IN(22) → Bastion</td>
+</tr>
+<tr>
+<td><strong>C1 Response</strong> (Bastion→Laptop)</td>
+<td><code>47.129.159.247:22 → 59.153.x.x:51544</code></td>
+<td>Bastion → bastion-SG OUT(auto) → facing NACL OUT(ephemeral) → IGW</td>
+</tr>
+<tr>
+<td><strong>C2 Request</strong> (Bastion→Private)</td>
+<td><code>10.0.1.76:45678 → 10.0.3.57:22</code></td>
+<td>bastion-SG OUT(22) → facing NACL OUT(22) → public RT → VPC router → service NACL IN(22) → service-SG IN(22) → Private EC2</td>
+</tr>
+<tr>
+<td><strong>C2 Response</strong> (Private→Bastion)</td>
+<td><code>10.0.3.57:22 → 10.0.1.76:45678</code></td>
+<td>service-SG OUT(auto) → service NACL OUT(ephemeral) → VPC router → facing NACL IN(ephemeral) → bastion-SG IN(auto) → Bastion</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ Điểm dễ sai: <strong>NACL inbound của facing subnet phải mở ephemeral port</strong> (32768-65535) cho return traffic từ private subnet, vì return packet có destination port = ephemeral của bastion, không phải 22. Xem chi tiết ở <a href="docs/diagrams/nacl-sg-step-by-step-packet-path.png"><code>docs/diagrams/nacl-sg-step-by-step-packet-path.png</code></a>.</p>
+</blockquote>
+<h3 id="rule-set-tối-thiểu-để-2-connection-thông">2.4 Rule set tối thiểu để 2 connection thông</h3>
+<p><strong>bastion-SG (gắn vào Bastion):</strong></p>
+<pre class="text"><code>INBOUND  : TCP 22 from &lt;admin-public-ip&gt;/32     ← cho connection 1
+OUTBOUND : TCP 22 to service-SG (sg-xxx)        ← cho connection 2 forward</code></pre>
+<p><strong>service-SG (gắn vào Private EC2):</strong></p>
+<pre class="text"><code>INBOUND  : TCP 22 from bastion-SG (sg-xxx)
+OUTBOUND : (stateful, auto-allow return)</code></pre>
+<p><strong>facing NACL (subnet public):</strong></p>
+<pre class="text"><code>INBOUND  : TCP 22 from 0.0.0.0/0 (hoặc IP admin)            ← C1 req
+           TCP 32768-65535 from 10.0.3.0/24                  ← C2 res (ephemeral!)
+OUTBOUND : TCP 32768-65535 to &lt;admin-public-ip&gt;/32          ← C1 res (ephemeral!)
+           TCP 22 to 10.0.3.0/24                            ← C2 req</code></pre>
+<p><strong>service NACL (subnet private):</strong></p>
+<pre class="text"><code>INBOUND  : TCP 22 from 10.0.1.0/24                          ← C2 req
+OUTBOUND : TCP 32768-65535 to 10.0.1.0/24                   ← C2 res (ephemeral!)</code></pre>
+<blockquote>
+<p>Nguồn: <a href="https://docs.aws.amazon.com/vpc/latest/userguide/custom-network-acl.html">Custom network ACLs — VPC User Guide</a>. Phần “Ephemeral ports” giải thích rõ vì sao range 32768-65535 (Amazon Linux) hoặc 1024-65535 (NAT/ELB).</p>
+</blockquote>
+<hr />
+<h2 id="phần-3-ssh-qua-bastion-4-cách-và-vì-sao-khác-nhau">Phần 3: SSH qua Bastion — 4 cách và vì sao khác nhau</h2>
+<p>Có 4 cách để từ laptop SSH tới private EC2 qua bastion. Tất cả đều tạo 2 TCP connections giống nhau, <strong>chỉ khác ở chỗ ai giữ key và ai terminate SSH session 2</strong>.</p>
+<h3 id="cách-a-copy-key-.pem-lên-bastion-tệ-nhất">Cách A: Copy key <code>.pem</code> lên bastion (❌ TỆ NHẤT)</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> singapo.pem ec2-user@47.129.159.247:~/</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> ec2-user@47.129.159.247</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> singapo.pem ec2-user@10.0.3.57</span></code></pre></div>
+<ul>
+<li>Bastion giữ file key thật trên ổ cứng</li>
+<li>Bastion bị hack → attacker copy <code>.pem</code> → <strong>lộ key vĩnh viễn</strong></li>
+<li>Không bao giờ nên làm vậy ngoài lab</li>
+</ul>
+<h3 id="cách-b--a-agent-forwarding-có-rủi-ro">Cách B: <code>-A</code> Agent Forwarding (⚠️ Có rủi ro)</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-add</span> singapo.pem              <span class="co"># nạp key vào agent trên laptop</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-A</span> ec2-user@47.129.159.247   <span class="co"># forward agent socket sang bastion</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> ec2-user@10.0.3.57           <span class="co"># bastion mượn agent laptop để ký</span></span></code></pre></div>
+<ul>
+<li>Key file <strong>không</strong> trên bastion</li>
+<li>Nhưng socket <code>/tmp/ssh-XXXX/agent.NNN</code> tồn tại trên bastion trong suốt session</li>
+<li>Root trên bastion có thể mượn socket đó để ký challenge → login vào private EC2 (hoặc bất kỳ host nào key valid) mà không cần file key</li>
+</ul>
+<h3 id="cách-c--j-proxyjump-khuyến-nghị">Cách C: <code>-J</code> ProxyJump (✅ KHUYẾN NGHỊ)</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> singapo.pem <span class="at">-J</span> ec2-user@47.129.159.247 ec2-user@10.0.3.57</span></code></pre></div>
+<ul>
+<li>Bastion chỉ là <strong>raw TCP tunnel</strong></li>
+<li>Laptop tự authenticate với private EC2 (handshake đi qua tunnel)</li>
+<li>Bastion chỉ thấy encrypted bytes, không có key, không có agent socket</li>
+<li>An toàn nhất trong 4 cách</li>
+</ul>
+<h3 id="cách-d--l-local-port-forwarding-thủ-công">Cách D: <code>-L</code> Local Port Forwarding (thủ công)</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 1: mở tunnel</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> 2222:10.0.3.57:22 ec2-user@47.129.159.247</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 2: dùng tunnel</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-p</span> 2222 ec2-user@localhost</span></code></pre></div>
+<ul>
+<li>Laptop mở port 2222 cục bộ, tunnel qua bastion tới <code>10.0.3.57:22</code></li>
+<li>Tương tự <code>-J</code> nhưng setup thủ công, 2 terminal</li>
+<li>Hữu ích khi cần tunnel nhiều port cùng lúc (DB, JMX, web debug)</li>
+</ul>
+<h3 id="bảng-so-sánh-4-cách">Bảng so sánh 4 cách</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>A: copy key</th>
+<th>B: <code>-A</code></th>
+<th>C: <code>-J</code></th>
+<th>D: <code>-L</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File key trên bastion</td>
+<td>✗ Có</td>
+<td>✗ Không</td>
+<td>✗ Không</td>
+<td>✗ Không</td>
+</tr>
+<tr>
+<td>Agent socket trên bastion</td>
+<td>—</td>
+<td>✓ Có (rủi ro)</td>
+<td>✗ Không</td>
+<td>✗ Không</td>
+</tr>
+<tr>
+<td>Bastion bị hack → lộ key</td>
+<td><strong>Vĩnh viễn</strong></td>
+<td>Chỉ trong session</td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Số lệnh</td>
+<td>3</td>
+<td>3</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Tốc độ authenticate</td>
+<td>Nhanh</td>
+<td>Chậm (round trip agent)</td>
+<td>Nhanh</td>
+<td>Nhanh</td>
+</tr>
+<tr>
+<td>Đề xuất</td>
+<td>Không</td>
+<td>Hạn chế</td>
+<td><strong>Default</strong></td>
+<td>Khi cần multi-port</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phần-4-ssh-agent-proxyjump-và-agent-forwarding">Phần 4: ssh-agent, ProxyJump và Agent Forwarding</h2>
+<h3 id="ssh-agent-là-gì">4.1 ssh-agent là gì</h3>
+<p><code>ssh-agent</code> là một <strong>background process</strong> giữ private key (đã giải mã) trong RAM, ký challenge SSH khi được nhờ, <strong>không bao giờ đưa key ra ngoài</strong>.</p>
+<pre class="text"><code>ssh-agent (RAM)
+  ├── singapo.pem        ← đã giải mã, sống đến khi logout/reboot
+  ├── bastion-key.pem
+  └── github-key.pem</code></pre>
+<h3 id="vòng-đời-key-trong-agent">4.2 Vòng đời key trong agent</h3>
+<pre class="text"><code>Bật máy
+  ↓
+ssh-agent khởi động (thường tự động)
+  ↓ RAM trống
+ssh-add singapo.pem
+  ↓ gõ passphrase 1 LẦN DUY NHẤT
+  ↓ key (đã giải mã) vào RAM agent
+  ↓
+ssh ec2-user@...   ← không cần gõ passphrase nữa, agent ký hộ
+  ↓
+Tắt máy / kill agent
+  ↓ RAM bị xóa → key mất, phải ssh-add lại sau reboot</code></pre>
+<p>Trừ khi dùng <strong>macOS Keychain</strong> (<code>ssh-add --apple-use-keychain</code>) hoặc GNOME Keyring để tự nạp lại sau reboot.</p>
+<h3 id="lệnh-thường-dùng">4.3 Lệnh thường dùng</h3>
+<table>
+<thead>
+<tr>
+<th>Lệnh</th>
+<th>Tác dụng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ssh-agent</code></td>
+<td>Khởi động daemon</td>
+</tr>
+<tr>
+<td><code>ssh-add key.pem</code></td>
+<td>Nạp key vào agent</td>
+</tr>
+<tr>
+<td><code>ssh-add -l</code></td>
+<td>Xem agent đang giữ key nào</td>
+</tr>
+<tr>
+<td><code>ssh-add -D</code></td>
+<td>Xóa hết key khỏi agent</td>
+</tr>
+<tr>
+<td><code>ssh -A host</code></td>
+<td>Forward agent socket sang remote</td>
+</tr>
+<tr>
+<td><code>ssh -J jump target</code></td>
+<td>Dùng bastion làm tunnel (an toàn hơn)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vì-sao--a-nguy-hiểm-hơn--j">4.4 Vì sao <code>-A</code> nguy hiểm hơn <code>-J</code></h3>
+<p><code>-A</code> tạo <strong>UNIX socket tunnel</strong> từ bastion về agent trên laptop:</p>
+<pre class="text"><code>/tmp/agent.BASTION (trên bastion, thuộc quyền ec2-user)
+       │ tunnel qua SSH connection
+       ▼
+/tmp/agent.LAPTOP (trên laptop)
+       │
+       ▼
+   ssh-agent (RAM laptop) → key</code></pre>
+<p>Bất kỳ process nào đọc được socket đó đều mượn được agent:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Nếu attacker có root trên bastion trong lúc session còn sống:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="va">SSH_AUTH_SOCK</span><span class="op">=</span>/tmp/ssh-XXXX/agent.NNN <span class="fu">ssh</span> ec2-user@10.0.3.57   <span class="co"># mượn agent của BẠN</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="va">SSH_AUTH_SOCK</span><span class="op">=</span>/tmp/.../agent.NNN <span class="fu">git</span> clone git@github.com:you/private-repo</span></code></pre></div>
+<p>Agent ký challenge vì nó <strong>không phân biệt ai request</strong>. Key không lộ, nhưng <strong>khả năng ký bị mượn</strong> trong suốt session.</p>
+<p><code>-J</code> không có rủi ro này vì không có agent socket nào trên bastion.</p>
+<h3 id="khi-nào-thực-sự-cần--a">4.5 Khi nào THỰC SỰ cần <code>-A</code></h3>
+<p>Chỉ dùng <code>-A</code> khi bastion cần <strong>tự authenticate với bên thứ 3</strong> (GitHub, container registry,Artifact store…) mà không muốn copy key:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-A</span> ec2-user@bastion</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:myorg/private-app.git   <span class="co"># bastion push/pull GitHub bằng key của bạn</span></span></code></pre></div>
+<p>Mọi trường hợp SSH vào private EC2 khác → dùng <code>-J</code>.</p>
+<hr />
+<h2 id="phần-5-aws-systems-manager-session-manager">Phần 5: AWS Systems Manager Session Manager</h2>
+<p>Đây là <strong>cách thay thế bastion phổ biến nhất</strong> trên AWS-native infra. KHÔNG cần bastion, KHÔNG cần mở port 22, KHÔNG cần SSH key.</p>
+<h3 id="cách-hoạt-động">5.1 Cách hoạt động</h3>
+<pre class="text"><code>Admin laptop                          AWS SSM service
+   │                                       ▲
+   │ aws ssm start-session                │
+   └───────────────────────────────────────┤
+                                           │
+              Private EC2 (SSM Agent) ─────┘
+              outbound HTTPS :443 tới SSM endpoint</code></pre>
+<ul>
+<li>EC2 chạy <strong>SSM Agent</strong> (Amazon Linux cài sẵn)</li>
+<li>Agent mở <strong>outbound HTTPS :443</strong> tới SSM service (hoặc qua VPC endpoint)</li>
+<li>Admin auth bằng <strong>IAM credentials</strong> (không phải SSH key)</li>
+<li>Traffic end-to-end TLS, session data có thể log vào S3/CloudWatch Logs</li>
+<li>Mọi session được log vào <strong>CloudTrail</strong></li>
+</ul>
+<blockquote>
+<p>Nguồn: <a href="https://aws.amazon.com/blogs/infrastructure-and-automation/toward-a-bastion-less-world/">AWS blog “Toward a bastion-less world”</a>, <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-prerequisites.html">Session Manager prerequisites</a></p>
+</blockquote>
+<h3 id="prerequisites">5.2 Prerequisites</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Yêu cầu</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSM Agent</td>
+<td>Có sẵn trên Amazon Linux 2/2023, Windows. Min version 2.3.68.0+ cho Session Manager</td>
+</tr>
+<tr>
+<td>IAM role cho EC2</td>
+<td><em>attached instance profile</em> với <code>AmazonSSMManagedInstanceCore</code> (hoặc policy <code>ssmmessages:*</code> inline)</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Outbound HTTPS :443 tới SSM endpoints, <strong>HOẶC</strong> SSM VPC endpoints (PrivateLink) nếu private subnet không có NAT</td>
+</tr>
+<tr>
+<td>(Tuỳ chọn) KMS key</td>
+<td>Để mã hóa session data</td>
+</tr>
+<tr>
+<td>(Tuỳ chọn) S3/CloudWatch</td>
+<td>Để log session output</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cách-dùng">5.3 Cách dùng</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cài Session Manager plugin cho AWS CLI trước</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Shell tương tác:</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ssm start-session <span class="at">--target</span> i-0abc123def456</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Port forwarding tới service private (VD RDS):</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ssm start-session <span class="dt">\</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--target</span> i-0abc123def456 <span class="dt">\</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--document-name</span> AWS-StartPortForwardingSessionToRemoteHost <span class="dt">\</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--parameters</span> <span class="st">&#39;{&quot;hostNumber&quot;:[&quot;10.0.3.57&quot;],&quot;portNumber&quot;:[&quot;3306&quot;]}&#39;</span></span></code></pre></div>
+<p>Hoặc dùng <code>ssh</code> quen thuộc với SSM làm transport (qua SSH ProxyCommand):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ~/.ssh/config</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Host</span> i-<span class="pp">*</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">ProxyCommand</span> sh <span class="at">-c</span> <span class="st">&quot;aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters &#39;portNumber=%p&#39;&quot;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Rồi:</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> i-0abc123def456</span></code></pre></div>
+<h3 id="ưunhược">5.4 Ưu/nhược</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>✅ Ưu điểm</th>
+<th>❌ Nhược điểm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Không cần bastion, không mở port 22</td>
+<td>Cần SSM Agent + IAM role đúng</td>
+</tr>
+<tr>
+<td>Auth bằng IAM, không cần manage SSH key</td>
+<td>Instance phải reach SSM endpoint (NAT hoặc VPC endpoint)</td>
+</tr>
+<tr>
+<td>CloudTrail log built-in</td>
+<td>Không phải tool nào cũng tương thích (scp hơi lắt lé)</td>
+</tr>
+<tr>
+<td>Hỗ trợ port forwarding tới RDS/internal web</td>
+<td>IAM quyền <code>ssm:StartSession</code> cần scope kỹ</td>
+</tr>
+<tr>
+<td>Miễn phí (chỉ tính SSM API call)</td>
+<td>Windows session management đôi khi chậm</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phần-6-amazon-ec2-instance-connect-endpoint">Phần 6: Amazon EC2 Instance Connect Endpoint</h2>
+<p>Ra mắt năm 2023, EIC Endpoint là <strong>identity-aware TCP proxy</strong> do AWS quản lý. Vẫn dùng <code>ssh</code> client quen thuộc nhưng không cần bastion, không cần public IP, không cần IGW cho VPC.</p>
+<blockquote>
+<p>Nguồn: <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-with-ec2-instance-connect-endpoint.html">Connect using EC2 Instance Connect Endpoint</a>, <a href="https://aws.amazon.com/blogs/compute/secure-connectivity-from-public-to-private-introducing-ec2-instance-connect-endpoint-june-13-2023/">AWS Compute Blog — EIC Endpoint</a></p>
+</blockquote>
+<h3 id="cách-hoạt-động-1">6.1 Cách hoạt động</h3>
+<pre class="text"><code>Admin laptop
+   │ WebSocket tunnel (auth bằng IAM credentials)
+   ▼
+EC2 Instance Connect Endpoint  ← AWS-managed, đặt trong subnet của VPC
+   │ private IP, không expose ra internet
+   ▼
+Private EC2 (port 22 nội bộ VPC)</code></pre>
+<ul>
+<li>Tạo 1 endpoint trong VPC (chọn subnet + SG)</li>
+<li>AWS push <strong>ephemeral SSH key</strong> (RSA, TTL 60 giây) vào <code>authorized_keys</code> của instance</li>
+<li>Admin SSH qua WebSocket tunnel, IAM auth và authorize <strong>trước khi</strong> traffic vào VPC</li>
+<li>Mọi attempt (thành công + thất bại) log vào <strong>CloudTrail</strong></li>
+</ul>
+<h3 id="prerequisites-1">6.2 Prerequisites</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Yêu cầu</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EIC Endpoint</td>
+<td>Tạo bằng Console/CLI/Terraform trong 1 subnet của VPC</td>
+</tr>
+<tr>
+<td>IAM permission</td>
+<td><code>ec2-instance-connect:OpenTunnel</code>, <code>ec2:DescribeInstances</code>, <code>ec2-instance-connect:SendSSHPublicKey</code></td>
+</tr>
+<tr>
+<td>Instance</td>
+<td>Có thể reach được từ endpoint (route table cho phép), có SG mở 22 cho endpoint</td>
+</tr>
+<tr>
+<td><strong>KHÔNG cần</strong></td>
+<td>Bastion, public IP, IGW, SSM Agent</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cách-dùng-1">6.3 Cách dùng</h3>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tạo endpoint</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 create-instance-connect-endpoint <span class="dt">\</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--subnet-id</span> subnet-0abc123 <span class="dt">\</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--security-group-id</span> sg-0xyz789</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># SSH qua endpoint (CLI tự push ephemeral key):</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2-instance-connect ssh <span class="at">--instance-id</span> i-0abc123def456</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Hoặc scp:</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-o</span> ProxyCommand=<span class="st">&quot;aws ec2-instance-connect open-tunnel --instance-id i-0abc123def456&quot;</span> <span class="dt">\</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    file.txt i-0abc123def456:/tmp/</span></code></pre></div>
+<p>Vẫn dùng OpenSSH client, PuTTY, WinSCP — tooling không đổi.</p>
+<h3 id="ưunhược-1">6.4 Ưu/nhược</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>✅ Ưu điểm</th>
+<th>❌ Nhược điểm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Không bastion, không public IP, không IGW</td>
+<td>AWS only (không multi-cloud)</td>
+</tr>
+<tr>
+<td>UX vẫn là <code>ssh</code> quen thuộc</td>
+<td>Cần tạo endpoint trước (1 lần/VPC)</td>
+</tr>
+<tr>
+<td>IAM auth + CloudTrail + ephemeral key</td>
+<td>Cross-AZ data transfer có phí</td>
+</tr>
+<tr>
+<td>Miễn phí (trừ cross-AZ transfer)</td>
+<td>Chỉ support SSH/RDP qua TCP, không phải mọi port</td>
+</tr>
+</tbody>
+</table>
+<h3 id="so-sánh-ssm-session-manager-vs-eic-endpoint">6.5 So sánh SSM Session Manager vs EIC Endpoint</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>SSM Session Manager</th>
+<th>EIC Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cài agent trên instance</td>
+<td><strong>Có</strong> (SSM Agent)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>IAM</td>
+<td>IAM + ephemeral SSH key</td>
+</tr>
+<tr>
+<td>UX</td>
+<td><code>aws ssm start-session</code></td>
+<td><code>ssh</code>/<code>scp</code> quen thuộc</td>
+</tr>
+<tr>
+<td>Outbound từ instance</td>
+<td>HTTPS :443 tới SSM</td>
+<td>Không cần (instance bị động)</td>
+</tr>
+<tr>
+<td>Port forwarding tới host khác</td>
+<td>✓ (RDS, internal web)</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Multi-cloud</td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Phù hợp khi</td>
+<td>Đã có SSM Agent, muốn audit mạnh</td>
+<td>Muốn UX ssh thuần, zero-agent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phần-7-aws-client-vpn">Phần 7: AWS Client VPN</h2>
+<p>Khác bastion và SSM/EIC, Client VPN là <strong>mạng riêng ảo</strong> — client kết nối VPN rồi instance private “thấy” client như 1 IP nội bộ.</p>
+<h3 id="cách-hoạt-động-2">7.1 Cách hoạt động</h3>
+<pre class="text"><code>Admin laptop ──VPN tunnel──► AWS Client VPN endpoint (ngang hàng VPC)
+                                  │
+                                  ▼ authorize tới private subnet
+                              Private EC2 (port 22 nội bộ)</code></pre>
+<ul>
+<li>Cài AWS VPN client (hoặc OpenVPN client)</li>
+<li>Auth bằng <strong>mutual TLS certificate</strong> (ACM) hoặc <strong>SAML SSO</strong> (IAM Identity Center/Okta)</li>
+<li>Client nhận IP từ CIDR VPN, route tới subnet private</li>
+<li>Mỗi user có certificate riêng → audit được</li>
+</ul>
+<h3 id="khi-nào-dùng">7.2 Khi nào dùng</h3>
+<ul>
+<li>Cả dev team cần truy cập nhiều resource nội bộ (DB, internal web, EC2) cùng lúc</li>
+<li>Cần SSO enterprise (SAML với Okta/Azure AD)</li>
+<li>Muốn một đường hầm “all traffic” thay vì từng port</li>
+</ul>
+<h3 id="ưunhược-2">7.3 Ưu/nhược</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>✅</th>
+<th>❌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cả team vào 1 lần, dùng mọi tool nội bộ</td>
+<td>Chi phí endpoint theo giờ + connection-hour</td>
+</tr>
+<tr>
+<td>SAML SSO, MFA dễ tích hợp</td>
+<td>Setup phức tạp hơn SSM/EIC</td>
+</tr>
+<tr>
+<td>Route cả subnet, không cần proxy từng host</td>
+<td>Client phải cài VPN client</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="phần-8-third-party-hardened-access-teleport-boundary-tailscale">Phần 8: Third-party hardened access (Teleport, Boundary, Tailscale)</h2>
+<p>Khi enterprise cần nhiều hơn IAM audit (VD: session recording, RBAC fine-grained, MFA per-session), người ta dựng <strong>bastion hardened</strong> bằng tool chuyên dụng.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Tính năng nổi bật</th>
+<th>Khi nào dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Teleport</strong> (Gravitational)</td>
+<td>RBAC bằng roles, session recording, short-lived certificate, access plugins (Slack/Jira approval)</td>
+<td>Enterprise hybrid, cần approval workflow</td>
+</tr>
+<tr>
+<td><strong>HashiCorp Boundary</strong></td>
+<td>Identity-based access, không cần manage SSH key, dynamic credential, multi-cloud</td>
+<td>Đã dùng HashiCorp stack, multi-cloud</td>
+</tr>
+<tr>
+<td><strong>Tailscale SSH</strong></td>
+<td>WireGuard mesh, SSH mà không cần SSH key (client cert từ Tailscale), zero-config</td>
+<td>Team quen SSH, muốn zero-trust nhẹ cân</td>
+</tr>
+<tr>
+<td><strong>AWS Verified Access</strong></td>
+<td>AWS-native, verify device posture + identity trước khi cho vào app</td>
+<td>Đã dùng AWS Directory/Identity Center</td>
+</tr>
+</tbody>
+</table>
+<p>Đặc điểm chung: <strong>thay SSH key dài hạn bằng short-lived certificate + RBAC + audit</strong>, từ đó giảm rủi ro “key lộ vĩnh viễn”.</p>
+<hr />
+<h2 id="phần-9-decision-matrix-chọn-cách-nào">Phần 9: Decision matrix — chọn cách nào</h2>
+<h3 id="bảng-tổng-hợp">9.1 Bảng tổng hợp</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Bastion + <code>-J</code></th>
+<th>SSM Session Manager</th>
+<th>EIC Endpoint</th>
+<th>Client VPN</th>
+<th>Teleport/Boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cần EC2 public</td>
+<td>✓ Bastion</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>Tùy setup</td>
+</tr>
+<tr>
+<td>Mở port 22 ra internet</td>
+<td>✓ (cho bastion)</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Auth bằng</td>
+<td>SSH key</td>
+<td>IAM</td>
+<td>IAM + ephemeral key</td>
+<td>Cert/SAML</td>
+<td>Short-lived cert</td>
+</tr>
+<tr>
+<td>Cài agent</td>
+<td>Không</td>
+<td>SSM Agent</td>
+<td>Không</td>
+<td>VPN client</td>
+<td>Agent riêng</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Tự setup</td>
+<td>CloudTrail built-in</td>
+<td>CloudTrail built-in</td>
+<td>Connection log</td>
+<td>Session recording</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Bastion chạy 24/7</td>
+<td>Free</td>
+<td>Free (trừ cross-AZ)</td>
+<td>Endpoint per-hour + per-connection</td>
+<td>License</td>
+</tr>
+<tr>
+<td>Multi-cloud</td>
+<td>✓</td>
+<td>✗ AWS</td>
+<td>✗ AWS</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>UX</td>
+<td><code>ssh</code> quen thuộc</td>
+<td><code>aws ssm</code></td>
+<td><code>ssh</code> quen thuộc</td>
+<td>Mọi tool nội bộ</td>
+<td><code>tsh</code>/<code>boundary</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="decision-tree">9.2 Decision tree</h3>
+<pre class="text"><code>Instance nằm 100% trong AWS?
+├─ KHÔNG (hybrid/multi-cloud)
+│   └─→ Dùng Bastion hardened (Teleport/Boundary) hoặc Client VPN
+└─ CÓ
+    ├─ Đã có SSM Agent + IAM role + (NAT hoặc VPC endpoint)?
+    │   └─→ SSM Session Manager  ← default, audit mạnh nhất
+    ├─ Muốn UX ssh thuần, không muốn cài agent?
+    │   └─→ EC2 Instance Connect Endpoint
+    ├─ Cả team cần vào nhiều resource cùng lúc?
+    │   └─→ Client VPN
+    └─ Lab / học fundamentals / interview?
+        └─→ Bastion truyền thống + `-J`</code></pre>
+<h3 id="thực-tế-ngành-2024-2026">9.3 Thực tế ngành 2024-2026</h3>
+<pre class="text"><code>- Startup nhỏ / lab:           Raw EC2 bastion + ssh -J
+- Scale-up AWS-native:         Chuyển sang SSM Session Manager
+- Enterprise / regulated:      Teleport / Boundary / Client VPN
+- Legacy / on-prem hybrid:     Vẫn bastion truyền thống, dần migrate</code></pre>
+<p>AWS Managed Services (AMS) cho enterprise dùng <strong>bastion trong Shared Services account</strong>, chỉ reach được qua VPN/Direct Connect, auth bằng Active Directory. Bastion không “chết”, nó <strong>tiến hóa</strong> thành bastion hardened.</p>
+<hr />
+<h2 id="phần-10-production-patterns">Phần 10: Production patterns</h2>
+<h3 id="bastion-ha-high-availability">10.1 Bastion HA (High Availability)</h3>
+<p>Đừng để 1 bastion = single point of failure. Pattern:</p>
+<pre class="text"><code>- 2 bastion ở 2 AZ khác nhau
+- Đặt trong Auto Scaling Group (min=2, max=2)
+- Phía trước đặt NLB (Network Load Balancer) với listener :22
+- DNS record (Route 53) trỏ tới NLB</code></pre>
+<p>Khi 1 bastion hỏng, ASG tự launch cái mới. Admin SSH tới DNS name thay vì IP cố định.</p>
+<h3 id="bastion-trong-private-subnet-pattern-của-aws-cdk-blog">10.2 Bastion trong private subnet (pattern của AWS CDK blog)</h3>
+<blockquote>
+<p>“Deploy bastion hosts into <strong>private subnets</strong> rather than public ones, providing temporary and limited access… leveraging AWS Systems Manager Session Manager for secure connectivity.” — <a href="https://aws.amazon.com/blogs/infrastructure-and-automation/deploy-bastion-hosts-into-private-subnets-with-aws-cdk/">AWS CDK blog</a></p>
+</blockquote>
+<p>Đặt bastion trong <strong>private subnet</strong>, không có public IP, vào qua SSM. Rủi ro attack surface giảm mạnh.</p>
+<h3 id="hardening-checklist">10.3 Hardening checklist</h3>
+<pre class="text"><code>□ SG inbound chỉ mở 22 cho IP admin cụ thể (KHÔNG 0.0.0.0/0)
+□ Dùng SSH key Ed25519 (mạnh hơn RSA), có passphrase
+□ Tắt password authentication: /etc/ssh/sshd_config -&gt; PasswordAuthentication no
+□ Tắt root login: PermitRootLogin no
+□ Cài fail2ban hoặc AWS GuardDuty
+□ Bật session recording (auditd, tlog, Teleport)
+□ Bắt buộc MFA (PAM + Duo, hoặc Teleport/Boundary)
+□ Patch định kỳ qua SSM Patch Manager
+□ IAM instance profile least-privilege (không AmazonS3FullAccess)
+□ CloudWatch Logs thu thump /var/log/secure
+□ Auto-terminate sau N giờ không hoạt động (lambda + CloudWatch)</code></pre>
+<h3 id="session-recording">10.4 Session recording</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Cách record</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tlog</code> (OSS)</td>
+<td>Record terminal session, lưu JSON log</td>
+</tr>
+<tr>
+<td>Teleport</td>
+<td>Built-in session recording + playback</td>
+</tr>
+<tr>
+<td>Boundary</td>
+<td>Session recording, có thể disable selective</td>
+</tr>
+<tr>
+<td>AWS SSM</td>
+<td><code>s3BucketName</code> / <code>cloudWatchLogGroup</code> trong Session preferences</td>
+</tr>
+<tr>
+<td>auditd + syslog</td>
+<td>Log command, không record video terminal</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Compliance (SOC 2, HIPAA, PCI DSS) thường yêu cầu session recording cho mọi admin access.</p>
+</blockquote>
+<hr />
+<h2 id="phần-11-common-pitfalls">Phần 11: Common pitfalls</h2>
+<h3 id="pitfall-1-nghĩ--a-và--j-giống-nhau-về-security">Pitfall 1: Nghĩ <code>-A</code> và <code>-J</code> giống nhau về security</h3>
+<pre class="text"><code>-J : bastion chỉ là tunnel, không có agent socket → an toàn
+-A : bastion có agent socket → root mượn được trong session</code></pre>
+<p>→ Default là <code>-J</code>, chỉ dùng <code>-A</code> khi bastion cần git push/pull.</p>
+<h3 id="pitfall-2-nacl-inbound-của-facing-subnet-chỉ-mở-port-22">Pitfall 2: NACL inbound của facing subnet chỉ mở port 22</h3>
+<pre class="text"><code>SAI: facing NACL IN : TCP 22 from 10.0.3.0/24
+      → return traffic từ private EC2 có dst port ephemeral → bị DROP
+
+ĐÚNG: facing NACL IN : TCP 32768-65535 from 10.0.3.0/24</code></pre>
+<p>NACL stateless → phải allow cả return traffic, và return có destination port = ephemeral.</p>
+<h3 id="pitfall-3-copy-.pem-lên-bastion">Pitfall 3: Copy <code>.pem</code> lên bastion</h3>
+<pre class="text"><code>Bastion bị hack 1 phút → scp .pem ra ngoài → lộ key vĩnh viễn</code></pre>
+<p>→ Không bao giờ. Dùng <code>-J</code> hoặc <code>-A</code>.</p>
+<h3 id="pitfall-4-quên-rằng--j-tạo-2-ssh-session-mỗi-session-cần-1-key-hợp-lệ">Pitfall 4: Quên rằng <code>-J</code> tạo 2 SSH session, mỗi session cần 1 key hợp lệ</h3>
+<p>Nếu bastion và private EC2 dùng <strong>2 keypair khác nhau</strong>, phải config cả 2:</p>
+<pre class="text"><code># ~/.ssh/config
+Host bastion
+  HostName 47.129.159.247
+  IdentityFile ~/.ssh/bastion-key.pem
+
+Host private-ec2
+  HostName 10.0.3.57
+  IdentityFile ~/.ssh/private-ec2-key.pem
+  ProxyJump bastion</code></pre>
+<h3 id="pitfall-5-ssm-không-work-vì-thiếu-vpc-endpoint">Pitfall 5: SSM không work vì thiếu VPC endpoint</h3>
+<p>Private subnet <strong>không có NAT</strong> → SSM Agent không reach SSM service qua internet. Phải tạo <strong>SSM VPC endpoints</strong> (PrivateLink):</p>
+<pre class="text"><code>ssm.&lt;region&gt;.amazonaws.com
+ssmmessages.&lt;region&gt;.amazonaws.com
+ec2messages.&lt;region&gt;.amazonaws.com</code></pre>
+<h3 id="pitfall-6-eic-endpoint-không-reach-instance-vì-route-tablesg">Pitfall 6: EIC Endpoint không reach instance vì route table/SG</h3>
+<p>Endpoint đặt ở subnet A, instance ở subnet B. Phải:</p>
+<ul>
+<li>Route table của subnet A cho phép tới subnet B (local route auto)</li>
+<li>SG của instance cho phép 22 từ SG của endpoint</li>
+</ul>
+<hr />
+<h2 id="phần-12-cheatsheet">Phần 12: Cheatsheet</h2>
+<h3 id="mối-quan-hệ-giữa-các-khái-niệm">Mối quan hệ giữa các khái niệm</h3>
+<pre class="text"><code>Private EC2 (không public IP)
+    │
+    │ &quot;Làm sao vào được?&quot;
+    ├─ Bastion truyền thống ─── ssh -J bastion ────► cần key, mở port 22 cho bastion
+    ├─ SSM Session Manager ──── aws ssm ─────────► cần SSM Agent + IAM + (NAT hoặc VPC endpoint)
+    ├─ EIC Endpoint ─────────── aws ec2-... ssh ──► cần endpoint trong VPC, IAM, ephemeral key
+    ├─ Client VPN ───────────── VPN tunnel ───────► cần VPN endpoint + cert/SAML
+    └─ Teleport/Boundary ────── tsh/boundary ────► cần tool riêng, RBAC + recording</code></pre>
+<h3 id="dòng-cho-mỗi-cách">1 dòng cho mỗi cách</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Cách</th>
+<th>1 dòng tóm tắt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bastion + <code>-J</code></td>
+<td>Tunnel TCP qua bastion, laptop tự auth, không lộ key</td>
+</tr>
+<tr>
+<td>Bastion + <code>-A</code></td>
+<td>Forward agent socket sang bastion, root mượn được trong session</td>
+</tr>
+<tr>
+<td>SSM Session Manager</td>
+<td>Không bastion, IAM auth, CloudTrail built-in, cần agent</td>
+</tr>
+<tr>
+<td>EIC Endpoint</td>
+<td>Identity-aware TCP proxy, ssh UX thuần, ephemeral key, không cần agent</td>
+</tr>
+<tr>
+<td>Client VPN</td>
+<td>Cả team vào VPC như nội bộ, cần VPN client + endpoint</td>
+</tr>
+<tr>
+<td>Teleport/Boundary</td>
+<td>Bastion hardened với RBAC, MFA, session recording</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lệnh-nhanh">Lệnh nhanh</h3>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bastion -J (default cho lab)</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-i</span> singapo.pem <span class="at">-J</span> ec2-user@47.129.159.247 ec2-user@10.0.3.57</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Bastion -A (chỉ khi cần git từ bastion)</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-add</span> singapo.pem</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-A</span> ec2-user@47.129.159.247</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co"># SSM Session Manager</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ssm start-session <span class="at">--target</span> i-0abc123def456</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co"># EIC Endpoint</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2-instance-connect ssh <span class="at">--instance-id</span> i-0abc123def456</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Port forwarding tới RDS qua SSM</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ssm start-session <span class="at">--target</span> i-0abc123def456 <span class="dt">\</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">--document-name</span> AWS-StartPortForwardingSessionToRemoteHost <span class="dt">\</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">--parameters</span> <span class="st">&#39;{&quot;hostNumber&quot;:[&quot;10.0.3.57&quot;],&quot;portNumber&quot;:[&quot;3306&quot;]}&#39;</span></span></code></pre></div>
+<hr />
+<h2 id="gợi-ý-khi-gặp-trong-đề-thi-phỏng-vấn">Gợi ý khi gặp trong đề thi / phỏng vấn</h2>
+<ul>
+<li><strong>“How to securely access EC2 in private subnet?”</strong> → Bastion host, SSM Session Manager, EIC Endpoint, Client VPN. AWS hiện nay ưu tiên <strong>Session Manager</strong> vì không cần mở port 22.</li>
+<li><strong>“Bastion vs NAT Gateway?”</strong> → Bastion = admin <strong>inbound</strong> SSH access. NAT Gateway = <strong>outbound</strong> Internet access cho private subnet. Khác hẳn mục đích.</li>
+<li><strong>“SSM Agent failed to connect?”</strong> → Check IAM role (<code>AmazonSSMManagedInstanceCore</code>), check outbound HTTPS :443 tới SSM endpoints, check SSM VPC endpoints nếu không có NAT.</li>
+<li><strong>“No public IP, no bastion, no NAT — how to SSH?”</strong> → <strong>EIC Endpoint</strong> hoặc SSM với VPC endpoints.</li>
+<li><strong>“Why ProxyJump over Agent Forwarding?”</strong> → <code>-A</code> forward agent socket → root trên bastion mượn được. <code>-J</code> chỉ tunnel, bastion không thấy key.</li>
+<li><strong>“Session recording cho compliance?”</strong> → Teleport, Boundary, hoặc SSM session logging vào S3/CloudWatch.</li>
+<li><strong>“NACL inbound của facing subnet cần gì để SSH return traffic?”</strong> → Ephemeral port range (32768-65535 cho Amazon Linux) từ private subnet CIDR.</li>
+</ul>
+<hr />
+<h2 id="nguồn-aws-chính-thức">Nguồn AWS chính thức</h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/vpc/latest/userguide/custom-network-acl.html">Custom network ACLs for your VPC — Ephemeral ports</a> — giải thích vì sao range ephemeral khác nhau theo OS</li>
+<li><a href="https://docs.aws.amazon.com/vpc/latest/userguide/security-group-rules.html">Security group rules — VPC User Guide</a> — SG stateful, default outbound all</li>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html">Amazon EC2 security group connection tracking</a> — vì sao SG stateful</li>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-with-ec2-instance-connect-endpoint.html">Connect using EC2 Instance Connect Endpoint</a> — identity-aware TCP proxy</li>
+<li><a href="https://aws.amazon.com/blogs/compute/secure-connectivity-from-public-to-private-introducing-ec2-instance-connect-endpoint-june-13-2023/">AWS Compute Blog — EIC Endpoint (June 2023)</a></li>
+<li><a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-prerequisites.html">Session Manager prerequisites</a> — SSM Agent version, IAM, network</li>
+<li><a href="https://aws.amazon.com/blogs/infrastructure-and-automation/toward-a-bastion-less-world/">AWS blog “Toward a bastion-less world”</a> — Session Manager thay bastion</li>
+<li><a href="https://aws.amazon.com/blogs/aws/new-port-forwarding-using-aws-system-manager-sessions-manager/">AWS blog “Port Forwarding using SSM Session Manager”</a></li>
+<li><a href="https://aws.amazon.com/blogs/infrastructure-and-automation/deploy-bastion-hosts-into-private-subnets-with-aws-cdk/">AWS blog “Deploy bastion hosts into private subnets with CDK”</a></li>
+<li><a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/access-a-bastion-host-by-using-session-manager-and-amazon-ec2-instance-connect.html">Prescriptive Guidance — Access a bastion host by using Session Manager and EC2 Instance Connect</a></li>
+</ul>
+<hr />
+<p><em>Doc đi kèm diagram: <a href="docs/diagrams/vpc-ssh-full-flow-2-connections.png"><code>docs/diagrams/vpc-ssh-full-flow-2-connections.png</code></a>. Xem thêm <a href="bastion-host.md"><code>bastion-host.md</code></a> cho phần nền tảng.</em></p>
+</article>
+  <script>
+(() => {
+  function normalizePreviewAnnotationLabel(text) {
+    return String(text || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\s*\n\s*/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+  }
+
+  function advancePastBacktickSpan(source, startIndex) {
+    let fenceLength = 1;
+    while (source[startIndex + fenceLength] === "`") fenceLength += 1;
+
+    let index = startIndex + fenceLength;
+    while (index < source.length) {
+      const ch = source[index];
+      if (ch === "\\") {
+        index = Math.min(source.length, index + 2);
+        continue;
+      }
+      if (ch === "`") {
+        let runLength = 1;
+        while (source[index + runLength] === "`") runLength += 1;
+        if (runLength === fenceLength) {
+          return index + runLength;
+        }
+        index += runLength;
+        continue;
+      }
+      if (ch === "\n") {
+        return index + 1;
+      }
+      index += 1;
+    }
+
+    return source.length;
+  }
+
+  function readInlineAnnotationMarkerAt(source, startIndex) {
+    const text = String(source || "");
+    if (startIndex < 0 || startIndex + 4 > text.length) return null;
+    if (text[startIndex] !== "[" || text.slice(startIndex, startIndex + 4).toLowerCase() !== "[an:") {
+      return null;
+    }
+
+    let index = startIndex + 4;
+    while (index < text.length && /\s/.test(text[index])) index += 1;
+    const bodyStart = index;
+    let squareDepth = 0;
+
+    while (index < text.length) {
+      const ch = text[index];
+      if (ch === "\\") {
+        index = Math.min(text.length, index + 2);
+        continue;
+      }
+      if (ch === "`") {
+        index = advancePastBacktickSpan(text, index);
+        continue;
+      }
+      if (ch === "[") {
+        squareDepth += 1;
+        index += 1;
+        continue;
+      }
+      if (ch === "]") {
+        if (squareDepth === 0) {
+          const end = index + 1;
+          return {
+            start: startIndex,
+            end: end,
+            raw: text.slice(startIndex, end),
+            body: text.slice(bodyStart, index),
+          };
+        }
+        squareDepth -= 1;
+        index += 1;
+        continue;
+      }
+      index += 1;
+    }
+
+    return null;
+  }
+
+  function collectInlineAnnotationMarkers(text) {
+    const source = String(text || "");
+    const markers = [];
+    let index = 0;
+
+    while (index < source.length) {
+      const ch = source[index];
+      if (ch === "\\") {
+        index = Math.min(source.length, index + 2);
+        continue;
+      }
+      if (ch === "`") {
+        index = advancePastBacktickSpan(source, index);
+        continue;
+      }
+      if (ch === "[" && source.slice(index, index + 4).toLowerCase() === "[an:") {
+        const marker = readInlineAnnotationMarkerAt(source, index);
+        if (marker) {
+          markers.push(marker);
+          index = marker.end;
+          continue;
+        }
+      }
+      index += 1;
+    }
+
+    return markers;
+  }
+
+  function replaceInlineAnnotationMarkers(text, annotationReplacer, textReplacer) {
+    const source = String(text || "");
+    const markers = collectInlineAnnotationMarkers(source);
+    const replaceAnnotation = typeof annotationReplacer === "function"
+      ? annotationReplacer
+      : function(marker) { return marker.raw; };
+    const replaceText = typeof textReplacer === "function"
+      ? textReplacer
+      : function(segment) { return segment; };
+
+    if (markers.length === 0) {
+      return replaceText(source);
+    }
+
+    let out = "";
+    let lastIndex = 0;
+    markers.forEach(function(marker) {
+      if (marker.start > lastIndex) {
+        out += String(replaceText(source.slice(lastIndex, marker.start)) ?? "");
+      }
+      out += String(replaceAnnotation(marker) ?? "");
+      lastIndex = marker.end;
+    });
+    if (lastIndex < source.length) {
+      out += String(replaceText(source.slice(lastIndex)) ?? "");
+    }
+    return out;
+  }
+
+  function escapeHtml(text) {
+    return String(text || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function isWordChar(ch) {
+    return typeof ch === "string" && /[A-Za-z0-9]/.test(ch);
+  }
+
+  function readInlineMarkdownLinkAt(source, startIndex) {
+    const text = String(source || "");
+    if (text[startIndex] !== "[") return null;
+
+    let index = startIndex + 1;
+    let squareDepth = 0;
+    while (index < text.length) {
+      const ch = text[index];
+      if (ch === "\\") {
+        index = Math.min(text.length, index + 2);
+        continue;
+      }
+      if (ch === "`") {
+        index = advancePastBacktickSpan(text, index);
+        continue;
+      }
+      if (ch === "[") {
+        squareDepth += 1;
+        index += 1;
+        continue;
+      }
+      if (ch === "]") {
+        if (squareDepth === 0) break;
+        squareDepth -= 1;
+        index += 1;
+        continue;
+      }
+      if (ch === "\n") return null;
+      index += 1;
+    }
+
+    if (index >= text.length || text[index] !== "]" || text[index + 1] !== "(") return null;
+
+    index += 2;
+    let parenDepth = 0;
+    while (index < text.length) {
+      const ch = text[index];
+      if (ch === "\\") {
+        index = Math.min(text.length, index + 2);
+        continue;
+      }
+      if (ch === "`") {
+        index = advancePastBacktickSpan(text, index);
+        continue;
+      }
+      if (ch === "(") {
+        parenDepth += 1;
+        index += 1;
+        continue;
+      }
+      if (ch === ")") {
+        if (parenDepth === 0) {
+          return {
+            type: "literal",
+            raw: text.slice(startIndex, index + 1),
+            end: index + 1,
+          };
+        }
+        parenDepth -= 1;
+        index += 1;
+        continue;
+      }
+      if (ch === "\n") return null;
+      index += 1;
+    }
+
+    return null;
+  }
+
+  function readDelimitedPreviewTokenAt(source, startIndex, open, close, allowNewlines) {
+    const text = String(source || "");
+    if (text.slice(startIndex, startIndex + open.length) !== open) return null;
+
+    let index = startIndex + open.length;
+    while (index < text.length) {
+      const ch = text[index];
+      if (!allowNewlines && ch === "\n") return null;
+      if (ch === "\\") {
+        index = Math.min(text.length, index + 2);
+        continue;
+      }
+      if (text.slice(index, index + close.length) === close) {
+        return {
+          type: "math",
+          raw: text.slice(startIndex, index + close.length),
+          end: index + close.length,
+        };
+      }
+      index += 1;
+    }
+
+    return null;
+  }
+
+  function readInlineMathTokenAt(source, startIndex) {
+    const text = String(source || "");
+    if (text[startIndex] === "\\" && text[startIndex + 1] === "(") {
+      return readDelimitedPreviewTokenAt(text, startIndex, "\\(", "\\)", true);
+    }
+    if (text[startIndex] === "\\" && text[startIndex + 1] === "[") {
+      return readDelimitedPreviewTokenAt(text, startIndex, "\\[", "\\]", true);
+    }
+    if (text[startIndex] === "$" && text[startIndex + 1] === "$") {
+      return readDelimitedPreviewTokenAt(text, startIndex, "$$", "$$", true);
+    }
+    if (text[startIndex] === "$" && text[startIndex + 1] !== "$" && text[startIndex + 1] && !/\s/.test(text[startIndex + 1])) {
+      const token = readDelimitedPreviewTokenAt(text, startIndex, "$", "$", false);
+      if (token && token.raw.length > 2) return token;
+    }
+    return null;
+  }
+
+  function readBareUrlTokenAt(source, startIndex) {
+    const text = String(source || "").slice(startIndex);
+    const match = text.match(/^https?:\/\/[^\s<]+/i);
+    if (!match) return null;
+    return {
+      type: "literal",
+      raw: match[0],
+      end: startIndex + match[0].length,
+    };
+  }
+
+  function readAnnotationPreviewProtectedTokenAt(source, startIndex) {
+    const text = String(source || "");
+    if (startIndex < 0 || startIndex >= text.length) return null;
+
+    if (text[startIndex] === "`") {
+      const end = advancePastBacktickSpan(text, startIndex);
+      return {
+        type: "code",
+        raw: text.slice(startIndex, end),
+        end: end,
+      };
+    }
+
+    const linkToken = text[startIndex] === "["
+      ? readInlineMarkdownLinkAt(text, startIndex)
+      : null;
+    if (linkToken) return linkToken;
+
+    const mathToken = (text[startIndex] === "$" || text[startIndex] === "\\")
+      ? readInlineMathTokenAt(text, startIndex)
+      : null;
+    if (mathToken) return mathToken;
+
+    const urlToken = text[startIndex].toLowerCase() === "h"
+      ? readBareUrlTokenAt(text, startIndex)
+      : null;
+    if (urlToken) return urlToken;
+
+    return null;
+  }
+
+  function canOpenEmphasisDelimiter(source, startIndex, delimiter) {
+    const text = String(source || "");
+    if (text.slice(startIndex, startIndex + delimiter.length) !== delimiter) return false;
+    const prev = startIndex > 0 ? text[startIndex - 1] : "";
+    const next = text[startIndex + delimiter.length] || "";
+    if (!next || /\s/.test(next)) return false;
+    return !isWordChar(prev);
+  }
+
+  function canCloseEmphasisDelimiter(source, startIndex, delimiter) {
+    const text = String(source || "");
+    if (text.slice(startIndex, startIndex + delimiter.length) !== delimiter) return false;
+    const prev = startIndex > 0 ? text[startIndex - 1] : "";
+    const next = text[startIndex + delimiter.length] || "";
+    if (!prev || /\s/.test(prev)) return false;
+    return !isWordChar(next);
+  }
+
+  function readAnnotationEmphasisSpanAt(source, startIndex, delimiter, tagName) {
+    const text = String(source || "");
+    if (!canOpenEmphasisDelimiter(text, startIndex, delimiter)) return null;
+
+    let index = startIndex + delimiter.length;
+    while (index < text.length) {
+      if (text[index] === "\\") {
+        index = Math.min(text.length, index + 2);
+        continue;
+      }
+
+      const protectedToken = readAnnotationPreviewProtectedTokenAt(text, index);
+      if (protectedToken) {
+        index = protectedToken.end;
+        continue;
+      }
+
+      if (canCloseEmphasisDelimiter(text, index, delimiter)) {
+        const inner = text.slice(startIndex + delimiter.length, index);
+        return {
+          end: index + delimiter.length,
+          html: "<" + tagName + ">" + renderAnnotationPlainTextHtml(inner) + "</" + tagName + ">",
+        };
+      }
+
+      index += 1;
+    }
+
+    return null;
+  }
+
+  function renderAnnotationCodeSpanHtml(rawToken) {
+    const raw = String(rawToken || "");
+    if (!raw || raw[0] !== "`") return escapeHtml(raw);
+
+    let fenceLength = 1;
+    while (raw[fenceLength] === "`") fenceLength += 1;
+    const fence = "`".repeat(fenceLength);
+    if (raw.length < fenceLength * 2 || raw.slice(raw.length - fenceLength) !== fence) {
+      return escapeHtml(raw);
+    }
+
+    return "<code>" + escapeHtml(raw.slice(fenceLength, raw.length - fenceLength)) + "</code>";
+  }
+
+  function renderAnnotationPlainTextHtml(text) {
+    const source = String(text || "");
+    let out = "";
+    let index = 0;
+
+    while (index < source.length) {
+      const strongMatch = readAnnotationEmphasisSpanAt(source, index, "**", "strong")
+        || readAnnotationEmphasisSpanAt(source, index, "__", "strong");
+      if (strongMatch) {
+        out += strongMatch.html;
+        index = strongMatch.end;
+        continue;
+      }
+
+      const emphasisMatch = readAnnotationEmphasisSpanAt(source, index, "*", "em")
+        || readAnnotationEmphasisSpanAt(source, index, "_", "em");
+      if (emphasisMatch) {
+        out += emphasisMatch.html;
+        index = emphasisMatch.end;
+        continue;
+      }
+
+      out += escapeHtml(source[index]);
+      index += 1;
+    }
+
+    return out;
+  }
+
+  function renderPreviewAnnotationHtml(text) {
+    const source = normalizePreviewAnnotationLabel(text);
+    let out = "";
+    let plainStart = 0;
+    let index = 0;
+
+    while (index < source.length) {
+      const token = readAnnotationPreviewProtectedTokenAt(source, index);
+      if (!token) {
+        index += 1;
+        continue;
+      }
+
+      if (index > plainStart) {
+        out += renderAnnotationPlainTextHtml(source.slice(plainStart, index));
+      }
+
+      if (token.type === "code") {
+        out += renderAnnotationCodeSpanHtml(token.raw);
+      } else {
+        out += escapeHtml(token.raw);
+      }
+
+      index = token.end;
+      plainStart = index;
+    }
+
+    if (plainStart < source.length) {
+      out += renderAnnotationPlainTextHtml(source.slice(plainStart));
+    }
+
+    return out;
+  }
+
+  function transformMarkdownOutsideFences(text, plainTransformer) {
+    const source = String(text || "").replace(/\r\n/g, "\n");
+    if (!source) return source;
+
+    const transformPlain = typeof plainTransformer === "function"
+      ? plainTransformer
+      : function(segment) { return segment; };
+    const lines = source.split("\n");
+    const out = [];
+    let plainBuffer = [];
+    let inFence = false;
+    let fenceChar = null;
+    let fenceLength = 0;
+
+    function flushPlain() {
+      if (plainBuffer.length === 0) return;
+      const transformed = transformPlain(plainBuffer.join("\n"));
+      out.push(typeof transformed === "string" ? transformed : String(transformed ?? ""));
+      plainBuffer = [];
+    }
+
+    lines.forEach(function(line) {
+      const trimmed = line.trimStart();
+      const fenceMatch = trimmed.match(/^(`{3,}|~{3,})/);
+      if (fenceMatch) {
+        const marker = fenceMatch[1] || "";
+        const markerChar = marker.charAt(0);
+        const markerLength = marker.length;
+
+        if (!inFence) {
+          flushPlain();
+          inFence = true;
+          fenceChar = markerChar;
+          fenceLength = markerLength;
+          out.push(line);
+          return;
+        }
+
+        if (fenceChar === markerChar && markerLength >= fenceLength) {
+          inFence = false;
+          fenceChar = null;
+          fenceLength = 0;
+        }
+
+        out.push(line);
+        return;
+      }
+
+      if (inFence) {
+        out.push(line);
+      } else {
+        plainBuffer.push(line);
+      }
+    });
+
+    flushPlain();
+    return out.join("\n");
+  }
+
+  function hasAnnotationMarkers(text) {
+    let found = false;
+    transformMarkdownOutsideFences(text, function(segment) {
+      if (!found && collectInlineAnnotationMarkers(segment).length > 0) {
+        found = true;
+      }
+      return segment;
+    });
+    return found;
+  }
+
+  function stripAnnotationMarkers(text) {
+    return transformMarkdownOutsideFences(text, function(segment) {
+      return replaceInlineAnnotationMarkers(segment, function() { return ""; });
+    });
+  }
+
+  function prepareMarkdownForPandocPreview(markdown, placeholderPrefix) {
+    const placeholders = [];
+    const prefix = typeof placeholderPrefix === "string" && placeholderPrefix
+      ? placeholderPrefix
+      : "PIMDANNOT";
+    const prepared = transformMarkdownOutsideFences(markdown, function(segment) {
+      return replaceInlineAnnotationMarkers(segment, function(marker) {
+        const label = normalizePreviewAnnotationLabel(marker.body);
+        if (!label) return "";
+        const token = prefix + placeholders.length + "TOKEN";
+        placeholders.push({ token: token, text: label, title: "[an: " + label + "]" });
+        return token;
+      });
+    });
+    return { markdown: prepared, placeholders: placeholders };
+  }
+
+  const helpers = Object.freeze({
+    collectInlineAnnotationMarkers: collectInlineAnnotationMarkers,
+    hasAnnotationMarkers: hasAnnotationMarkers,
+    normalizePreviewAnnotationLabel: normalizePreviewAnnotationLabel,
+    prepareMarkdownForPandocPreview: prepareMarkdownForPandocPreview,
+    readInlineAnnotationMarkerAt: readInlineAnnotationMarkerAt,
+    renderPreviewAnnotationHtml: renderPreviewAnnotationHtml,
+    replaceInlineAnnotationMarkers: replaceInlineAnnotationMarkers,
+    stripAnnotationMarkers: stripAnnotationMarkers,
+    transformMarkdownOutsideFences: transformMarkdownOutsideFences,
+  });
+
+  globalThis.PiMarkdownPreviewAnnotationHelpers = helpers;
+})();
+
+  </script>
+  <script type="module">
+  (async () => {
+    const annotationHelpers = window.PiMarkdownPreviewAnnotationHelpers || null;
+    const previewAnnotationPlaceholders = [];
+    const DIFF_META_LINE_REGEX = /^(diff --git |index |new file mode |deleted file mode |similarity index |rename from |rename to |Binary files )/;
+
+    const escapeRegExp = (text) => {
+      const backslash = String.fromCharCode(92);
+      const specials = '.+*?^' + '$' + '{}|[]' + backslash;
+      return Array.from(String(text || '')).map((ch) => specials.includes(ch) ? backslash + ch : ch).join('');
+    };
+
+    const setAnnotationMarkerContent = (marker, text) => {
+      if (!(marker instanceof HTMLElement)) return;
+      const rendered = annotationHelpers && typeof annotationHelpers.renderPreviewAnnotationHtml === 'function'
+        ? annotationHelpers.renderPreviewAnnotationHtml(text)
+        : String(text || '');
+      marker.innerHTML = rendered;
+    };
+
+    const replaceAnnotationTextNode = (textNode) => {
+      if (!annotationHelpers || typeof annotationHelpers.collectInlineAnnotationMarkers !== 'function') return;
+      const text = typeof textNode.nodeValue === 'string' ? textNode.nodeValue : '';
+      if (!text || text.toLowerCase().indexOf('[an:') === -1) return;
+
+      const markers = annotationHelpers.collectInlineAnnotationMarkers(text);
+      if (!Array.isArray(markers) || markers.length === 0) return;
+
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      markers.forEach((markerInfo) => {
+        const token = markerInfo && typeof markerInfo.raw === 'string' ? markerInfo.raw : '';
+        const start = markerInfo && typeof markerInfo.start === 'number' ? markerInfo.start : lastIndex;
+        const end = markerInfo && typeof markerInfo.end === 'number' ? markerInfo.end : start;
+        if (start > lastIndex) {
+          fragment.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+        }
+
+        const markerText = annotationHelpers && typeof annotationHelpers.normalizePreviewAnnotationLabel === 'function'
+          ? annotationHelpers.normalizePreviewAnnotationLabel(markerInfo.body)
+          : String(markerInfo && markerInfo.body || '').trim();
+        if (markerText) {
+          const markerEl = document.createElement('span');
+          markerEl.className = 'annotation-marker';
+          markerEl.title = token || markerText;
+          setAnnotationMarkerContent(markerEl, markerText);
+          fragment.appendChild(markerEl);
+        }
+
+        lastIndex = end;
+      });
+
+      if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      if (textNode.parentNode) {
+        textNode.parentNode.replaceChild(fragment, textNode);
+      }
+    };
+
+    const applyPreviewAnnotationPlaceholders = (root) => {
+      if (!root || !Array.isArray(previewAnnotationPlaceholders) || previewAnnotationPlaceholders.length === 0) return;
+      const placeholderMap = new Map();
+      const placeholderTokens = [];
+      previewAnnotationPlaceholders.forEach((entry) => {
+        const token = entry && typeof entry.token === 'string' ? entry.token : '';
+        if (!token) return;
+        placeholderMap.set(token, entry);
+        placeholderTokens.push(token);
+      });
+      if (placeholderTokens.length === 0) return;
+
+      const placeholderPattern = new RegExp(placeholderTokens.map(escapeRegExp).join('|'), 'g');
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      let node = walker.nextNode();
+      while (node) {
+        const textNode = node;
+        const value = typeof textNode.nodeValue === 'string' ? textNode.nodeValue : '';
+        if (value && value.indexOf('PIMDPREVIEWANNOT') !== -1) {
+          const parent = textNode.parentElement;
+          const tag = parent && parent.tagName ? parent.tagName.toUpperCase() : '';
+          if (tag !== 'CODE' && tag !== 'PRE' && tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'TEXTAREA') {
+            textNodes.push(textNode);
+          }
+        }
+        node = walker.nextNode();
+      }
+
+      textNodes.forEach((textNode) => {
+        const text = typeof textNode.nodeValue === 'string' ? textNode.nodeValue : '';
+        if (!text) return;
+        placeholderPattern.lastIndex = 0;
+        if (!placeholderPattern.test(text)) return;
+        placeholderPattern.lastIndex = 0;
+
+        const fragment = document.createDocumentFragment();
+        let lastIndex = 0;
+        let match;
+        while ((match = placeholderPattern.exec(text)) !== null) {
+          const token = match[0] || '';
+          const entry = placeholderMap.get(token);
+          const start = typeof match.index === 'number' ? match.index : 0;
+          if (start > lastIndex) {
+            fragment.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+          }
+          if (entry) {
+            const markerEl = document.createElement('span');
+            markerEl.className = 'annotation-marker';
+            const markerText = typeof entry.text === 'string' ? entry.text : token;
+            markerEl.title = typeof entry.title === 'string' ? entry.title : markerText;
+            setAnnotationMarkerContent(markerEl, markerText);
+            fragment.appendChild(markerEl);
+          } else {
+            fragment.appendChild(document.createTextNode(token));
+          }
+          lastIndex = start + token.length;
+          if (token.length === 0) {
+            placeholderPattern.lastIndex += 1;
+          }
+        }
+
+        if (lastIndex < text.length) {
+          fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+        }
+
+        if (textNode.parentNode) {
+          textNode.parentNode.replaceChild(fragment, textNode);
+        }
+      });
+    };
+
+    const decorateDiffCodeBlocks = (root) => {
+      if (!root) return;
+      const diffBlocks = Array.from(root.querySelectorAll('pre.sourceCode.diff code'));
+
+      diffBlocks.forEach((codeBlock) => {
+        const lineElements = Array.from(codeBlock.children).filter((child) => child instanceof HTMLElement);
+        lineElements.forEach((lineEl) => {
+          const text = typeof lineEl.textContent === 'string' ? lineEl.textContent : '';
+          if (!text) return;
+
+          if (/^\+(?!\+\+)/.test(text)) {
+            lineEl.classList.add('diff-line', 'diff-add-line');
+          } else if (/^-(?!--)/.test(text)) {
+            lineEl.classList.add('diff-line', 'diff-del-line');
+          } else if (/^@@/.test(text)) {
+            lineEl.classList.add('diff-line', 'diff-hunk-line');
+          } else if (/^(?:\+\+\+ |--- )/.test(text)) {
+            lineEl.classList.add('diff-line', 'diff-header-line');
+          } else if (DIFF_META_LINE_REGEX.test(text)) {
+            lineEl.classList.add('diff-line', 'diff-meta-line');
+          }
+
+          const walker = document.createTreeWalker(lineEl, NodeFilter.SHOW_TEXT);
+          const matches = [];
+          let node = walker.nextNode();
+          while (node) {
+            const textNode = node;
+            const value = typeof textNode.nodeValue === 'string' ? textNode.nodeValue : '';
+            const parent = textNode.parentElement;
+            if (value && value.toLowerCase().indexOf('[an:') !== -1 && parent && !parent.closest('a, .annotation-marker')) {
+              matches.push(textNode);
+            }
+            node = walker.nextNode();
+          }
+
+          matches.forEach(replaceAnnotationTextNode);
+        });
+      });
+    };
+
+    const MATHJAX_CDN_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+
+    const waitForFonts = async () => {
+      if ('fonts' in document) {
+        try {
+          await document.fonts.ready;
+        } catch {}
+      }
+    };
+
+    const waitForPaint = async () => {
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    };
+
+    const extractMathFallbackTex = (text, displayMode) => {
+      const source = typeof text === 'string' ? text.trim() : '';
+      if (!source) return '';
+
+      if (displayMode) {
+        if (source.startsWith('$$') && source.endsWith('$$') && source.length >= 4) {
+          return source.slice(2, -2).trim();
+        }
+        if (source.startsWith('\\[') && source.endsWith('\\]') && source.length >= 4) {
+          return source.slice(2, -2).trim();
+        }
+        return source;
+      }
+
+      if (source.startsWith('\\(') && source.endsWith('\\)') && source.length >= 4) {
+        return source.slice(2, -2).trim();
+      }
+      if (source.startsWith('$') && source.endsWith('$') && source.length >= 2) {
+        return source.slice(1, -1).trim();
+      }
+      return source;
+    };
+
+    const collectMathFallbackTargets = (root) => {
+      if (!root) return [];
+      const nodes = Array.from(root.querySelectorAll('.math.display, .math.inline'));
+      const targets = [];
+      const seenTargets = new Set();
+
+      nodes.forEach((node) => {
+        const displayMode = node.classList.contains('display');
+        const rawText = typeof node.textContent === 'string' ? node.textContent : '';
+        const tex = extractMathFallbackTex(rawText, displayMode);
+        if (!tex) return;
+
+        let renderTarget = node;
+        if (displayMode) {
+          const parent = node.parentElement;
+          const parentText = parent && typeof parent.textContent === 'string' ? parent.textContent.trim() : '';
+          if (parent && parent.tagName === 'P' && parentText === rawText.trim()) {
+            renderTarget = parent;
+          }
+        }
+
+        if (seenTargets.has(renderTarget)) return;
+        seenTargets.add(renderTarget);
+        targets.push({ renderTarget, displayMode, tex });
+      });
+
+      return targets;
+    };
+
+    let mathJaxPromise = null;
+    const ensureMathJax = () => {
+      if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+        return Promise.resolve(window.MathJax);
+      }
+      if (mathJaxPromise) return mathJaxPromise;
+
+      mathJaxPromise = new Promise((resolve, reject) => {
+        window.MathJax = {
+          loader: { load: ['[tex]/ams', '[tex]/noerrors', '[tex]/noundefined'] },
+          tex: {
+            inlineMath: [['\\(', '\\)'], ['$', '$']],
+            displayMath: [['\\[', '\\]'], ['$$', '$$']],
+            packages: { '[+]': ['ams', 'noerrors', 'noundefined'] },
+          },
+          options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          },
+          startup: { typeset: false },
+        };
+
+        const script = document.createElement('script');
+        script.src = MATHJAX_CDN_URL;
+        script.async = true;
+        script.onload = () => {
+          const api = window.MathJax;
+          if (api && api.startup && api.startup.promise && typeof api.startup.promise.then === 'function') {
+            api.startup.promise.then(() => resolve(api)).catch(reject);
+            return;
+          }
+          if (api && typeof api.typesetPromise === 'function') {
+            resolve(api);
+            return;
+          }
+          reject(new Error('MathJax did not initialize.'));
+        };
+        script.onerror = () => reject(new Error('Failed to load MathJax.'));
+        document.head.appendChild(script);
+      }).catch((error) => {
+        mathJaxPromise = null;
+        throw error;
+      });
+
+      return mathJaxPromise;
+    };
+
+    const markerNeedsMath = (text) => {
+      const source = typeof text === 'string' ? text : '';
+      if (!source) return false;
+      const backslash = String.fromCharCode(92);
+      if (source.includes(backslash + '(') || source.includes(backslash + '[') || source.includes('$$')) return true;
+      for (let index = 0; index < source.length - 1; index += 1) {
+        const char = source[index];
+        const next = source[index + 1] || '';
+        if (char === '$' && next.trim() !== '') return true;
+        if (char === backslash && /[A-Za-z]/.test(next)) return true;
+      }
+      return false;
+    };
+
+    const renderAnnotationMarkerMath = async (root) => {
+      if (!root) return;
+      const markers = Array.from(root.querySelectorAll('.annotation-marker')).filter((marker) => {
+        if (!(marker instanceof HTMLElement)) return false;
+        if (marker.querySelector('math, mjx-container')) return false;
+        const text = typeof marker.textContent === 'string' ? marker.textContent : '';
+        return markerNeedsMath(text);
+      });
+      if (markers.length === 0) return;
+
+      let mathJax;
+      try {
+        mathJax = await ensureMathJax();
+      } catch (e) {
+        console.error('MathJax load failed:', e);
+        return;
+      }
+
+      try {
+        await mathJax.typesetPromise(markers);
+      } catch (e) {
+        console.error('Annotation math render failed:', e);
+      }
+    };
+
+    const renderMathFallback = async (root) => {
+      const fallbackTargets = collectMathFallbackTargets(root);
+      if (fallbackTargets.length === 0) return;
+
+      let mathJax;
+      try {
+        mathJax = await ensureMathJax();
+      } catch (e) {
+        console.error('MathJax load failed:', e);
+        return;
+      }
+
+      fallbackTargets.forEach(({ renderTarget, displayMode, tex }) => {
+        renderTarget.textContent = displayMode ? '\\[\n' + tex + '\n\\]' : '\\(' + tex + '\\)';
+      });
+
+      try {
+        await mathJax.typesetPromise(fallbackTargets.map(({ renderTarget }) => renderTarget));
+      } catch (e) {
+        console.error('MathJax render failed:', e);
+      }
+    };
+
+    const renderMermaid = async () => {
+      const mermaidBlocks = document.querySelectorAll('pre.mermaid');
+      if (mermaidBlocks.length === 0) return;
+
+      try {
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({"startOnLoad":false,"theme":"base","themeVariables":{"background":"#0b1020","primaryColor":"#22304f","primaryTextColor":"#d3deee","primaryBorderColor":"#8a98ad","secondaryColor":"#121a2f","secondaryTextColor":"#d3deee","secondaryBorderColor":"#8a98ad","tertiaryColor":"#121a2f","tertiaryTextColor":"#d3deee","tertiaryBorderColor":"#8a98ad","lineColor":"#8a98ad","textColor":"#d3deee","edgeLabelBackground":"#22304f","nodeBorder":"#8a98ad","clusterBkg":"#121a2f","clusterBorder":"#8a98ad","titleColor":"#d8bd66"}});
+        mermaidBlocks.forEach(pre => {
+          const code = pre.querySelector('code');
+          const src = code ? code.textContent : pre.textContent;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'mermaid-container';
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = src;
+          wrapper.appendChild(div);
+          pre.replaceWith(wrapper);
+        });
+        await mermaid.run();
+      } catch (e) {
+        console.error('Mermaid render failed:', e);
+      }
+    };
+
+    const root = document.getElementById('preview-root');
+    try {
+      await renderMermaid();
+      applyPreviewAnnotationPlaceholders(root);
+      decorateDiffCodeBlocks(root);
+      await renderAnnotationMarkerMath(root);
+      await renderMathFallback(root);
+      await waitForFonts();
+      await waitForPaint();
+    } finally {
+      window.__mermaidDone = true;
+    }
+  })();
+  </script>
+</body>
+</html>

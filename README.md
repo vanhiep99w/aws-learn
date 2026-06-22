@@ -29,6 +29,7 @@ Two modes:
 - [x] [EC2](ec2.md) - Elastic Compute Cloud, Instance Types, Pricing Models
 - [x] [Elastic Fabric Adapter (EFA)](elastic-fabric-adapter.md) - Network device cho EC2 HPC/AI workloads, OS-bypass, MPI/NCCL, low latency inter-instance communication
 - [x] [Bastion Host](bastion-host.md) - Jump Box truy cập private subnet, SSH flow, Security Group/NACL, Session Manager
+- [x] [Bastion Host Deep Dive](bastion-host-deep-dive.md) - Mechanics SSH sâu, ProxyJump vs Agent Forwarding, ssh-agent, SSM Session Manager, EC2 Instance Connect Endpoint, Client VPN, Teleport/Boundary, decision matrix
 - [x] [Spot Instances](spot-instances.md) - Spot request, interruption, persistent request, Spot Fleet, best practices
 - [x] [AMI](ami.md) - Amazon Machine Image, Custom AMIs, Sharing, Lifecycle
 - [x] [ELB](elb.md) - Elastic Load Balancing, ALB, NLB, GWLB
