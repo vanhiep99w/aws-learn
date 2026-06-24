@@ -9,7 +9,7 @@
  * 4. Write meta.json per category for Fumadocs sidebar labels
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, cpSync, rmSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
@@ -82,6 +82,21 @@ for (const line of lines) {
 }
 
 console.log(`Parsed ${fileMap.size} files from README.md`);
+
+// ── Copy static diagram assets ────────────────────────────────────────────────
+// Markdown files can embed diagrams with absolute URLs such as:
+//   ![Diagram](/diagrams/example.png)
+// Next.js serves files under public/ from the site root. Keep editable
+// .excalidraw sources in docs/diagrams/, and publish rendered PNG/SVG assets
+// by copying the folder to public/diagrams during content preparation.
+const diagramsSrc = join(ROOT, 'docs', 'diagrams');
+const diagramsDest = join(ROOT, 'public', 'diagrams');
+if (existsSync(diagramsSrc)) {
+  rmSync(diagramsDest, { recursive: true, force: true });
+  mkdirSync(diagramsDest, { recursive: true });
+  cpSync(diagramsSrc, diagramsDest, { recursive: true });
+  console.log(`Copied diagrams → public/diagrams/`);
+}
 
 // ── Build lookup: filename.md → /category-dir/slug/ ──────────────────────────
 

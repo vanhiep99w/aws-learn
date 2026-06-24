@@ -30,9 +30,13 @@ Doc này là phần **deep dive** của [`bastion-host.md`](bastion-host.md). Fi
 - Trên production người ta có còn dùng bastion không, hay chuyển sang cái gì?
 - Session Manager, EC2 Instance Connect Endpoint, Client VPN khác nhau thế nào, khi nào dùng cái nào?
 
-Đi kèm doc này là diagram minh hoạ packet flow:
+Đi kèm doc này là diagram minh hoạ packet flow. Trên webapp, diagram được render trực tiếp từ file PNG đã export từ Excalidraw:
 
-- [`docs/diagrams/vpc-ssh-full-flow-2-connections.png`](docs/diagrams/vpc-ssh-full-flow-2-connections.png) — full SSH flow 2 connections, 4 luồng packet
+![Full SSH flow qua Bastion gồm 2 TCP connections và 4 luồng traffic](/diagrams/vpc-ssh-full-flow-2-connections.png)
+
+File nguồn để chỉnh sửa diagram:
+
+- [`docs/diagrams/vpc-ssh-full-flow-2-connections.excalidraw`](docs/diagrams/vpc-ssh-full-flow-2-connections.excalidraw)
 
 ---
 
@@ -122,7 +126,9 @@ Hai connection này độc lập. Tắt một cái không tự tắt cái kia (n
 
 ### 2.3 Trace packet chi tiết (xem diagram đi kèm)
 
-Diagram `vpc-ssh-full-flow-2-connections.png` vẽ đầy đủ **4 luồng traffic chính**:
+Diagram dưới đây vẽ đầy đủ **4 luồng traffic chính**:
+
+![Full SSH flow qua Bastion gồm 2 TCP connections và 4 luồng traffic](/diagrams/vpc-ssh-full-flow-2-connections.png)
 
 ```text
 2 TCP connections × 2 chiều = 4 luồng traffic
@@ -771,4 +777,4 @@ aws ssm start-session --target i-0abc123def456 \
 
 ---
 
-_Doc đi kèm diagram: [`docs/diagrams/vpc-ssh-full-flow-2-connections.png`](docs/diagrams/vpc-ssh-full-flow-2-connections.png). Xem thêm [`bastion-host.md`](bastion-host.md) cho phần nền tảng._
+_Doc đi kèm diagram render trực tiếp từ [`/diagrams/vpc-ssh-full-flow-2-connections.png`](/diagrams/vpc-ssh-full-flow-2-connections.png). File nguồn chỉnh sửa: [`docs/diagrams/vpc-ssh-full-flow-2-connections.excalidraw`](docs/diagrams/vpc-ssh-full-flow-2-connections.excalidraw). Xem thêm [`bastion-host.md`](bastion-host.md) cho phần nền tảng._
