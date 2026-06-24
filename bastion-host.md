@@ -149,9 +149,9 @@ Diagram tổng quát:
 │                                                                     │
 │  Public subnet 10.0.1.0/24             Private subnet 10.0.2.0/24   │
 │  ┌──────────────────────┐              ┌─────────────────────────┐  │
-│  │ Bastion Host          │ SSH private  │ Private EC2             │  │
-│  │ Public IP: 54.x.x.x   │─────────────►│ Private IP: 10.0.2.20   │  │
-│  │ Private IP: 10.0.1.10 │              │ No public IP            │  │
+│  │ Bastion Host         │ SSH private  │ Private EC2             │  │
+│  │ Public IP: 54.x.x.x  │─────────────►│ Private IP: 10.0.2.20   │  │
+│  │ Private IP: 10.0.1.10│              │ No public IP            │  │
 │  └──────────▲───────────┘              └─────────────────────────┘  │
 │             │                                                       │
 └─────────────┼───────────────────────────────────────────────────────┘
