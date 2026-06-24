@@ -376,7 +376,16 @@ Nếu chỉ mở inbound port 22 mà outbound không cho ephemeral ports, packet
 
 ### Bastion SSH vào private EC2
 
-NACL của private subnet chứa EC2 private cần:
+Khi Bastion SSH vào private EC2, Bastion là **client**, private EC2 là **SSH server**.
+
+Ví dụ Bastion chọn ephemeral port `45678`:
+
+```text
+Request : Bastion 10.0.1.10:45678  --->  Private EC2 10.0.2.20:22
+Response: Private EC2 10.0.2.20:22 --->  Bastion 10.0.1.10:45678
+```
+
+Vì vậy NACL của **private subnet** chứa EC2 private cần:
 
 Inbound:
 
@@ -390,11 +399,49 @@ Outbound:
 ALLOW TCP 1024-65535 về Bastion subnet
 ```
 
+Đồng thời NACL của **public/facing subnet** chứa Bastion cũng cần cho chiều về của connection 2:
+
+Inbound:
+
+```text
+ALLOW TCP 1024-65535 từ private subnet
+```
+
+Outbound:
+
+```text
+ALLOW TCP 22 đến private subnet
+```
+
+Điểm dễ nhầm: response từ private EC2 **không đi về port 22 của Bastion**. Nó đi về ephemeral port mà Bastion đã dùng khi mở connection, ví dụ `45678`.
+
+### 2 TCP connections = 4 luồng traffic
+
+SSH qua Bastion tạo 2 TCP connections riêng:
+
+```text
+Connection 1: Laptop  ↔ Bastion
+Connection 2: Bastion ↔ Private EC2
+```
+
+Mỗi connection có chiều đi và chiều về, nên khi xét NACL sẽ có 4 luồng chính:
+
+```text
+1. Laptop:ephemeral  ---> Bastion:22
+2. Bastion:22        ---> Laptop:ephemeral
+3. Bastion:ephemeral ---> Private EC2:22
+4. Private EC2:22    ---> Bastion:ephemeral
+```
+
+Đây là **4 luồng traffic**, không phải chỉ đúng 4 packet vật lý. Thực tế TCP/SSH có nhiều packet như SYN, SYN-ACK, ACK, SSH handshake, encrypted data và keepalive.
+
 Cách nhớ:
 
 ```text
 Security Group = stateful = mở request, response tự được phép
 Network ACL    = stateless = phải mở cả request và response
+Client         = dùng ephemeral port
+Server SSH     = dùng port 22
 ```
 
 ---

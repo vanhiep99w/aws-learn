@@ -122,16 +122,38 @@ Hai connection này độc lập. Tắt một cái không tự tắt cái kia (n
 
 ### 2.3 Trace packet chi tiết (xem diagram đi kèm)
 
-Diagram `vpc-ssh-full-flow-2-connections.png` vẽ đầy đủ 4 luồng packet:
+Diagram `vpc-ssh-full-flow-2-connections.png` vẽ đầy đủ **4 luồng traffic chính**:
 
-| Luồng | Packet | Đi qua checkpoint nào |
+```text
+2 TCP connections × 2 chiều = 4 luồng traffic
+```
+
+Lưu ý: đây là 4 **flow direction** khi xét NACL/SG, không phải chỉ đúng 4 packet vật lý. Thực tế TCP/SSH sẽ có nhiều packet: SYN, SYN-ACK, ACK, SSH key exchange, encrypted data, keepalive, v.v.
+
+| Luồng | Packet mẫu | Đi qua checkpoint nào |
 |---|---|---|
 | **C1 Request** (Laptop→Bastion) | `59.153.x.x:51544 → 47.129.159.247:22` | IGW → facing NACL IN(22) → bastion-SG IN(22) → Bastion |
 | **C1 Response** (Bastion→Laptop) | `47.129.159.247:22 → 59.153.x.x:51544` | Bastion → bastion-SG OUT(auto) → facing NACL OUT(ephemeral) → IGW |
 | **C2 Request** (Bastion→Private) | `10.0.1.76:45678 → 10.0.3.57:22` | bastion-SG OUT(22) → facing NACL OUT(22) → public RT → VPC router → service NACL IN(22) → service-SG IN(22) → Private EC2 |
 | **C2 Response** (Private→Bastion) | `10.0.3.57:22 → 10.0.1.76:45678` | service-SG OUT(auto) → service NACL OUT(ephemeral) → VPC router → facing NACL IN(ephemeral) → bastion-SG IN(auto) → Bastion |
 
-> ⚠️ Điểm dễ sai: **NACL inbound của facing subnet phải mở ephemeral port** (32768-65535) cho return traffic từ private subnet, vì return packet có destination port = ephemeral của bastion, không phải 22. Xem chi tiết ở [`docs/diagrams/nacl-sg-step-by-step-packet-path.png`](docs/diagrams/nacl-sg-step-by-step-packet-path.png).
+#### Vì sao C2 Response không về port 22 của Bastion?
+
+Ở connection 2, Bastion là **SSH client**, private EC2 là **SSH server**:
+
+```text
+Bastion:45678  --->  Private EC2:22
+```
+
+Port `45678` là ephemeral port do Bastion tự chọn khi mở connection. Khi private EC2 trả lời, TCP packet sẽ đảo chiều source/destination:
+
+```text
+Private EC2:22  --->  Bastion:45678
+```
+
+Vì NACL là **stateless**, NACL không tự hiểu đây là response hợp lệ. Nó chỉ nhìn packet hiện tại. Do packet đi vào public/facing subnet có **destination port = 45678**, facing NACL inbound phải allow ephemeral range từ private subnet.
+
+> ⚠️ Điểm dễ sai: **NACL inbound của facing subnet phải mở ephemeral port** (ví dụ 32768-65535 hoặc 1024-65535 tùy OS/client) cho return traffic từ private subnet, vì return packet có destination port = ephemeral của Bastion, không phải 22. Xem chi tiết ở [`docs/diagrams/nacl-sg-step-by-step-packet-path.png`](docs/diagrams/nacl-sg-step-by-step-packet-path.png).
 
 ### 2.4 Rule set tối thiểu để 2 connection thông
 
