@@ -68,6 +68,8 @@ Không có test suite, lint script riêng hay workflow CI được track trong r
 
 ## Nên đọc gì theo loại thay đổi?
 
+Đọc [Quy tắc làm việc trong repository](workflows/repository-guidelines.md) trước mọi thay đổi, sau đó đi tới tài liệu domain tương ứng:
+
 | Việc cần làm | Đọc trước | Source bắt đầu |
 |---|---|---|
 | Thêm/sửa bài AWS | [Authoring & verification](workflows/authoring-and-verification.md) | `README.md`, bài `*.md` tương ứng |
@@ -82,7 +84,7 @@ Không có test suite, lint script riêng hay workflow CI được track trong r
 
 - **Không chỉnh `content/docs/`, `.source/`, `public/diagrams/` hay `dist/` như source**: đây là output generated/ignored.
 - Bài mới chỉ xuất hiện trên web khi có entry chính xác `- [x] [Title](file.md) - Description` dưới một section được parser hỗ trợ trong `README.md`.
-- Nội dung AWS phải viết bằng tiếng Việt, có TOC khi đủ lớn và phải xác minh chi tiết bằng tài liệu AWS chính thức theo [`AGENTS.md`](../AGENTS.md).
+- Nội dung AWS phải viết bằng tiếng Việt, có TOC khi đủ lớn và phải xác minh chi tiết bằng tài liệu AWS chính thức theo [quy tắc repository](workflows/repository-guidelines.md).
 - Diagram editable nằm ở `docs/diagrams/`; Markdown nên tham chiếu rendered asset bằng `/diagrams/<file>`.
 - Practice UI phụ thuộc chặt vào format `description`, `metadata.answer` và các heading `##` trong `notes`; đổi contract phải cập nhật cả producer, API và parser UI.
 - Questions API hiện cho phép đọc/ghi cross-origin mà không có authentication. Đây là hành vi có chủ ý trong source/history hiện tại, nhưng là rủi ro cần đánh giá trước mọi thay đổi public.
@@ -92,10 +94,11 @@ Không có test suite, lint script riêng hay workflow CI được track trong r
 Trước khi sửa repository:
 
 1. Đọc [global Harness rules](./_rules.md).
-2. Đọc mọi section `_rules.md` áp dụng cho file mục tiêu trước khi chỉnh sửa.
-3. Nếu phạm vi công việc chuyển sang domain khác, đọc lại rules của domain đó.
+2. Nếu làm việc với architecture docs, đọc [architecture rules](architecture/_rules.md).
+3. Nếu làm việc với workflow docs, đọc [workflows rules](workflows/_rules.md).
+4. Đọc mọi section `_rules.md` khác áp dụng cho file mục tiêu; khi phạm vi chuyển domain, đọc lại rules của domain đó.
 
-Hiện wiki chưa có section `_rules.md` ngoài [`wiki/_rules.md`](./_rules.md). Không chỉnh bất kỳ `wiki/**/_rules.md` nào ngoài Harness proposal/approval/apply workflow.
+Các restriction và quy trình thay đổi rule nằm trong những file được liên kết ở trên.
 
 ## Các trang wiki
 
@@ -106,6 +109,7 @@ Hiện wiki chưa có section `_rules.md` ngoài [`wiki/_rules.md`](./_rules.md)
 
 ### Workflows
 
+- [Quy tắc làm việc trong repository](workflows/repository-guidelines.md) — policy canonical đã chuyển khỏi `AGENTS.md`/`CLAUDE.md`.
 - [Authoring và AWS verification](workflows/authoring-and-verification.md) — viết bài, diagram, nguồn AWS và tạo Q&A.
 - [Development và deployment](workflows/development-and-deployment.md) — command, generated artifacts, kiểm thử, Cloudflare và migration.
 

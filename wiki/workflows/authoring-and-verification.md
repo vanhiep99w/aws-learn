@@ -7,7 +7,7 @@ Repository duy trì hai luồng kiến thức liên quan nhưng khác contract:
 1. **Bài học dài** — file Markdown ở root, được `README.md` catalog và build vào Fumadocs.
 2. **Q&A luyện tập** — record D1 được tạo theo AWS explain skill, hiển thị ở `/practice/`.
 
-Cả hai phải viết tiếng Việt và xác minh những claim AWS dễ thay đổi bằng nguồn AWS chính thức. [`AGENTS.md`](../../AGENTS.md) là policy gốc; trang này chuyển policy đó thành workflow thao tác.
+Cả hai phải viết tiếng Việt và xác minh những claim AWS dễ thay đổi bằng nguồn AWS chính thức. [Quy tắc làm việc trong repository](repository-guidelines.md) là policy canonical; trang này triển khai policy đó thành workflow thao tác chi tiết.
 
 ## Thêm một bài AWS mới
 
