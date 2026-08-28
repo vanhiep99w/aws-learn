@@ -5,6 +5,7 @@
 
 - [Tổng quan](#tổng-quan)
 - [Server-side vs Client-side Load Balancing](#server-side-vs-client-side-load-balancing)
+- [Spring Cloud Gateway, Eureka và LoadBalancer](#spring-cloud-gateway-eureka-và-loadbalancer)
 - [Khi nào dùng loại nào?](#khi-nào-dùng-loại-nào)
 - [Spring Cloud LoadBalancer + Eureka](#spring-cloud-loadbalancer-eureka)
 - [Chi tiết theo môi trường](#chi-tiết-theo-môi-trường)
@@ -34,8 +35,8 @@ So sánh các giải pháp Load Balancing và Auto Scaling ở các layer khác 
 │  (Manage Pods/Containers)                                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                        Application                              │
-│  Spring Cloud LoadBalancer ───────────────────────────────────  │
-│  (Client-side, trong code)                                      │
+│  Spring Cloud Gateway (server-side proxy)                       │
+│  Spring Cloud LoadBalancer (client-side, trong code)            │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,7 +58,7 @@ Client ───▶ [ LB Server ] ───▶ Targets
 |------------|-----------|-------|
 | **AWS** | ELB (ALB/NLB/GWLB) | Managed service, tính phí |
 | **K8s** | Service, Ingress | Built-in, miễn phí trong cluster |
-| **Spring** | ❌ Không có | Spring không cung cấp server LB |
+| **Spring Cloud** | Spring Cloud Gateway | Có thể làm L7 reverse proxy/server-side LB; không phải managed infrastructure như ALB |
 
 ### Client-side Load Balancing
 
@@ -88,10 +89,11 @@ LB logic nằm trong application code:
 ┌────────────────────────────────────────────────────────────────────────────┐
 │                     EUREKA ≠ LOAD BALANCER                                 │
 │                                                                            │
-│   Eureka Server: "Tôi biết ai ở đâu" (lưu danh sách IP)                    │
+│   Eureka Server: "Tôi biết ai ở đâu" (lưu danh sách instances)             │
+│   Eureka Client: đăng ký, heartbeat, lấy/cache danh sách instances          │
 │   Spring Cloud LB: "Tôi chọn gọi ai"                                       │
-│ (logic trong code và lưu ở trong chính server chỉ dùng eruka để đông bộ về)│
-│   → Eureka KHÔNG route traffic, chỉ cung cấp thông tin                     │
+│                                                                            │
+│   → Eureka không route traffic và không chịu trách nhiệm chọn instance      │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -177,13 +179,71 @@ Eureka Server ❌ DOWN
 | Tiêu chí | Server-side | Client-side |
 |----------|-------------|-------------|
 | **LB ở đâu** | Server riêng biệt | Trong app code |
-| **Single point of failure** | Có | Không |
-| **Chi phí** | Tốn tiền (ELB, Nginx) | Miễn phí (là code) |
-| **Latency** | Cao hơn (thêm 1 hop) | Thấp hơn (gọi thẳng) |
+| **Khả năng thành bottleneck** | Có; cần triển khai HA/scale | Phân tán vào các client |
+| **Chi phí** | Tùy hạ tầng (ALB tính phí; Nginx có thể tự vận hành) | Không có LB infra riêng, nhưng có chi phí vận hành app |
+| **Latency** | Thường thêm một hop | Thường gọi thẳng target |
 | **Phù hợp cho** | External traffic (FE→BE) | Internal traffic (BE→BE) |
 | **Client cần biết targets** | Không | Có (từ Service Discovery) |
 
 ---
+
+## Spring Cloud Gateway, Eureka và LoadBalancer
+
+Spring Cloud Gateway **không thay thế** Eureka hay Spring Cloud LoadBalancer. Ba thành phần có trách nhiệm khác nhau:
+
+```text
+Client
+  │ chỉ gọi một địa chỉ Gateway
+  ▼
+Spring Cloud Gateway ── route `/orders/**` tới `ORDER-SERVICE`
+  │
+  ├── DiscoveryClient/Eureka Client: lấy danh sách
+  │       [order-1, order-2, order-3]
+  │
+  └── Spring Cloud LoadBalancer: chọn `order-2`
+            │
+            ▼
+         order-2
+```
+
+| Thành phần | Trách nhiệm | Traffic business có đi qua? |
+|------------|-------------|-----------------------------|
+| **Spring Cloud Gateway** | Nhận request, áp dụng route/filter rồi proxy tới backend | Có |
+| **Eureka Server** | Service registry: lưu các instance đã đăng ký | Không |
+| **Eureka Client** | Đăng ký, heartbeat, lấy/cache danh sách instance | Không route traffic |
+| **Spring Cloud LoadBalancer** | Chọn một instance từ danh sách | Là thư viện chạy trong Gateway/app |
+
+Vì client gửi request tới Gateway và Gateway quyết định backend, Gateway là **server-side LB/reverse proxy xét theo luồng traffic**. Tuy nhiên, phần chọn instance bên trong process Gateway là **client-side LB xét theo cách triển khai**: `Spring Cloud LoadBalancer` chọn instance rồi Gateway gọi trực tiếp tới nó. Đây không phải là hai proxy/hop riêng.
+
+### Discovery không nằm sẵn trong Gateway
+
+Gateway có thể tích hợp service discovery, nhưng không tự làm service registry. Khi route dùng `lb://`, Gateway cần một `DiscoveryClient` provider để lấy danh sách instance, chẳng hạn Eureka, Consul, Kubernetes Service/DNS hoặc AWS Cloud Map.
+
+```yaml
+# Không discovery: backend cố định
+uri: http://10.0.1.5:8080
+
+# Discovery + chọn một instance
+uri: lb://ORDER-SERVICE
+```
+
+Với `lb://ORDER-SERVICE`, Gateway lấy các instance của `ORDER-SERVICE` qua discovery provider, sau đó dùng Spring Cloud LoadBalancer để chọn một instance. Nếu service-to-service call đi thẳng, không qua Gateway, service gọi vẫn cần discovery/LB của riêng nó (hoặc dùng K8s Service/mesh).
+
+### Gateway không thay ALB hoàn toàn
+
+Gateway có thể là entry point L7, nhưng không tự tạo HA/scale cho chính các Gateway instance. Một triển khai production thường có nhiều Gateway replicas phía sau ALB, Nginx hoặc K8s Ingress:
+
+```text
+Internet → ALB / Nginx / K8s Ingress → Gateway replicas → backend services
+```
+
+ALB có Target Group chứa các target đã đăng ký, thực hiện health check và route request tới target healthy. Target được đăng ký thủ công hoặc bởi integration như ASG/ECS/EKS controller; ALB không phải một Eureka-style registry tự đi khám phá mọi service.
+
+> Nguồn AWS: [Target groups for your Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html) và [Health checks for Application Load Balancer target groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html).
+
+### Thuật toán của Spring Cloud LoadBalancer
+
+Spring Cloud LoadBalancer có **Round Robin** là lựa chọn mặc định và có thể dùng **Random** hoặc custom implementation cho từng service. Các policy như weighted round robin, least connections, ưu tiên zone hay dựa trên latency cần tự implement/ghép thêm cơ chế phù hợp; chúng không tự có đầy đủ như policy của một LB managed.
 
 ## Khi nào dùng loại nào?
 
@@ -209,13 +269,13 @@ Eureka Server ❌ DOWN
      │
      ▼
 ┌──────────┐
-│ AWS ELB  │  ← BẮT BUỘC cần server-side LB
-└────┬─────┘
-     │
-     ▼
-┌─────────┐
-│ Backend │
-└─────────┘
+│ ALB / Gateway / Ingress │  ← Server-side entry point
+└──────────────┬──────────┘
+               │
+               ▼
+          ┌─────────┐
+          │ Backend │
+          └─────────┘
 ```
 
 ### Traffic BE → BE
@@ -335,18 +395,18 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 ┌─────────────────────────────────────────────────┐
 │                Spring Cloud                     │
 ├─────────────────────────────────────────────────┤
-│ Server-side LB:                                 │
-│   • ❌ Không có                                 │
-│   • Phải dùng Nginx, AWS ELB, K8s Service       │
+│ Server-side proxy/LB:                           │
+│   • Spring Cloud Gateway (L7 reverse proxy)    │
+│   • Gateway cần được scale/HA ở tầng hạ tầng    │
 │                                                 │
 │ Client-side LB:                                 │
 │   • Spring Cloud LoadBalancer                   │
 │   • (cũ: Netflix Ribbon - deprecated)           │
 │                                                 │
-│ Service Discovery:                              │
+│ Service Discovery (Gateway/LB tích hợp qua):    │
 │   • Eureka                                      │
 │   • Consul                                      │
-│   • AWS Cloud Map                               │
+│   • Kubernetes Service/DNS, AWS Cloud Map       │
 │                                                 │
 │ Auto Scaling:                                   │
 │   • ❌ Không có                                 │
@@ -358,14 +418,14 @@ Spring Cloud LB cần **Service Registry** (Eureka) để biết danh sách inst
 
 ## So sánh Load Balancing
 
-| Tiêu chí | AWS ELB | K8s Service/Ingress | Spring Cloud LB |
-|----------|---------|---------------------|-----------------|
-| **Layer** | Infrastructure | Container | Application (code) |
-| **Loại** | Server-side | Server-side | **Client-side** |
-| **Quản lý bởi** | AWS | K8s cluster | Application code |
-| **Target** | EC2, IP, Lambda | Pods | Service instances |
-| **Cần infra riêng** | Có (AWS resource) | Có (K8s cluster) | Không |
-| **Chi phí** | Tính phí | Free trong cluster | Free (là code) |
+| Thành phần | Layer | Vai trò LB | Traffic đi qua? | Nguồn danh sách target |
+|------------|-------|------------|-----------------|------------------------|
+| **AWS ELB** | Infrastructure | Server-side LB | Có | Target Group (target được đăng ký) |
+| **K8s Service/Ingress** | Container | Server-side LB/routing | Có | Kubernetes Endpoint/EndpointSlice |
+| **Spring Cloud Gateway** | Application | Server-side L7 proxy/LB đối với client | Có | Discovery provider hoặc URL tĩnh |
+| **Spring Cloud LoadBalancer** | Application code | Client-side: chọn instance cho app/Gateway | Không có proxy riêng | `DiscoveryClient`/supplier |
+
+Gateway và Spring Cloud LoadBalancer thường được dùng cùng nhau: Gateway điều khiển request đi qua nó, còn LoadBalancer chọn instance downstream.
 
 ---
 
